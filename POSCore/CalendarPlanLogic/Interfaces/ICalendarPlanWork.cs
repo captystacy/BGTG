@@ -4,8 +4,9 @@ namespace POSCore.CalendarPlanLogic.Interfaces
 {
     public interface ICalendarPlanWork
     {
-        double TotalEstimateObjectCost { get; }
-        double EstimateObjectCostIncludingContructionAndInstallationWorks { get; }
+        string WorkName { get; }
+        double TotalEstimateWorkCost { get; }
+        double EstimateWorkCostIncludingContructionAndInstallationWorks { get; }
         IEnumerable<IConstructionMonth> ConstructionMonths { get; }
     }
 }
