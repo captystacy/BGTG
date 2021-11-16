@@ -2,24 +2,26 @@
 using NUnit.Framework;
 using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
+using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
+using System.Linq;
 
 namespace POSCoreTests.CalendarPlanCreatorTests
 {
     public class CreateCalendarPlanShould
     {
         private ICalendarPlanCreator _calendarPlanCreator;
-        private Mock<IEstimate> _estimateVatFree;
-        private Mock<IEstimate> _estimateVat;
+        private Estimate _estimateVatFree;
+        private Estimate _estimateVat;
         private Mock<IEstimateConnector> _estimateConnectorMock;
 
         [SetUp]
         public void SetUp()
         {
-            _estimateVatFree = new Mock<IEstimate>();
-            _estimateVat = new Mock<IEstimate>();
+            _estimateVatFree = new Estimate(Enumerable.Empty<EstimateWork>());
+            _estimateVat = new Estimate(Enumerable.Empty<EstimateWork>());
             _estimateConnectorMock = new Mock<IEstimateConnector>();
-            _calendarPlanCreator = new CalendarPlanCreator(_estimateVatFree.Object, _estimateVat.Object, _estimateConnectorMock.Object);
+            _calendarPlanCreator = new CalendarPlanCreator(_estimateVatFree, _estimateVat, _estimateConnectorMock.Object);
         }
 
         [Test]

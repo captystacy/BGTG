@@ -2,6 +2,6 @@
 {
     public interface IEstimateConnector
     {
-        IEstimate Connect(IEstimate estimateVatFree, IEstimate estimateVat);
+        Estimate Connect(Estimate estimateVatFree, Estimate estimateVat);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
+using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
 using System;
 
@@ -7,14 +8,14 @@ namespace POSCore.CalendarPlanLogic
     public class CalendarPlanCreator : ICalendarPlanCreator
     {
         private readonly IEstimateConnector _estimateConnector;
-        private readonly IEstimate _estimate;
+        private readonly Estimate _estimate;
 
-        public CalendarPlanCreator(IEstimate estimateVatFree)
+        public CalendarPlanCreator(Estimate estimateVatFree)
         {
             _estimate = estimateVatFree;
         }
 
-        public CalendarPlanCreator(IEstimate estimateVatFree, IEstimate estimateVat, IEstimateConnector estimateConnector)
+        public CalendarPlanCreator(Estimate estimateVatFree, Estimate estimateVat, IEstimateConnector estimateConnector)
         {
             _estimate = estimateConnector.Connect(estimateVatFree, estimateVat);
         }
