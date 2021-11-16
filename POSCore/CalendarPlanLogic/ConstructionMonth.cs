@@ -1,6 +1,6 @@
-﻿namespace POSCore.CalendarPlanLogic.Interfaces
+﻿namespace POSCore.CalendarPlanLogic
 {
-    public interface IConstructionMonth
+    public class ConstructionMonth
     {
         string Month { get; }
         int Year { get; }

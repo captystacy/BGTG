@@ -20,7 +20,7 @@ namespace POSCore.CalendarPlanLogic
             _estimate = estimateConnector.Connect(estimateVatFree, estimateVat);
         }
 
-        public ICalendarPlan CreateCalendarPlan()
+        public CalendarPlan CreateCalendarPlan()
         {
             throw new NotImplementedException();
         }

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace POSCore.CalendarPlanLogic.Interfaces
+namespace POSCore.CalendarPlanLogic
 {
-    public interface ICalendarPlanWork
+    public class CalendarPlanWork
     {
         string WorkName { get; }
         double TotalEstimateWorkCost { get; }
         double EstimateWorkCostIncludingContructionAndInstallationWorks { get; }
-        IEnumerable<IConstructionMonth> ConstructionMonths { get; }
+        IEnumerable<ConstructionMonth> ConstructionMonths { get; }
     }
 }
