@@ -8,5 +8,13 @@ namespace POSCore.CalendarPlanLogic
         public double InvestmentVolume { get; }
         public double ContructionAndInstallationWorksVolume { get; }
         public int PercentePart { get; }
+
+        public ConstructionMonth(DateTime date, double investmentVolume, double contructionAndInstallationWorksVolume, int percentePart)
+        {
+            Date = date;
+            InvestmentVolume = investmentVolume;
+            ContructionAndInstallationWorksVolume = contructionAndInstallationWorksVolume;
+            PercentePart = percentePart;
+        }
     }
 }
