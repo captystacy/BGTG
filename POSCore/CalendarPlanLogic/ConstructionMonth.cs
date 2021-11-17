@@ -1,11 +1,12 @@
-﻿namespace POSCore.CalendarPlanLogic
+﻿using System;
+
+namespace POSCore.CalendarPlanLogic
 {
     public class ConstructionMonth
     {
-        string Month { get; }
-        int Year { get; }
-        double InvestmentVolume { get; }
-        double ContructionAndInstallationWorksVolume { get; }
-        int PercentePart { get; }
+        public DateTime Date { get; }
+        public double InvestmentVolume { get; }
+        public double ContructionAndInstallationWorksVolume { get; }
+        public int PercentePart { get; }
     }
 }

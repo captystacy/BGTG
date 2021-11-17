@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace POSCore.EstimateLogic
+﻿namespace POSCore.EstimateLogic
 {
     public class EstimateWork
     {
