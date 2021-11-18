@@ -1,5 +1,4 @@
-﻿using POSCore.EstimateLogic.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace POSCore.EstimateLogic
 {

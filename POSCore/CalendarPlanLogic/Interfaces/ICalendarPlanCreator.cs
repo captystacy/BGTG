@@ -1,7 +1,10 @@
-﻿namespace POSCore.CalendarPlanLogic.Interfaces
+﻿using System;
+using System.Collections.Generic;
+
+namespace POSCore.CalendarPlanLogic.Interfaces
 {
     public interface ICalendarPlanCreator
     {
-        CalendarPlan CreateCalendarPlan();
+        CalendarPlan CreateCalendarPlan(DateTime initialDate, IEnumerable<int[]> groupsOfPercentages);
     }
 }

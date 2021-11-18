@@ -24,7 +24,7 @@ namespace POSCoreTests.CalendarWorkConverterTests
         {
             var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0);
 
-            var calendarWork = _calendarWorkCreator.CreateCalendarWork(estimateWork, DateTime.Today, 0);
+            var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
             Assert.NotNull(calendarWork);
         }
@@ -34,7 +34,7 @@ namespace POSCoreTests.CalendarWorkConverterTests
         {
             var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0);
 
-            var calendarWork = _calendarWorkCreator.CreateCalendarWork(estimateWork, DateTime.Today, 0);
+            var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
             Assert.AreEqual(estimateWork.WorkName, calendarWork.WorkName);
         }
@@ -44,7 +44,7 @@ namespace POSCoreTests.CalendarWorkConverterTests
         {
             var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0);
 
-            var calendarWork = _calendarWorkCreator.CreateCalendarWork(estimateWork, DateTime.Today, 0);
+            var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
             Assert.AreEqual(estimateWork.TotalCost, calendarWork.TotalCost);
         }
@@ -54,7 +54,7 @@ namespace POSCoreTests.CalendarWorkConverterTests
         {
             var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 2.027, 1.541, 55.464);
 
-            var calendarWork = _calendarWorkCreator.CreateCalendarWork(estimateWork, DateTime.Today, 0);
+            var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
             Assert.AreEqual(estimateWork.TotalCost - estimateWork.EquipmentCost - estimateWork.OtherProductsCost, calendarWork.TotalCostIncludingContructionAndInstallationWorks);
         }
@@ -64,11 +64,11 @@ namespace POSCoreTests.CalendarWorkConverterTests
         {
             var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 11.324);
             var initialDate = new DateTime(1999, 9, 21);
-            var percent1 = 1;
+            var percentages = new int[] { 1 };
 
-            var calendarWork = _calendarWorkCreator.CreateCalendarWork(estimateWork, initialDate, percent1);
+            var calendarWork = _calendarWorkCreator.CreateCalendarWork(initialDate, estimateWork, percentages);
 
-            _constructionPeriodCreatorMock.Verify(x => x.CreateConstructionPeriod(initialDate, calendarWork.TotalCost, calendarWork.TotalCostIncludingContructionAndInstallationWorks, new int[] { percent1 }), Times.Once);
+            _constructionPeriodCreatorMock.Verify(x => x.CreateConstructionPeriod(initialDate, calendarWork.TotalCost, calendarWork.TotalCostIncludingContructionAndInstallationWorks, percentages), Times.Once);
         }
     }
 }
