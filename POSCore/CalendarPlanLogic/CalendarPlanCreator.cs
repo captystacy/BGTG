@@ -21,6 +21,7 @@ namespace POSCore.CalendarPlanLogic
         public CalendarPlanCreator(Estimate estimateVatFree, Estimate estimateVat, IEstimateConnector estimateConnector, ICalendarWorkCreator calendarWorkCreator)
         {
             _estimate = estimateConnector.Connect(estimateVatFree, estimateVat);
+            _calendarWorkCreator = calendarWorkCreator;
         }
 
         public CalendarPlan CreateCalendarPlan(DateTime initialDate, IEnumerable<int[]> percentagesGroups)
