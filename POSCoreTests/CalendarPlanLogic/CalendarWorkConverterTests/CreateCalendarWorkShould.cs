@@ -5,7 +5,7 @@ using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
 using System;
 
-namespace POSCoreTests.CalendarWorkConverterTests
+namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
 {
     public class CreateCalendarWorkShould
     {

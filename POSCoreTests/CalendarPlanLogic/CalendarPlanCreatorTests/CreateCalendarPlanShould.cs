@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace POSCoreTests.CalendarPlanCreatorTests
+namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
 {
     public class CreateCalendarPlanShould
     {

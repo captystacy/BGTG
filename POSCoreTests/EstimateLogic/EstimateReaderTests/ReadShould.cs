@@ -3,7 +3,7 @@ using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
 using System.Linq;
 
-namespace POSCoreTests.EstimateReaderTests
+namespace POSCoreTests.EstimateLogic.EstimateReaderTests
 {
     public class ReadShould
     {

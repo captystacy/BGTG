@@ -4,7 +4,7 @@ using POSCore.EstimateLogic.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace POSCoreTests.EstimateConnetorTests
+namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 {
     public class ConnectShould
     {

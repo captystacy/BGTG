@@ -6,7 +6,7 @@ using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
 using System.Linq;
 
-namespace POSCoreTests.CalendarPlanCreatorTests
+namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
 {
     public class ConstructorShould
     {

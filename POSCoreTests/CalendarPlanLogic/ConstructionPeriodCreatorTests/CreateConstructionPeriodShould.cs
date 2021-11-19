@@ -3,10 +3,9 @@ using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
-namespace POSCoreTests.ConstructionPeriodCreatorTests
+namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
 {
     public class CreateConstructionPeriodShould
     {
