@@ -15,7 +15,7 @@ namespace POSCore.EstimateLogic
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        public IEnumerable<EstimateWork> Read(string filePath)
+        public Estimate Read(string filePath)
         {
             var estimateWorks = new List<EstimateWork>();
 
@@ -48,7 +48,7 @@ namespace POSCore.EstimateLogic
                 return null;
             }
 
-            return estimateWorks;
+            return new Estimate(estimateWorks);
         }
 
         private EstimateWork ParseEstimateCellsToEstimateWork(ExcelWorksheet workSheet, int row)

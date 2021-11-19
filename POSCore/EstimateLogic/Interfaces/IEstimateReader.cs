@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace POSCore.EstimateLogic.Interfaces
+﻿namespace POSCore.EstimateLogic.Interfaces
 {
     public interface IEstimateReader
     {
-        IEnumerable<EstimateWork> Read(string filePath);
+        Estimate Read(string filePath);
     }
 }
