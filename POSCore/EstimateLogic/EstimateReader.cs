@@ -36,19 +36,36 @@ namespace POSCore.EstimateLogic
                         || estimateCalculationCellStr == "НРР 8.01.102-2017"
                         || previousCalculationCellStr == "ПОДПУНКТ 34.1 ИНСТРУКЦИИ")
                     {
-
                         var estimateWork = ParseEstimateCellsToEstimateWork(workSheet, row);
                         estimateWorks.Add(estimateWork);
                     }
                 }
             }
 
-            if (estimateWorks.Any(x => x.TotalCost == 0))
+            if (estimateWorks.Any(x => x.TotalCost == 0 || x.Chapter == 0))
             {
                 return null;
             }
 
             return new Estimate(estimateWorks);
+        }
+
+        private int ParseChapter(ExcelWorksheet workSheet, int row)
+        {
+            var chapter = 0;
+
+            for (int i = 1; i < row; i++)
+            {
+                var chapterCellStr = workSheet.Cells[row - i, 2].Value.ToString();
+                if (chapterCellStr.StartsWith("ГЛАВА"))
+                {
+                    var chapterStr = Regex.Match(chapterCellStr, @"\d+").Value;
+                    int.TryParse(chapterStr, out chapter);
+                    break;
+                }
+            }
+
+            return chapter;
         }
 
         private EstimateWork ParseEstimateCellsToEstimateWork(ExcelWorksheet workSheet, int row)
@@ -58,11 +75,12 @@ namespace POSCore.EstimateLogic
             var otherProductsCostCellStr = workSheet.Cells[row, 8].Value.ToString();
             var totalCostCellStr = workSheet.Cells[row, 9].Value.ToString();
 
+            var chapter = ParseChapter(workSheet, row);
             var equipmentCost = ParseCost(equipmentCostCellStr);
             var otherProductsCost = ParseCost(otherProductsCostCellStr);
             var totalCost = ParseCost(totalCostCellStr);
 
-            return new EstimateWork(workNameCellStr, equipmentCost, otherProductsCost, totalCost);
+            return new EstimateWork(workNameCellStr, equipmentCost, otherProductsCost, totalCost, chapter);
         }
 
         private double ParseCost(string costCellStr)

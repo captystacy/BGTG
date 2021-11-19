@@ -9,8 +9,8 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
     {
         private IEstimateReader _estimateReader;
 
-        private readonly string _estimate1 = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateReaderTests\estimate1.xlsx";
-        private readonly string _estimate2 = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateReaderTests\estimate2.xlsx";
+        private readonly string _estimate1 = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate1.xlsx";
+        private readonly string _estimate2 = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate2.xlsx";
 
         [SetUp]
         public void SetUp()
@@ -104,6 +104,29 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
             var landscapingWork = estimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
 
             Assert.AreEqual(0.038, landscapingWork.TotalCost);
+        }
+
+        [Test]
+        public void ReturnEstimateWorks_InWhichSetRightEstimateWorkChapter()
+        {
+            var estimate = _estimateReader.Read(_estimate1);
+
+            var estimateWorks = estimate.EstimateWorks.ToList();
+
+            var recultivationWork = estimateWorks.Find(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ");
+            Assert.AreEqual(1, recultivationWork.Chapter);
+
+            var electrochemicalProtection = estimateWorks.Find(x => x.WorkName == "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА"); ;
+            Assert.AreEqual(2, electrochemicalProtection.Chapter);
+
+            var landscapingWork = estimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
+            Assert.AreEqual(7, landscapingWork.Chapter);
+
+            var temporaryBuildingsWork = estimateWorks.Find(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%");
+            Assert.AreEqual(8, temporaryBuildingsWork.Chapter);
+
+            var totalWork = estimateWorks.Find(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ");
+            Assert.AreEqual(10, totalWork.Chapter);
         }
     }
 }

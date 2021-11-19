@@ -22,7 +22,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
         [Test]
         public void NotReturnNull()
         {
-            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0);
+            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 0);
 
             var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
@@ -32,7 +32,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
         [Test]
         public void ReturnCalendarWork_InWhichSetWorkNameFromEstimateWorkName()
         {
-            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0);
+            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 0);
 
             var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
@@ -42,7 +42,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
         [Test]
         public void ReturnCalendarWork_InWhichSetTotalCostFromEstimateTotalСost()
         {
-            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0);
+            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 0);
 
             var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
@@ -52,7 +52,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
         [Test]
         public void ReturnCalendarWork_InWhichSetTotalCostIncludingContructionAndInstallationWorks_ToTotalCostMinusEquipmentCostAndOtherProductsCost()
         {
-            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 2.027, 1.541, 55.464);
+            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 2.027, 1.541, 55.464, 0);
 
             var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
@@ -62,7 +62,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
         [Test]
         public void CreateCalendarPeriod()
         {
-            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 11.324);
+            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 11.324, 0);
             var initialDate = new DateTime(1999, 9, 21);
             var percentages = new int[] { 1 };
 

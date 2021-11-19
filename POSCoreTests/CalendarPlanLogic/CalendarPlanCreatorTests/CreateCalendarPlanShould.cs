@@ -38,7 +38,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         {
             var initialDate = DateTime.Today;
             var percentagesGroups = new List<int[]>();
-            var estimate = new Estimate(new EstimateWork[] { new EstimateWork("", 0, 0, 0) });
+            var estimate = new Estimate(new EstimateWork[] { new EstimateWork("", 0, 0, 0, 0) });
 
             _calendarPlanCreator = new CalendarPlanCreator(estimate, _calendarWorkCreator.Object);
             var calendarPlan = _calendarPlanCreator.CreateCalendarPlan(initialDate, percentagesGroups);
@@ -51,7 +51,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         {
             var initialDate = DateTime.Today;
             var percentagesGroups = new List<int[]>() { new int[] { }, new int[] { } };
-            var estimate = new Estimate(new EstimateWork[] { new EstimateWork("", 0, 0, 0) });
+            var estimate = new Estimate(new EstimateWork[] { new EstimateWork("", 0, 0, 0, 0) });
 
             _calendarPlanCreator = new CalendarPlanCreator(estimate, _calendarWorkCreator.Object);
             var calendarPlan = _calendarPlanCreator.CreateCalendarPlan(initialDate, percentagesGroups);
@@ -69,7 +69,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
             for (int i = 0; i < countOfWorks; i++)
             {
                 percentagesGroups.Add(new int[] { });
-                estimateWorks.Add(new EstimateWork("", 0, 0, 0));
+                estimateWorks.Add(new EstimateWork("", 0, 0, 0, 0));
             }
             var estimate = new Estimate(estimateWorks);
 

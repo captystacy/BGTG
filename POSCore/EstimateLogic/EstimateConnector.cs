@@ -49,7 +49,7 @@ namespace POSCore.EstimateLogic
             return new EstimateWork(estimateWork1.WorkName,
                     estimateWork1.EquipmentCost + estimateWork2.EquipmentCost,
                     estimateWork1.OtherProductsCost + estimateWork2.OtherProductsCost,
-                    estimateWork1.TotalCost + estimateWork2.TotalCost);
+                    estimateWork1.TotalCost + estimateWork2.TotalCost, estimateWork1.Chapter);
         }
 
         private List<EstimateWork> InsertOneByOne(IList<EstimateWork> insertedInto, IList<EstimateWork> insertedFrom)
