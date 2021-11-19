@@ -87,13 +87,11 @@ namespace POSCore.EstimateLogic
         {
             var costStr = Regex.Match(costCellStr, @"[0-9,]+").Value;
 
-            var cost = default(double);
-            if (!double.TryParse(costStr, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out cost))
-            {
-                return 0;
-            }
+            double.TryParse(costStr, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out var cost);
 
-            return cost;
+            return cost % 1 != 0 
+                ? cost 
+                : 0;
         }
     }
 }

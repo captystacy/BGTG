@@ -128,5 +128,25 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
             var totalWork = estimateWorks.Find(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ");
             Assert.AreEqual(10, totalWork.Chapter);
         }
+
+        [Test]
+        public void ReturnNull_IfEstimateWorkTotalCostIsBroken()
+        {
+            var estimateWithBrokenTotalCost = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate1WithBrokenTotalCost.xlsx";
+
+            var estimate = _estimateReader.Read(estimateWithBrokenTotalCost);
+
+            Assert.Null(estimate);
+        }
+
+        [Test]
+        public void ReturnNull_IfEstimateWorkChapterIsBroken()
+        {
+            var estimateWithBrokenChapter = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate1WithBrokenChapter.xlsx";
+
+            var estimate = _estimateReader.Read(estimateWithBrokenChapter);
+
+            Assert.Null(estimate);
+        }
     }
 }
