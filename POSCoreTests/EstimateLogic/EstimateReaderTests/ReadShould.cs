@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
+using System.IO;
 using System.Linq;
 
 namespace POSCoreTests.EstimateLogic.EstimateReaderTests
@@ -9,13 +10,21 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
     {
         private IEstimateReader _estimateReader;
 
-        private readonly string _estimate1 = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate1.xlsx";
-        private readonly string _estimate2 = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate2.xlsx";
+        private string _estimate1;
+        private string _estimate2;
+        private string _estimate1WithBrokenTotalCost;
+        private string _estimate1WithBrokenChapter;
 
         [SetUp]
         public void SetUp()
         {
             _estimateReader = new EstimateReader();
+            var projectDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            var currentProjectDirectory = Path.Combine(projectDirectory, @"EstimateLogic\EstimateReaderTests");
+            _estimate1 = Path.Combine(currentProjectDirectory, "estimate1.xlsx");
+            _estimate2 = Path.Combine(currentProjectDirectory, "estimate2.xlsx");
+            _estimate1WithBrokenTotalCost = Path.Combine(currentProjectDirectory, "estimate1WithBrokenTotalCost.xlsx");
+            _estimate1WithBrokenChapter = Path.Combine(currentProjectDirectory, "estimate1WithBrokenChapter.xlsx");
         }
 
         // STARTS WITH: ОБЪЕКТНАЯ СМЕТА
@@ -132,9 +141,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         [Test]
         public void ReturnNull_IfEstimateWorkTotalCostIsBroken()
         {
-            var estimateWithBrokenTotalCost = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate1WithBrokenTotalCost.xlsx";
-
-            var estimate = _estimateReader.Read(estimateWithBrokenTotalCost);
+            var estimate = _estimateReader.Read(_estimate1WithBrokenTotalCost);
 
             Assert.Null(estimate);
         }
@@ -142,9 +149,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         [Test]
         public void ReturnNull_IfEstimateWorkChapterIsBroken()
         {
-            var estimateWithBrokenChapter = @"C:\Users\kss\source\repos\POS\POSCoreTests\EstimateLogic\EstimateReaderTests\estimate1WithBrokenChapter.xlsx";
-
-            var estimate = _estimateReader.Read(estimateWithBrokenChapter);
+            var estimate = _estimateReader.Read(_estimate1WithBrokenChapter);
 
             Assert.Null(estimate);
         }
