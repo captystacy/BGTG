@@ -5,7 +5,7 @@ using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
 using System;
 
-namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
+namespace POSCoreTests.CalendarPlanLogic.CalendarWorkCreatorTests
 {
     public class CreateCalendarWorkShould
     {
@@ -57,6 +57,16 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarWorkConverterTests
             var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
 
             Assert.AreEqual(estimateWork.TotalCost - estimateWork.EquipmentCost - estimateWork.OtherProductsCost, calendarWork.TotalCostIncludingContructionAndInstallationWorks);
+        }
+
+        [Test]
+        public void ReturnCalendarWork_InWhichSetEstimateChapterFromEstimateChapter()
+        {
+            var estimateWork = new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 1);
+
+            var calendarWork = _calendarWorkCreator.CreateCalendarWork(DateTime.Today, estimateWork, new int[] { 0 });
+
+            Assert.AreEqual(estimateWork.Chapter, calendarWork.EstimateChapter);
         }
 
         [Test]

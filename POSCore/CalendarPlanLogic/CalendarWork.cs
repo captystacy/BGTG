@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace POSCore.CalendarPlanLogic
+﻿namespace POSCore.CalendarPlanLogic
 {
     public class CalendarWork
     {
@@ -8,13 +6,15 @@ namespace POSCore.CalendarPlanLogic
         public double TotalCost { get; }
         public double TotalCostIncludingContructionAndInstallationWorks { get; }
         public ConstructionPeriod ConstructionPeriod { get; }
+        public int EstimateChapter { get; }
 
-        public CalendarWork(string workName, double totalCost, double totalCostIncludingContructionAndInstallationWorks, ConstructionPeriod constructionPeriod)
+        public CalendarWork(string workName, double totalCost, double totalCostIncludingContructionAndInstallationWorks, ConstructionPeriod constructionPeriod, int estimateChapter)
         {
             WorkName = workName;
             TotalCost = totalCost;
             TotalCostIncludingContructionAndInstallationWorks = totalCostIncludingContructionAndInstallationWorks;
             ConstructionPeriod = constructionPeriod;
+            EstimateChapter = estimateChapter;
         }
     }
 }
