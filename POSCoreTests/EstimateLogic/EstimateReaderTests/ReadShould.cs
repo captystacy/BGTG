@@ -35,7 +35,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
 
             var estimateWorksList = estimate.EstimateWorks.ToList();
 
-            var recultivationEstimateWorkExistance = estimateWorksList.Exists(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == 0.001);
+            var recultivationEstimateWorkExistance = estimateWorksList.Exists(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == (decimal)0.001);
 
             Assert.IsTrue(recultivationEstimateWorkExistance);
         }
@@ -48,7 +48,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
 
             var estimateWorks = estimate.EstimateWorks.ToList();
 
-            var channelTracingWorkExistance = estimateWorks.Exists(x => x.WorkName == "ТРАССИРОВКА КАНАЛОВ (8,04 КМ)" && x.EquipmentCost == 0 && x.OtherProductsCost == 2.163 && x.TotalCost == 2.163);
+            var channelTracingWorkExistance = estimateWorks.Exists(x => x.WorkName == "ТРАССИРОВКА КАНАЛОВ (8,04 КМ)" && x.EquipmentCost == 0 && x.OtherProductsCost == (decimal)2.163 && x.TotalCost == (decimal)2.163);
 
             Assert.IsTrue(channelTracingWorkExistance);
         }
@@ -61,7 +61,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
 
             var estimateWorks = estimate.EstimateWorks.ToList();
 
-            var temporaryBuildingsWorkExistance = estimateWorks.Exists(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == 0.253);
+            var temporaryBuildingsWorkExistance = estimateWorks.Exists(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == (decimal)0.253);
 
             Assert.IsTrue(temporaryBuildingsWorkExistance);
         }
@@ -74,7 +74,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
 
             var estimateWorks = estimate.EstimateWorks.ToList();
 
-            var recultivationEstimateWorkExistance = estimateWorks.Exists(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ" && x.EquipmentCost == 0 && x.OtherProductsCost == 9.911 && x.TotalCost == 30.085);
+            var recultivationEstimateWorkExistance = estimateWorks.Exists(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ" && x.EquipmentCost == 0 && x.OtherProductsCost == (decimal)9.911 && x.TotalCost == (decimal)30.085);
 
             Assert.IsTrue(recultivationEstimateWorkExistance);
         }

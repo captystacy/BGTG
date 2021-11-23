@@ -101,7 +101,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         [Test]
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthPercentPartToFirstPassedPercent()
         {
-            var totalCost = 123.124;
+            var totalCost = (decimal)123.124;
             var percent1 = 45;
             var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, totalCost, 0, new int[] { percent1 });
 
@@ -111,7 +111,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         [Test]
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthInvestmentVolume_ToPassedTotalCostMultiplyFirstPassedPercentDividedByOneHundred()
         {
-            var totalCost = 123.124;
+            var totalCost = (decimal)123.124;
             var percent1 = 45;
             var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, totalCost, 0, new int[] { percent1 });
 
@@ -121,7 +121,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         [Test]
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthContructionAndInstallationWorksVolume_ToPassedtotalCostIncludingContructionAndInstallationWorksMultiplyFirstPassedPercentDividedByOneHundred()
         {
-            var totalCostIncludingContructionAndInstallationWorks = 123.124;
+            var totalCostIncludingContructionAndInstallationWorks = (decimal)123.124;
             var percent1 = 45;
             var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, totalCostIncludingContructionAndInstallationWorks, new int[] { percent1 });
 

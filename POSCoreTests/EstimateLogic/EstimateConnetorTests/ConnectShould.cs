@@ -116,7 +116,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             }
         }
 
-        private Estimate CreateEstimateWithOneEstimateWork(string workName, double equipmentCost, double otherProductsCost, double totalCost, int chapter)
+        private Estimate CreateEstimateWithOneEstimateWork(string workName, decimal equipmentCost, decimal otherProductsCost, decimal totalCost, int chapter)
         {
             var estimateWork = new EstimateWork(workName, equipmentCost, otherProductsCost, totalCost, chapter);
             var estimateWorks = new EstimateWork[] { estimateWork };
@@ -128,10 +128,10 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var workName = "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА";
 
-            var estimateWorkVatFreeEquipmentCost = 0.021;
+            var estimateWorkVatFreeEquipmentCost = (decimal)0.021;
             var estimateVatFree = CreateEstimateWithOneEstimateWork(workName, estimateWorkVatFreeEquipmentCost, 0, 0, 0);
 
-            var estimateWorkVatEquipmentCost = 0.023;
+            var estimateWorkVatEquipmentCost = (decimal)0.023;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, estimateWorkVatEquipmentCost, 0, 0, 0);
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
@@ -146,10 +146,10 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var workName = "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА";
 
-            var estimateWorkVatFreeOtherProductsCost = 0.022;
+            var estimateWorkVatFreeOtherProductsCost = (decimal)0.022;
             var estimateVatFree = CreateEstimateWithOneEstimateWork(workName, 0, estimateWorkVatFreeOtherProductsCost, 0, 0);
 
-            var estimateWorkVatOtherProductsCost = 0.024;
+            var estimateWorkVatOtherProductsCost = (decimal)0.024;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, estimateWorkVatOtherProductsCost, 0, 0);
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
@@ -164,10 +164,10 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var workName = "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА";
 
-            var estimateWorkVatFreeTotalCost = 55.297;
+            var estimateWorkVatFreeTotalCost = (decimal)55.297;
             var estimateVatFree = CreateEstimateWithOneEstimateWork(workName, 0, 0, estimateWorkVatFreeTotalCost, 0);
 
-            var estimateWorkVatTotalCost = 21.316;
+            var estimateWorkVatTotalCost = (decimal)21.316;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, 0, estimateWorkVatTotalCost, 0);
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);

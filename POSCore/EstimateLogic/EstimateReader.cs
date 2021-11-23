@@ -83,11 +83,11 @@ namespace POSCore.EstimateLogic
             return new EstimateWork(workNameCellStr, equipmentCost, otherProductsCost, totalCost, chapter);
         }
 
-        private double ParseCost(string costCellStr)
+        private decimal ParseCost(string costCellStr)
         {
             var costStr = Regex.Match(costCellStr, @"[0-9,]+").Value;
 
-            double.TryParse(costStr, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out var cost);
+            decimal.TryParse(costStr, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out var cost);
 
             return cost % 1 != 0 
                 ? cost 

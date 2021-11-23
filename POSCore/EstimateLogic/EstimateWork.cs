@@ -4,11 +4,11 @@
     {
         public string WorkName { get; }
         public int Chapter { get; }
-        public double EquipmentCost { get; }
-        public double OtherProductsCost { get; }
-        public double TotalCost { get; }
+        public decimal EquipmentCost { get; }
+        public decimal OtherProductsCost { get; }
+        public decimal TotalCost { get; }
 
-        public EstimateWork(string workName, double equipmentCost, double otherProductsCost, double totalCost, int chapter)
+        public EstimateWork(string workName, decimal equipmentCost, decimal otherProductsCost, decimal totalCost, int chapter)
         {
             WorkName = workName;
             EquipmentCost = equipmentCost;
