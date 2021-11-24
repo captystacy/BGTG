@@ -5,6 +5,6 @@ namespace POSCore.CalendarPlanLogic.Interfaces
 {
     public interface ICalendarWorkCreator
     {
-        CalendarWork CreateCalendarWork(DateTime initialDate, EstimateWork estimateWork,  int[] percentages);
+        CalendarWork CreateCalendarWork(DateTime initialDate, EstimateWork estimateWork,  decimal[] percentages);
     }
 }

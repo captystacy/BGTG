@@ -24,7 +24,7 @@ namespace POSCore.CalendarPlanLogic
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public CalendarPlan CreateCalendarPlan(DateTime initialDate, IEnumerable<int[]> percentagesGroups)
+        public CalendarPlan CreateCalendarPlan(DateTime initialDate, IEnumerable<decimal[]> percentagesGroups)
         {
             var estimateWorks = _estimate.EstimateWorks.ToArray();
             var persentagesGroupsArray = percentagesGroups.ToArray();

@@ -136,7 +136,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
 
-            var estimateWorkEquipmentCost = estimate.EstimateWorks.First(x => x.WorkName == workName).EquipmentCost;
+            var estimateWorkEquipmentCost = estimate.EstimateWorks.Single(x => x.WorkName == workName).EquipmentCost;
 
             Assert.AreEqual(estimateWorkVatFreeEquipmentCost + estimateWorkVatEquipmentCost, estimateWorkEquipmentCost);
         }
@@ -154,7 +154,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
 
-            var estimateWorkOtherPoductsCost = estimate.EstimateWorks.First(x => x.WorkName == workName).OtherProductsCost;
+            var estimateWorkOtherPoductsCost = estimate.EstimateWorks.Single(x => x.WorkName == workName).OtherProductsCost;
 
             Assert.AreEqual(estimateWorkVatFreeOtherProductsCost + estimateWorkVatOtherProductsCost, estimateWorkOtherPoductsCost);
         }
@@ -172,7 +172,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
 
-            var estimateWorkTotalCost = estimate.EstimateWorks.First(x => x.WorkName == workName).TotalCost;
+            var estimateWorkTotalCost = estimate.EstimateWorks.Single(x => x.WorkName == workName).TotalCost;
 
             Assert.AreEqual(estimateWorkVatFreeTotalCost + estimateWorkVatTotalCost, estimateWorkTotalCost);
         }
@@ -189,7 +189,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 
             var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
 
-            var estimateWorkChapter = estimate.EstimateWorks.First(x => x.WorkName == workName).Chapter;
+            var estimateWorkChapter = estimate.EstimateWorks.Single(x => x.WorkName == workName).Chapter;
 
             Assert.AreEqual(chapter, estimateWorkChapter);
         }

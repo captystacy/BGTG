@@ -6,17 +6,22 @@ namespace POSCore.CalendarPlanLogic
 {
     public class ConstructionPeriodCreator : IConstructionPeriodCreator
     {
-        public ConstructionPeriod CreateConstructionPeriod(DateTime initialDate, decimal totalCost, decimal totalCostIncludingContructionAndInstallationWorks, int[] percentages)
+        public ConstructionPeriod CreateConstructionPeriod(DateTime initialDate, decimal totalCost, decimal totalCostIncludingContructionAndInstallationWorks, decimal[] percentages)
         {
             var constructionMonths = new List<ConstructionMonth>();
 
             for (int i = 0; i < percentages.Length; i++)
             {
-                int percent = percentages[i];
+                var percent = percentages[i];
+                if (percent <= 0 || percent > 1)
+                {
+                    continue;
+                }
+
                 var date = initialDate.AddMonths(i);
-                var investmentVolume = totalCost * percent / 100;
-                var constructionAndInstallationWorksVolume = totalCostIncludingContructionAndInstallationWorks * percent / 100;
-                var constructionMonth = new ConstructionMonth(date, investmentVolume, constructionAndInstallationWorksVolume, percent);
+                var investmentVolume = decimal.Round(totalCost * percent, 3);
+                var constructionAndInstallationWorksVolume = decimal.Round(totalCostIncludingContructionAndInstallationWorks * percent, 3);
+                var constructionMonth = new ConstructionMonth(date, investmentVolume, constructionAndInstallationWorksVolume, percent, i);
                 constructionMonths.Add(constructionMonth);
             }
 

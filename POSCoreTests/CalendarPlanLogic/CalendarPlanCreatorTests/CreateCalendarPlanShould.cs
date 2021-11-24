@@ -24,7 +24,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         public void ReturnNull_IfEstimateWorksCountWasZero()
         {
             var initialDate = DateTime.Today;
-            var percentagesGroups = new List<int[]>() { new int[] { 1, 2, 3 } };
+            var percentagesGroups = new List<decimal[]>() { new decimal[] { 1, 2, 3 } };
             var estimate = new Estimate(Enumerable.Empty<EstimateWork>());
 
             _calendarPlanCreator = new CalendarPlanCreator(estimate, _calendarWorkCreator.Object);
@@ -37,7 +37,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         public void ReturnNull_IfPercentagesGroupsCountWasZero()
         {
             var initialDate = DateTime.Today;
-            var percentagesGroups = new List<int[]>();
+            var percentagesGroups = new List<decimal[]>();
             var estimate = new Estimate(new EstimateWork[] { new EstimateWork("", 0, 0, 0, 0) });
 
             _calendarPlanCreator = new CalendarPlanCreator(estimate, _calendarWorkCreator.Object);
@@ -50,7 +50,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         public void ReturnNull_IfEstimateWorksCountNotEqualPercentagesGroupsCount()
         {
             var initialDate = DateTime.Today;
-            var percentagesGroups = new List<int[]>() { new int[] { }, new int[] { } };
+            var percentagesGroups = new List<decimal[]>() { new decimal[] { }, new decimal[] { } };
             var estimate = new Estimate(new EstimateWork[] { new EstimateWork("", 0, 0, 0, 0) });
 
             _calendarPlanCreator = new CalendarPlanCreator(estimate, _calendarWorkCreator.Object);
@@ -63,12 +63,12 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         public void ReturnCalendarPlan_InWhichCreateCalendarWorkFromEstimateWorkAndPercentageGroupInOrder()
         {
             var initialDate = DateTime.Today;
-            var percentagesGroups = new List<int[]>();
+            var percentagesGroups = new List<decimal[]>();
             var estimateWorks = new List<EstimateWork>();
             var countOfWorks = 3;
             for (int i = 0; i < countOfWorks; i++)
             {
-                percentagesGroups.Add(new int[] { });
+                percentagesGroups.Add(new decimal[] { });
                 estimateWorks.Add(new EstimateWork("", 0, 0, 0, 0));
             }
             var estimate = new Estimate(estimateWorks);

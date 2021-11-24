@@ -20,7 +20,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         [Test]
         public void NotReturnNull()
         {
-            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, 0, new int[] { 0 });
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, 0, new decimal[] { 0 });
 
             Assert.NotNull(constructionPeriod);
         }
@@ -29,7 +29,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthDateToInitialDate()
         {
             var initialDate = new DateTime(1999, 9, 21);
-            var costructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, new int[] { 0 });
+            var costructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, new decimal[] { 1 });
 
             var constructionPeriodMonth = costructionPeriod.ConstructionMonths.First();
 
@@ -40,7 +40,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         public void ReturnConstructionPeriod_InWhichSetConstructionMonthsDatesInOrder()
         {
             var initialDate = new DateTime(1999, 9, 21);
-            var costructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, new int[] { 0, 0, 0 });
+            var costructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, new decimal[] { 0, 0, 0 });
 
             var constructionPeriodMonths = costructionPeriod.ConstructionMonths.ToArray();
 
@@ -55,7 +55,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         {
             var initialDate = new DateTime(1999, 9, 21);
 
-            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, new int[] { 0, 0, 0 });
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, new decimal[] { 0, 0, 0 });
 
             foreach (var consturctionMonth in constructionPeriod.ConstructionMonths)
             {
@@ -68,16 +68,16 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         {
             var initialDate = new DateTime(1999, 12, 21);
 
-            var percentages = new List<int>();
-            for (int i = 0; i < 30; i++)
+            var percentages = new List<decimal>();
+            for (int i = 1; i < 30; i++)
             {
-                percentages.Add(i);
+                percentages.Add((decimal)i / 100);
             }
 
-            var expectedYears = percentages.Select(x => 
-                x == 0 ? initialDate.Year : 
-                x <= 12 ? initialDate.Year + 1 : 
-                x <= 24 ? initialDate.Year + 2 : 
+            var expectedYears = percentages.Select(x =>
+                x == (decimal)0.01 ? initialDate.Year :
+                x <= (decimal)0.13 ? initialDate.Year + 1 :
+                x <= (decimal)0.25 ? initialDate.Year + 2 :
                 initialDate.Year + 3).ToArray();
 
             var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(initialDate, 0, 0, percentages.ToArray());
@@ -93,7 +93,7 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         [Test]
         public void ReturnConstructionPeriod_InWhichCountOfConstructionMonthsEqualPassedPercentParameters()
         {
-            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, 0, new int[] { 0, 0, 0 });
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, 0, new decimal[] { 1, 1, 1 });
 
             Assert.AreEqual(3, constructionPeriod.ConstructionMonths.Count());
         }
@@ -102,8 +102,8 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthPercentPartToFirstPassedPercent()
         {
             var totalCost = (decimal)123.124;
-            var percent1 = 45;
-            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, totalCost, 0, new int[] { percent1 });
+            var percent1 = (decimal)0.45;
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, totalCost, 0, new decimal[] { percent1 });
 
             Assert.AreEqual(percent1, constructionPeriod.ConstructionMonths.First().PercentePart);
         }
@@ -112,20 +112,37 @@ namespace POSCoreTests.CalendarPlanLogic.ConstructionPeriodCreatorTests
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthInvestmentVolume_ToPassedTotalCostMultiplyFirstPassedPercentDividedByOneHundred()
         {
             var totalCost = (decimal)123.124;
-            var percent1 = 45;
-            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, totalCost, 0, new int[] { percent1 });
+            var percent1 = (decimal)0.45;
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, totalCost, 0, new decimal[] { percent1 });
 
-            Assert.AreEqual(totalCost * percent1 / 100, constructionPeriod.ConstructionMonths.First().InvestmentVolume);
+            Assert.AreEqual((decimal)55.406, constructionPeriod.ConstructionMonths.First().InvestmentVolume);
         }
 
         [Test]
         public void ReturnConstructionPeriod_InWhichSetFirstConstructionMonthContructionAndInstallationWorksVolume_ToPassedtotalCostIncludingContructionAndInstallationWorksMultiplyFirstPassedPercentDividedByOneHundred()
         {
             var totalCostIncludingContructionAndInstallationWorks = (decimal)123.124;
-            var percent1 = 45;
-            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, totalCostIncludingContructionAndInstallationWorks, new int[] { percent1 });
+            var percent1 = (decimal)0.45;
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(DateTime.Today, 0, totalCostIncludingContructionAndInstallationWorks, new decimal[] { percent1 });
 
-            Assert.AreEqual(totalCostIncludingContructionAndInstallationWorks * percent1 / 100, constructionPeriod.ConstructionMonths.First().ContructionAndInstallationWorksVolume);
+            Assert.AreEqual((decimal)55.406, constructionPeriod.ConstructionMonths.First().ContructionAndInstallationWorksVolume);
+        }
+
+        [Test]
+        public void ReturnConstructionPeriod_InWhichSetCorrectConstructionMonthIndex()
+        {
+            var constructionPeriod = _constructionPeriodCreator.CreateConstructionPeriod(
+                DateTime.Today, 
+                0, 
+                (decimal) 1.111, 
+                new decimal[] 
+                { 
+                    0, (decimal)1.001, (decimal)-0.12, (decimal)0.34
+                });
+
+            var constructionMonth = constructionPeriod.ConstructionMonths.Single();
+
+            Assert.AreEqual(3, constructionMonth.Index);
         }
     }
 }

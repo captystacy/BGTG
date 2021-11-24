@@ -4,11 +4,11 @@ namespace POSCore.CalendarPlanLogic
 {
     public class CalendarPlan
     {
-        public IEnumerable<CalendarWork> CalendarPlanWorks { get; }
+        public IEnumerable<CalendarWork> CalendarWorks { get; }
 
-        public CalendarPlan(IEnumerable<CalendarWork> calendarPlanWorks)
+        public CalendarPlan(IEnumerable<CalendarWork> calendarWorks)
         {
-            CalendarPlanWorks = calendarPlanWorks;
+            CalendarWorks = calendarWorks;
         }
     }
 }

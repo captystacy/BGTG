@@ -5,7 +5,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="DocX" Version="1.8.0" />
 	  <PackageReference Include="EPPlus" Version="5.8.2" />
+	  <PackageReference Include="System.IO.Packaging" Version="6.0.0" />
 	</ItemGroup>
 
 </Project>
