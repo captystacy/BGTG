@@ -24,7 +24,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         [Test]
         public void ConnectEstimates_IfTwoEstimatesPassed()
         {
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 new Estimate(new List<EstimateWork>()),
                 new Estimate(new List<EstimateWork>()),

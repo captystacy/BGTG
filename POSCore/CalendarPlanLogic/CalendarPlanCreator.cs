@@ -18,7 +18,7 @@ namespace POSCore.CalendarPlanLogic
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public CalendarPlanCreator(Estimate[] estimates, IEstimateConnector estimateConnector, ICalendarWorkCreator calendarWorkCreator)
+        public CalendarPlanCreator(List<Estimate> estimates, IEstimateConnector estimateConnector, ICalendarWorkCreator calendarWorkCreator)
         {
             _estimate = estimateConnector.Connect(estimates);
             _calendarWorkCreator = calendarWorkCreator;

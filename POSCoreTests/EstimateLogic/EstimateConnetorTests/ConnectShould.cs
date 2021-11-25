@@ -62,7 +62,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
                 new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, 0, 0),
             };
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 estimateVatFree,
                 estimateVat
@@ -82,7 +82,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var estimateWorks = CreateDefaultEstimateWorks();
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 new Estimate(estimateWorks),
                 new Estimate(estimateWorks)
@@ -98,7 +98,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var estimateWorks = CreateDefaultEstimateWorks();
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 new Estimate(estimateWorks),
                 new Estimate(estimateWorks)
@@ -117,7 +117,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var estimateWorks = CreateDefaultEstimateWorks();
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 new Estimate(estimateWorks),
                 new Estimate(estimateWorks)
@@ -149,7 +149,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var estimateWorkVatEquipmentCost = (decimal)0.023;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, estimateWorkVatEquipmentCost, 0, 0, 0);
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 estimateVatFree,
                 estimateVat,
@@ -173,7 +173,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var estimateWorkVatOtherProductsCost = (decimal)0.024;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, estimateWorkVatOtherProductsCost, 0, 0);
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 estimateVatFree,
                 estimateVat,
@@ -197,7 +197,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var estimateWorkVatTotalCost = (decimal)21.316;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, 0, estimateWorkVatTotalCost, 0);
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 estimateVatFree,
                 estimateVat,
@@ -220,7 +220,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, 0, 0, chapter);
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 estimateVatFree,
                 estimateVat,
@@ -239,7 +239,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var workName = "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА";
             var chapter = 1;
 
-            var estimates = new Estimate[]
+            var estimates = new List<Estimate>
             {
                 CreateEstimateWithOneEstimateWork(workName, (decimal)1.111, (decimal)2.222, (decimal)3.333, chapter),
                 CreateEstimateWithOneEstimateWork(workName, (decimal)1.111, (decimal)2.222, (decimal)3.333, chapter),

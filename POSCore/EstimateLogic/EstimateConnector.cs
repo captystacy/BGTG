@@ -5,15 +5,15 @@ namespace POSCore.EstimateLogic
 {
     public class EstimateConnector : IEstimateConnector
     {
-        public Estimate Connect(Estimate[] estimates)
+        public Estimate Connect(List<Estimate> estimates)
         {
-            if (estimates.Length == 1)
+            if (estimates.Count == 1)
             {
                 return new Estimate(estimates[0].EstimateWorks);
             }
 
             var estimateWorksConnected = estimates[0].EstimateWorks;
-            for (int i = 1; i < estimates.Length; i++)
+            for (int i = 1; i < estimates.Count; i++)
             {
                 var tempEstimateWorks = estimateWorksConnected;
                 var nextEstimateWorks = estimates[i].EstimateWorks;
