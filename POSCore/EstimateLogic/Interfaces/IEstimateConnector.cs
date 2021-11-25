@@ -1,7 +1,9 @@
-﻿namespace POSCore.EstimateLogic.Interfaces
+﻿using System.Collections.Generic;
+
+namespace POSCore.EstimateLogic.Interfaces
 {
     public interface IEstimateConnector
     {
-        Estimate Connect(Estimate estimateVatFree, Estimate estimateVat);
+        Estimate Connect(List<Estimate> estimates);
     }
 }

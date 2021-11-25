@@ -1,6 +1,7 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
 using System;
+using System.Collections.Generic;
 
 namespace POSCore.CalendarPlanLogic
 {
@@ -13,7 +14,7 @@ namespace POSCore.CalendarPlanLogic
             _constructionPeriodCreator = constructionPeriodCreator;
         }
 
-        public CalendarWork CreateCalendarWork(DateTime initialDate, EstimateWork estimateWork, decimal[] percentages)
+        public CalendarWork CreateCalendarWork(DateTime initialDate, EstimateWork estimateWork, List<decimal> percentages)
         {
             var totalCostIncludingContructionAndInstallationWorks = estimateWork.TotalCost - estimateWork.EquipmentCost - estimateWork.OtherProductsCost;
 

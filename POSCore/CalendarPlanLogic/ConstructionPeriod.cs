@@ -4,9 +4,9 @@ namespace POSCore.CalendarPlanLogic
 {
     public class ConstructionPeriod
     {
-        public IEnumerable<ConstructionMonth> ConstructionMonths { get; }
+        public List<ConstructionMonth> ConstructionMonths { get; }
 
-        public ConstructionPeriod(IEnumerable<ConstructionMonth> constructionMonths)
+        public ConstructionPeriod(List<ConstructionMonth> constructionMonths)
         {
             ConstructionMonths = constructionMonths;
         }

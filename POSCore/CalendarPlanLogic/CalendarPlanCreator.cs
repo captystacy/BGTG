@@ -18,26 +18,23 @@ namespace POSCore.CalendarPlanLogic
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public CalendarPlanCreator(Estimate estimateVatFree, Estimate estimateVat, IEstimateConnector estimateConnector, ICalendarWorkCreator calendarWorkCreator)
+        public CalendarPlanCreator(Estimate[] estimates, IEstimateConnector estimateConnector, ICalendarWorkCreator calendarWorkCreator)
         {
-            _estimate = estimateConnector.Connect(estimateVatFree, estimateVat);
+            _estimate = estimateConnector.Connect(estimates);
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public CalendarPlan CreateCalendarPlan(DateTime initialDate, IEnumerable<decimal[]> percentagesGroups)
+        public CalendarPlan CreateCalendarPlan(DateTime initialDate, List<List<decimal>> percentagesGroups)
         {
-            var estimateWorks = _estimate.EstimateWorks.ToArray();
-            var persentagesGroupsArray = percentagesGroups.ToArray();
-
-            if (persentagesGroupsArray.Length != estimateWorks.Length || persentagesGroupsArray.Length == 0)
+            if (percentagesGroups.Count != _estimate.EstimateWorks.Count || percentagesGroups.Count == 0)
             {
                 return null;
             }
 
             var calendarWorks = new List<CalendarWork>();
-            for (int i = 0; i < estimateWorks.Length; i++)
+            for (int i = 0; i < _estimate.EstimateWorks.Count; i++)
             {
-                var calendarWork = _calendarWorkCreator.CreateCalendarWork(initialDate, estimateWorks[i], persentagesGroupsArray[i]);
+                var calendarWork = _calendarWorkCreator.CreateCalendarWork(initialDate, _estimate.EstimateWorks[i], percentagesGroups[i]);
                 calendarWorks.Add(calendarWork);
             }
 

@@ -3,7 +3,6 @@ using POSCore.EstimateLogic.Interfaces;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace POSCore.EstimateLogic
@@ -42,7 +41,7 @@ namespace POSCore.EstimateLogic
                 }
             }
 
-            if (estimateWorks.Any(x => x.TotalCost == 0 || x.Chapter == 0))
+            if (estimateWorks.Exists(x => x.TotalCost == 0 || x.Chapter == 0))
             {
                 return null;
             }

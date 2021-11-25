@@ -4,9 +4,9 @@ namespace POSCore.EstimateLogic
 {
     public class Estimate
     {
-        public IEnumerable<EstimateWork> EstimateWorks { get; }
+        public List<EstimateWork> EstimateWorks { get; }
 
-        public Estimate(IEnumerable<EstimateWork> estimateWorks)
+        public Estimate(List<EstimateWork> estimateWorks)
         {
             EstimateWorks = estimateWorks;
         }

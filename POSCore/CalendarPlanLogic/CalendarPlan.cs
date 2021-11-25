@@ -4,9 +4,9 @@ namespace POSCore.CalendarPlanLogic
 {
     public class CalendarPlan
     {
-        public IEnumerable<CalendarWork> CalendarWorks { get; }
+        public List<CalendarWork> CalendarWorks { get; }
 
-        public CalendarPlan(IEnumerable<CalendarWork> calendarWorks)
+        public CalendarPlan(List<CalendarWork> calendarWorks)
         {
             CalendarWorks = calendarWorks;
         }

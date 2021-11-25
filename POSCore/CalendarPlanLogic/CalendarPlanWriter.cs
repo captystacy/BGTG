@@ -1,4 +1,5 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace POSCore.CalendarPlanLogic
         {
             using (var document = DocX.Load(templatePath))
             {
-                var constructionMonths = mainCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
+                var constructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
 
                 var preparatoryCalendarPlanPatternTable = document.Tables[0];
                 ModifyCalendarPlanTable(preparatoryCalendarPlanPatternTable, preparatoryCalendarPlan, constructionMonths);
@@ -33,11 +34,11 @@ namespace POSCore.CalendarPlanLogic
                 var mainCalendarPlanPattrenTable = document.Tables[1];
                 ModifyCalendarPlanTable(mainCalendarPlanPattrenTable, mainCalendarPlan, constructionMonths);
 
-                document.SaveAs(Directory.GetCurrentDirectory() + @"\CalendarPlan" + constructionMonths.Length + "Month.docx");
+                document.SaveAs(Directory.GetCurrentDirectory() + @"\CalendarPlan" + constructionMonths.Count + "Month.docx");
             }
         }
 
-        private void ModifyCalendarPlanTable(Table calendarPlanPatternTable, CalendarPlan calendarPlan, ConstructionMonth[] constructionMonths)
+        private void ModifyCalendarPlanTable(Table calendarPlanPatternTable, CalendarPlan calendarPlan, List<ConstructionMonth> constructionMonths)
         {
             ReplaceDatePatternWithActualDate(calendarPlanPatternTable, constructionMonths);
 
@@ -74,21 +75,21 @@ namespace POSCore.CalendarPlanLogic
             }
         }
 
-        private void ReplacePercentPartsWithActualPercentages(Table calendarPlanPatternTable, ConstructionMonth[] constructionMonths)
+        private void ReplacePercentPartsWithActualPercentages(Table calendarPlanPatternTable, List<ConstructionMonth> constructionMonths)
         {
             var lastRow = calendarPlanPatternTable.Rows[^1];
             if (lastRow.Paragraphs.Count > 1)
             {
-                for (int i = 0; i < constructionMonths.Length; i++)
+                for (int i = 0; i < constructionMonths.Count; i++)
                 {
                     lastRow.ReplaceText(_percentPattern + i, string.Format(_percentFormat, constructionMonths[i].PercentePart));
                 }
             }
         }
 
-        private void ReplaceDatePatternWithActualDate(Table calendarPlanPatternTable, ConstructionMonth[] constructionMonths)
+        private void ReplaceDatePatternWithActualDate(Table calendarPlanPatternTable, List<ConstructionMonth> constructionMonths)
         {
-            for (int i = 0; i < constructionMonths.Length; i++)
+            for (int i = 0; i < constructionMonths.Count; i++)
             {
                 var monthName = DateTimeFormatInfo.CurrentInfo.MonthNames[constructionMonths[i].Date.Month - 1];
                 calendarPlanPatternTable.Rows[1].ReplaceText(_datePattern + i, char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + constructionMonths[i].Date.Year);
@@ -110,15 +111,13 @@ namespace POSCore.CalendarPlanLogic
 
         private void ReplaceWorkPatternsWithActualValues(Row topPatternRow, Row bottomPatternRow, CalendarWork calendarWork)
         {
-            var constructionMonths = calendarWork.ConstructionPeriod.ConstructionMonths.ToArray();
-
             topPatternRow.ReplaceText(_workNamePattern, calendarWork.WorkName);
             topPatternRow.ReplaceText(_totalCostPattern, string.Format(_decimalFormat, calendarWork.TotalCost));
             topPatternRow.ReplaceText(_totalCostIncludingContructionAndInstallationWorksPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingContructionAndInstallationWorks));
-            for (int i = 0; i < constructionMonths.Length; i++)
+            for (int i = 0; i < calendarWork.ConstructionPeriod.ConstructionMonths.Count; i++)
             {
-                topPatternRow.ReplaceText(_investmentVolumePattern + constructionMonths[i].Index, string.Format(_decimalFormat, constructionMonths[i].InvestmentVolume));
-                bottomPatternRow.ReplaceText(_contructionAndInstallationWorksVolumePattern + constructionMonths[i].Index, string.Format(_decimalFormat, constructionMonths[i].ContructionAndInstallationWorksVolume));
+                topPatternRow.ReplaceText(_investmentVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].Index, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].InvestmentVolume));
+                bottomPatternRow.ReplaceText(_contructionAndInstallationWorksVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].Index, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].ContructionAndInstallationWorksVolume));
             }
         }
     }

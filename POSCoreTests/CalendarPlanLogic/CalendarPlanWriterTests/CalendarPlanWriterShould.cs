@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using POSCore.CalendarPlanLogic;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,19 +20,19 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
 
         private CalendarPlan CreateDefaultPreparatoryCalendarPlan()
         {
-            return new CalendarPlan(new CalendarWork[]
+            return new CalendarPlan(new List<CalendarWork>
             {
-                new CalendarWork("Подготовка территории строительства", (decimal)6.666, (decimal)3.333, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)6.666, (decimal)3.333, 1, 0)}), 1),
-                new CalendarWork("Временные здания и сооружения", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)2.222, (decimal)1.111, 1, 0)}), 8),
-                new CalendarWork("Итого:", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}), 1),
+                new CalendarWork("Подготовка территории строительства", (decimal)6.666, (decimal)3.333, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)6.666, (decimal)3.333, 1, 0)}), 1),
+                new CalendarWork("Временные здания и сооружения", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)2.222, (decimal)1.111, 1, 0)}), 8),
+                new CalendarWork("Итого:", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}), 1),
             });
         }
 
-        private void AssertTableDates(Table calendarPlan, ConstructionMonth[] totalCalendarWorkConstructionMonths)
+        private void AssertTableDates(Table calendarPlan, List<ConstructionMonth> totalCalendarWorkConstructionMonths)
         {
             var calendarPlanDateRow = calendarPlan.Rows[1];
 
-            for (int i = 0; i < totalCalendarWorkConstructionMonths.Length; i++)
+            for (int i = 0; i < totalCalendarWorkConstructionMonths.Count; i++)
             {
                 var dateStr = calendarPlanDateRow.Paragraphs[3 + i].Text.ToLower();
                 var monthName = Regex.Match(dateStr, @"[А-Я-а-я]+").Value;
@@ -51,8 +52,8 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
             var tableTotalCost = decimal.Parse(calendarPlanTable.Rows[rowIndex].Paragraphs[1].Text);
             var tableTotalCostIncludingContructionAndInstallationWorks = decimal.Parse(calendarPlanTable.Rows[rowIndex].Paragraphs[2].Text);
 
-            var calendarWork = calendarPlan.CalendarWorks.Single(x => x.WorkName == workName);
-            var constructionMonths = calendarWork.ConstructionPeriod.ConstructionMonths.ToArray();
+            var calendarWork = calendarPlan.CalendarWorks.Find(x => x.WorkName == workName);
+            var constructionMonths = calendarWork.ConstructionPeriod.ConstructionMonths;
 
             Assert.AreEqual(calendarWork.WorkName, tableWorkName);
             Assert.AreEqual(calendarWork.TotalCost, tableTotalCost);
@@ -60,10 +61,10 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
             AssertConstructionMonths(calendarPlanTable, rowIndex, constructionMonths);
         }
 
-        private void AssertConstructionMonths(Table calendarPlanTable, int rowIndex, ConstructionMonth[] constructionMonths)
+        private void AssertConstructionMonths(Table calendarPlanTable, int rowIndex, List<ConstructionMonth> constructionMonths)
         {
             var columnIndex = 3;
-            for (int i = 0; i < constructionMonths.Length; i++)
+            for (int i = 0; i < constructionMonths.Count; i++)
             {
                 var tableInvestmentVolumeStr = string.Empty;
                 var tableContructionAndInstallationWorksVolumeStr = string.Empty;
@@ -94,7 +95,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
             }
         }
 
-        private void AssertPercentParts(Table mainCalendarPlanTable, ConstructionMonth[] mainTotalCalendarWorkConstructionMonths)
+        private void AssertPercentParts(Table mainCalendarPlanTable, List<ConstructionMonth> mainTotalCalendarWorkConstructionMonths)
         {
             var lastRow = mainCalendarPlanTable.Rows[^1];
 
@@ -108,15 +109,15 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
 
         private CalendarPlan CreateMainCalendarPlan1Month()
         {
-            return new CalendarPlan(new CalendarWork[]
+            return new CalendarPlan(new List<CalendarWork>
             {
-                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}), 2),
-                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 3),
-                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 4),
-                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 5),
-                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 6),
-                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, (decimal)10.89, (decimal)16.334, 1, 0)}), 9),
-                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new ConstructionMonth[] { new ConstructionMonth(DateTime.Today, 26, (decimal)23.889, 1, 0)}), 10),
+                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}), 2),
+                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 3),
+                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 4),
+                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 5),
+                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, 1, 0)}), 6),
+                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, (decimal)10.89, (decimal)16.334, 1, 0)}), 9),
+                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new List<ConstructionMonth> { new ConstructionMonth(DateTime.Today, 26, (decimal)23.889, 1, 0)}), 10),
             });
         }
 
@@ -135,7 +136,7 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
                 var preparatoryCalendarPlanTable = document.Tables[0];
                 var mainCalendarPlanTable = document.Tables[1];
 
-                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
+                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
                 AssertTableDates(preparatoryCalendarPlanTable, mainTotalCalendarWorkConstructionMonths);
                 AssertTableDates(mainCalendarPlanTable, mainTotalCalendarWorkConstructionMonths);
 
@@ -157,32 +158,32 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
 
         private CalendarPlan CreateMainCalendarPlan2Months()
         {
-            return new CalendarPlan(new CalendarWork[]
+            return new CalendarPlan(new List<CalendarWork>
             {
-                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}),
                     2),
-                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 3),
-                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 4),
-                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 5),
-                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 6),
-                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)10.89, (decimal)16.334, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)4.667, 7, (decimal)0.3, 1),
                 }), 9),
-                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, 26, (decimal)23.889, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)7.334, (decimal)8.333, (decimal)0.3, 1),
                 }), 10),
@@ -191,28 +192,28 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
 
         private CalendarPlan CreateMainCalendarPlan2Months_SomeWorksHave1Month()
         {
-            return new CalendarPlan(new CalendarWork[]
+            return new CalendarPlan(new List<CalendarWork>
             {
-                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}),
                     2),
-                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 3),
-                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
                 }), 4),
-                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 5),
-                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
                 }), 6),
-                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)10.89, (decimal)16.334, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)4.667, 7, (decimal)0.3, 1),
                 }), 9),
-                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, 26, (decimal)23.889, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)7.334, (decimal)8.333, (decimal)0.3, 1),
                 }), 10),
@@ -234,8 +235,8 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
                 var preparatoryCalendarPlanTable = document.Tables[0];
                 var mainCalendarPlanTable = document.Tables[1];
 
-                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
-                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
+                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
+                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
 
                 AssertTableDates(preparatoryCalendarPlanTable, preparatoryTotalCalendarWorkConstructionMonths);
                 AssertTableDates(mainCalendarPlanTable, mainTotalCalendarWorkConstructionMonths);
@@ -271,8 +272,8 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
                 var preparatoryCalendarPlanTable = document.Tables[0];
                 var mainCalendarPlanTable = document.Tables[1];
 
-                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
-                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
+                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
+                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
 
                 AssertTableDates(preparatoryCalendarPlanTable, preparatoryTotalCalendarWorkConstructionMonths);
                 AssertTableDates(mainCalendarPlanTable, mainTotalCalendarWorkConstructionMonths);
@@ -295,37 +296,37 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
 
         private CalendarPlan CreateMainCalendarPlan3Months()
         {
-            return new CalendarPlan(new CalendarWork[]
+            return new CalendarPlan(new List<CalendarWork>
             {
-                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}),
                     2),
-                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)0.889, (decimal)0.444, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)0.667, (decimal)0.333, (decimal)0.3, 2),
                 }), 3),
-                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)0.889, (decimal)0.444, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)0.667, (decimal)0.333, (decimal)0.3, 2),
                 }), 4),
-                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)0.889, (decimal)0.444, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)0.667, (decimal)0.333, (decimal)0.3, 2),
                 }), 5),
-                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)0.889, (decimal)0.444, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)0.667, (decimal)0.333, (decimal)0.3, 2),
                 }), 6),
-                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)6.223, (decimal)9.334, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)4.667, 7, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)4.667, 7, (decimal)0.3, 2),
                 }), 9),
-                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)18.666, (decimal)15.555, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)7.334, (decimal)8.333, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)7.334, (decimal)8.333, (decimal)0.3, 2),
@@ -348,8 +349,8 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
                 var preparatoryCalendarPlanTable = document.Tables[0];
                 var mainCalendarPlanTable = document.Tables[1];
 
-                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
-                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
+                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
+                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
 
                 AssertTableDates(preparatoryCalendarPlanTable, preparatoryTotalCalendarWorkConstructionMonths);
                 AssertTableDates(mainCalendarPlanTable, mainTotalCalendarWorkConstructionMonths);
@@ -372,30 +373,30 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
 
         private CalendarPlan CreateMainCalendarPlan3Months_SomeWorksHaveVariousNumberOfMonth()
         {
-            return new CalendarPlan(new CalendarWork[]
+            return new CalendarPlan(new List<CalendarWork>
             {
-                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Работы, выполняемые в подготовительный период", (decimal)8.888, (decimal)4.444, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)8.888, (decimal)4.444, 1, 0)}),
                     2),
-                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)0.889, (decimal)0.444, (decimal)0.4, 0),
                 }), 3),
-                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)0.667, (decimal)0.333, (decimal)0.3, 2),
                 }), 4),
-                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ВНЕПЛОЩАДОЧНЫЕ СЕТИ 10 КВТ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 5),
-                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("ОБЪЕКТЫ ТРАНСПОРТА", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)0.889, (decimal)0.444, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)0.667, (decimal)0.333, (decimal)0.3, 1),
                 }), 6),
-                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Прочие работы и затраты", (decimal)15.557, (decimal)23.334, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)6.223, (decimal)9.334, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)4.667, 7, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)4.667, 7, (decimal)0.3, 2),
                 }), 9),
-                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new ConstructionMonth[] {
+                new CalendarWork("Итого:", (decimal)33.333, (decimal)32.222, new ConstructionPeriod(new List<ConstructionMonth> {
                     new ConstructionMonth(DateTime.Today, (decimal)18.666, (decimal)15.555, (decimal)0.4, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)7.334, (decimal)8.333, (decimal)0.3, 1),
                     new ConstructionMonth(DateTime.Today.AddMonths(2), (decimal)7.334, (decimal)8.333, (decimal)0.3, 2),
@@ -418,8 +419,8 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanWriterTests
                 var preparatoryCalendarPlanTable = document.Tables[0];
                 var mainCalendarPlanTable = document.Tables[1];
 
-                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
-                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Single(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths.ToArray();
+                var preparatoryTotalCalendarWorkConstructionMonths = preparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
+                var mainTotalCalendarWorkConstructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
 
                 AssertTableDates(preparatoryCalendarPlanTable, preparatoryTotalCalendarWorkConstructionMonths);
                 AssertTableDates(mainCalendarPlanTable, mainTotalCalendarWorkConstructionMonths);

@@ -4,6 +4,7 @@ using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
@@ -23,12 +24,15 @@ namespace POSCoreTests.CalendarPlanLogic.CalendarPlanCreatorTests
         [Test]
         public void ConnectEstimates_IfTwoEstimatesPassed()
         {
-            var estimateVatFree = new Estimate(Enumerable.Empty<EstimateWork>());
-            var estimateVat = new Estimate(Enumerable.Empty<EstimateWork>());
+            var estimates = new Estimate[]
+            {
+                new Estimate(new List<EstimateWork>()),
+                new Estimate(new List<EstimateWork>()),
+            };
 
-            new CalendarPlanCreator(estimateVatFree, estimateVat, _estimateConnectorMock.Object, _calendarWorkCreator.Object);
+            new CalendarPlanCreator(estimates, _estimateConnectorMock.Object, _calendarWorkCreator.Object);
 
-            _estimateConnectorMock.Verify(x => x.Connect(estimateVatFree, estimateVat), Times.Once);
+            _estimateConnectorMock.Verify(x => x.Connect(estimates), Times.Once);
         }
     }
 }

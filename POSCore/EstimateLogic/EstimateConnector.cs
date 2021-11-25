@@ -1,21 +1,29 @@
 ﻿using POSCore.EstimateLogic.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace POSCore.EstimateLogic
 {
     public class EstimateConnector : IEstimateConnector
     {
-        public Estimate Connect(Estimate estimateVatFree, Estimate estimateVat)
+        public Estimate Connect(Estimate[] estimates)
         {
-            var estimateWorksVatFree = estimateVatFree.EstimateWorks.ToList();
-            var estimateWorksVat = estimateVat.EstimateWorks.ToList();
+            if (estimates.Length == 1)
+            {
+                return new Estimate(estimates[0].EstimateWorks);
+            }
 
-            var insertedOneByOne = estimateWorksVatFree.Count > estimateWorksVat.Count 
-                ? InsertOneByOne(estimateWorksVatFree, estimateWorksVat)
-                : InsertOneByOne(estimateWorksVat, estimateWorksVatFree);
+            var estimateWorksConnected = estimates[0].EstimateWorks;
+            for (int i = 1; i < estimates.Length; i++)
+            {
+                var tempEstimateWorks = estimateWorksConnected;
+                var nextEstimateWorks = estimates[i].EstimateWorks;
 
-            var estimateWorksConnected = ConnectEstimateWorks(insertedOneByOne);
+                var insertedOneByOne = tempEstimateWorks.Count > nextEstimateWorks.Count
+                    ? InsertOneByOne(tempEstimateWorks, nextEstimateWorks)
+                    : InsertOneByOne(nextEstimateWorks, tempEstimateWorks);
+
+                estimateWorksConnected = ConnectEstimateWorks(insertedOneByOne);
+            }
 
             return new Estimate(estimateWorksConnected);
         }
@@ -52,7 +60,7 @@ namespace POSCore.EstimateLogic
                     estimateWork1.TotalCost + estimateWork2.TotalCost, estimateWork1.Chapter);
         }
 
-        private List<EstimateWork> InsertOneByOne(IList<EstimateWork> insertedInto, IList<EstimateWork> insertedFrom)
+        private List<EstimateWork> InsertOneByOne(List<EstimateWork> insertedInto, List<EstimateWork> insertedFrom)
         {
             var instertedOneByOne = new List<EstimateWork>(insertedInto);
 

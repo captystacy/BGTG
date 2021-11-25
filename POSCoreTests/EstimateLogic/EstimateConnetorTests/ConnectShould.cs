@@ -24,15 +24,15 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             _estimateConnector = new EstimateConnector();
         }
 
-        private IEnumerable<EstimateWork> CreateDefaultEstimateWorks()
+        private List<EstimateWork> CreateDefaultEstimateWorks()
         {
-            return _defaultEstimateWorksNames.Select(x => new EstimateWork(x, 0, 0, 0, 0));
+            return _defaultEstimateWorksNames.Select(x => new EstimateWork(x, 0, 0, 0, 0)).ToList();
         }
 
         [Test]
         public void BeInOrder()
         {
-            var estimateWorksVatFree = new EstimateWork[]
+            var estimateWorksVatFree = new List<EstimateWork>
             {
                 new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 0),
                 new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0, 0, 0),
@@ -41,7 +41,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             };
             var estimateVatFree = new Estimate(estimateWorksVatFree);
 
-            var estimateWorksVat = new EstimateWork[]
+            var estimateWorksVat = new List<EstimateWork>
             {
                 new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 0),
                 new EstimateWork("ШРП", 0, 0, 0, 0),
@@ -52,7 +52,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             };
             var estimateVat = new Estimate(estimateWorksVat);
 
-            var expectedOrder = new EstimateWork[]
+            var expectedOrder = new List<EstimateWork>
             {
                 new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 0, 0),
                 new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0, 0, 0),
@@ -62,10 +62,16 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
                 new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, 0, 0),
             };
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimates = new Estimate[]
+            {
+                estimateVatFree,
+                estimateVat
+            };
 
-            var estimateWorks = estimate.EstimateWorks.ToArray();
-            for (int i = 0; i < expectedOrder.Length; i++)
+            var estimate = _estimateConnector.Connect(estimates);
+
+            var estimateWorks = estimate.EstimateWorks;
+            for (int i = 0; i < expectedOrder.Count; i++)
             {
                 Assert.AreEqual(expectedOrder[i].WorkName, estimateWorks[i].WorkName);
             }
@@ -76,10 +82,13 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var estimateWorks = CreateDefaultEstimateWorks();
 
-            var estimateVatFree = new Estimate(estimateWorks);
-            var estimateVat = new Estimate(estimateWorks);
+            var estimates = new Estimate[]
+            {
+                new Estimate(estimateWorks),
+                new Estimate(estimateWorks)
+            };
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimate = _estimateConnector.Connect(estimates);
 
             Assert.NotNull(estimate);
         }
@@ -89,10 +98,13 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var estimateWorks = CreateDefaultEstimateWorks();
 
-            var estimateVatFree = new Estimate(estimateWorks);
-            var estimateVat = new Estimate(estimateWorks);
+            var estimates = new Estimate[]
+            {
+                new Estimate(estimateWorks),
+                new Estimate(estimateWorks)
+            };
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimate = _estimateConnector.Connect(estimates);
 
             foreach (var estimateWork in estimate.EstimateWorks)
             {
@@ -105,10 +117,13 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         {
             var estimateWorks = CreateDefaultEstimateWorks();
 
-            var estimateVatFree = new Estimate(estimateWorks);
-            var estimateVat = new Estimate(estimateWorks);
+            var estimates = new Estimate[]
+            {
+                new Estimate(estimateWorks),
+                new Estimate(estimateWorks)
+            };
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimate = _estimateConnector.Connect(estimates);
 
             foreach (var estimateWork in estimate.EstimateWorks)
             {
@@ -119,7 +134,7 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
         private Estimate CreateEstimateWithOneEstimateWork(string workName, decimal equipmentCost, decimal otherProductsCost, decimal totalCost, int chapter)
         {
             var estimateWork = new EstimateWork(workName, equipmentCost, otherProductsCost, totalCost, chapter);
-            var estimateWorks = new EstimateWork[] { estimateWork };
+            var estimateWorks = new List<EstimateWork> { estimateWork };
             return new Estimate(estimateWorks);
         }
 
@@ -134,9 +149,15 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var estimateWorkVatEquipmentCost = (decimal)0.023;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, estimateWorkVatEquipmentCost, 0, 0, 0);
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimates = new Estimate[]
+            {
+                estimateVatFree,
+                estimateVat,
+            };
 
-            var estimateWorkEquipmentCost = estimate.EstimateWorks.Single(x => x.WorkName == workName).EquipmentCost;
+            var estimate = _estimateConnector.Connect(estimates);
+
+            var estimateWorkEquipmentCost = estimate.EstimateWorks.Find(x => x.WorkName == workName).EquipmentCost;
 
             Assert.AreEqual(estimateWorkVatFreeEquipmentCost + estimateWorkVatEquipmentCost, estimateWorkEquipmentCost);
         }
@@ -152,9 +173,15 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var estimateWorkVatOtherProductsCost = (decimal)0.024;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, estimateWorkVatOtherProductsCost, 0, 0);
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimates = new Estimate[]
+            {
+                estimateVatFree,
+                estimateVat,
+            };
 
-            var estimateWorkOtherPoductsCost = estimate.EstimateWorks.Single(x => x.WorkName == workName).OtherProductsCost;
+            var estimate = _estimateConnector.Connect(estimates);
+
+            var estimateWorkOtherPoductsCost = estimate.EstimateWorks.Find(x => x.WorkName == workName).OtherProductsCost;
 
             Assert.AreEqual(estimateWorkVatFreeOtherProductsCost + estimateWorkVatOtherProductsCost, estimateWorkOtherPoductsCost);
         }
@@ -170,9 +197,15 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
             var estimateWorkVatTotalCost = (decimal)21.316;
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, 0, estimateWorkVatTotalCost, 0);
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimates = new Estimate[]
+            {
+                estimateVatFree,
+                estimateVat,
+            };
 
-            var estimateWorkTotalCost = estimate.EstimateWorks.Single(x => x.WorkName == workName).TotalCost;
+            var estimate = _estimateConnector.Connect(estimates);
+
+            var estimateWorkTotalCost = estimate.EstimateWorks.Find(x => x.WorkName == workName).TotalCost;
 
             Assert.AreEqual(estimateWorkVatFreeTotalCost + estimateWorkVatTotalCost, estimateWorkTotalCost);
         }
@@ -187,11 +220,40 @@ namespace POSCoreTests.EstimateLogic.EstimateConnetorTests
 
             var estimateVat = CreateEstimateWithOneEstimateWork(workName, 0, 0, 0, chapter);
 
-            var estimate = _estimateConnector.Connect(estimateVatFree, estimateVat);
+            var estimates = new Estimate[]
+            {
+                estimateVatFree,
+                estimateVat,
+            };
 
-            var estimateWorkChapter = estimate.EstimateWorks.Single(x => x.WorkName == workName).Chapter;
+            var estimate = _estimateConnector.Connect(estimates);
+
+            var estimateWorkChapter = estimate.EstimateWorks.Find(x => x.WorkName == workName).Chapter;
 
             Assert.AreEqual(chapter, estimateWorkChapter);
+        }
+
+        [Test]
+        public void ThreeEstimates_CorrectConnectWork()
+        {
+            var workName = "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА";
+            var chapter = 1;
+
+            var estimates = new Estimate[]
+            {
+                CreateEstimateWithOneEstimateWork(workName, (decimal)1.111, (decimal)2.222, (decimal)3.333, chapter),
+                CreateEstimateWithOneEstimateWork(workName, (decimal)1.111, (decimal)2.222, (decimal)3.333, chapter),
+                CreateEstimateWithOneEstimateWork(workName, (decimal)1.111, (decimal)2.222, (decimal)3.333, chapter),
+            };
+
+            var estimate = _estimateConnector.Connect(estimates);
+
+            var connectedWork = estimate.EstimateWorks.Find(x => x.WorkName == workName);
+
+            Assert.AreEqual(workName, connectedWork.WorkName);
+            Assert.AreEqual((decimal)3.333, connectedWork.EquipmentCost);
+            Assert.AreEqual((decimal)6.666, connectedWork.OtherProductsCost);
+            Assert.AreEqual((decimal)9.999, connectedWork.TotalCost);
         }
     }
 }

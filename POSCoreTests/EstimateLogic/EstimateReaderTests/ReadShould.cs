@@ -2,7 +2,6 @@
 using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
 using System.IO;
-using System.Linq;
 
 namespace POSCoreTests.EstimateLogic.EstimateReaderTests
 {
@@ -33,9 +32,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorksList = estimate.EstimateWorks.ToList();
-
-            var recultivationEstimateWorkExistance = estimateWorksList.Exists(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == (decimal)0.001);
+            var recultivationEstimateWorkExistance = estimate.EstimateWorks.Exists(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == (decimal)0.001);
 
             Assert.IsTrue(recultivationEstimateWorkExistance);
         }
@@ -46,9 +43,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate2);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var channelTracingWorkExistance = estimateWorks.Exists(x => x.WorkName == "ТРАССИРОВКА КАНАЛОВ (8,04 КМ)" && x.EquipmentCost == 0 && x.OtherProductsCost == (decimal)2.163 && x.TotalCost == (decimal)2.163);
+            var channelTracingWorkExistance = estimate.EstimateWorks.Exists(x => x.WorkName == "ТРАССИРОВКА КАНАЛОВ (8,04 КМ)" && x.EquipmentCost == 0 && x.OtherProductsCost == (decimal)2.163 && x.TotalCost == (decimal)2.163);
 
             Assert.IsTrue(channelTracingWorkExistance);
         }
@@ -59,9 +54,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var temporaryBuildingsWorkExistance = estimateWorks.Exists(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == (decimal)0.253);
+            var temporaryBuildingsWorkExistance = estimate.EstimateWorks.Exists(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%" && x.EquipmentCost == 0 && x.OtherProductsCost == 0 && x.TotalCost == (decimal)0.253);
 
             Assert.IsTrue(temporaryBuildingsWorkExistance);
         }
@@ -72,9 +65,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var recultivationEstimateWorkExistance = estimateWorks.Exists(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ" && x.EquipmentCost == 0 && x.OtherProductsCost == (decimal)9.911 && x.TotalCost == (decimal)30.085);
+            var recultivationEstimateWorkExistance = estimate.EstimateWorks.Exists(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ" && x.EquipmentCost == 0 && x.OtherProductsCost == (decimal)9.911 && x.TotalCost == (decimal)30.085);
 
             Assert.IsTrue(recultivationEstimateWorkExistance);
         }
@@ -84,9 +75,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var landscapingWork = estimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
+            var landscapingWork = estimate.EstimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
 
             Assert.AreEqual(0.001, landscapingWork.EquipmentCost);
         }
@@ -96,9 +85,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var landscapingWork = estimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
+            var landscapingWork = estimate.EstimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
 
             Assert.AreEqual(0.002, landscapingWork.OtherProductsCost);
         }
@@ -108,9 +95,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var landscapingWork = estimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
+            var landscapingWork = estimate.EstimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
 
             Assert.AreEqual(0.038, landscapingWork.TotalCost);
         }
@@ -120,21 +105,19 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTests
         {
             var estimate = _estimateReader.Read(_estimate1);
 
-            var estimateWorks = estimate.EstimateWorks.ToList();
-
-            var recultivationWork = estimateWorks.Find(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ");
+            var recultivationWork = estimate.EstimateWorks.Find(x => x.WorkName == "РЕКУЛЬТИВАЦИЯ");
             Assert.AreEqual(1, recultivationWork.Chapter);
 
-            var electrochemicalProtection = estimateWorks.Find(x => x.WorkName == "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА"); ;
+            var electrochemicalProtection = estimate.EstimateWorks.Find(x => x.WorkName == "ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА"); ;
             Assert.AreEqual(2, electrochemicalProtection.Chapter);
 
-            var landscapingWork = estimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
+            var landscapingWork = estimate.EstimateWorks.Find(x => x.WorkName == "БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
             Assert.AreEqual(7, landscapingWork.Chapter);
 
-            var temporaryBuildingsWork = estimateWorks.Find(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%");
+            var temporaryBuildingsWork = estimate.EstimateWorks.Find(x => x.WorkName == "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%");
             Assert.AreEqual(8, temporaryBuildingsWork.Chapter);
 
-            var totalWork = estimateWorks.Find(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ");
+            var totalWork = estimate.EstimateWorks.Find(x => x.WorkName == "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ");
             Assert.AreEqual(10, totalWork.Chapter);
         }
 
