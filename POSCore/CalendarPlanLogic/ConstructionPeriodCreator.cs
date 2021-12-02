@@ -6,7 +6,7 @@ namespace POSCore.CalendarPlanLogic
 {
     public class ConstructionPeriodCreator : IConstructionPeriodCreator
     {
-        public ConstructionPeriod CreateConstructionPeriod(DateTime initialDate, decimal totalCost, decimal totalCostIncludingContructionAndInstallationWorks, List<decimal> percentages)
+        public ConstructionPeriod Create(DateTime initialDate, decimal totalCost, decimal totalCostIncludingContructionAndInstallationWorks, List<decimal> percentages)
         {
             var constructionMonths = new List<ConstructionMonth>();
 

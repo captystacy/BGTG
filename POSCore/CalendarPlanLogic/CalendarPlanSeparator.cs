@@ -1,4 +1,5 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,20 +11,21 @@ namespace POSCore.CalendarPlanLogic
         public CalendarPlan MainCalendarPlan { get; private set; }
         private IConstructionPeriodCreator _constructionPeriodCreator;
 
-        private const string _preparatoryWork = "Подготовка территории строительства";
-        private const string _preparatoryTemporaryBuildingsWork = "Временные здания и сооружения";
+        public const string PreparatoryWork = "Подготовка территории строительства";
+        public const string PreparatoryTemporaryBuildingsWork = "Временные здания и сооружения";
+        public const string MainOverallPreparatoryWork = "Работы, выполняемые в подготовительный период";
+        public const string MainOtherExpensesWork = "Прочие работы и затраты";
+        public const string TotalWork = "Итого:";
 
-        private const string _mainOverallPreparatoryWork = "Работы, выполняемые в подготовительный период";
-        private const string _mainOtherExpensesWork = "Прочие работы и затраты";
-
-        private const string _totalWork = "Итого:";
+        public const string TemporaryBuildingsSearchPattern = "ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ";
+        public const string TotalWorkSearchPattern = "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ";
 
         public CalendarPlanSeparator(IConstructionPeriodCreator constructionPeriodCreator)
         {
             _constructionPeriodCreator = constructionPeriodCreator;
         }
 
-        public void Separate(CalendarPlan calendarPlan)
+        public void Separate(CalendarPlan calendarPlan, List<decimal> otherExpensesPercentages)
         {
             var preparatoryCalendarWorks = CreatePreparatoryCalendarWorks(calendarPlan);
 
@@ -32,19 +34,19 @@ namespace POSCore.CalendarPlanLogic
 
             var overallPreparatoryWork = CreateOverallPreparatoryTotalWork(preparatoryTotalWork);
 
-            var mainCalendarWorks = CreateMainCalendarWorks(calendarPlan, overallPreparatoryWork);
+            var mainCalendarWorks = CreateMainCalendarWorks(calendarPlan, overallPreparatoryWork, otherExpensesPercentages);
 
-            PreparatoryCalendarPlan = new CalendarPlan(preparatoryCalendarWorks);
-            MainCalendarPlan = new CalendarPlan(mainCalendarWorks);
+            PreparatoryCalendarPlan = new CalendarPlan(preparatoryCalendarWorks, calendarPlan.ConstructionStartDate, calendarPlan.ConstructionDuration);
+            MainCalendarPlan = new CalendarPlan(mainCalendarWorks, calendarPlan.ConstructionStartDate, calendarPlan.ConstructionDuration);
         }
 
-        private List<CalendarWork> CreateMainCalendarWorks(CalendarPlan calendarPlan, CalendarWork overallPreparatoryWork)
+        private List<CalendarWork> CreateMainCalendarWorks(CalendarPlan calendarPlan, CalendarWork overallPreparatoryWork, List<decimal> otherExpensesPercentages)
         {
             var mainCalendarWorks = new List<CalendarWork>();
 
             mainCalendarWorks.Add(overallPreparatoryWork);
 
-            var estimateChapterAllExcept1and8and10CalendarWorks = calendarPlan.CalendarWorks.FindAll(x => x.EstimateChapter != 1 && x.EstimateChapter != 8 && x.EstimateChapter != 10);
+            var estimateChapterAllExcept1and8and10CalendarWorks = calendarPlan.CalendarWorks.FindAll(x => x.EstimateChapter != 1 && !x.WorkName.StartsWith(TemporaryBuildingsSearchPattern) && x.EstimateChapter != 10);
             foreach (var calendarWork in estimateChapterAllExcept1and8and10CalendarWorks)
             {
                 mainCalendarWorks.Add(calendarWork);
@@ -52,10 +54,10 @@ namespace POSCore.CalendarPlanLogic
 
             var estimateChapter10CalendarWork = calendarPlan.CalendarWorks.Find(x => x.EstimateChapter == 10);
 
-            var otherExpensesWork = CreateOtherExpensesWork(mainCalendarWorks, estimateChapter10CalendarWork, estimateChapter10CalendarWork.ConstructionPeriod.ConstructionMonths.Select(x => x.PercentePart).ToList());
+            var otherExpensesWork = CreateOtherExpensesWork(mainCalendarWorks, estimateChapter10CalendarWork, otherExpensesPercentages, calendarPlan.ConstructionStartDate);
             mainCalendarWorks.Add(otherExpensesWork);
 
-            var mainTotalWork = CreateMainTotalWork(mainCalendarWorks, estimateChapter10CalendarWork);
+            var mainTotalWork = CreateMainTotalWork(mainCalendarWorks, estimateChapter10CalendarWork, calendarPlan.ConstructionStartDate, calendarPlan.ConstructionDuration);
             mainCalendarWorks.Add(mainTotalWork);
 
             return mainCalendarWorks;
@@ -65,47 +67,49 @@ namespace POSCore.CalendarPlanLogic
         {
             var preparatoryCalendarWorks = new List<CalendarWork>();
 
-            var estimateChapter1CalendarWorks = calendarPlan.CalendarWorks.FindAll(x => x.EstimateChapter == 1);
+            var estimateChapter1CalendarWorks = calendarPlan.CalendarWorks.FindAll(x => x.EstimateChapter == 1 && x.TotalCostIncludingContructionAndInstallationWorks != 0);
             if (estimateChapter1CalendarWorks.Count != 0)
             {
                 var preparatoryWork = CreatePreparatoryWork(estimateChapter1CalendarWorks);
                 preparatoryCalendarWorks.Add(preparatoryWork);
             }
 
-            var estimateChapter8CalendarWork = calendarPlan.CalendarWorks.Find(x => x.EstimateChapter == 8);
-            var temporaryBuildingsWork = CreateTemporaryBuildingsWork(estimateChapter8CalendarWork);
+            var estimateTemporaryBuildingsCalendarWork = calendarPlan.CalendarWorks.Find(x => x.WorkName.StartsWith(TemporaryBuildingsSearchPattern));
+            var temporaryBuildingsWork = CreateTemporaryBuildingsWork(estimateTemporaryBuildingsCalendarWork);
             preparatoryCalendarWorks.Add(temporaryBuildingsWork);
 
             return preparatoryCalendarWorks;
         }
 
-        private CalendarWork CreateMainTotalWork(List<CalendarWork> mainCalendarWorks, CalendarWork estimateChapter10CalendarWork)
+        private CalendarWork CreateMainTotalWork(List<CalendarWork> mainCalendarWorks, CalendarWork estimateChapter10CalendarWork, DateTime constructionStartDate, decimal constructionDuration)
         {
+            var constructiondDurationCeiling = (int)decimal.Ceiling(constructionDuration);
             return new CalendarWork(
-                _totalWork,
+                TotalWork,
                 estimateChapter10CalendarWork.TotalCost,
                 estimateChapter10CalendarWork.TotalCostIncludingContructionAndInstallationWorks,
-                new ConstructionPeriod(estimateChapter10CalendarWork.ConstructionPeriod.ConstructionMonths.Select(month =>
+                new ConstructionPeriod(Enumerable.Range(0, constructiondDurationCeiling).Select(i =>
                     new ConstructionMonth(
-                        month.Date,
-                        decimal.Round(mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == month.Date)?.InvestmentVolume).Value, 3),
-                        decimal.Round(mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == month.Date)?.ContructionAndInstallationWorksVolume).Value, 3),
-                        decimal.Round((mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == month.Date)?.InvestmentVolume) / estimateChapter10CalendarWork.TotalCost).Value, 2),
-                        month.Index
+                        constructionStartDate.AddMonths(i),
+                        decimal.Round(mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume).Value, 3),
+                        decimal.Round(mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.ContructionAndInstallationWorksVolume).Value, 3),
+                        decimal.Round((mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume) / estimateChapter10CalendarWork.TotalCost).Value, 2),
+                        i
                 )).ToList()),
                 10);
         }
 
-        private CalendarWork CreateOtherExpensesWork(List<CalendarWork> mainCalendarWorks, CalendarWork estimateChapter10CalendarWork, List<decimal> percentages)
+        private CalendarWork CreateOtherExpensesWork(List<CalendarWork> mainCalendarWorks, CalendarWork estimateChapter10CalendarWork,
+            List<decimal> percentages, DateTime constructionStartDate)
         {
             var totalCost = decimal.Round(estimateChapter10CalendarWork.TotalCost - mainCalendarWorks.Sum(x => x.TotalCost), 3);
             var totalCostIncludingContructionAndInstallationWorks = decimal.Round(estimateChapter10CalendarWork.TotalCostIncludingContructionAndInstallationWorks - mainCalendarWorks.Sum(x => x.TotalCostIncludingContructionAndInstallationWorks), 3);
             return new CalendarWork(
-                _mainOtherExpensesWork,
+                MainOtherExpensesWork,
                 totalCost,
                 totalCostIncludingContructionAndInstallationWorks,
-                _constructionPeriodCreator.CreateConstructionPeriod(
-                    estimateChapter10CalendarWork.ConstructionPeriod.ConstructionMonths[0].Date,
+                _constructionPeriodCreator.Create(
+                    constructionStartDate,
                     totalCost,
                     totalCostIncludingContructionAndInstallationWorks,
                     percentages
@@ -116,7 +120,7 @@ namespace POSCore.CalendarPlanLogic
         private CalendarWork CreateOverallPreparatoryTotalWork(CalendarWork preparatoryTotalWork)
         {
             return new CalendarWork(
-                _mainOverallPreparatoryWork,
+                MainOverallPreparatoryWork,
                 preparatoryTotalWork.TotalCost,
                 preparatoryTotalWork.TotalCostIncludingContructionAndInstallationWorks,
                 preparatoryTotalWork.ConstructionPeriod,
@@ -134,17 +138,17 @@ namespace POSCore.CalendarPlanLogic
             var temporaryBuildingsWorkConstructionMonth = preparatoryCalendarWorks[1].ConstructionPeriod.ConstructionMonths[0];
 
             return new CalendarWork(
-                _totalWork,
+                TotalWork,
                 preparatoryCalendarWorks[0].TotalCost + preparatoryCalendarWorks[1].TotalCost,
                 preparatoryCalendarWorks[0].TotalCostIncludingContructionAndInstallationWorks + preparatoryCalendarWorks[1].TotalCostIncludingContructionAndInstallationWorks,
-                new ConstructionPeriod(new List<ConstructionMonth> 
-                { 
+                new ConstructionPeriod(new List<ConstructionMonth>
+                {
                     new ConstructionMonth(
                         preparatoryWorkConstructionMonth.Date,
                         preparatoryWorkConstructionMonth.InvestmentVolume + temporaryBuildingsWorkConstructionMonth.InvestmentVolume,
                         preparatoryWorkConstructionMonth.ContructionAndInstallationWorksVolume + temporaryBuildingsWorkConstructionMonth.ContructionAndInstallationWorksVolume,
                         1,
-                        preparatoryWorkConstructionMonth.Index)
+                        preparatoryWorkConstructionMonth.CreationIndex)
                 }),
                 1);
         }
@@ -152,7 +156,7 @@ namespace POSCore.CalendarPlanLogic
         private CalendarWork CreatePreparatoryTotalWork(CalendarWork temporaryBuildingsWork)
         {
             return new CalendarWork(
-                _totalWork,
+                TotalWork,
                 temporaryBuildingsWork.TotalCost,
                 temporaryBuildingsWork.TotalCostIncludingContructionAndInstallationWorks,
                 temporaryBuildingsWork.ConstructionPeriod,
@@ -162,7 +166,7 @@ namespace POSCore.CalendarPlanLogic
         private CalendarWork CreateTemporaryBuildingsWork(CalendarWork estimateChapter8CalendarWork)
         {
             return new CalendarWork(
-                _preparatoryTemporaryBuildingsWork,
+                PreparatoryTemporaryBuildingsWork,
                 estimateChapter8CalendarWork.TotalCost,
                 estimateChapter8CalendarWork.TotalCostIncludingContructionAndInstallationWorks,
                 estimateChapter8CalendarWork.ConstructionPeriod,
@@ -172,7 +176,7 @@ namespace POSCore.CalendarPlanLogic
         private CalendarWork CreatePreparatoryWork(List<CalendarWork> estimateChapter1CalendarWorks)
         {
             return new CalendarWork(
-                _preparatoryWork,
+                PreparatoryWork,
                 estimateChapter1CalendarWorks.Sum(x => x.TotalCost),
                 estimateChapter1CalendarWorks.Sum(x => x.TotalCostIncludingContructionAndInstallationWorks),
                 new ConstructionPeriod(new List<ConstructionMonth>

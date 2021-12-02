@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using POSCore.EstimateLogic;
 
 namespace POSCore.CalendarPlanLogic.Interfaces
 {
     public interface ICalendarPlanCreator
     {
-        CalendarPlan CreateCalendarPlan(DateTime initialDate, List<List<decimal>> groupsOfPercentages);
+        CalendarPlan Create(Estimate estimate);
     }
 }

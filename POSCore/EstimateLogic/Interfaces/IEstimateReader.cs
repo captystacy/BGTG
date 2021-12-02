@@ -1,7 +1,9 @@
-﻿namespace POSCore.EstimateLogic.Interfaces
+﻿using System.IO;
+
+namespace POSCore.EstimateLogic.Interfaces
 {
     public interface IEstimateReader
     {
-        Estimate Read(string filePath);
+        Estimate Read(Stream stream);
     }
 }
