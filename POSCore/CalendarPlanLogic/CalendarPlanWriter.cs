@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
@@ -22,7 +21,7 @@ namespace POSCore.CalendarPlanLogic
         private const string _decimalFormat = "{0:f3}";
         private const string _percentFormat = "{0:P2}";
 
-        public void Write(CalendarPlan preparatoryCalendarPlan, CalendarPlan mainCalendarPlan, string templatePath)
+        public void Write(CalendarPlan preparatoryCalendarPlan, CalendarPlan mainCalendarPlan, string templatePath, string savePath, string fileName)
         {
             using (var document = DocX.Load(templatePath))
             {
@@ -34,7 +33,8 @@ namespace POSCore.CalendarPlanLogic
                 var mainCalendarPlanPattrenTable = document.Tables[1];
                 ModifyCalendarPlanTable(mainCalendarPlanPattrenTable, mainCalendarPlan, constructionMonths);
 
-                document.SaveAs(Directory.GetCurrentDirectory() + @"\CalendarPlan" + constructionMonths.Count + "Month.docx");
+                var saveAsPath = Path.Combine(savePath, fileName);
+                document.SaveAs(saveAsPath);
             }
         }
 
@@ -91,8 +91,8 @@ namespace POSCore.CalendarPlanLogic
         {
             for (int i = 0; i < constructionMonths.Count; i++)
             {
-                var monthName = DateTimeFormatInfo.CurrentInfo.MonthNames[constructionMonths[i].Date.Month - 1];
-                calendarPlanPatternTable.Rows[1].ReplaceText(_datePattern + i, char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + constructionMonths[i].Date.Year);
+                var monthName = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames[constructionMonths[i].Date.Month - 1];
+                calendarPlanPatternTable.Rows[1].ReplaceText(_datePattern + i, monthName + " " + constructionMonths[i].Date.Year);
             }
         }
 
@@ -116,8 +116,8 @@ namespace POSCore.CalendarPlanLogic
             topPatternRow.ReplaceText(_totalCostIncludingContructionAndInstallationWorksPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingContructionAndInstallationWorks));
             for (int i = 0; i < calendarWork.ConstructionPeriod.ConstructionMonths.Count; i++)
             {
-                topPatternRow.ReplaceText(_investmentVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].Index, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].InvestmentVolume));
-                bottomPatternRow.ReplaceText(_contructionAndInstallationWorksVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].Index, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].ContructionAndInstallationWorksVolume));
+                topPatternRow.ReplaceText(_investmentVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].CreationIndex, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].InvestmentVolume));
+                bottomPatternRow.ReplaceText(_contructionAndInstallationWorksVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].CreationIndex, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].ContructionAndInstallationWorksVolume));
             }
         }
     }

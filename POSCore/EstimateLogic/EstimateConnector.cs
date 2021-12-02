@@ -9,7 +9,7 @@ namespace POSCore.EstimateLogic
         {
             if (estimates.Count == 1)
             {
-                return new Estimate(estimates[0].EstimateWorks);
+                return estimates[0];
             }
 
             var estimateWorksConnected = estimates[0].EstimateWorks;
@@ -25,7 +25,7 @@ namespace POSCore.EstimateLogic
                 estimateWorksConnected = ConnectEstimateWorks(insertedOneByOne);
             }
 
-            return new Estimate(estimateWorksConnected);
+            return new Estimate(estimateWorksConnected, estimates[0].ConstructionStartDate, estimates[0].ConstructionDuration);
         }
 
         private List<EstimateWork> ConnectEstimateWorks(List<EstimateWork> estimateWorks)
@@ -60,17 +60,17 @@ namespace POSCore.EstimateLogic
                     estimateWork1.TotalCost + estimateWork2.TotalCost, estimateWork1.Chapter);
         }
 
-        private List<EstimateWork> InsertOneByOne(List<EstimateWork> insertedInto, List<EstimateWork> insertedFrom)
+        private List<EstimateWork> InsertOneByOne(List<EstimateWork> biggerOne, List<EstimateWork> smallerOne)
         {
-            var instertedOneByOne = new List<EstimateWork>(insertedInto);
+            var instertedOneByOne = new List<EstimateWork>();
 
-            var j = 0;
-            for (int i = 0; i < insertedFrom.Count; i++)
+            for (int i = 0; i < biggerOne.Count; i++)
             {
-                instertedOneByOne.Insert(j, insertedFrom[i]);
-                if (j + 1 + i < instertedOneByOne.Count)
+                instertedOneByOne.Add(biggerOne[i]);
+
+                if (i != smallerOne.Count)
                 {
-                    j += 2 + i;
+                    instertedOneByOne.Add(smallerOne[i]);
                 }
             }
 

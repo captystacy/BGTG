@@ -29,6 +29,10 @@ namespace POSCoreTests.CalendarPlanLogic
                 {
                     new ConstructionMonth(DateTime.Today, (decimal)2.222, (decimal)1.111, 1, 0)
                 }), 1),
+                new CalendarWork("(НЕ БУДЕТ ВКЛЮЧЕНА)", (decimal)2.222, 0, new ConstructionPeriod(new List<ConstructionMonth>
+                {
+                    new ConstructionMonth(DateTime.Today, (decimal)2.222, (decimal)1.111, 1, 0)
+                }), 1),
                 new CalendarWork("БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", (decimal)2.222, (decimal)1.111, new ConstructionPeriod(new List<ConstructionMonth>
                 {
                     new ConstructionMonth(DateTime.Today, (decimal)1.555, (decimal)0.778, (decimal)0.7, 0),
@@ -58,7 +62,7 @@ namespace POSCoreTests.CalendarPlanLogic
                     new ConstructionMonth(DateTime.Today, (decimal)25.9995, (decimal)23.8886, (decimal)0.7, 0),
                     new ConstructionMonth(DateTime.Today.AddMonths(1), (decimal)7.3335, (decimal)8.3334, (decimal)0.3, 1),
                 }), 10),
-            });
+            }, DateTime.Today, 2);
         }
 
         [Test]
@@ -66,7 +70,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal>());
 
             var preparatoryWork = calendarPlanSeparator.PreparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Подготовка территории строительства");
 
@@ -78,7 +82,7 @@ namespace POSCoreTests.CalendarPlanLogic
             Assert.AreEqual((decimal)3.333, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(1, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
             Assert.AreEqual(DateTime.Today, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual(0, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].Index);
+            Assert.AreEqual(0, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
 
         [Test]
@@ -86,7 +90,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal>());
 
             var temporaryBuildingsWork = calendarPlanSeparator.PreparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Временные здания и сооружения");
 
@@ -98,7 +102,7 @@ namespace POSCoreTests.CalendarPlanLogic
             Assert.AreEqual((decimal)1.111, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(1, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
             Assert.AreEqual(DateTime.Today, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual(0, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].Index);
+            Assert.AreEqual(0, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
 
         [Test]
@@ -106,7 +110,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal>());
 
             var totalWork = calendarPlanSeparator.PreparatoryCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:");
 
@@ -118,7 +122,7 @@ namespace POSCoreTests.CalendarPlanLogic
             Assert.AreEqual((decimal)4.444, totalWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
             Assert.AreEqual(DateTime.Today, totalWork.ConstructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].Index);
+            Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
 
         [Test]
@@ -126,7 +130,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal>());
 
             var overallPreparatoryWork = calendarPlanSeparator.MainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Работы, выполняемые в подготовительный период");
 
@@ -138,7 +142,7 @@ namespace POSCoreTests.CalendarPlanLogic
             Assert.AreEqual((decimal)4.444, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(1, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
             Assert.AreEqual(DateTime.Today, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual(0, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].Index);
+            Assert.AreEqual(0, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
 
         [Test]
@@ -146,7 +150,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal>());
 
             var channelTracingWorkExistance = calendarPlanSeparator.MainCalendarPlan.CalendarWorks.Exists(x => x.WorkName == "ТРАССИРОВКА КАНАЛОВ (8,04 КМ)");
             var restorationOfhighwaysWorkExistance = calendarPlanSeparator.MainCalendarPlan.CalendarWorks.Exists(x => x.WorkName == "ВОССТАНОВЛЕНИЕ ТРАСС АВТОДОРОГИ (3,813 КМ)");
@@ -174,7 +178,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal> { (decimal)0.7, (decimal)0.3 });
 
             var otherExpensesWork = calendarPlanSeparator.MainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Прочие работы и затраты");
 
@@ -186,13 +190,13 @@ namespace POSCoreTests.CalendarPlanLogic
             Assert.AreEqual((decimal)16.334, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual((decimal)0.7, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
             Assert.AreEqual(DateTime.Today, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual(0, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].Index);
+            Assert.AreEqual(0, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
 
             Assert.AreEqual((decimal)4.667, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].InvestmentVolume);
             Assert.AreEqual((decimal)7, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
             Assert.AreEqual((decimal)0.3, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].PercentePart);
             Assert.AreEqual(DateTime.Today.AddMonths(1), otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].Date);
-            Assert.AreEqual(1, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].Index);
+            Assert.AreEqual(1, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].CreationIndex);
         }
 
         [Test]
@@ -200,7 +204,7 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var calendarPlan = CreateDefaultCalendarPlan();
             var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
-            calendarPlanSeparator.Separate(calendarPlan);
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal> { (decimal)0.7, (decimal)0.3 });
 
             var totalWork = calendarPlanSeparator.MainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:");
 
@@ -212,13 +216,26 @@ namespace POSCoreTests.CalendarPlanLogic
             Assert.AreEqual((decimal)23.89, totalWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(0.78, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
             Assert.AreEqual(DateTime.Today, totalWork.ConstructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].Index);
+            Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
 
             Assert.AreEqual((decimal)7.335, totalWork.ConstructionPeriod.ConstructionMonths[1].InvestmentVolume);
             Assert.AreEqual((decimal)8.332, totalWork.ConstructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(0.22, totalWork.ConstructionPeriod.ConstructionMonths[1].PercentePart);
             Assert.AreEqual(DateTime.Today.AddMonths(1), totalWork.ConstructionPeriod.ConstructionMonths[1].Date);
-            Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[1].Index);
+            Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[1].CreationIndex);
+        }
+
+        public void Separate_CalendarPlan_SetConstractionStartDateAndDuration()
+        {
+            var calendarPlan = CreateDefaultCalendarPlan();
+            var calendarPlanSeparator = CreateDefaultCalendarPlanSeparator();
+            calendarPlanSeparator.Separate(calendarPlan, new List<decimal> { (decimal)0.7, (decimal)0.3 });
+
+            Assert.AreEqual(calendarPlan.ConstructionStartDate, calendarPlanSeparator.PreparatoryCalendarPlan.ConstructionStartDate);
+            Assert.AreEqual(calendarPlan.ConstructionDuration, calendarPlanSeparator.PreparatoryCalendarPlan.ConstructionDuration);
+
+            Assert.AreEqual(calendarPlan.ConstructionStartDate, calendarPlanSeparator.MainCalendarPlan.ConstructionStartDate);
+            Assert.AreEqual(calendarPlan.ConstructionDuration, calendarPlanSeparator.MainCalendarPlan.ConstructionDuration);
         }
     }
 }

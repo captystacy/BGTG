@@ -1,4 +1,6 @@
-﻿namespace POSCore.EstimateLogic
+﻿using System.Collections.Generic;
+
+namespace POSCore.EstimateLogic
 {
     public class EstimateWork
     {
@@ -7,6 +9,7 @@
         public decimal EquipmentCost { get; }
         public decimal OtherProductsCost { get; }
         public decimal TotalCost { get; }
+        public List<decimal> Percentages { get; set; }
 
         public EstimateWork(string workName, decimal equipmentCost, decimal otherProductsCost, decimal totalCost, int chapter)
         {
