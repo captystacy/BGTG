@@ -80,7 +80,7 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)6.666, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)3.333, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(1, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
+            Assert.AreEqual(1, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(DateTime.Today, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, preparatoryWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
@@ -100,7 +100,7 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)2.222, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)1.111, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(1, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
+            Assert.AreEqual(1, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(DateTime.Today, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, temporaryBuildingsWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
@@ -120,7 +120,7 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)8.888, totalWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)4.444, totalWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
+            Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(DateTime.Today, totalWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
@@ -140,7 +140,7 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)8.888, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)4.444, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(1, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
+            Assert.AreEqual(1, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(DateTime.Today, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, overallPreparatoryWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
         }
@@ -188,13 +188,13 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)10.89, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)16.334, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual((decimal)0.7, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
+            Assert.AreEqual((decimal)0.7, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(DateTime.Today, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, otherExpensesWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
 
             Assert.AreEqual((decimal)4.667, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].InvestmentVolume);
             Assert.AreEqual((decimal)7, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual((decimal)0.3, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].PercentePart);
+            Assert.AreEqual((decimal)0.3, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].PercentPart);
             Assert.AreEqual(DateTime.Today.AddMonths(1), otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].Date);
             Assert.AreEqual(1, otherExpensesWork.ConstructionPeriod.ConstructionMonths[1].CreationIndex);
         }
@@ -214,13 +214,13 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)25.998, totalWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)23.89, totalWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(0.78, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentePart);
+            Assert.AreEqual(0.78, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(DateTime.Today, totalWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
 
             Assert.AreEqual((decimal)7.335, totalWork.ConstructionPeriod.ConstructionMonths[1].InvestmentVolume);
             Assert.AreEqual((decimal)8.332, totalWork.ConstructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(0.22, totalWork.ConstructionPeriod.ConstructionMonths[1].PercentePart);
+            Assert.AreEqual(0.22, totalWork.ConstructionPeriod.ConstructionMonths[1].PercentPart);
             Assert.AreEqual(DateTime.Today.AddMonths(1), totalWork.ConstructionPeriod.ConstructionMonths[1].Date);
             Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[1].CreationIndex);
         }

@@ -28,22 +28,32 @@ namespace POSCoreTests.CalendarPlanLogic
             }, DateTime.Today, 1);
         }
 
-        private void AssertTableDates(Table calendarPlan, List<ConstructionMonth> totalCalendarWorkConstructionMonths)
+        private void AssertTableDates(Table calendarPlanTable, List<ConstructionMonth> totalCalendarWorkConstructionMonths)
         {
-            var calendarPlanDateRow = calendarPlan.Rows[1];
+            var calendarPlanDateRow = calendarPlanTable.Rows[1];
 
             for (int i = 0; i < totalCalendarWorkConstructionMonths.Count; i++)
             {
-                var dateStr = calendarPlanDateRow.Paragraphs[3 + i].Text;
-                var monthName = Regex.Match(dateStr, @"[А-Я-а-я]+").Value;
-                var dateYear = int.Parse(Regex.Match(dateStr, @"\d+").Value);
-
-                var monthNames = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames.ToList();
-                var month = monthNames.IndexOf(monthName) + 1;
-
-                Assert.AreEqual(totalCalendarWorkConstructionMonths[i].Date.Month, month);
-                Assert.AreEqual(totalCalendarWorkConstructionMonths[i].Date.Year, dateYear);
+                AssertDate(calendarPlanDateRow.Paragraphs[3 + i], totalCalendarWorkConstructionMonths[i].Date);
             }
+
+            if (totalCalendarWorkConstructionMonths.Count > 1)
+            {
+                AssertDate(calendarPlanDateRow.Paragraphs[3 + totalCalendarWorkConstructionMonths.Count], totalCalendarWorkConstructionMonths[^1].Date.AddMonths(1));
+            }
+        }
+
+        private void AssertDate(Paragraph paragraph, DateTime constructionMonthDate)
+        {
+            var dateStr = paragraph.Text;
+            var monthName = Regex.Match(dateStr, @"[А-Я-а-я]+").Value;
+            var dateYear = int.Parse(Regex.Match(dateStr, @"\d+").Value);
+
+            var monthNames = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames.ToList();
+            var month = monthNames.IndexOf(monthName) + 1;
+
+            Assert.AreEqual(constructionMonthDate.Month, month);
+            Assert.AreEqual(constructionMonthDate.Year, dateYear);
         }
 
         private void AssertTableCalendarWork(Table calendarPlanTable, int rowIndex, CalendarPlan calendarPlan, string workName)
@@ -99,11 +109,11 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var lastRow = mainCalendarPlanTable.Rows[^1];
 
-            for (int i = 2; i < lastRow.Paragraphs.Count; i++)
+            for (int i = 0; i < mainTotalCalendarWorkConstructionMonths.Count; i++)
             {
-                var percentPart = decimal.Parse(Regex.Match(lastRow.Paragraphs[i].Text, @"[\d,]+").Value) / 100;
+                var percentPart = decimal.Parse(Regex.Match(lastRow.Paragraphs[i + 2].Text, @"[\d,]+").Value) / 100;
 
-                Assert.AreEqual(mainTotalCalendarWorkConstructionMonths[i - 2].PercentePart, percentPart);
+                Assert.AreEqual(mainTotalCalendarWorkConstructionMonths[i].PercentPart, percentPart);
             }
         }
 

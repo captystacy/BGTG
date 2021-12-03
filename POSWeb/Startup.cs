@@ -69,7 +69,7 @@ namespace POSWeb
                     .ForMember(d => d.UserWorks, o => o.MapFrom(s => s.EstimateWorks));
                 x.CreateMap<EstimateWork, UserWork>();
                 x.CreateMap<CalendarWork, UserWork>()
-                    .ForMember(d => d.Percentages, o => o.MapFrom(s => s.ConstructionPeriod.ConstructionMonths.Select(x => x.PercentePart)));
+                    .ForMember(d => d.Percentages, o => o.MapFrom(s => s.ConstructionPeriod.ConstructionMonths.Select(x => x.PercentPart)));
             });
             services.AddSingleton(x => config.CreateMapper());
         }

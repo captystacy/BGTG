@@ -7,7 +7,7 @@ namespace POSCore.CalendarPlanLogic
         public DateTime Date { get; }
         public decimal? InvestmentVolume { get; }
         public decimal? ContructionAndInstallationWorksVolume { get; }
-        public decimal PercentePart { get; }
+        public decimal PercentPart { get; set; }
         public int CreationIndex { get; }
 
         public ConstructionMonth(DateTime date, decimal? investmentVolume, decimal? contructionAndInstallationWorksVolume, decimal percentePart, int creationIndex)
@@ -15,7 +15,7 @@ namespace POSCore.CalendarPlanLogic
             Date = date;
             InvestmentVolume = investmentVolume;
             ContructionAndInstallationWorksVolume = contructionAndInstallationWorksVolume;
-            PercentePart = percentePart;
+            PercentPart = percentePart;
             CreationIndex = creationIndex;
         }
     }

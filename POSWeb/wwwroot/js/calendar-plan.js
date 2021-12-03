@@ -26,8 +26,13 @@
                         $('.calendar-plan #ConstructionDuration').val(calendarPlanVM.constructionDuration);
                         $('.calendar-plan #ConstructionStartDate').val(calendarPlanVM.constructionStartDate);
 
+                        $('.percentages-table thead tr:last-child').empty();
                         AppendDateRow(calendarPlanVM.constructionStartDate, calendarPlanVM.constructionDuration);
+
+                        $('.percentages-table tbody').empty();
                         AppendRows(calendarPlanVM);
+
+                        AppendAcceptanceTimeCell(calendarPlanVM.userWorks.length);
 
                         spinner.removeClass('d-inline-block');
                         $('.percentages-table').show();
@@ -51,15 +56,15 @@
                 window.location = '/CalendarPlan/Download';
             }
         });
-        return;
+        $('.choose-estimates .spinner-border').removeClass('d-inline-block');
     }
 
     function AppendDateRow(constructionStartDate, constructionDuration) {
         let milliseconds = Date.parse(constructionStartDate);
         let startDate = new Date(milliseconds);
-        let monthRow = $('.percentages-table thead tr:last-child')
+        let monthRow = $('.percentages-table thead #month-row')
         let currentDate = startDate;
-        for (let i = 0; i < constructionDuration; i++) {
+        for (let i = 0; i < constructionDuration + 1; i++) {
             var monthYearStr = formatter.format(currentDate);
             let monthCell =
                 `<th class="align-middle text-center">
@@ -98,8 +103,19 @@
                     </th>
                     ${inputRow}
                 </tr>`;
+
             $('.percentages-table tbody').append(userRow);
         }
+    }
+
+    function AppendAcceptanceTimeCell(rowspan) {
+        let acceptanceTimeCell = `
+            <td class="acceptance-time" rowspan="${rowspan + 1}">
+                Приемка объекта в эксплуатацию
+            </td>
+        `;
+
+        $('.percentages-table tbody tr:first-child').append(acceptanceTimeCell);
     }
 
     $('#calculate-percentages').click(function () {
@@ -184,7 +200,10 @@
         let thisPercent = parseInt($(this).val());
         let percentSum = thisPercent;
         $(this).parents('td').siblings('td').each(function () {
-            percentSum += parseInt($(this).find('#percent-input').val());
+            let percent = $(this).find('#percent-input').val();
+            if (percent) {
+                percentSum += parseInt(percent);
+            }
         });
 
         if (percentSum > 100) {

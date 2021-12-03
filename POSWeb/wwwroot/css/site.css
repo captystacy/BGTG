@@ -84,3 +84,10 @@ body {
 .calculate-btn-loading {
     display: none;
 }
+
+.acceptance-time {
+    writing-mode: vertical-rl;
+    transform: rotate( -180deg);
+    vertical-align: middle;
+    text-align: center;
+}

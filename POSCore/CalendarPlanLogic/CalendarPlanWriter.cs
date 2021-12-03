@@ -15,8 +15,8 @@ namespace POSCore.CalendarPlanLogic
         private const string _investmentVolumePattern = "IV";
         private const string _contructionAndInstallationWorksVolumePattern = "IWV";
         private const string _datePattern = "D";
+        private const string _dateAcceptancePattern = "DA";
         private const string _percentPattern = "P";
-
 
         private const string _decimalFormat = "{0:f3}";
         private const string _percentFormat = "{0:P2}";
@@ -82,17 +82,26 @@ namespace POSCore.CalendarPlanLogic
             {
                 for (int i = 0; i < constructionMonths.Count; i++)
                 {
-                    lastRow.ReplaceText(_percentPattern + i, string.Format(_percentFormat, constructionMonths[i].PercentePart));
+                    lastRow.ReplaceText(_percentPattern + i, string.Format(_percentFormat, constructionMonths[i].PercentPart));
                 }
             }
         }
 
         private void ReplaceDatePatternWithActualDate(Table calendarPlanPatternTable, List<ConstructionMonth> constructionMonths)
         {
+            var monthNames = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames;
+
             for (int i = 0; i < constructionMonths.Count; i++)
             {
-                var monthName = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames[constructionMonths[i].Date.Month - 1];
+                var monthName = monthNames[constructionMonths[i].Date.Month - 1];
                 calendarPlanPatternTable.Rows[1].ReplaceText(_datePattern + i, monthName + " " + constructionMonths[i].Date.Year);
+            }
+
+            if (constructionMonths.Count > 1)
+            {
+                var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
+                var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
+                calendarPlanPatternTable.Rows[1].ReplaceText(_dateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
             }
         }
 
