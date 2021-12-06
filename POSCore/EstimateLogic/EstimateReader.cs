@@ -33,6 +33,8 @@ namespace POSCore.EstimateLogic
         private const string _nrr102Pattern = "НРР 8.01.102-2017";
         private const string _subUnit34dot1Pattern = "ПОДПУНКТ 34.1 ИНСТРУКЦИИ";
 
+        private const string _compensatoryLandingsWorkName = "КОМПЕНСАЦИОННЫЕ ПОСАДКИ";
+
         private const string _chapterPattern = "ГЛАВА";
         #endregion
 
@@ -78,6 +80,10 @@ namespace POSCore.EstimateLogic
                         || estimateCalculationCellStr == _nrr102Pattern
                         || previousCalculationCellStr == _subUnit34dot1Pattern)
                     {
+                        if (workSheet.Cells[row, _workNamesColumn].Value.ToString() == _compensatoryLandingsWorkName)
+                        {
+                            continue;
+                        }
                         var estimateWork = ParseEstimateCellsToEstimateWork(workSheet, row);
                         estimateWorks.Add(estimateWork);
                     }
