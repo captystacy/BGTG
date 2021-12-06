@@ -11,7 +11,7 @@
 <div class="calendar-plan">
     <form asp-controller="CalendarPlan" asp-action="Index" enctype="multipart/form-data" method="post">
         <div class="choose-estimates mb-3">
-            <label for="estimateFiles" class="form-label">Выберите сметы</label>
+            <label for="estimateFiles" class="form-label">Выберите сметы (< 20 мес.)</label>
             <div class="spinner-border spinner-border-sm text-primary" role="status">
                 <span class="sr-only"></span>
             </div>
@@ -23,8 +23,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 16.66%" scope="col">Наименование отдельных зданий, сооружений и видов работ</th>
-                        <th colspan="7" scope="col" class="align-middle text-center">
+                        <th rowspan="2" scope="col" class="text-break">Наименование отдельных зданий, сооружений и видов работ</th>
+                        <th colspan="20" scope="col" class="align-middle text-center">
                             Распределение капитальных вложений и обьемов  СМР по месяцам строительства, тыс.руб.
                         </th>
                     </tr>

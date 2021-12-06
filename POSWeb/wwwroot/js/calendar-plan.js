@@ -86,7 +86,7 @@
             for (let j = 0; j < calendarPlanVM.constructionDuration; j++) {
                 inputRow += `
                     <td>
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3 mt-3 min-w-rem-4d8">
                             <input name="UserWorks[${i}].Percentages[${j}]" id="percent-input" value="0" type="number" min="0" max="100" step="1" id="percent-part" class="form-control" />
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
@@ -97,7 +97,7 @@
 
             let userRow = `
                 <tr>
-                    <th scope="row">
+                    <th scope="row" class="text-break">
                         ${calendarPlanVM.userWorks[i].workName}
                         <input name="UserWorks[${i}].WorkName" type="hidden" value="${calendarPlanVM.userWorks[i].workName}"/>
                     </th>
