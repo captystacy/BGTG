@@ -1,4 +1,5 @@
 ﻿using OfficeOpenXml;
+using POSCore.CalendarPlanLogic;
 using POSCore.EstimateLogic.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ namespace POSCore.EstimateLogic
         private const int _constructionDurationRow = 21;
         private const int _constructionDurationColumn = 3;
 
+        private const int _startRow = 27;
+        private const int _endRow = 100;
+
         private const int _patternsColumn = 1;
         private const int _workNamesColumn = 2;
         private const int _chaptersColumn = 2;
@@ -31,7 +35,7 @@ namespace POSCore.EstimateLogic
         private const string _niiBgtgPattern = "НИИ БЕЛГИПРОТОПГАЗ";
         private const string _niiBgtgQuotesPattern = "\"НИИ БЕЛГИПРОТОПГАЗ\"";
         private const string _nrr102Pattern = "НРР 8.01.102-2017";
-        private const string _subUnit34dot1Pattern = "ПОДПУНКТ 34.1 ИНСТРУКЦИИ";
+        private const string _subUnit34dot3dot2Pattern = "ПОДПУНКТ 33.3.2  ИНСТРУКЦИИ";
 
         private const string _compensatoryLandingsWorkName = "КОМПЕНСАЦИОННЫЕ ПОСАДКИ";
 
@@ -66,25 +70,27 @@ namespace POSCore.EstimateLogic
                 constructionStartDate = ParseConstructionStartDate(constructionStartDateCell.ToString());
                 constructionDuration = ParseConstructionDuration(constructionDuraitonCell.ToString());
 
-                for (int row = 27; row < 100; row++)
+                for (int row = _startRow; row < _endRow; row++)
                 {
                     var estimateCalculationCell = workSheet.Cells[row, _patternsColumn].Value ?? "";
                     var estimateCalculationCellStr = estimateCalculationCell.ToString();
-
-                    var previousCalculationCell = workSheet.Cells[row - 1, _patternsColumn].Value ?? "";
-                    var previousCalculationCellStr = previousCalculationCell.ToString();
 
                     if (estimateCalculationCellStr.StartsWith(_objectEstimatePattern)
                         || estimateCalculationCellStr == _niiBgtgPattern
                         || estimateCalculationCellStr == _niiBgtgQuotesPattern
                         || estimateCalculationCellStr == _nrr102Pattern
-                        || previousCalculationCellStr == _subUnit34dot1Pattern)
+                        || estimateCalculationCellStr == _subUnit34dot3dot2Pattern)
                     {
                         if (workSheet.Cells[row, _workNamesColumn].Value.ToString() == _compensatoryLandingsWorkName)
                         {
                             continue;
                         }
-                        var estimateWork = ParseEstimateCellsToEstimateWork(workSheet, row);
+
+                        var estimateWork = estimateCalculationCellStr switch
+                        {
+                            _subUnit34dot3dot2Pattern => ParseTotalEstimateWorkRow(workSheet, row),
+                            _ => ParseEstimateWorkRow(workSheet, row),
+                        };
                         estimateWorks.Add(estimateWork);
                     }
                 }
@@ -100,6 +106,15 @@ namespace POSCore.EstimateLogic
             }
 
             return estimate;
+        }
+
+        private EstimateWork ParseTotalEstimateWorkRow(ExcelWorksheet workSheet, int row)
+        {
+            var totalWorkRow = Enumerable
+                .Range(row + 1, _endRow)
+                .First(i => workSheet.Cells[i, _workNamesColumn].Value.ToString() == CalendarPlanSeparator.TotalWorkSearchPattern);
+
+            return ParseEstimateWorkRow(workSheet, totalWorkRow);
         }
 
         private decimal ParseConstructionDuration(string durationCellStr)
@@ -136,7 +151,7 @@ namespace POSCore.EstimateLogic
             return chapter;
         }
 
-        private EstimateWork ParseEstimateCellsToEstimateWork(ExcelWorksheet workSheet, int row)
+        private EstimateWork ParseEstimateWorkRow(ExcelWorksheet workSheet, int row)
         {
             var workNameCellStr = workSheet.Cells[row, _workNamesColumn].Value.ToString();
             var equipmentCostCellStr = workSheet.Cells[row, _equipmentCostColumn].Value.ToString();
