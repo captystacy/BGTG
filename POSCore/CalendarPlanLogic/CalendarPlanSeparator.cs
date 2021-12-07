@@ -58,22 +58,9 @@ namespace POSCore.CalendarPlanLogic
             mainCalendarWorks.Add(otherExpensesWork);
 
             var mainTotalWork = CreateMainTotalWork(mainCalendarWorks, estimateChapter10CalendarWork, calendarPlan.ConstructionStartDate, calendarPlan.ConstructionDuration);
-            RepairMainTotalWorkConstructionPeriodPercents(mainTotalWork.ConstructionPeriod);
             mainCalendarWorks.Add(mainTotalWork);
 
             return mainCalendarWorks;
-        }
-
-        private void RepairMainTotalWorkConstructionPeriodPercents(ConstructionPeriod constructionPeriod)
-        {
-            var percentSum = constructionPeriod.ConstructionMonths.Sum(x => x.PercentPart);
-            if (percentSum > 1)
-            {
-                var biggestPercentMonth = constructionPeriod.ConstructionMonths.OrderByDescending(x => x.PercentPart).First();
-                var percentSumExcludedBiggestPercent = percentSum - biggestPercentMonth.PercentPart;
-                var correctPercent = 1 - percentSumExcludedBiggestPercent;
-                biggestPercentMonth.PercentPart = correctPercent;
-            }
         }
 
         private List<CalendarWork> CreatePreparatoryCalendarWorks(CalendarPlan calendarPlan)
@@ -104,9 +91,9 @@ namespace POSCore.CalendarPlanLogic
                 new ConstructionPeriod(Enumerable.Range(0, constructiondDurationCeiling).Select(i =>
                     new ConstructionMonth(
                         constructionStartDate.AddMonths(i),
-                        decimal.Round(mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume).Value, 3),
-                        decimal.Round(mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.ContructionAndInstallationWorksVolume).Value, 3),
-                        decimal.Round((mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume) / estimateChapter10CalendarWork.TotalCost).Value, 2),
+                        mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume).Value,
+                        mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.ContructionAndInstallationWorksVolume).Value,
+                        (mainCalendarWorks.Sum(x => x.ConstructionPeriod.ConstructionMonths.Find(x => x.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume) / estimateChapter10CalendarWork.TotalCost).Value,
                         i
                 )).ToList()),
                 10);

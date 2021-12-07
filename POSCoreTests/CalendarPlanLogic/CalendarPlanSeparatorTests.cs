@@ -214,13 +214,13 @@ namespace POSCoreTests.CalendarPlanLogic
 
             Assert.AreEqual((decimal)25.998, totalWork.ConstructionPeriod.ConstructionMonths[0].InvestmentVolume);
             Assert.AreEqual((decimal)23.89, totalWork.ConstructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(0.78, totalWork.ConstructionPeriod.ConstructionMonths[0].PercentPart);
+            Assert.AreEqual((decimal)0.78, decimal.Round(totalWork.ConstructionPeriod.ConstructionMonths[0].PercentPart, 2));
             Assert.AreEqual(DateTime.Today, totalWork.ConstructionPeriod.ConstructionMonths[0].Date);
             Assert.AreEqual(0, totalWork.ConstructionPeriod.ConstructionMonths[0].CreationIndex);
 
             Assert.AreEqual((decimal)7.335, totalWork.ConstructionPeriod.ConstructionMonths[1].InvestmentVolume);
             Assert.AreEqual((decimal)8.332, totalWork.ConstructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
-            Assert.AreEqual(0.22, totalWork.ConstructionPeriod.ConstructionMonths[1].PercentPart);
+            Assert.AreEqual((decimal)0.22, decimal.Round(totalWork.ConstructionPeriod.ConstructionMonths[1].PercentPart, 2));
             Assert.AreEqual(DateTime.Today.AddMonths(1), totalWork.ConstructionPeriod.ConstructionMonths[1].Date);
             Assert.AreEqual(1, totalWork.ConstructionPeriod.ConstructionMonths[1].CreationIndex);
         }
