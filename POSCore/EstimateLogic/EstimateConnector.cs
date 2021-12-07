@@ -25,7 +25,7 @@ namespace POSCore.EstimateLogic
                 estimateWorksConnected = ConnectEstimateWorks(insertedOneByOne);
             }
 
-            return new Estimate(estimateWorksConnected, estimates[0].ConstructionStartDate, estimates[0].ConstructionDuration);
+            return new Estimate(estimateWorksConnected, estimates[0].ConstructionStartDate, estimates[0].ConstructionDuration, estimates[0].ObjectCipher);
         }
 
         private List<EstimateWork> ConnectEstimateWorks(List<EstimateWork> estimateWorks)

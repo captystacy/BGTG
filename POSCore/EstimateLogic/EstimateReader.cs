@@ -14,6 +14,9 @@ namespace POSCore.EstimateLogic
     {
         private const string _possibleFirstUnappropriateWorkSheet = "Лист5";
 
+        private const int _objectCipherRow = 17;
+        private const int _objectCipherColumn = 3;
+
         private const int _constructionStartDateRow = 20;
         private const int _constructionStartDateColumn = 3;
 
@@ -53,6 +56,7 @@ namespace POSCore.EstimateLogic
 
             var constructionStartDate = default(DateTime);
             var constructionDuration = (decimal)0;
+            var objectCipher = string.Empty;
             using (var package = new ExcelPackage(stream))
             {
                 var workSheet = package.Workbook.Worksheets[0].Name == _possibleFirstUnappropriateWorkSheet
@@ -61,14 +65,16 @@ namespace POSCore.EstimateLogic
 
                 var constructionStartDateCell = workSheet.Cells[_constructionStartDateRow, _constructionStartDateColumn].Value;
                 var constructionDuraitonCell = workSheet.Cells[_constructionDurationRow, _constructionDurationColumn].Value;
+                var objectCipherCell = workSheet.Cells[_objectCipherRow, _objectCipherColumn].Value;
 
-                if (constructionStartDateCell == null || constructionDuraitonCell == null)
+                if (constructionStartDateCell == null || constructionDuraitonCell == null || objectCipherCell == null)
                 {
                     return null;
                 }
 
                 constructionStartDate = ParseConstructionStartDate(constructionStartDateCell.ToString());
                 constructionDuration = ParseConstructionDuration(constructionDuraitonCell.ToString());
+                objectCipher = objectCipherCell.ToString();
 
                 for (int row = _startRow; row < _endRow; row++)
                 {
@@ -95,12 +101,13 @@ namespace POSCore.EstimateLogic
                     }
                 }
             }
-            var estimate = new Estimate(estimateWorks, constructionStartDate, constructionDuration);
+            var estimate = new Estimate(estimateWorks, constructionStartDate, constructionDuration, objectCipher);
 
             if (estimateWorks.Exists(x => x.TotalCost == 0 || x.Chapter == 0)
                 || constructionStartDate == default(DateTime)
                 || constructionDuration == 0
-                || estimateWorks.Count == 0)
+                || estimateWorks.Count == 0
+                || string.IsNullOrEmpty(objectCipher))
             {
                 return null;
             }

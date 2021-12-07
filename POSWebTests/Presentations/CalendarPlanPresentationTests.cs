@@ -29,7 +29,7 @@ namespace POSWebTests.Presentations
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
             var estimateFiles = new List<IFormFile>();
-            var estimate = new Estimate(new List<EstimateWork>(), DateTime.Today, 0);
+            var estimate = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
             _calendarPlanServiceMock.Setup(x => x.GetEstimate(estimateFiles)).Returns(estimate);
             var userWorks = new List<UserWork>()
             {
@@ -103,6 +103,18 @@ namespace POSWebTests.Presentations
 
             Assert.AreEqual("CalendarPlanBGTGkss.docx", calendarPlanFileName);
         }
+
+        [Test]
+        public void GetDownloadCalendarPlanName()
+        {
+            var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
+            var objectCipher = "5.5-20.548";
+
+            calendarPlanPresentation.GetDownloadCalendarPlanName(objectCipher);
+
+            _calendarPlanServiceMock.Verify(x => x.GetDownloadCalendarPlanName(objectCipher), Times.Once);
+        }
+
 
         [Test]
         public void GetCalendarPlanPath()

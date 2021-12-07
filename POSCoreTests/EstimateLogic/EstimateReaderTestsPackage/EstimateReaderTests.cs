@@ -11,6 +11,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
         private string _defaultEstimateWorkSheet0;
         private string _defaultEstimateWorkSheet1;
         private string _defaultEstimateWorkSheet0UnappropriateValues;
+        private EstimateAsserter _estimateAsserter;
 
         [SetUp]
         public void SetUp()
@@ -20,6 +21,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
             _defaultEstimateWorkSheet0 = Path.Combine(currentProjectDirectory, "defaultEstimateWorkSheet0.xlsx");
             _defaultEstimateWorkSheet0UnappropriateValues = Path.Combine(currentProjectDirectory, "defaultEstimateWorkSheet0UnappropriateValues.xlsx");
             _defaultEstimateWorkSheet1 = Path.Combine(currentProjectDirectory, "defaultEstimateWorkSheet1.xlsx");
+            _estimateAsserter = new EstimateAsserter();
         }
 
         private EstimateReader CreateDefaultEstimateReader()
@@ -39,7 +41,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
                 new EstimateWork("ОДД НА ПЕРИОД ПРОИЗВОДСТВА РАБОТ", 0, 0, (decimal)0.005, 8),
                 new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.012, 8),
                 new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", (decimal)0.041, (decimal)2.536, (decimal)3.226, 10),
-            }, constructionStartDate, constructionDuration);
+            }, constructionStartDate, constructionDuration, "5.5-20.548");
         }
 
         [Test]
@@ -54,7 +56,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
                 estimate = estimateReader.Read(fileStream);
             }
 
-            AssertEstimate(expectedEstimate, estimate);
+            _estimateAsserter.AssertEstimate(expectedEstimate, estimate);
         }
 
         [Test]
@@ -69,7 +71,7 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
                 estimate = estimateReader.Read(fileStream);
             }
 
-            AssertEstimate(expectedEstimate, estimate);
+            _estimateAsserter.AssertEstimate(expectedEstimate, estimate);
         }
 
         [Test]
@@ -83,21 +85,6 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
             }
 
             Assert.Null(estimate);
-        }
-
-        private void AssertEstimate(Estimate expected, Estimate actual)
-        {
-            for (int i = 0; i < expected.EstimateWorks.Count; i++)
-            {
-                Assert.AreEqual(expected.EstimateWorks[i].WorkName, actual.EstimateWorks[i].WorkName);
-                Assert.AreEqual(expected.EstimateWorks[i].Chapter, actual.EstimateWorks[i].Chapter);
-                Assert.AreEqual(expected.EstimateWorks[i].TotalCost, actual.EstimateWorks[i].TotalCost);
-                Assert.AreEqual(expected.EstimateWorks[i].OtherProductsCost, actual.EstimateWorks[i].OtherProductsCost);
-                Assert.AreEqual(expected.EstimateWorks[i].EquipmentCost, actual.EstimateWorks[i].EquipmentCost);
-            }
-
-            Assert.AreEqual(expected.ConstructionStartDate, actual.ConstructionStartDate);
-            Assert.AreEqual(expected.ConstructionDuration, actual.ConstructionDuration);
         }
     }
 }

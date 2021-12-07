@@ -27,15 +27,16 @@ namespace POSWeb.Controllers
         public IActionResult Index(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
         {
             _calendarPlanPresentation.WriteCalendarPlan(estimateFiles, calendarPlanVM, User.Identity.Name);
-            return RedirectToAction("Download");
+            return RedirectToAction("Download", new { objectCipher = calendarPlanVM.ObjectCipher });
         }
 
-        public IActionResult Download()
+        public IActionResult Download(string objectCipher)
         {
             var calendarPlansPath = _calendarPlanPresentation.GetCalendarPlansPath();
             var userFileName = _calendarPlanPresentation.GetCalendarPlanFileName(User.Identity.Name);
             var filePath = Path.Combine(calendarPlansPath, userFileName);
-            return PhysicalFile(filePath, CalendarPlanService.DocxMimeType, CalendarPlanService.DownloadCalendarPlanName);
+            var downloadCalendarPlanName = _calendarPlanPresentation.GetDownloadCalendarPlanName(objectCipher);
+            return PhysicalFile(filePath, CalendarPlanService.DocxMimeType, downloadCalendarPlanName);
         }
 
         public IActionResult GetCalendarPlanVMJson(IEnumerable<IFormFile> estimateFiles)

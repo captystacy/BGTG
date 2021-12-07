@@ -12,5 +12,6 @@ namespace POSWeb.Services.Interfaces
         CalendarWork GetMainTotalWork(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM);
         Estimate GetEstimate(IEnumerable<IFormFile> estimateFiles);
         string GetCalendarPlansPath();
+        string GetDownloadCalendarPlanName(string objectCipher);
     }
 }

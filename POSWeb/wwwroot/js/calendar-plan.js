@@ -25,6 +25,7 @@
                     } else {
                         $('.calendar-plan #ConstructionDuration').val(calendarPlanVM.constructionDuration);
                         $('.calendar-plan #ConstructionStartDate').val(calendarPlanVM.constructionStartDate);
+                        $('.calendar-plan #ObjectCipher').val(calendarPlanVM.objectCipher);
 
                         $('.percentages-table thead tr:last-child').empty();
                         AppendDateRow(calendarPlanVM.constructionStartDate, calendarPlanVM.constructionDuration);
@@ -53,7 +54,7 @@
             contentType: false,
             type: 'POST',
             success: function () {
-                window.location = '/CalendarPlan/Download';
+                window.location = `/CalendarPlan/Download?objectCipher=${calendarPlanVM.objectCipher}`;
             }
         });
         $('.choose-estimates .spinner-border').removeClass('d-inline-block');

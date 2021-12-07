@@ -28,7 +28,7 @@ namespace POSCoreTests.CalendarPlanLogic
                 new EstimateWork("ОДД НА ПЕРИОД ПРОИЗВОДСТВА РАБОТ", 0, 0, (decimal)0.005, 8),
                 new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.012, 8),
                 new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", (decimal)0.041, (decimal)2.536, (decimal)3.226, 10),
-            }, new DateTime(2022, 8, 1), (decimal)0.7);
+            }, new DateTime(2022, 8, 1), (decimal)0.7, "5.5-20.548");
         }
 
         [Test]

@@ -54,6 +54,11 @@ namespace POSWeb.Presentations
             return $"CalendarPlan{userName}.docx";
         }
 
+        public string GetDownloadCalendarPlanName(string objectCipher)
+        {
+            return _calendarPlanService.GetDownloadCalendarPlanName(objectCipher);
+        }
+
         public string GetCalendarPlansPath()
         {
             return _calendarPlanService.GetCalendarPlansPath();

@@ -22,7 +22,6 @@ namespace POSWeb.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public const string DocxMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-        public const string DownloadCalendarPlanName = "Календарный план.docx";
 
         private const string _calendarPlansDirectoryName = "CalendarPlans";
         private const string _calendarPlanTemplatesDirectoryName = "CalendarPlanTemplates";
@@ -64,6 +63,11 @@ namespace POSWeb.Services
         public string GetCalendarPlansPath()
         {
             return Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlansDirectoryName);
+        }
+
+        public string GetDownloadCalendarPlanName(string objectCipher)
+        {
+            return $"{objectCipher}КП.docx";
         }
 
         private void CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)

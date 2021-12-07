@@ -48,12 +48,12 @@ namespace POSWebTests.Services
             var stream2Mock = new Mock<Stream>();
             estimateFile1Mock.Setup(x => x.OpenReadStream()).Returns(stream1Mock.Object);
             estimateFile2Mock.Setup(x => x.OpenReadStream()).Returns(stream2Mock.Object);
-            var estimate1 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0);
-            var estimate2 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0);
+            var estimate1 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
+            var estimate2 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
             _estimateReaderMock.Setup(x => x.Read(stream1Mock.Object)).Returns(estimate1);
             _estimateReaderMock.Setup(x => x.Read(stream2Mock.Object)).Returns(estimate2);
             var estimates = new List<Estimate> { estimate1, estimate2 };
-            var estimate = new Estimate(new List<EstimateWork>(), DateTime.Today, 0);
+            var estimate = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
             _estimateConnectorMock.Setup(x => x.Connect(estimates)).Returns(estimate);
 
             var result = calendarPlanService.GetEstimate(estimateFiles);
@@ -83,7 +83,7 @@ namespace POSWebTests.Services
                 new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, 0, 0, 0),
                 new EstimateWork("", 0, 0, 0, 1),
                     
-            }, DateTime.Today, 0);
+            }, DateTime.Today, 0, "");
             _estimateConnectorMock.Setup(x => x.Connect(It.IsAny<List<Estimate>>())).Returns(estimate);
             var calendarPlanVM = new CalendarPlanVM()
             {
@@ -100,8 +100,8 @@ namespace POSWebTests.Services
             var stream2Mock = new Mock<Stream>();
             estimateFile1Mock.Setup(x => x.OpenReadStream()).Returns(stream1Mock.Object);
             estimateFile2Mock.Setup(x => x.OpenReadStream()).Returns(stream2Mock.Object);
-            var estimate1 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0);
-            var estimate2 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0);
+            var estimate1 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
+            var estimate2 = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
             _estimateReaderMock.Setup(x => x.Read(stream1Mock.Object)).Returns(estimate1);
             _estimateReaderMock.Setup(x => x.Read(stream2Mock.Object)).Returns(estimate2);
             var estimates = new List<Estimate> { estimate1, estimate2 };
