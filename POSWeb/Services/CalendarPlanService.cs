@@ -25,6 +25,7 @@ namespace POSWeb.Services
         public const string DownloadCalendarPlanName = "Календарный план.docx";
 
         private const string _calendarPlansDirectoryName = "CalendarPlans";
+        private const string _calendarPlanTemplatesDirectoryName = "CalendarPlanTemplates";
 
         public CalendarPlanService(IEstimateReader estimateReader, IEstimateConnector estimateConnector,
             ICalendarPlanCreator calendarPlanCreator, ICalendarPlanSeparator calendarPlanSeparator,
@@ -55,13 +56,14 @@ namespace POSWeb.Services
             CalculateCalendarPlan(estimateFiles, calendarPlanVM);
             var ceilingDuration = decimal.Ceiling(calendarPlanVM.ConstructionDuration);
             var savePath = GetCalendarPlansPath();
+            var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlanTemplatesDirectoryName, $"CalendarPlan{ceilingDuration}MonthsTemplate.docx");
             _calendarPlanWriter.Write(_calendarPlanSeparator.PreparatoryCalendarPlan, _calendarPlanSeparator.MainCalendarPlan,
-                @$"..\POSCore\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan{ceilingDuration}MonthsTemplate.docx", savePath, fileName);
+                templatePath, savePath, fileName);
         }
 
         public string GetCalendarPlansPath()
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, _calendarPlansDirectoryName);
+            return Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlansDirectoryName);
         }
 
         private void CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)

@@ -137,7 +137,7 @@ namespace POSCoreTests.CalendarPlanLogic
             var calendarPlanWriter = CreateDefaultCalendarPlanWriter();
             var preparatoryCalendarPlan = CreateDefaultPreparatoryCalendarPlan();
             var mainCalendarPlan = CreateMainCalendarPlan1Month();
-            var templatePath = @"..\..\..\..\POSCore\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan1MonthsTemplate.docx";
+            var templatePath = @"..\..\..\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan1MonthsTemplate.docx";
 
             var calendarPlanFileName = "CalendarPlan.docx";
             calendarPlanWriter.Write(preparatoryCalendarPlan, mainCalendarPlan, templatePath, Directory.GetCurrentDirectory(), calendarPlanFileName);
@@ -238,7 +238,7 @@ namespace POSCoreTests.CalendarPlanLogic
             var calendarPlanWriter = CreateDefaultCalendarPlanWriter();
             var preparatoryCalendarPlan = CreateDefaultPreparatoryCalendarPlan();
             var mainCalendarPlan = CreateMainCalendarPlan2Months();
-            var templatePath = @"..\..\..\..\POSCore\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan2MonthsTemplate.docx";
+            var templatePath = @"..\..\..\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan2MonthsTemplate.docx"; ;
 
             var calendarPlanFileName = "CalendarPlan.docx";
             calendarPlanWriter.Write(preparatoryCalendarPlan, mainCalendarPlan, templatePath, Directory.GetCurrentDirectory(), calendarPlanFileName);
@@ -277,7 +277,7 @@ namespace POSCoreTests.CalendarPlanLogic
             var calendarPlanWriter = CreateDefaultCalendarPlanWriter();
             var preparatoryCalendarPlan = CreateDefaultPreparatoryCalendarPlan();
             var mainCalendarPlan = CreateMainCalendarPlan2Months_SomeWorksHave1Month();
-            var templatePath = @"..\..\..\..\POSCore\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan2MonthsTemplate.docx";
+            var templatePath = @"..\..\..\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan2MonthsTemplate.docx"; ;
 
             var calendarPlanFileName = "CalendarPlan.docx";
             calendarPlanWriter.Write(preparatoryCalendarPlan, mainCalendarPlan, templatePath, Directory.GetCurrentDirectory(), calendarPlanFileName);
@@ -356,7 +356,7 @@ namespace POSCoreTests.CalendarPlanLogic
             var calendarPlanWriter = CreateDefaultCalendarPlanWriter();
             var preparatoryCalendarPlan = CreateDefaultPreparatoryCalendarPlan();
             var mainCalendarPlan = CreateMainCalendarPlan3Months();
-            var templatePath = @"..\..\..\..\POSCore\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan3MonthsTemplate.docx";
+            var templatePath = @"..\..\..\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan3MonthsTemplate.docx"; ;
 
             var calendarPlanFileName = "CalendarPlan.docx";
             calendarPlanWriter.Write(preparatoryCalendarPlan, mainCalendarPlan, templatePath, Directory.GetCurrentDirectory(), calendarPlanFileName);
@@ -428,7 +428,7 @@ namespace POSCoreTests.CalendarPlanLogic
             var calendarPlanWriter = CreateDefaultCalendarPlanWriter();
             var preparatoryCalendarPlan = CreateDefaultPreparatoryCalendarPlan();
             var mainCalendarPlan = CreateMainCalendarPlan3Months_SomeWorksHaveVariousNumberOfMonth();
-            var templatePath = @"..\..\..\..\POSCore\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan3MonthsTemplate.docx";
+            var templatePath = @"..\..\..\CalendarPlanLogic\CalendarPlanTemplates\CalendarPlan3MonthsTemplate.docx"; ;
 
             var calendarPlanFileName = "CalendarPlan.docx";
             calendarPlanWriter.Write(preparatoryCalendarPlan, mainCalendarPlan, templatePath, Directory.GetCurrentDirectory(), calendarPlanFileName);

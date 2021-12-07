@@ -5,6 +5,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan10MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan11MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan12MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan13MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan14MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan15MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan16MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan17MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan18MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan19MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan1MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan2MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan3MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan4MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan5MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan6MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan7MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan8MonthsTemplate.docx" />
+    <Content Remove="wwwroot\CalendarPlanTemplates\CalendarPlan9MonthsTemplate.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
   </ItemGroup>
 
@@ -13,7 +35,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CalendarPlans\" />
+    <Folder Include="wwwroot\CalendarPlans\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan10MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan11MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan12MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan13MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan14MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan15MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan16MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan17MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan18MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan19MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan1MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan2MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan3MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan4MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan5MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan6MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan7MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan8MonthsTemplate.docx" />
+    <None Include="wwwroot\CalendarPlanTemplates\CalendarPlan9MonthsTemplate.docx" />
   </ItemGroup>
 
 </Project>
