@@ -19,22 +19,22 @@ namespace POSWebTests.Services
     {
         private Mock<IEstimateReader> _estimateReaderMock;
         private Mock<IEstimateConnector> _estimateConnectorMock;
-        private Mock<ICalendarPlanCreator> _calendarPlanCreator;
-        private Mock<ICalendarPlanSeparator> _calendarPlanSeparator;
-        private Mock<ICalendarPlanWriter> _calendarPlanWriter;
-        private Mock<IWebHostEnvironment> _webHostEnviroment;
+        private Mock<ICalendarPlanCreator> _calendarPlanCreatorMock;
+        private Mock<ICalendarPlanSeparator> _calendarPlanSeparatorMock;
+        private Mock<ICalendarPlanWriter> _calendarPlanWriterMock;
+        private Mock<IWebHostEnvironment> _webHostEnvironmentMock;
 
         private CalendarPlanService CreateDefaultCalendarPlanService()
         {
             _estimateReaderMock = new Mock<IEstimateReader>();
             _estimateConnectorMock = new Mock<IEstimateConnector>();
-            _calendarPlanCreator = new Mock<ICalendarPlanCreator>();
-            _calendarPlanSeparator = new Mock<ICalendarPlanSeparator>();
-            _calendarPlanWriter = new Mock<ICalendarPlanWriter>();
-            _webHostEnviroment = new Mock<IWebHostEnvironment>();
+            _calendarPlanCreatorMock = new Mock<ICalendarPlanCreator>();
+            _calendarPlanSeparatorMock = new Mock<ICalendarPlanSeparator>();
+            _calendarPlanWriterMock = new Mock<ICalendarPlanWriter>();
+            _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
 
-            return new CalendarPlanService(_estimateReaderMock.Object, _estimateConnectorMock.Object, _calendarPlanCreator.Object,
-                _calendarPlanSeparator.Object, _calendarPlanWriter.Object, _webHostEnviroment.Object);
+            return new CalendarPlanService(_estimateReaderMock.Object, _estimateConnectorMock.Object, _calendarPlanCreatorMock.Object,
+                _calendarPlanSeparatorMock.Object, _calendarPlanWriterMock.Object, _webHostEnvironmentMock.Object);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace POSWebTests.Services
                     new UserWork() { WorkName = "Прочие работы и затраты" , Percentages = new List<decimal>() }
                 }
             };
-            _calendarPlanSeparator.Setup(x => x.MainCalendarPlan).Returns(new CalendarPlan(new List<CalendarWork> { new CalendarWork(null, 0, 0, null, 10) }, DateTime.Today, 0));
+            _calendarPlanSeparatorMock.Setup(x => x.MainCalendarPlan).Returns(new CalendarPlan(new List<CalendarWork> { new CalendarWork(null, 0, 0, null, 10) }, DateTime.Today, 0));
 
             #region GetEstimateSetup
             var stream1Mock = new Mock<Stream>();
@@ -119,6 +119,28 @@ namespace POSWebTests.Services
             _estimateReaderMock.Verify(x => x.Read(stream2Mock.Object), Times.Once);
             _estimateConnectorMock.Verify(x => x.Connect(estimates), Times.Once);
             #endregion
+        }
+
+        [Test]
+        public void GetCalendarPlansPath()
+        {
+            var calendarPlanService = CreateDefaultCalendarPlanService();
+            _webHostEnvironmentMock.Setup(x => x.WebRootPath).Returns("www");
+
+            var energyAndWatersPath = calendarPlanService.GetCalendarPlansPath();
+
+            Assert.AreEqual("www\\UsersFiles\\CalendarPlans", energyAndWatersPath);
+        }
+
+        [Test]
+        public void GetDownloadCalendarPlanName()
+        {
+            var calendarPlanService = CreateDefaultCalendarPlanService();
+            var objectCipher = "5.5-20.548";
+
+            var downloadCalendarPlanName = calendarPlanService.GetDownloadCalendarPlanName(objectCipher);
+
+            Assert.AreEqual($"{objectCipher}КП.docx", downloadCalendarPlanName);
         }
     }
 }

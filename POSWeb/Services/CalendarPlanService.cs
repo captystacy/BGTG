@@ -23,8 +23,8 @@ namespace POSWeb.Services
 
         public const string DocxMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
-        private const string _calendarPlansDirectoryName = "CalendarPlans";
-        private const string _calendarPlanTemplatesDirectoryName = "CalendarPlanTemplates";
+        private const string _calendarPlansPath = "UsersFiles\\CalendarPlans";
+        private const string _calendarPlanTemplatesPath = "Templates\\CalendarPlanTemplates";
 
         public CalendarPlanService(IEstimateReader estimateReader, IEstimateConnector estimateConnector,
             ICalendarPlanCreator calendarPlanCreator, ICalendarPlanSeparator calendarPlanSeparator,
@@ -55,19 +55,9 @@ namespace POSWeb.Services
             CalculateCalendarPlan(estimateFiles, calendarPlanVM);
             var ceilingDuration = decimal.Ceiling(calendarPlanVM.ConstructionDuration);
             var savePath = GetCalendarPlansPath();
-            var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlanTemplatesDirectoryName, $"CalendarPlan{ceilingDuration}MonthsTemplate.docx");
+            var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlanTemplatesPath, $"CalendarPlan{ceilingDuration}MonthsTemplate.docx");
             _calendarPlanWriter.Write(_calendarPlanSeparator.PreparatoryCalendarPlan, _calendarPlanSeparator.MainCalendarPlan,
                 templatePath, savePath, fileName);
-        }
-
-        public string GetCalendarPlansPath()
-        {
-            return Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlansDirectoryName);
-        }
-
-        public string GetDownloadCalendarPlanName(string objectCipher)
-        {
-            return $"{objectCipher}КП.docx";
         }
 
         private void CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
@@ -106,6 +96,16 @@ namespace POSWeb.Services
             totalEstimateWork.Percentages = new List<decimal>();
 
             return estimate;
+        }
+
+        public string GetCalendarPlansPath()
+        {
+            return Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlansPath);
+        }
+
+        public string GetDownloadCalendarPlanName(string objectCipher)
+        {
+            return $"{objectCipher}КП.docx";
         }
     }
 }

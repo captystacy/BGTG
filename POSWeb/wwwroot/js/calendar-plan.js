@@ -2,17 +2,17 @@
     const formatter = new Intl.DateTimeFormat('ru', { month: 'long', year: 'numeric' });
     let calendarPlanVM;
     let estimateFiles;
+    let spinner = $('.choose-estimates .spinner-border');
 
-    $('#estimate-files').change(function () {
-        var spinner = $('.choose-estimates .spinner-border');
+    $('#calendar-plan-btn').click(function () {
         spinner.addClass('d-inline-block');
         let formData = new FormData();
-        estimateFiles = $(this).get(0).files;
+        estimateFiles = $('#estimate-files').get(0).files;
 
         AppendEstimateFiles(formData);
         $.ajax(
             {
-                url: '/CalendarPlan/GetCalendarPlanVMJson',
+                url: '/CalendarPlan/GetCalendarPlanVM',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -23,9 +23,7 @@
                     if (calendarPlanVM.constructionDuration == 1) {
                         DownloadOneMonthCalendarPlanAjax(formData);
                     } else {
-                        $('.calendar-plan #ConstructionDuration').val(calendarPlanVM.constructionDuration);
-                        $('.calendar-plan #ConstructionStartDate').val(calendarPlanVM.constructionStartDate);
-                        $('.calendar-plan #ObjectCipher').val(calendarPlanVM.objectCipher);
+                        SetValuesToCalendarPlanVMHiddenInputs();
 
                         $('.percentages-table thead tr:last-child').empty();
                         AppendDateRow(calendarPlanVM.constructionStartDate, calendarPlanVM.constructionDuration);
@@ -43,21 +41,27 @@
         );
     });
 
+    function SetValuesToCalendarPlanVMHiddenInputs() {
+        $('#ConstructionDuration').val(calendarPlanVM.constructionDuration);
+        $('#ConstructionStartDate').val(calendarPlanVM.constructionStartDate);
+        $('#ObjectCipher').val(calendarPlanVM.objectCipher);
+    }
+
     function DownloadOneMonthCalendarPlanAjax(formData) {
-        AppendDateAndDuration(formData);
+        AppendDateAndDurationAndObjectCipher(formData);
         AppendPercentagesForOneMonthCalendarPlan(formData);
 
         $.ajax({
-            url: '/CalendarPlan/Index',
+            url: '/CalendarPlan/WriteAndGetObjectCipher',
             data: formData,
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function () {
-                window.location = `/CalendarPlan/Download?objectCipher=${calendarPlanVM.objectCipher}`;
+            success: function (objectCipher) {
+                window.location = `/CalendarPlan/Download?objectCipher=${objectCipher}`;
             }
         });
-        $('.choose-estimates .spinner-border').removeClass('d-inline-block');
+        spinner.removeClass('d-inline-block');
     }
 
     function AppendDateRow(constructionStartDate, constructionDuration) {
@@ -120,17 +124,14 @@
     }
 
     $('#calculate-percentages').click(function () {
-        let calculateBtn = $('.calculate-btn');
-        calculateBtn.hide();
-        let calculateBtnLoading = $('.calculate-btn-loading');
-        calculateBtnLoading.show();
+        spinner.addClass('d-inline-block');
         let formData = new FormData();
         AppendEstimateFiles(formData);
-        AppendDateAndDuration(formData);
+        AppendDateAndDurationAndObjectCipher(formData);
         AppendPercentagesForSeveralMonthsCalendarPlan(formData);
 
         $.ajax({
-            url: '/CalendarPlan/GetMainTotalWorkJson',
+            url: '/CalendarPlan/GetMainTotalWork',
             data: formData,
             processData: false,
             contentType: false,
@@ -142,9 +143,8 @@
                 }
                 let mainTotalWorkRow = GenerateMainTotalWorkRow(mainTotalWork);
 
-                calculateBtnLoading.hide();
-                calculateBtn.show();
 
+                spinner.removeClass('d-inline-block');
                 $('.percentages-table tbody').append(mainTotalWorkRow);
             }
         });
@@ -175,9 +175,10 @@
         }
     }
 
-    function AppendDateAndDuration(formData) {
+    function AppendDateAndDurationAndObjectCipher(formData) {
         formData.append('ConstructionStartDate', calendarPlanVM.constructionStartDate);
         formData.append('ConstructionDuration', calendarPlanVM.constructionDuration);
+        formData.append('ObjectCipher', calendarPlanVM.objectCipher);
     }
 
     function AppendPercentagesForOneMonthCalendarPlan(formData) {

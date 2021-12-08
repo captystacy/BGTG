@@ -25,6 +25,19 @@ namespace POSWebTests.Presentations
         }
 
         [Test]
+        public void WriteCalendarPlan()
+        {
+            var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
+            var estimateFiles = new List<IFormFile>();
+            var calendarPlanVM = new CalendarPlanVM();
+            var userFullName = "BGTG\\kss";
+
+            calendarPlanPresentation.WriteCalendarPlan(estimateFiles, calendarPlanVM, userFullName);
+
+            _calendarPlanServiceMock.Verify(x => x.WriteCalendarPlan(estimateFiles, calendarPlanVM, "CalendarPlanBGTGkss.docx"), Times.Once);
+        }
+
+        [Test]
         public void GetCalendarPlanVM()
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
@@ -59,20 +72,6 @@ namespace POSWebTests.Presentations
 
             Assert.AreSame(calendarPlanVM, result);
         }
-
-        [Test]
-        public void WriteCalendarPlan()
-        {
-            var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
-            var estimateFiles = new List<IFormFile>();
-            var calendarPlanVM = new CalendarPlanVM();
-            var userFullName = "BGTG\\kss";
-
-            calendarPlanPresentation.WriteCalendarPlan(estimateFiles, calendarPlanVM, userFullName);
-
-            _calendarPlanServiceMock.Verify(x => x.WriteCalendarPlan(estimateFiles, calendarPlanVM, "CalendarPlanBGTGkss.docx"), Times.Once);
-        }
-
 
         [Test]
         public void GetMainTotalWork()

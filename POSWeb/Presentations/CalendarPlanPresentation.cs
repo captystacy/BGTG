@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using POSCore.CalendarPlanLogic;
+using POSWeb.Helpers;
 using POSWeb.Models;
 using POSWeb.Services.Interfaces;
 using System.Collections.Generic;
@@ -16,6 +17,12 @@ namespace POSWeb.Presentations
         {
             _calendarPlanService = calendarPlanService;
             _mapper = mapper;
+        }
+
+        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName)
+        {
+            var fileName = GetCalendarPlanFileName(userFullName);
+            _calendarPlanService.WriteCalendarPlan(estimateFiles, calendarPlanVM, fileName);
         }
 
         public CalendarPlanVM GetCalendarPlanVM(IEnumerable<IFormFile> estimateFiles)
@@ -36,12 +43,6 @@ namespace POSWeb.Presentations
             return calendarPlanVM;
         }
 
-        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName)
-        {
-            var fileName = GetCalendarPlanFileName(userFullName);
-            _calendarPlanService.WriteCalendarPlan(estimateFiles, calendarPlanVM, fileName);
-        }
-
         public UserWork GetMainTotalWork(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
         {
             var mainTotalWork = _calendarPlanService.GetMainTotalWork(estimateFiles, calendarPlanVM);
@@ -50,8 +51,7 @@ namespace POSWeb.Presentations
 
         public string GetCalendarPlanFileName(string userFullName)
         {
-            var userName = userFullName.Replace(@"\", string.Empty);
-            return $"CalendarPlan{userName}.docx";
+            return $"CalendarPlan{userFullName.RemoveBackslashes()}.docx";
         }
 
         public string GetDownloadCalendarPlanName(string objectCipher)

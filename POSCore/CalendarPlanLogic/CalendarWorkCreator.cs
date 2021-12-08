@@ -17,7 +17,12 @@ namespace POSCore.CalendarPlanLogic
         {
             var totalCostIncludingContructionAndInstallationWorks = estimateWork.TotalCost - estimateWork.EquipmentCost - estimateWork.OtherProductsCost;
 
-            var constructionPeriod = _constructionPeriodCreator.Create(initialDate, estimateWork.TotalCost, totalCostIncludingContructionAndInstallationWorks, estimateWork.Percentages);
+            ConstructionPeriod constructionPeriod = null;
+            if (estimateWork.Percentages != null)
+            {
+                constructionPeriod = _constructionPeriodCreator.Create(initialDate, estimateWork.TotalCost, totalCostIncludingContructionAndInstallationWorks, estimateWork.Percentages);
+
+            }
 
             return new CalendarWork(estimateWork.WorkName, estimateWork.TotalCost, totalCostIncludingContructionAndInstallationWorks, constructionPeriod, estimateWork.Chapter);
         }

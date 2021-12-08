@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
+using POSCore.EnergyAndWaterLogic;
+using POSCore.EnergyAndWaterLogic.Interfaces;
 using POSCore.EstimateLogic;
 using POSCore.EstimateLogic.Interfaces;
 using POSWeb.Models;
@@ -39,6 +41,10 @@ namespace POSWeb
             services.AddSingleton(x => new CalendarPlanPresentation(
                 x.GetService<ICalendarPlanService>(),
                 x.GetService<IMapper>()));
+            services.AddSingleton(x => new EnergyAndWaterPresentation(
+                x.GetService<IEnergyAndWaterService>(),
+                x.GetService<IMapper>()
+                ));
         }
 
         private void RegisterServices(IServiceCollection services)
@@ -59,6 +65,17 @@ namespace POSWeb
                 x.GetService<ICalendarPlanWriter>(),
                 x.GetService<IWebHostEnvironment>()
                 ));
+
+            services.AddSingleton<IEnergyAndWaterCreator>(new EnergyAndWaterCreator());
+            services.AddSingleton<IEnergyAndWaterWriter>(new EnergyAndWaterWriter());
+
+            services.AddSingleton<IEnergyAndWaterService>(x => new EnergyAndWaterService(
+                x.GetService<ICalendarPlanService>(),
+                x.GetService<IEnergyAndWaterCreator>(),
+                x.GetService<IEnergyAndWaterWriter>(),
+                x.GetService<IWebHostEnvironment>(),
+                x.GetService<ICalendarWorkCreator>()
+                ));
         }
 
         private void RegisterMapper(IServiceCollection services)
@@ -67,6 +84,7 @@ namespace POSWeb
             {
                 x.CreateMap<Estimate, CalendarPlanVM>()
                     .ForMember(d => d.UserWorks, o => o.MapFrom(s => s.EstimateWorks));
+                x.CreateMap<Estimate, EnergyAndWaterVM>();
                 x.CreateMap<EstimateWork, UserWork>();
                 x.CreateMap<CalendarWork, UserWork>()
                     .ForMember(d => d.Percentages, o => o.MapFrom(s => s.ConstructionPeriod.ConstructionMonths.Select(x => x.PercentPart)));
