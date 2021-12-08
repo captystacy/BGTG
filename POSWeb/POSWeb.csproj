@@ -12,4 +12,9 @@
     <ProjectReference Include="..\POSCore\POSCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\UsersFiles\CalendarPlans\" />
+    <Folder Include="wwwroot\UsersFiles\EnergyAndWaters\" />
+  </ItemGroup>
+
 </Project>
