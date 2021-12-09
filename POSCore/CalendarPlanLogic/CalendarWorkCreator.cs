@@ -21,7 +21,6 @@ namespace POSCore.CalendarPlanLogic
             if (estimateWork.Percentages != null)
             {
                 constructionPeriod = _constructionPeriodCreator.Create(initialDate, estimateWork.TotalCost, totalCostIncludingContructionAndInstallationWorks, estimateWork.Percentages);
-
             }
 
             return new CalendarWork(estimateWork.WorkName, estimateWork.TotalCost, totalCostIncludingContructionAndInstallationWorks, constructionPeriod, estimateWork.Chapter);
