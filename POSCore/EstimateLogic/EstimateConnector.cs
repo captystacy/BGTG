@@ -1,5 +1,6 @@
 ﻿using POSCore.EstimateLogic.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace POSCore.EstimateLogic
 {
@@ -12,23 +13,35 @@ namespace POSCore.EstimateLogic
                 return estimates[0];
             }
 
-            var estimateWorksConnected = estimates[0].EstimateWorks;
-            for (int i = 1; i < estimates.Count; i++)
+            var preparatoryEstimateWorksLists = estimates.Select(x => x.PreparatoryEstimateWorks).ToList();
+            var mainEstimateWorksLists = estimates.Select(x => x.MainEstimateWorks).ToList();
+
+            var preparatoryEstimateWorksConnected = ConnectEstimateWorks(preparatoryEstimateWorksLists);
+            var mainEstimateWorksConnected = ConnectEstimateWorks(mainEstimateWorksLists);
+
+            var laborCosts = estimates.Sum(e => e.LaborCosts);
+            return new Estimate(preparatoryEstimateWorksConnected, mainEstimateWorksConnected, estimates[0].ConstructionStartDate, estimates[0].ConstructionDuration, estimates[0].ObjectCipher, laborCosts);
+        }
+
+        private List<EstimateWork> ConnectEstimateWorks(List<List<EstimateWork>> estimateWorksLists)
+        {
+            var estimateWorksConnected = estimateWorksLists[0];
+            for (int i = 1; i < estimateWorksLists.Count; i++)
             {
                 var tempEstimateWorks = estimateWorksConnected;
-                var nextEstimateWorks = estimates[i].EstimateWorks;
+                var nextEstimateWorks = estimateWorksLists[i];
 
                 var insertedOneByOne = tempEstimateWorks.Count > nextEstimateWorks.Count
                     ? InsertOneByOne(tempEstimateWorks, nextEstimateWorks)
                     : InsertOneByOne(nextEstimateWorks, tempEstimateWorks);
 
-                estimateWorksConnected = ConnectEstimateWorks(insertedOneByOne);
+                estimateWorksConnected = InterconnectEstimateWorks(insertedOneByOne);
             }
 
-            return new Estimate(estimateWorksConnected, estimates[0].ConstructionStartDate, estimates[0].ConstructionDuration, estimates[0].ObjectCipher);
+            return estimateWorksConnected;
         }
 
-        private List<EstimateWork> ConnectEstimateWorks(List<EstimateWork> estimateWorks)
+        private List<EstimateWork> InterconnectEstimateWorks(List<EstimateWork> estimateWorks)
         {
             var estimateWorksConnected = new List<EstimateWork>();
 
@@ -57,7 +70,7 @@ namespace POSCore.EstimateLogic
             return new EstimateWork(estimateWork1.WorkName,
                     estimateWork1.EquipmentCost + estimateWork2.EquipmentCost,
                     estimateWork1.OtherProductsCost + estimateWork2.OtherProductsCost,
-                    estimateWork1.TotalCost + estimateWork2.TotalCost, estimateWork1.Chapter);
+                    estimateWork1.TotalCost + estimateWork2.TotalCost, estimateWork1.Chapter, estimateWork1.Percentages);
         }
 
         private List<EstimateWork> InsertOneByOne(List<EstimateWork> biggerOne, List<EstimateWork> smallerOne)

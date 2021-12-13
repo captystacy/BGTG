@@ -19,8 +19,8 @@ namespace POSCore.CalendarPlanLogic
                 }
 
                 var date = initialDate.AddMonths(i);
-                var investmentVolume = decimal.Round(totalCost * percent, 3);
-                var constructionAndInstallationWorksVolume = decimal.Round(totalCostIncludingContructionAndInstallationWorks * percent, 3);
+                var investmentVolume = totalCost * percent;
+                var constructionAndInstallationWorksVolume = totalCostIncludingContructionAndInstallationWorks * percent;
                 var constructionMonth = new ConstructionMonth(date, investmentVolume, constructionAndInstallationWorksVolume, percent, i);
                 constructionMonths.Add(constructionMonth);
             }

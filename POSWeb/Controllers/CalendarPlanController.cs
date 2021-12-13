@@ -12,32 +12,22 @@ namespace POSWeb.Controllers
     {
         private readonly CalendarPlanPresentation _calendarPlanPresentation;
 
-        private const string _downloadActionName = "Download";
-
         public CalendarPlanController(CalendarPlanPresentation calendarPlanPresentation)
         {
             _calendarPlanPresentation = calendarPlanPresentation;
         }
 
-        [HttpPost]
-        public IActionResult WriteAndDownload(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks)
         {
-            _calendarPlanPresentation.WriteCalendarPlan(estimateFiles, calendarPlanVM, User.Identity.Name);
-            return RedirectToAction(_downloadActionName, new { objectCipher = calendarPlanVM.ObjectCipher });
+            _calendarPlanPresentation.WriteCalendarPlan(estimateFiles, userWorks, User.Identity.Name);
         }
 
-        public IActionResult WriteAndGetObjectCipher(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
-        {
-            _calendarPlanPresentation.WriteCalendarPlan(estimateFiles, calendarPlanVM, User.Identity.Name);
-            return Json(calendarPlanVM.ObjectCipher);
-        }
-
-        public IActionResult Download(string objectCipher)
+        public IActionResult Download()
         {
             var calendarPlansPath = _calendarPlanPresentation.GetCalendarPlansPath();
             var calendarPlanFileName = _calendarPlanPresentation.GetCalendarPlanFileName(User.Identity.Name);
             var filePath = Path.Combine(calendarPlansPath, calendarPlanFileName);
-            var downloadCalendarPlanName = _calendarPlanPresentation.GetDownloadCalendarPlanName(objectCipher);
+            var downloadCalendarPlanName = _calendarPlanPresentation.GetDownloadCalendarPlanFileName();
             return PhysicalFile(filePath, CalendarPlanService.DocxMimeType, downloadCalendarPlanName);
         }
 
@@ -47,10 +37,10 @@ namespace POSWeb.Controllers
             return Json(calendarPlanVM);
         }
 
-        public IActionResult GetMainTotalWork(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public IActionResult GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks)
         {
-            var mainTotalWork = _calendarPlanPresentation.GetMainTotalWork(estimateFiles, calendarPlanVM);
-            return Json(mainTotalWork);
+            var totalPercentages = _calendarPlanPresentation.GetTotalPercentages(estimateFiles, userWorks);
+            return Json(totalPercentages);
         }
     }
 }

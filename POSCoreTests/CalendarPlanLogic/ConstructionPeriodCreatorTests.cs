@@ -17,26 +17,26 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var constructionPeriodCreator = CreateDefaultConstructionPeriodCreator();
             var initialDate = new DateTime(1999, 9, 21);
-            var totalCost = (decimal)1.111;
-            var totalCostIncludingContructionAndInstallationWorks = (decimal)2.222;
-            var percentages = new List<decimal> { (decimal)0.3, (decimal)0.5, (decimal)0.2 };
+            var totalCost = 1.111M;
+            var totalCostIncludingContructionAndInstallationWorks = 2.222M;
+            var percentages = new List<decimal> { 0.3M, 0.5M, 0.2M };
             var constructionPeriod = constructionPeriodCreator.Create(initialDate, totalCost, totalCostIncludingContructionAndInstallationWorks, percentages);
 
             Assert.AreEqual(initialDate, constructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual((decimal)0.333, constructionPeriod.ConstructionMonths[0].InvestmentVolume);
-            Assert.AreEqual((decimal)0.667, constructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
+            Assert.AreEqual(0.3333, constructionPeriod.ConstructionMonths[0].InvestmentVolume);
+            Assert.AreEqual(0.6666, constructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(percentages[0], constructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(0, constructionPeriod.ConstructionMonths[0].CreationIndex);
 
             Assert.AreEqual(initialDate.AddMonths(1), constructionPeriod.ConstructionMonths[1].Date);
-            Assert.AreEqual((decimal)0.556, constructionPeriod.ConstructionMonths[1].InvestmentVolume);
-            Assert.AreEqual((decimal)1.111, constructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
+            Assert.AreEqual(0.5555, constructionPeriod.ConstructionMonths[1].InvestmentVolume);
+            Assert.AreEqual(1.111, constructionPeriod.ConstructionMonths[1].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(percentages[1], constructionPeriod.ConstructionMonths[1].PercentPart);
             Assert.AreEqual(1, constructionPeriod.ConstructionMonths[1].CreationIndex);
 
             Assert.AreEqual(initialDate.AddMonths(2), constructionPeriod.ConstructionMonths[2].Date);
-            Assert.AreEqual((decimal)0.222, constructionPeriod.ConstructionMonths[2].InvestmentVolume);
-            Assert.AreEqual((decimal)0.444, constructionPeriod.ConstructionMonths[2].ContructionAndInstallationWorksVolume);
+            Assert.AreEqual(0.2222, constructionPeriod.ConstructionMonths[2].InvestmentVolume);
+            Assert.AreEqual(0.4444, constructionPeriod.ConstructionMonths[2].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(percentages[2], constructionPeriod.ConstructionMonths[2].PercentPart);
             Assert.AreEqual(2, constructionPeriod.ConstructionMonths[2].CreationIndex);
         }
@@ -46,14 +46,14 @@ namespace POSCoreTests.CalendarPlanLogic
         {
             var constructionPeriodCreator = CreateDefaultConstructionPeriodCreator();
             var initialDate = new DateTime(1999, 9, 21);
-            var totalCost = (decimal)1.111;
-            var totalCostIncludingContructionAndInstallationWorks = (decimal)2.222;
-            var percentages = new List<decimal> { 0, (decimal)1.01, (decimal)0.3 };
+            var totalCost = 1.111M;
+            var totalCostIncludingContructionAndInstallationWorks = 2.222M;
+            var percentages = new List<decimal> { 0, 1.01M, 0.3M };
             var constructionPeriod = constructionPeriodCreator.Create(initialDate, totalCost, totalCostIncludingContructionAndInstallationWorks, percentages);
 
             Assert.AreEqual(initialDate.AddMonths(2), constructionPeriod.ConstructionMonths[0].Date);
-            Assert.AreEqual((decimal)0.333, constructionPeriod.ConstructionMonths[0].InvestmentVolume);
-            Assert.AreEqual((decimal)0.667, constructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
+            Assert.AreEqual(0.3333, constructionPeriod.ConstructionMonths[0].InvestmentVolume);
+            Assert.AreEqual(0.6666, constructionPeriod.ConstructionMonths[0].ContructionAndInstallationWorksVolume);
             Assert.AreEqual(percentages[2], constructionPeriod.ConstructionMonths[0].PercentPart);
             Assert.AreEqual(2, constructionPeriod.ConstructionMonths[0].CreationIndex);
         }

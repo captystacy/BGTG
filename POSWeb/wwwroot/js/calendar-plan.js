@@ -1,14 +1,12 @@
 ﻿$(document).ready(function () {
+    const spinner = $('.choose-estimates #spinner');
     const formatter = new Intl.DateTimeFormat('ru', { month: 'long', year: 'numeric' });
+
     let calendarPlanVM;
-    let estimateFiles;
-    let spinner = $('.choose-estimates .spinner-border');
 
     $('#calendar-plan-btn').click(function () {
         spinner.addClass('d-inline-block');
         let formData = new FormData();
-        estimateFiles = $('#estimate-files').get(0).files;
-
         AppendEstimateFiles(formData);
         $.ajax(
             {
@@ -23,8 +21,6 @@
                     if (calendarPlanVM.constructionDuration == 1) {
                         DownloadOneMonthCalendarPlanAjax(formData);
                     } else {
-                        SetValuesToCalendarPlanVMHiddenInputs();
-
                         $('.percentages-table thead tr:last-child').empty();
                         AppendDateRow(calendarPlanVM.constructionStartDate, calendarPlanVM.constructionDuration);
 
@@ -41,27 +37,27 @@
         );
     });
 
-    function SetValuesToCalendarPlanVMHiddenInputs() {
-        $('#ConstructionDuration').val(calendarPlanVM.constructionDuration);
-        $('#ConstructionStartDate').val(calendarPlanVM.constructionStartDate);
-        $('#ObjectCipher').val(calendarPlanVM.objectCipher);
-    }
 
     function DownloadOneMonthCalendarPlanAjax(formData) {
-        AppendDateAndDurationAndObjectCipher(formData);
-        AppendPercentagesForOneMonthCalendarPlan(formData);
-
+        AppendUserWorksForOneMonth(formData);
         $.ajax({
-            url: '/CalendarPlan/WriteAndGetObjectCipher',
+            url: '/CalendarPlan/WriteCalendarPlan',
             data: formData,
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function (objectCipher) {
-                window.location = `/CalendarPlan/Download?objectCipher=${objectCipher}`;
+            success: function () {
+                window.location = '/CalendarPlan/Download';
             }
         });
         spinner.removeClass('d-inline-block');
+    }
+
+    function AppendUserWorksForOneMonth(formData) {
+        for (let i = 0; i < calendarPlanVM.userWorks.length; i++) {
+            formData.append(`UserWorks[${i}].WorkName`, calendarPlanVM.userWorks[i].workName);
+            formData.append(`UserWorks[${i}].Percentages[0]`, 1);
+        }
     }
 
     function AppendDateRow(constructionStartDate, constructionDuration) {
@@ -91,7 +87,7 @@
             for (let j = 0; j < calendarPlanVM.constructionDuration; j++) {
                 inputRow += `
                     <td>
-                        <div class="input-group mb-3 mt-3 min-w-rem-4d8">
+                        <div class="input-group mb-1 mt-1 min-w-78px">
                             <input name="UserWorks[${i}].Percentages[${j}]" id="percent-input" value="0" type="number" min="0" max="100" step="1" id="percent-part" class="form-control" />
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
@@ -127,21 +123,19 @@
         spinner.addClass('d-inline-block');
         let formData = new FormData();
         AppendEstimateFiles(formData);
-        AppendDateAndDurationAndObjectCipher(formData);
-        AppendPercentagesForSeveralMonthsCalendarPlan(formData);
-
+        AppendUserWorksForSeveralMonths(formData);
         $.ajax({
-            url: '/CalendarPlan/GetMainTotalWork',
+            url: '/CalendarPlan/GetTotalPercentages',
             data: formData,
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function (mainTotalWork) {
+            success: function (totalPercentages) {
                 let mainTotalWorkRowAlreadyOnPage = $('.percentages-table #main-total-work');
                 if (mainTotalWorkRowAlreadyOnPage.length) {
                     mainTotalWorkRowAlreadyOnPage.remove();
                 }
-                let mainTotalWorkRow = GenerateMainTotalWorkRow(mainTotalWork);
+                let mainTotalWorkRow = GenerateMainTotalWorkRow(totalPercentages);
 
 
                 spinner.removeClass('d-inline-block');
@@ -150,75 +144,74 @@
         });
     });
 
-    function GenerateMainTotalWorkRow(mainTotalWork) {
+    function GenerateMainTotalWorkRow(totalPercentages) {
         let mainTotalPercentagesCells = '';
-        for (var i = 0; i < mainTotalWork.percentages.length; i++) {
+        for (var i = 0; i < totalPercentages.length; i++) {
             mainTotalPercentagesCells += `
                         <td>
-                            ${(mainTotalWork.percentages[i] * 100).toFixed(2)} %
+                            ${(totalPercentages[i] * 100).toFixed(2)} %
                         </td>`;
         }
 
         let mainTotalWorkRow = `
                     <tr id="main-total-work">
                         <th scope="row">
-                            ${mainTotalWork.workName}
+                            Итого:
                         </th>
                         ${mainTotalPercentagesCells}
                     </tr>`;
         return mainTotalWorkRow;
     }
 
-    function AppendEstimateFiles(formData) {
-        for (let i = 0; i != estimateFiles.length; i++) {
-            formData.append('estimateFiles', estimateFiles[i]);
-        }
-    }
+    $('#download-calendar-plan-btn').click(function () {
+        let formData = new FormData();
 
-    function AppendDateAndDurationAndObjectCipher(formData) {
-        formData.append('ConstructionStartDate', calendarPlanVM.constructionStartDate);
-        formData.append('ConstructionDuration', calendarPlanVM.constructionDuration);
-        formData.append('ObjectCipher', calendarPlanVM.objectCipher);
-    }
+        AppendEstimateFiles(formData);
+        AppendUserWorksForSeveralMonths(formData);
 
-    function AppendPercentagesForOneMonthCalendarPlan(formData) {
-        for (let i = 0; i < calendarPlanVM.userWorks.length; i++) {
-            formData.append(`UserWorks[${i}].WorkName`, calendarPlanVM.userWorks[i].workName);
-            formData.append(`UserWorks[${i}].Percentages[0]`, 100);
-        }
-    }
-
-    function AppendPercentagesForSeveralMonthsCalendarPlan(formData) {
-        for (let i = 0; i < calendarPlanVM.userWorks.length; i++) {
-            formData.append(`UserWorks[${i}].WorkName`, calendarPlanVM.userWorks[i].workName);
-            for (let j = 0; j < calendarPlanVM.constructionDuration; j++) {
-                let percent = $(`.percentages-table tbody tr:nth-child(${i + 1}) td:nth-child(${j + 2}) #percent-input`).val();
-                formData.append(`UserWorks[${i}].Percentages[${j}]`, percent);
-            }
-        }
-    }
-
-    $(document).on('keyup', '#percent-input', function () {
-        let thisPercent = parseInt($(this).val());
-        let percentSum = thisPercent;
-        $(this).parents('td').siblings('td').each(function () {
-            let percent = $(this).find('#percent-input').val();
-            if (percent) {
-                percentSum += parseInt(percent);
+        $.ajax({
+            url: '/CalendarPlan/WriteCalendarPlan',
+            data: formData,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function () {
+                window.location = '/CalendarPlan/Download';
             }
         });
+    });
 
-        if (percentSum > 100) {
-            let sumOfOtherPercents = percentSum - thisPercent;
-            $(this).val(100 - sumOfOtherPercents);
+    function AppendUserWorksForSeveralMonths(formData) {
+        $('.percentages-table tbody').find('input').each(function () {
+            if ($(this).attr('type') == 'number') {
+                formData.append($(this).attr('name'), ReplaceDotWithComma(($(this).val() / 100).toString()));
+            } else {
+                formData.append($(this).attr('name'), $(this).val());
+            }
+        });
+    }
+});
+
+$(document).on('keyup', '#percent-input', function () {
+    let thisPercent = parseInt($(this).val());
+    let percentSum = thisPercent;
+    $(this).parents('td').siblings('td').each(function () {
+        let percent = $(this).find('#percent-input').val();
+        if (percent) {
+            percentSum += parseInt(percent);
         }
     });
 
-    $(document).on('blur', '#percent-input', function () {
-        let value = $(this).val();
+    if (percentSum > 100) {
+        let sumOfOtherPercents = percentSum - thisPercent;
+        $(this).val(100 - sumOfOtherPercents);
+    }
+});
 
-        if (!value.trim() || value < 0) {
-            $(this).val(0);
-        }
-    });
+$(document).on('blur', '#percent-input', function () {
+    let value = $(this).val();
+
+    if (!value.trim() || value < 0) {
+        $(this).val(0);
+    }
 });

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using POSCore.CalendarPlanLogic;
-using POSWeb.Helpers;
 using POSWeb.Models;
 using POSWeb.Services.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace POSWeb.Presentations
 {
@@ -19,10 +19,9 @@ namespace POSWeb.Presentations
             _mapper = mapper;
         }
 
-        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName)
+        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks, string userFullName)
         {
-            var fileName = GetCalendarPlanFileName(userFullName);
-            _calendarPlanService.WriteCalendarPlan(estimateFiles, calendarPlanVM, fileName);
+            _calendarPlanService.WriteCalendarPlan(estimateFiles, userWorks, userFullName);
         }
 
         public CalendarPlanVM GetCalendarPlanVM(IEnumerable<IFormFile> estimateFiles)
@@ -30,33 +29,28 @@ namespace POSWeb.Presentations
             var estimate = _calendarPlanService.GetEstimate(estimateFiles);
 
             var calendarPlanVM = _mapper.Map<CalendarPlanVM>(estimate);
-            calendarPlanVM.UserWorks.RemoveAll(x =>
-                x.Chapter == 1
-                || x.WorkName.StartsWith(CalendarPlanSeparator.TemporaryBuildingsSearchPattern)
-                || x.Chapter == 10);
             calendarPlanVM.UserWorks.Add(new UserWork()
             {
-                WorkName = CalendarPlanSeparator.MainOtherExpensesWork,
+                WorkName = CalendarWorkCreator.MainOtherExpensesWorkName,
                 Chapter = 9
             });
 
             return calendarPlanVM;
         }
 
-        public UserWork GetMainTotalWork(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks)
         {
-            var mainTotalWork = _calendarPlanService.GetMainTotalWork(estimateFiles, calendarPlanVM);
-            return _mapper.Map<UserWork>(mainTotalWork);
+            return _calendarPlanService.GetTotalPercentages(estimateFiles, userWorks);
         }
 
         public string GetCalendarPlanFileName(string userFullName)
         {
-            return $"CalendarPlan{userFullName.RemoveBackslashes()}.docx";
+            return _calendarPlanService.GetCalendarPlanFileName(userFullName);
         }
 
-        public string GetDownloadCalendarPlanName(string objectCipher)
+        public string GetDownloadCalendarPlanFileName()
         {
-            return _calendarPlanService.GetDownloadCalendarPlanName(objectCipher);
+            return _calendarPlanService.GetDownloadCalendarPlanFileName();
         }
 
         public string GetCalendarPlansPath()

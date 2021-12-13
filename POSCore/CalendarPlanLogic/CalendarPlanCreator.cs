@@ -1,6 +1,6 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace POSCore.CalendarPlanLogic
 {
@@ -13,12 +13,13 @@ namespace POSCore.CalendarPlanLogic
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public CalendarPlan Create(Estimate estimate)
+        public CalendarPlan Create(Estimate estimate, List<decimal> otherExpensesPercentages)
         {
-            var calendarWorks = estimate.EstimateWorks.Select(
-                estimateWork => _calendarWorkCreator.Create(estimate.ConstructionStartDate, estimateWork));
-
-            return new CalendarPlan(calendarWorks.ToList(), estimate.ConstructionStartDate, estimate.ConstructionDuration);
+            var preparatoryCalendarWorks = _calendarWorkCreator.CreatePreparatoryCalendarWorks(estimate.PreparatoryEstimateWorks, 
+                estimate.ConstructionStartDate);
+            var mainCalendarWorks = _calendarWorkCreator.CreateMainCalendarWorks(estimate.MainEstimateWorks, preparatoryCalendarWorks[^1], 
+                estimate.ConstructionStartDate, estimate.ConstructionDuration, otherExpensesPercentages);
+            return new CalendarPlan(preparatoryCalendarWorks, mainCalendarWorks, estimate.ConstructionStartDate, estimate.ConstructionDuration);
         }
     }
 }

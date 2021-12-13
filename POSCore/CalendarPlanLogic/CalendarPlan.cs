@@ -5,13 +5,15 @@ namespace POSCore.CalendarPlanLogic
 {
     public class CalendarPlan
     {
-        public List<CalendarWork> CalendarWorks { get; }
+        public List<CalendarWork> PreparatoryCalendarWorks { get; }
+        public List<CalendarWork> MainCalendarWorks { get; }
         public DateTime ConstructionStartDate { get; }
         public decimal ConstructionDuration { get; }
 
-        public CalendarPlan(List<CalendarWork> calendarWorks, DateTime constructionStartDate, decimal constructionDuration)
+        public CalendarPlan(List<CalendarWork> preparatoryCalendarWorks, List<CalendarWork> mainCalendarWorks, DateTime constructionStartDate, decimal constructionDuration)
         {
-            CalendarWorks = calendarWorks;
+            PreparatoryCalendarWorks = preparatoryCalendarWorks;
+            MainCalendarWorks = mainCalendarWorks;
             ConstructionStartDate = constructionStartDate;
             ConstructionDuration = constructionDuration;
         }

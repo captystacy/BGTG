@@ -1,13 +1,8 @@
-﻿@model CalendarPlanVM
-
-@{
-    ViewData["Title"] = "Домашняя страница";
-}
-
-@section Scripts {
-    <script src="~/js/pos.js?v=1"></script>
-    <script src="~/js/calendar-plan.js?v=1"></script>
-    <script src="~/js/energy-and-water.js?v=1"></script>
+﻿@section Scripts {
+    <script src="~/js/estimate-files-input.js?v=1.1"></script>
+    <script src="~/js/calendar-plan.js?v=1.1"></script>
+    <script src="~/js/labor-costs-duration.js?v=1.1"></script>
+    <script src="~/js/energy-and-water.js?v=1.1"></script>
 }
 
 <div class="snowflakes" aria-hidden="true">
@@ -49,52 +44,81 @@
     </div>
 </div>
 <div class="pos">
-    <form asp-controller="CalendarPlan" asp-action="WriteAndDownload" enctype="multipart/form-data" method="post">
-        <div class="choose-estimates mb-3">
-            <label for="estimateFiles" class="form-label">Выберите сметы (до 20 мес.)</label>
-            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                <span class="sr-only"></span>
-            </div>
-            <input name="estimateFiles" class="form-control" type="file" id="estimate-files" multiple>
+    <div class="choose-estimates mb-3">
+        <label for="estimate-files" class="form-label">Выберите сметы (до 20 мес.)</label>
+        <div class="spinner-border spinner-border-sm text-primary" id="spinner" role="status">
+            <span class="sr-only"></span>
         </div>
-        <div class="pos-buttons mb-3">
-            <button type="button" class="btn btn-primary" id="calendar-plan-btn">
-                Календарный план
+        <input name="estimateFiles" class="form-control" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="estimate-files" multiple>
+    </div>
+    <div class="pos-buttons mb-3">
+        <button type="button" class="btn btn-primary" id="calendar-plan-btn">
+            Календарный план
+        </button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary" id="labor-costs-duration-btn">Продолжительность (по трудозатратам)</button>
+            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden"></span>
             </button>
-            <button type="button" class="btn btn-primary" id="energy-and-water-btn">
-                Энергия и вода
-            </button>
-        </div>
-        <input asp-for="ConstructionDuration" type="hidden" />
-        <input asp-for="ConstructionStartDate" type="hidden" />
-        <input asp-for="ObjectCipher" type="hidden" />
-        <div class="percentages-table">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th rowspan="2" scope="col" class="align-middle text-center text-break">Наименование отдельных зданий, сооружений и видов работ</th>
-                        <th colspan="20" scope="col" class="align-middle text-center">
-                            Распределение капитальных вложений и обьемов  СМР по месяцам строительства, тыс.руб.
-                        </th>
-                    </tr>
-                    <tr id="month-row">
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-primary" id="calculate-percentages">
-                    Рассчитать задел, %
-                </button>
-                <button type="submit" class="btn btn-primary" id="download-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"></path>
-                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
-                    </svg>
-                    Скачать
-                </button>
+            <div class="dropdown-menu labor-costs-duration-dropdown">
+                <div class="labor-costs-duration-dropdown-item">
+                    <input class="form-control" id="number-of-working-days" type="number" value="21.5" />
+                    <label for="number-of-working-days">Количество рабочих дней в месяце</label>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="labor-costs-duration-dropdown-item">
+                    <input class="form-control" id="working-day-duration" type="number" value="8" />
+                    <label for="working-day-duration">Продолжительность рабочего дня, часов</label>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="labor-costs-duration-dropdown-item">
+                    <input class="form-control" id="shift" type="number" value="1.5" />
+                    <label for="shift">Сменность</label>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="labor-costs-duration-dropdown-item">
+                    <input class="form-control" id="number-of-employees" type="number" value="4" />
+                    <label for="number-of-employees">Количество работающих в бригаде </label>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="labor-costs-duration-dropdown-item">
+                    <input class="form-control" id="technological-labor-costs" type="number" value="0" />
+                    <label for="technologists-labor-costs">Трудозатраты по технологической карте, человеко/часов</label>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="labor-costs-duration-dropdown-item form-check form-switch form-switch-md">
+                    <input class="form-check-input" type="checkbox" id="acceptance-time-included" checked>
+                    <label class="form-check-label" for="acceptance-time-included">Включать время на приемку</label>
+                </div>
             </div>
         </div>
-    </form>
+        <button type="button" class="btn btn-primary" id="energy-and-water-btn">
+            Энергия и вода
+        </button>
+    </div>
+    <div class="percentages-table">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th rowspan="2" scope="col" class="align-middle text-center text-break">Наименование отдельных зданий, сооружений и видов работ</th>
+                    <th colspan="20" scope="col" class="align-middle text-center">
+                        Распределение капитальных вложений и обьемов  СМР по месяцам строительства, тыс.руб.
+                    </th>
+                </tr>
+                <tr id="month-row">
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-primary" id="calculate-percentages">
+                Рассчитать задел, %
+            </button>
+            <button type="button" class="btn btn-primary btn-icon-with-text" id="download-calendar-plan-btn">
+                <i class="download"></i>
+                Скачать
+            </button>
+        </div>
+    </div>
 </div>

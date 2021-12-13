@@ -4,19 +4,19 @@ namespace POSCore.EnergyAndWaterLogic
 {
     public class EnergyAndWaterCreator : IEnergyAndWaterCreator
     {
-        private const decimal _coef1 = (decimal)1.0066;
-        private const decimal _coef2 = (decimal)6.9877;
-        private const decimal _coef3 = 1400;
-        private const decimal _coef4 = (decimal)2.93;
-        private const decimal _coef5 = 1000;
+        private const decimal _coef1 = 1.0066M;
+        private const decimal _coef2 = 6.9877M;
+        private const int _coef3 = 1400;
+        private const decimal _coef4 = 2.93M;
+        private const int _coef5 = 1000;
 
-        private const decimal _smrVolumeCoef = 100;
-        private const decimal _energyCoef = 205;
-        private const decimal _waterCoef = (decimal)0.3;
-        private const decimal _compressedAirCoef = (decimal)3.9;
-        private const decimal _oxygenCoef = 4400;
+        private const int _smrVolumeCoef = 100;
+        private const int _energyCoef = 205;
+        private const decimal _waterCoef = 0.3M;
+        private const decimal _compressedAirCoef = 3.9M;
+        private const int _oxygenCoef = 4400;
 
-        private const decimal _multiplier = 10000;
+        private const int _multiplier = 10000;
 
         public EnergyAndWater Create(decimal totalCostIncludingContructionAndInstallationWorks, int constructionYear)
         {

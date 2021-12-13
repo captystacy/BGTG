@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using POSWeb.Models;
-using POSWeb.Presentations;
 using POSWeb.Services;
+using POSWeb.Services.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 
@@ -10,32 +9,25 @@ namespace POSWeb.Controllers
 {
     public class EnergyAndWaterController : Controller
     {
-        private readonly EnergyAndWaterPresentation _energyAndWaterPresentation;
+        private readonly IEnergyAndWaterService _energyAndWaterService;
 
-        public EnergyAndWaterController(EnergyAndWaterPresentation energyAndWaterPresentation)
+        public EnergyAndWaterController(IEnergyAndWaterService energyAndWaterService)
         {
-            _energyAndWaterPresentation = energyAndWaterPresentation;
+            _energyAndWaterService = energyAndWaterService;
         }
 
-        public IActionResult WriteAndGetObjectCipher(IEnumerable<IFormFile> estimateFiles, EnergyAndWaterVM energyAndWaterVM)
+        public void WriteEnergyAndWater(IEnumerable<IFormFile> estimateFiles)
         {
-            _energyAndWaterPresentation.WriteEnergyAndWater(estimateFiles, energyAndWaterVM.ConstructionStartDate, User.Identity.Name);
-            return Json(energyAndWaterVM.ObjectCipher);
+            _energyAndWaterService.WriteEnergyAndWater(estimateFiles, User.Identity.Name);
         }
 
-        public IActionResult Download(string objectCipher)
+        public IActionResult Download()
         {
-            var energyAndWatersPath = _energyAndWaterPresentation.GetEnergyAndWatersPath();
-            var energyAndWaterFileName = _energyAndWaterPresentation.GetEnergyAndWaterFileName(User.Identity.Name);
+            var energyAndWatersPath = _energyAndWaterService.GetEnergyAndWatersPath();
+            var energyAndWaterFileName = _energyAndWaterService.GetEnergyAndWaterFileName(User.Identity.Name);
             var filePath = Path.Combine(energyAndWatersPath, energyAndWaterFileName);
-            var downloadEnergyAndWaterName = _energyAndWaterPresentation.GetDownloadEnergyAndWaterName(objectCipher);
+            var downloadEnergyAndWaterName = _energyAndWaterService.GetDownloadEnergyAndWaterFileName();
             return PhysicalFile(filePath, CalendarPlanService.DocxMimeType, downloadEnergyAndWaterName);
-        }
-
-        public IActionResult GetEnergyAndWaterVM(IEnumerable<IFormFile> estimateFiles)
-        {
-            var energyAndWaterVM = _energyAndWaterPresentation.GetEnergyAndWaterVM(estimateFiles);
-            return Json(energyAndWaterVM);
         }
     }
 }

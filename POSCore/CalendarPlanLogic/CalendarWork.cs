@@ -2,7 +2,7 @@
 {
     public class CalendarWork
     {
-        public string WorkName { get; }
+        public string WorkName { get; set; }
         public decimal TotalCost { get; }
         public decimal TotalCostIncludingContructionAndInstallationWorks { get; }
         public ConstructionPeriod ConstructionPeriod { get; }

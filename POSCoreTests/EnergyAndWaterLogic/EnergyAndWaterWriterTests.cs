@@ -14,7 +14,7 @@ namespace POSCoreTests.EnergyAndWaterLogic
 
         private EnergyAndWater CreateDefaultEnergyAndWater()
         {
-            return new EnergyAndWater(2021, (decimal)1.293, (decimal)2.65, (decimal)0.004, (decimal)0.05, (decimal)56.882);
+            return new EnergyAndWater(2021, 1.293M, 2.65M, 0.004M, 0.05M, 56.882M);
         }
 
         [Test]

@@ -13,8 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
     <Folder Include="wwwroot\UsersFiles\CalendarPlans\" />
     <Folder Include="wwwroot\UsersFiles\EnergyAndWaters\" />
+    <Folder Include="wwwroot\UsersFiles\LaborCostsDurations\" />
   </ItemGroup>
 
 </Project>

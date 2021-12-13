@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using POSCore.CalendarPlanLogic;
 using POSCore.EstimateLogic;
 using POSWeb.Models;
 using System.Collections.Generic;
@@ -8,10 +7,11 @@ namespace POSWeb.Services.Interfaces
 {
     public interface ICalendarPlanService
     {
-        void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string fileName);
-        CalendarWork GetMainTotalWork(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM);
+        void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks, string userFullName);
+        IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks);
         Estimate GetEstimate(IEnumerable<IFormFile> estimateFiles);
         string GetCalendarPlansPath();
-        string GetDownloadCalendarPlanName(string objectCipher);
+        string GetCalendarPlanFileName(string userFullName);
+        string GetDownloadCalendarPlanFileName();
     }
 }

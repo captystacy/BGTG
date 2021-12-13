@@ -1,0 +1,11 @@
+﻿i {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+}
+
+    i.download {
+        background: url(../icons/download.svg);
+    }

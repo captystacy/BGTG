@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
+using POSCore.DurationLogic.LaborCosts;
+using POSCore.DurationLogic.LaborCosts.Interfaces;
 using POSCore.EnergyAndWaterLogic;
 using POSCore.EnergyAndWaterLogic.Interfaces;
 using POSCore.EstimateLogic;
@@ -14,6 +16,7 @@ using POSWeb.Models;
 using POSWeb.Presentations;
 using POSWeb.Services;
 using POSWeb.Services.Interfaces;
+using System.Globalization;
 using System.Linq;
 
 namespace POSWeb
@@ -41,27 +44,26 @@ namespace POSWeb
             services.AddSingleton(x => new CalendarPlanPresentation(
                 x.GetService<ICalendarPlanService>(),
                 x.GetService<IMapper>()));
-            services.AddSingleton(x => new EnergyAndWaterPresentation(
-                x.GetService<IEnergyAndWaterService>(),
-                x.GetService<IMapper>()
-                ));
         }
 
         private void RegisterServices(IServiceCollection services)
         {
             services.AddSingleton<IEstimateReader>(new EstimateReader());
-            services.AddSingleton<IConstructionPeriodCreator>(new ConstructionPeriodCreator());
             services.AddSingleton<IEstimateConnector>(new EstimateConnector());
+            services.AddSingleton<IEstimateManager>(x => new EstimateManager(
+                x.GetService<IEstimateReader>(),
+                x.GetService<IEstimateConnector>()
+                ));
+            services.AddSingleton<IConstructionPeriodCreator>(new ConstructionPeriodCreator());
             services.AddSingleton<ICalendarWorkCreator>(x => new CalendarWorkCreator(x.GetService<IConstructionPeriodCreator>()));
             services.AddSingleton<ICalendarPlanCreator>(x => new CalendarPlanCreator(x.GetService<ICalendarWorkCreator>()));
             services.AddSingleton<ICalendarPlanWriter>(new CalendarPlanWriter());
-            services.AddSingleton<ICalendarPlanSeparator>(x => new CalendarPlanSeparator(x.GetService<IConstructionPeriodCreator>()));
+
+            services.AddSingleton<IEstimateService>(x => new EstimateService(x.GetService<IEstimateManager>()));
 
             services.AddSingleton<ICalendarPlanService>(x => new CalendarPlanService(
-                x.GetService<IEstimateReader>(),
-                x.GetService<IEstimateConnector>(),
+                x.GetService<IEstimateService>(),
                 x.GetService<ICalendarPlanCreator>(),
-                x.GetService<ICalendarPlanSeparator>(),
                 x.GetService<ICalendarPlanWriter>(),
                 x.GetService<IWebHostEnvironment>()
                 ));
@@ -70,11 +72,21 @@ namespace POSWeb
             services.AddSingleton<IEnergyAndWaterWriter>(new EnergyAndWaterWriter());
 
             services.AddSingleton<IEnergyAndWaterService>(x => new EnergyAndWaterService(
-                x.GetService<ICalendarPlanService>(),
+                x.GetService<IEstimateService>(),
                 x.GetService<IEnergyAndWaterCreator>(),
                 x.GetService<IEnergyAndWaterWriter>(),
                 x.GetService<IWebHostEnvironment>(),
                 x.GetService<ICalendarWorkCreator>()
+                ));
+
+            services.AddSingleton<ILaborCostsDurationCreator>(new LaborCostsDurationCreator());
+            services.AddSingleton<ILaborCostsDurationWriter>(new LaborCostsDurationWriter());
+
+            services.AddSingleton<ILaborCostsDurationService>(x => new LaborCostsDurationService(
+                x.GetService<IEstimateService>(),
+                x.GetService<ILaborCostsDurationCreator>(),
+                x.GetService<ILaborCostsDurationWriter>(),
+                x.GetService<IWebHostEnvironment>()
                 ));
         }
 
@@ -83,8 +95,7 @@ namespace POSWeb
             var config = new MapperConfiguration(x =>
             {
                 x.CreateMap<Estimate, CalendarPlanVM>()
-                    .ForMember(d => d.UserWorks, o => o.MapFrom(s => s.EstimateWorks));
-                x.CreateMap<Estimate, EnergyAndWaterVM>();
+                    .ForMember(d => d.UserWorks, o => o.MapFrom(s => s.MainEstimateWorks));
                 x.CreateMap<EstimateWork, UserWork>();
                 x.CreateMap<CalendarWork, UserWork>()
                     .ForMember(d => d.Percentages, o => o.MapFrom(s => s.ConstructionPeriod.ConstructionMonths.Select(x => x.PercentPart)));
@@ -94,6 +105,10 @@ namespace POSWeb
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var cultureInfo = new CultureInfo("ru-RU");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -29,12 +29,12 @@ namespace POSWebTests.Presentations
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
             var estimateFiles = new List<IFormFile>();
-            var calendarPlanVM = new CalendarPlanVM();
+            var userWorks = new List<UserWork>();
             var userFullName = "BGTG\\kss";
 
-            calendarPlanPresentation.WriteCalendarPlan(estimateFiles, calendarPlanVM, userFullName);
+            calendarPlanPresentation.WriteCalendarPlan(estimateFiles, userWorks, userFullName);
 
-            _calendarPlanServiceMock.Verify(x => x.WriteCalendarPlan(estimateFiles, calendarPlanVM, "CalendarPlanBGTGkss.docx"), Times.Once);
+            _calendarPlanServiceMock.Verify(x => x.WriteCalendarPlan(estimateFiles, userWorks, userFullName), Times.Once);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace POSWebTests.Presentations
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
             var estimateFiles = new List<IFormFile>();
-            var estimate = new Estimate(new List<EstimateWork>(), DateTime.Today, 0, "");
+            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
             _calendarPlanServiceMock.Setup(x => x.GetEstimate(estimateFiles)).Returns(estimate);
             var userWorks = new List<UserWork>()
             {
@@ -61,34 +61,26 @@ namespace POSWebTests.Presentations
             _calendarPlanServiceMock.Verify(x => x.GetEstimate(estimateFiles), Times.Once);
             _mapperMock.Verify(x => x.Map<CalendarPlanVM>(estimate), Times.Once);
 
-            Assert.IsEmpty(result.UserWorks.FindAll(x =>
-                x.Chapter == 1
-                || x.WorkName.StartsWith(CalendarPlanSeparator.TemporaryBuildingsSearchPattern)
-                || x.Chapter == 10));
-
             Assert.NotNull(result.UserWorks.Find(x =>
-                x.WorkName == CalendarPlanSeparator.MainOtherExpensesWork
+                x.WorkName == CalendarWorkCreator.MainOtherExpensesWorkName
                 && x.Chapter == 9));
 
             Assert.AreSame(calendarPlanVM, result);
         }
 
         [Test]
-        public void GetMainTotalWork()
+        public void GetTotalPercentages()
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
             var estimateFiles = new List<IFormFile>();
-            var calendarPlanVM = new CalendarPlanVM();
-            var mainTotalWork = new CalendarWork("", 0, 0, null, 0);
-            var userWork = new UserWork();
-            _calendarPlanServiceMock.Setup(x => x.GetMainTotalWork(estimateFiles, calendarPlanVM)).Returns(mainTotalWork);
-            _mapperMock.Setup(x => x.Map<UserWork>(mainTotalWork)).Returns(userWork);
+            var percentages = new List<decimal>();
+            var userWorks = new List<UserWork>();
+            _calendarPlanServiceMock.Setup(x => x.GetTotalPercentages(estimateFiles, userWorks)).Returns(percentages);
 
-            var result = calendarPlanPresentation.GetMainTotalWork(estimateFiles, calendarPlanVM);
+            var result = calendarPlanPresentation.GetTotalPercentages(estimateFiles, userWorks);
 
-            _calendarPlanServiceMock.Verify(x => x.GetMainTotalWork(estimateFiles, calendarPlanVM), Times.Once);
-            _mapperMock.Verify(x => x.Map<UserWork>(mainTotalWork), Times.Once);
-            Assert.AreSame(userWork, result);
+            _calendarPlanServiceMock.Verify(x => x.GetTotalPercentages(estimateFiles, userWorks), Times.Once);
+            Assert.AreEqual(percentages, result);
         }
 
 
@@ -97,21 +89,26 @@ namespace POSWebTests.Presentations
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
             var userFullName = "BGTG\\kss";
+            var fileName = "fileName";
+            _calendarPlanServiceMock.Setup(x => x.GetCalendarPlanFileName(userFullName)).Returns(fileName);
 
             var calendarPlanFileName = calendarPlanPresentation.GetCalendarPlanFileName(userFullName);
 
-            Assert.AreEqual("CalendarPlanBGTGkss.docx", calendarPlanFileName);
+            _calendarPlanServiceMock.Verify(x=>x.GetCalendarPlanFileName(userFullName), Times.Once);
+            Assert.AreEqual(fileName, calendarPlanFileName);
         }
 
         [Test]
         public void GetDownloadCalendarPlanName()
         {
             var calendarPlanPresentation = CreateDefaultCalendarPlanPresentation();
-            var objectCipher = "5.5-20.548";
+            var fileName = "fileName";
+            _calendarPlanServiceMock.Setup(x => x.GetDownloadCalendarPlanFileName()).Returns(fileName);
 
-            calendarPlanPresentation.GetDownloadCalendarPlanName(objectCipher);
+            var downloadCalendarPlanName = calendarPlanPresentation.GetDownloadCalendarPlanFileName();
 
-            _calendarPlanServiceMock.Verify(x => x.GetDownloadCalendarPlanName(objectCipher), Times.Once);
+            _calendarPlanServiceMock.Verify(x => x.GetDownloadCalendarPlanFileName(), Times.Once);
+            Assert.AreEqual(fileName, downloadCalendarPlanName);
         }
 
 

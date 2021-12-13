@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
-using POSCore.EstimateLogic.Interfaces;
+using POSWeb.Helpers;
 using POSWeb.Models;
 using POSWeb.Services.Interfaces;
 using System.Collections.Generic;
@@ -14,11 +14,9 @@ namespace POSWeb.Services
 {
     public class CalendarPlanService : ICalendarPlanService
     {
-        private readonly IEstimateReader _estimateReader;
-        private readonly IEstimateConnector _estimateConnector;
+        private readonly IEstimateService _estimateService;
         private readonly ICalendarPlanCreator _calendarPlanCreator;
         private readonly ICalendarPlanWriter _calendarPlanWriter;
-        private readonly ICalendarPlanSeparator _calendarPlanSeparator;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public const string DocxMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -26,76 +24,57 @@ namespace POSWeb.Services
         private const string _calendarPlansPath = "UsersFiles\\CalendarPlans";
         private const string _calendarPlanTemplatesPath = "Templates\\CalendarPlanTemplates";
 
-        public CalendarPlanService(IEstimateReader estimateReader, IEstimateConnector estimateConnector,
-            ICalendarPlanCreator calendarPlanCreator, ICalendarPlanSeparator calendarPlanSeparator,
+        public CalendarPlanService(IEstimateService estimateService, ICalendarPlanCreator calendarPlanCreator,
             ICalendarPlanWriter calendarPlanWriter, IWebHostEnvironment webHostEnvironment)
         {
-            _estimateReader = estimateReader;
-            _estimateConnector = estimateConnector;
+            _estimateService = estimateService;
             _calendarPlanCreator = calendarPlanCreator;
-            _calendarPlanSeparator = calendarPlanSeparator;
             _calendarPlanWriter = calendarPlanWriter;
             _webHostEnvironment = webHostEnvironment;
         }
 
         public Estimate GetEstimate(IEnumerable<IFormFile> estimateFiles)
         {
-            var estimates = estimateFiles.Select(x => _estimateReader.Read(x.OpenReadStream()));
-            return _estimateConnector.Connect(estimates.ToList());
+            _estimateService.ReadEstimateFiles(estimateFiles);
+            return _estimateService.Estimate;
         }
 
-        public CalendarWork GetMainTotalWork(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks)
         {
-            CalculateCalendarPlan(estimateFiles, calendarPlanVM);
-            return _calendarPlanSeparator.MainCalendarPlan.CalendarWorks.Find(x => x.EstimateChapter == 10);
+            var calendarPlan = CalculateCalendarPlan(estimateFiles, userWorks);
+            return calendarPlan.MainCalendarWorks.Find(x => x.EstimateChapter == 10).ConstructionPeriod.ConstructionMonths.Select(x => x.PercentPart);
         }
 
-        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string fileName)
+        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks, string userFullName)
         {
-            CalculateCalendarPlan(estimateFiles, calendarPlanVM);
-            var ceilingDuration = decimal.Ceiling(calendarPlanVM.ConstructionDuration);
+            var calendarPlan = CalculateCalendarPlan(estimateFiles, userWorks);
+            var ceilingDuration = decimal.Ceiling(_estimateService.Estimate.ConstructionDuration);
             var savePath = GetCalendarPlansPath();
             var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlanTemplatesPath, $"CalendarPlan{ceilingDuration}MonthsTemplate.docx");
-            _calendarPlanWriter.Write(_calendarPlanSeparator.PreparatoryCalendarPlan, _calendarPlanSeparator.MainCalendarPlan,
-                templatePath, savePath, fileName);
+            var fileName = GetCalendarPlanFileName(userFullName);
+            _calendarPlanWriter.Write(calendarPlan, templatePath, savePath, fileName);
         }
 
-        private void CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        private CalendarPlan CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks)
         {
-            foreach (var userWork in calendarPlanVM.UserWorks)
-            {
-                userWork.Percentages = userWork.Percentages.Select(x => x / 100).ToList();
-            }
+            _estimateService.ReadEstimateFiles(estimateFiles);
 
-            var otherExpensesWork = calendarPlanVM.UserWorks.Find(x => x.WorkName == CalendarPlanSeparator.MainOtherExpensesWork);
-            calendarPlanVM.UserWorks.Remove(otherExpensesWork);
+            var otherExpensesWork = userWorks.Find(x => x.WorkName == CalendarWorkCreator.MainOtherExpensesWorkName);
+            userWorks.Remove(otherExpensesWork);
 
-            var estimate = PrepareEstimate(estimateFiles, calendarPlanVM.UserWorks);
+            SetEstimatePercenatages(userWorks);
 
-            var calendarPlan = _calendarPlanCreator.Create(estimate);
+            var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages);
 
-            _calendarPlanSeparator.Separate(calendarPlan, otherExpensesWork.Percentages);
+            return calendarPlan;
         }
 
-        private Estimate PrepareEstimate(IEnumerable<IFormFile> estimateFiles, List<UserWork> userWorks)
+        private void SetEstimatePercenatages(List<UserWork> userWorks)
         {
-            var estimate = GetEstimate(estimateFiles);
-
-            foreach (var preparatoryEstimateWork in estimate.EstimateWorks.FindAll(x => x.Chapter == 1 || x.WorkName.StartsWith(CalendarPlanSeparator.TemporaryBuildingsSearchPattern)))
+            userWorks.ForEach(userWork =>
             {
-                preparatoryEstimateWork.Percentages = new List<decimal>() { 1 };
-            }
-
-            foreach (var userWork in userWorks)
-            {
-                var estimateWork = estimate.EstimateWorks.Find(x => x.WorkName == userWork.WorkName);
-                estimateWork.Percentages = userWork.Percentages;
-            }
-
-            var totalEstimateWork = estimate.EstimateWorks.Find(x => x.WorkName == CalendarPlanSeparator.TotalWorkSearchPattern);
-            totalEstimateWork.Percentages = new List<decimal>();
-
-            return estimate;
+                _estimateService.Estimate.MainEstimateWorks.Find(estimateWork => estimateWork.WorkName == userWork.WorkName).Percentages = userWork.Percentages;
+            });
         }
 
         public string GetCalendarPlansPath()
@@ -103,9 +82,14 @@ namespace POSWeb.Services
             return Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlansPath);
         }
 
-        public string GetDownloadCalendarPlanName(string objectCipher)
+        public string GetCalendarPlanFileName(string userFullName)
         {
-            return $"{objectCipher}КП.docx";
+            return $"CalendarPlan{userFullName.RemoveBackslashes()}.docx";
+        }
+
+        public string GetDownloadCalendarPlanFileName()
+        {
+            return $"{_estimateService.Estimate.ObjectCipher}КП.docx";
         }
     }
 }

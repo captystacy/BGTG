@@ -18,42 +18,38 @@ namespace POSCoreTests.CalendarPlanLogic
             return new CalendarPlanCreator(_calendarWorkCreator.Object);
         }
 
-        private Estimate CreatDefaultEstimate()
-        {
-            return new Estimate(new List<EstimateWork>
-            {
-                new EstimateWork("ВЫНОС ТРАССЫ В НАТУРУ", 0, (decimal)0.013, (decimal)0.013, 1),
-                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", (decimal)0.04, 0, (decimal)0.632, 2),
-                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0, (decimal)0.02, 7),
-                new EstimateWork("ОДД НА ПЕРИОД ПРОИЗВОДСТВА РАБОТ", 0, 0, (decimal)0.005, 8),
-                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.012, 8),
-                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", (decimal)0.041, (decimal)2.536, (decimal)3.226, 10),
-            }, new DateTime(2022, 8, 1), (decimal)0.7, "5.5-20.548");
-        }
-
         [Test]
         public void Create_DefaultEstimate_CorrectCalendarPlan()
         {
             var calendarPlanCreator = CreateDefaultCalendarPlanCreator();
-            var estimate = CreatDefaultEstimate();
+            var preparatoryEstimateWorks = new List<EstimateWork>();
+            var mainEstimateWorks = new List<EstimateWork>();
+            var constructionStartDate = new DateTime(1999, 9, 21);
+            var construcitonDuration = 3;
+            var estimate = new Estimate(preparatoryEstimateWorks, mainEstimateWorks, constructionStartDate, construcitonDuration, null, 0);
+            var otherExpensesPercentages = new List<decimal>();
+            var lastPreparatoryCalendarWork = new CalendarWork("", 0, 0, null, 0);
+            var preparatoryCalendarWorks = new List<CalendarWork> 
+            { 
+                new CalendarWork("", 0, 0, null, 0),
+                new CalendarWork("", 0, 0, null, 0), 
+                lastPreparatoryCalendarWork
+            };
+            _calendarWorkCreator.Setup(x => x.CreatePreparatoryCalendarWorks(preparatoryEstimateWorks, constructionStartDate)).Returns(preparatoryCalendarWorks);
+            var mainCalendarWorks = new List<CalendarWork>();
+            _calendarWorkCreator.Setup(x => x.CreateMainCalendarWorks(mainEstimateWorks, lastPreparatoryCalendarWork, constructionStartDate,
+                construcitonDuration, otherExpensesPercentages)).Returns(mainCalendarWorks);
 
-            var expectedCalendarWorks = new List<CalendarWork>();
-            foreach (var estimateWork in estimate.EstimateWorks)
-            {
-                var calendarWork = new CalendarWork(estimateWork.WorkName, 0, 0, null, 0);
-                expectedCalendarWorks.Add(calendarWork);
-                _calendarWorkCreator.Setup(x => x.Create(estimate.ConstructionStartDate, estimateWork)).Returns(calendarWork);
-            }
+            var calendarPlan = calendarPlanCreator.Create(estimate, otherExpensesPercentages);
 
-            var calendarPlan = calendarPlanCreator.Create(estimate);
+            _calendarWorkCreator.Verify(x => x.CreatePreparatoryCalendarWorks(preparatoryEstimateWorks, constructionStartDate), Times.Once);
+            _calendarWorkCreator.Verify(x => x.CreateMainCalendarWorks(mainEstimateWorks, lastPreparatoryCalendarWork, constructionStartDate, 
+                construcitonDuration, otherExpensesPercentages), Times.Once);
 
-            for (int i = 0; i < expectedCalendarWorks.Count; i++)
-            {
-                Assert.AreEqual(expectedCalendarWorks[i], calendarPlan.CalendarWorks[i]);
-            }
-
-            Assert.AreEqual(estimate.ConstructionStartDate, calendarPlan.ConstructionStartDate);
-            Assert.AreEqual(estimate.ConstructionDuration, calendarPlan.ConstructionDuration);
+            Assert.AreEqual(preparatoryCalendarWorks, calendarPlan.PreparatoryCalendarWorks);
+            Assert.AreEqual(mainCalendarWorks, calendarPlan.MainCalendarWorks);
+            Assert.AreEqual(construcitonDuration, calendarPlan.ConstructionDuration);
+            Assert.AreEqual(constructionStartDate, calendarPlan.ConstructionStartDate);
         }
     }
 }

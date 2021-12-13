@@ -21,29 +21,29 @@ namespace POSCore.CalendarPlanLogic
         private const string _decimalFormat = "{0:f3}";
         private const string _percentFormat = "{0:P2}";
 
-        public void Write(CalendarPlan preparatoryCalendarPlan, CalendarPlan mainCalendarPlan, string templatePath, string savePath, string fileName)
+        public void Write(CalendarPlan calendarPlan, string templatePath, string savePath, string fileName)
         {
             using (var document = DocX.Load(templatePath))
             {
-                var constructionMonths = mainCalendarPlan.CalendarWorks.Find(x => x.WorkName == "Итого:").ConstructionPeriod.ConstructionMonths;
+                var constructionMonths = calendarPlan.MainCalendarWorks.Find(x => x.EstimateChapter == 10).ConstructionPeriod.ConstructionMonths;
 
                 var preparatoryCalendarPlanPatternTable = document.Tables[0];
-                ModifyCalendarPlanTable(preparatoryCalendarPlanPatternTable, preparatoryCalendarPlan, constructionMonths);
+                ModifyCalendarPlanTable(preparatoryCalendarPlanPatternTable, calendarPlan.PreparatoryCalendarWorks, constructionMonths);
 
                 var mainCalendarPlanPattrenTable = document.Tables[1];
-                ModifyCalendarPlanTable(mainCalendarPlanPattrenTable, mainCalendarPlan, constructionMonths);
+                ModifyCalendarPlanTable(mainCalendarPlanPattrenTable, calendarPlan.MainCalendarWorks, constructionMonths);
 
                 var saveAsPath = Path.Combine(savePath, fileName);
                 document.SaveAs(saveAsPath);
             }
         }
 
-        private void ModifyCalendarPlanTable(Table calendarPlanPatternTable, CalendarPlan calendarPlan, List<ConstructionMonth> constructionMonths)
+        private void ModifyCalendarPlanTable(Table calendarPlanPatternTable, List<CalendarWork> calendarWorks, List<ConstructionMonth> constructionMonths)
         {
             ReplaceDatePatternWithActualDate(calendarPlanPatternTable, constructionMonths);
 
             var i = 2;
-            foreach (var calendarWork in calendarPlan.CalendarWorks)
+            foreach (var calendarWork in calendarWorks)
             {
                 ReplaceWorkPatternsWithActualValues(calendarPlanPatternTable.Rows[i], calendarPlanPatternTable.Rows[i + 1], calendarWork);
                 i += 2;

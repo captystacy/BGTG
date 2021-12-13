@@ -29,12 +29,15 @@ namespace POSCoreTests.EstimateLogic
 
             var estimateVatFree = new Estimate(new List<EstimateWork>
             {
-                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, (decimal)0.005, 1),
-                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, (decimal)50.02, 2),
-                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, (decimal)0.004, (decimal)0.092, 7),
-                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.592, 8),
-                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, (decimal)11.519, (decimal)63.689, 10),
-            }, constructionStartDate, constructionDuration, objectCipher);
+                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, 0.005M, 1, new List<decimal> { 1 }),
+                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, 0.592M, 8, new List<decimal> { 1 }),
+            },
+            new List<EstimateWork>
+            {
+                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 50.02M, 2),
+                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0.004M, 0.092M, 7),
+                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, 11.519M, 63.689M, 10),
+            }, constructionStartDate, constructionDuration, objectCipher, 16);
 
             var estimateConnector = CreateDefaultEstimateConnector();
             var estimate = estimateConnector.Connect(new List<Estimate> { estimateVatFree });
@@ -51,32 +54,41 @@ namespace POSCoreTests.EstimateLogic
 
             var estimateVat = new Estimate(new List<EstimateWork>
             {
-                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, (decimal)0.001, 1),
-                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, (decimal)19.308, 2),
-                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, (decimal)0.002, (decimal)0.038, 7),
-                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.253, 8),
-                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, (decimal)9.911, (decimal)30.085, 10),
-            }, constructionStartDate, constructionDuration, objectCipher);
+                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, 0.001M, 1, new List<decimal> { 1 }),
+                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, 0.253M, 8, new List<decimal> { 1 }),
+            },
+            new List<EstimateWork>
+            {
+                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 19.308M, 2),
+                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0.002M, 0.038M, 7),
+                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, 9.911M, 30.085M, 10),
+            }, constructionStartDate, constructionDuration, objectCipher, 16);
 
             var estimateVatFree = new Estimate(new List<EstimateWork>
             {
-                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, (decimal)0.005, 1),
-                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, (decimal)50.02, 2),
-                new EstimateWork("ШРП", 0, (decimal)0.014, (decimal)0.192, 3),
-                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, (decimal)0.004, (decimal)0.092, 7),
-                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.592, 8),
-                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, (decimal)11.519, (decimal)63.689, 10),
-            }, constructionStartDate, constructionDuration, objectCipher);
+                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, 0.005M, 1, new List<decimal> { 1 }),
+                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, 0.592M, 8, new List<decimal> { 1 }),
+            }, 
+            new List<EstimateWork>
+            {
+                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 50.02M, 2),
+                new EstimateWork("ШРП", 0, 0.014M, 0.192M, 3),
+                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0.004M, 0.092M, 7),
+                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, 11.519M, 63.689M, 10),
+            }, constructionStartDate, constructionDuration, objectCipher, 17);
 
             var expectedEstimate = new Estimate(new List<EstimateWork>
             {
-                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, (decimal)0.006, 1),
-                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, (decimal)69.328, 2),
-                new EstimateWork("ШРП", 0, (decimal)0.014, (decimal)0.192, 3),
-                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, (decimal)0.006, (decimal)0.13, 7),
-                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.845, 8),
-                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, (decimal)21.43, (decimal)93.774, 10),
-            }, constructionStartDate, constructionDuration, objectCipher);
+                new EstimateWork("РЕКУЛЬТИВАЦИЯ", 0, 0, 0.006M, 1, new List<decimal> { 1 }),
+                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, 0.845M, 8, new List<decimal> { 1 }),
+            }, 
+            new List<EstimateWork>
+            {
+                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", 0, 0, 69.328M, 2),
+                new EstimateWork("ШРП", 0, 0.014M, 0.192M, 3),
+                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0.006M, 0.13M, 7),
+                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", 0, 21.43M, 93.774M, 10),
+            }, constructionStartDate, constructionDuration, objectCipher, 33);
 
             var estimateConnector = CreateDefaultEstimateConnector();
             var estimate = estimateConnector.Connect(new List<Estimate> { estimateVat, estimateVatFree });

@@ -2,7 +2,9 @@
 using POSCore.EstimateLogic;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 
 namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
 {
@@ -16,6 +18,8 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
         [SetUp]
         public void SetUp()
         {
+            var cultureInfo = new CultureInfo("ru-RU");
+            Thread.CurrentThread.CurrentCulture = cultureInfo;
             var projectDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             var currentProjectDirectory = Path.Combine(projectDirectory, @"EstimateLogic\EstimateReaderTestsPackage");
             _defaultEstimateWorkSheet0 = Path.Combine(currentProjectDirectory, "defaultEstimateWorkSheet0.xlsx");
@@ -32,16 +36,19 @@ namespace POSCoreTests.EstimateLogic.EstimateReaderTestsPackage
         private Estimate DefaultExpectedEstimate()
         {
             var constructionStartDate = new DateTime(2022, 8, 1);
-            var constructionDuration = (decimal)0.7;
+            var constructionDuration = 0.7M;
             return new Estimate(new List<EstimateWork>
             {
-                new EstimateWork("ВЫНОС ТРАССЫ В НАТУРУ", 0, (decimal)0.013, (decimal)0.013, 1),
-                new EstimateWork("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА", (decimal)0.04, 0, (decimal)0.632, 2),
-                new EstimateWork("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ", 0, 0, (decimal)0.02, 7),
-                new EstimateWork("ОДД НА ПЕРИОД ПРОИЗВОДСТВА РАБОТ", 0, 0, (decimal)0.005, 8),
-                new EstimateWork("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%", 0, 0, (decimal)0.012, 8),
-                new EstimateWork("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ", (decimal)0.041, (decimal)2.536, (decimal)3.226, 10),
-            }, constructionStartDate, constructionDuration, "5.5-20.548");
+                new EstimateWork("Вынос трассы в натуру", 0, 0.013M, 0.013M, 1, new List<decimal> { 1 }),
+                new EstimateWork("Временные здания и сооружения 8,56х0,93 - 7,961%", 0, 0, 0.012M, 8, new List<decimal> { 1 }),
+            }, 
+            new List<EstimateWork>
+            {
+                new EstimateWork("Электрохимическая защита", 0.04M, 0, 0.632M, 2),
+                new EstimateWork("Благоустройство территории", 0, 0, 0.02M, 7),
+                new EstimateWork("Одд на период производства работ", 0, 0, 0.005M, 8),
+                new EstimateWork("Всего по сводному сметному расчету", 0.041M, 2.536M, 3.226M, 10),
+            },constructionStartDate, constructionDuration, "5.5-20.548", 16);
         }
 
         [Test]

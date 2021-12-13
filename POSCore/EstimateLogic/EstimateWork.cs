@@ -19,5 +19,15 @@ namespace POSCore.EstimateLogic
             TotalCost = totalCost;
             Chapter = chapter;
         }
+
+        public EstimateWork(string workName, decimal equipmentCost, decimal otherProductsCost, decimal totalCost, int chapter, List<decimal> percentages)
+        {
+            WorkName = workName;
+            EquipmentCost = equipmentCost;
+            OtherProductsCost = otherProductsCost;
+            TotalCost = totalCost;
+            Chapter = chapter;
+            Percentages = percentages;
+        }
     }
 }
