@@ -81,7 +81,7 @@ namespace POSCore.EstimateLogic
             {
                 instertedOneByOne.Add(biggerOne[i]);
 
-                if (i != smallerOne.Count)
+                if (i < smallerOne.Count)
                 {
                     instertedOneByOne.Add(smallerOne[i]);
                 }

@@ -23,6 +23,8 @@ namespace POSCore.CalendarPlanLogic
         private const int _otherExpensesWorkChapter = 9;
         private const int _mainTotalWorkChapter = 10;
 
+        private readonly List<decimal> _preparatoryCaledarWorkPercentages = new List<decimal>() { 1 };
+
         public CalendarWorkCreator(IConstructionPeriodCreator constructionPeriodCreator)
         {
             _constructionPeriodCreator = constructionPeriodCreator;
@@ -42,39 +44,40 @@ namespace POSCore.CalendarPlanLogic
             var preparatoryCalendarWorks = new List<CalendarWork>();
             var calendarWorks = preparatoryEstimateWorks.Select(x => Create(x, constructionStartDate)).ToList();
 
-            var estimateChapter1CalendarWorks = calendarWorks.FindAll(x => x.EstimateChapter == 1 && x.TotalCostIncludingContructionAndInstallationWorks != 0);
+            var estimateChapter1CalendarWorks = calendarWorks.FindAll(x => x.EstimateChapter == _preparatoryWorkChapter && x.TotalCostIncludingContructionAndInstallationWorks != 0);
             if (estimateChapter1CalendarWorks.Count != 0)
             {
-                var preparatoryCalendarWork = SumCalendarWorks(estimateChapter1CalendarWorks, PreparatoryWorkName, _preparatoryWorkChapter);
+                var preparatoryCalendarWork = SumPreparatoryCalendarWorks(estimateChapter1CalendarWorks, PreparatoryWorkName, _preparatoryWorkChapter, constructionStartDate);
                 preparatoryCalendarWorks.Add(preparatoryCalendarWork);
             }
 
-            var temporaryBuildingsWork = calendarWorks.Find(x => x.EstimateChapter == 8);
+            var temporaryBuildingsWork = calendarWorks.Find(x => x.EstimateChapter == _temporaryBuildingsWorkChapter);
             temporaryBuildingsWork.WorkName = TemporaryBuildingsWorkName;
             preparatoryCalendarWorks.Add(temporaryBuildingsWork);
 
-            var totalCalendarWork = SumCalendarWorks(preparatoryCalendarWorks, TotalWorkName, _preparatoryTotalWorkChapter);
+            var totalCalendarWork = SumPreparatoryCalendarWorks(preparatoryCalendarWorks, TotalWorkName, _preparatoryTotalWorkChapter, constructionStartDate);
             preparatoryCalendarWorks.Add(totalCalendarWork);
 
             return preparatoryCalendarWorks;
         }
 
-        private CalendarWork SumCalendarWorks(List<CalendarWork> calendarWorks, string workName, int estimateChapter)
+        private CalendarWork SumPreparatoryCalendarWorks(List<CalendarWork> calendarWorks, string workName, int estimateChapter, DateTime constructionStartDate)
         {
-            var totalCostIncludingContructionAndInstallationWorks = calendarWorks.Sum(x => x.TotalCostIncludingContructionAndInstallationWorks);
             var totalCost = calendarWorks.Sum(x => x.TotalCost);
-            return new CalendarWork(workName, totalCost, totalCostIncludingContructionAndInstallationWorks, calendarWorks[0].ConstructionPeriod, estimateChapter);
+            var totalCostIncludingContructionAndInstallationWorks = calendarWorks.Sum(x => x.TotalCostIncludingContructionAndInstallationWorks);
+            var cosntructionPeriod = _constructionPeriodCreator.Create(constructionStartDate, totalCost, totalCostIncludingContructionAndInstallationWorks, _preparatoryCaledarWorkPercentages);
+            return new CalendarWork(workName, totalCost, totalCostIncludingContructionAndInstallationWorks, cosntructionPeriod, estimateChapter);
         }
 
         public List<CalendarWork> CreateMainCalendarWorks(List<EstimateWork> estimateWorks, CalendarWork preparatoryTotalWork, DateTime constructionStartDate, decimal constructionDuration, List<decimal> otherExpensesPercentages)
         {
             var mainCalendarWorks = estimateWorks.Select(x => Create(x, constructionStartDate)).ToList();
-            var estimateChapter10CalendarWork = mainCalendarWorks[^1];
-            mainCalendarWorks.RemoveAt(mainCalendarWorks.Count - 1);
+            var estimateChapter10CalendarWork = mainCalendarWorks.Find(x => x.EstimateChapter == 10);
+            mainCalendarWorks.Remove(estimateChapter10CalendarWork);
 
             var mainOverallPreparatoryWork = new CalendarWork(MainOverallPreparatoryWorkName, preparatoryTotalWork.TotalCost,
                 preparatoryTotalWork.TotalCostIncludingContructionAndInstallationWorks, preparatoryTotalWork.ConstructionPeriod,
-                preparatoryTotalWork.EstimateChapter);
+                _overallPreparatoryTotalWorkChapter);
             mainCalendarWorks.Insert(0, mainOverallPreparatoryWork);
 
             var otherExpensesCalendarWork = CreateOtherExpensesWork(mainCalendarWorks, estimateChapter10CalendarWork, otherExpensesPercentages,
