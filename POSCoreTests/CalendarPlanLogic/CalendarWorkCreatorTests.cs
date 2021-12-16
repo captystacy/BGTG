@@ -74,7 +74,7 @@ namespace POSCoreTests.CalendarPlanLogic
             AssertCalendarWork(preparatoryCalendarWorks[1], "Временные здания и сооружения", 1, 0.8M, 8, constructionPeriod);
             AssertCalendarWork(preparatoryCalendarWorks[2], "Итого:", 2, 1.6M, 1, constructionPeriod);
             _constructionPeriodCreatorMock.Verify(x => x.Create(constructionStartDate, It.IsAny<decimal>(), It.IsAny<decimal>(),
-                It.IsAny<List<decimal>>()), Times.Exactly(3));
+                It.IsAny<List<decimal>>()), Times.Exactly(5));
         }
 
         private void AssertCalendarWork(CalendarWork calendarWork, string workName, decimal totalCost,
@@ -115,7 +115,7 @@ namespace POSCoreTests.CalendarPlanLogic
             var mainCalendarWorks = calendarWorkCreator.CreateMainCalendarWorks(mainEstimateWorks, preparatoryTotalWork,
                 constructionStartDate, constructionDuration, otherExpensesPercentages);
 
-            AssertCalendarWork(mainCalendarWorks[0], "Работы, выполняемые в подготовительный период", 1, 0.8M, 1, constructionPeriod);
+            AssertCalendarWork(mainCalendarWorks[0], "Работы, выполняемые в подготовительный период", 1, 0.8M, 2, constructionPeriod);
             AssertCalendarWork(mainCalendarWorks[1], "БОЛОТНО-ПОДГОТОВИТЕЛЬНЫЕ РАБОТЫ", 1, 0.8M, 2, constructionPeriod);
             AssertCalendarWork(mainCalendarWorks[2], "СИСТЕМА ПРОТИВОПОЖАРНЫХ МЕРОПРИЯТИЙ", 1, 0.8M, 3, constructionPeriod);
             AssertCalendarWork(mainCalendarWorks[3], "Прочие работы и затраты", -2, -1.6M, 9, constructionPeriod);
