@@ -12,7 +12,7 @@ namespace POSCore.EstimateLogic
 {
     public class EstimateReader : IEstimateReader
     {
-        private const string _possibleFirstUnappropriateWorkSheet = "Лист5";
+        private const string _possibleFirstUnappropriateWorkSheet = "Лист";
 
         private const int _objectCipherRow = 17;
         private const int _objectCipherColumn = 3;
@@ -66,7 +66,7 @@ namespace POSCore.EstimateLogic
             var laborCosts = 0;
             using (var package = new ExcelPackage(stream))
             {
-                var workSheet = package.Workbook.Worksheets[0].Name == _possibleFirstUnappropriateWorkSheet
+                var workSheet = package.Workbook.Worksheets[0].Name.StartsWith(_possibleFirstUnappropriateWorkSheet)
                     ? package.Workbook.Worksheets[1]
                     : package.Workbook.Worksheets[0];
 
@@ -167,7 +167,7 @@ namespace POSCore.EstimateLogic
 
         private DateTime ParseConstructionStartDate(string dateCellStr)
         {
-            var monthNameLower = Regex.Match(dateCellStr, @"[А-Я-а-я]+").Value;
+            var monthNameLower = Regex.Match(dateCellStr, @"[А-Я-а-я]+").Value.ToLower();
             var monthNames = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames.ToList();
             var month = monthNames.IndexOf(char.ToUpper(monthNameLower[0]) + monthNameLower.Substring(1)) + 1;
 
