@@ -5,6 +5,6 @@ namespace POSCore.CalendarPlanLogic.Interfaces
 {
     public interface ICalendarPlanCreator
     {
-        CalendarPlan Create(Estimate estimate, List<decimal> otherExpensesPercentages);
+        CalendarPlan Create(Estimate estimate, List<decimal> otherExpensesPercentages, TotalWorkChapter totalWorkChapter);
     }
 }

@@ -2,54 +2,50 @@
 using NUnit.Framework;
 using POSCore.CalendarPlanLogic;
 using POSCore.CalendarPlanLogic.Interfaces;
-using POSCore.EstimateLogic;
-using System;
+using POSCoreTests.EstimateLogic;
 using System.Collections.Generic;
+using POSCore.EstimateLogic;
 
 namespace POSCoreTests.CalendarPlanLogic
 {
     public class CalendarPlanCreatorTests
     {
-        private Mock<ICalendarWorkCreator> _calendarWorkCreator;
+        private CalendarPlanCreator _calendarPlanCreator;
+        private Mock<ICalendarWorksProvider> _calendarWorksProvider;
 
-        private CalendarPlanCreator CreateDefaultCalendarPlanCreator()
+        [SetUp]
+        public void SetUp()
         {
-            _calendarWorkCreator = new Mock<ICalendarWorkCreator>();
-            return new CalendarPlanCreator(_calendarWorkCreator.Object);
+            _calendarWorksProvider = new Mock<ICalendarWorksProvider>();
+            _calendarPlanCreator = new CalendarPlanCreator(_calendarWorksProvider.Object);
         }
 
         [Test]
-        public void Create_DefaultEstimate_CorrectCalendarPlan()
+        public void Create_Estimate548VAT_CorrectCalendarPlan()
         {
-            var calendarPlanCreator = CreateDefaultCalendarPlanCreator();
-            var preparatoryEstimateWorks = new List<EstimateWork>();
-            var mainEstimateWorks = new List<EstimateWork>();
-            var constructionStartDate = new DateTime(1999, 9, 21);
-            var construcitonDuration = 3;
-            var estimate = new Estimate(preparatoryEstimateWorks, mainEstimateWorks, constructionStartDate, construcitonDuration, null, 0);
+            var estimate = EstimateSource.Estimate548VAT;
             var otherExpensesPercentages = new List<decimal>();
-            var lastPreparatoryCalendarWork = new CalendarWork("", 0, 0, null, 0);
-            var preparatoryCalendarWorks = new List<CalendarWork> 
-            { 
-                new CalendarWork("", 0, 0, null, 0),
-                new CalendarWork("", 0, 0, null, 0), 
-                lastPreparatoryCalendarWork
-            };
-            _calendarWorkCreator.Setup(x => x.CreatePreparatoryCalendarWorks(preparatoryEstimateWorks, constructionStartDate)).Returns(preparatoryCalendarWorks);
+            var totalPreparatoryCalendarWork = new CalendarWork(CalendarPlanInfo.TotalWorkName, 0, 0, new List<ConstructionMonth>(), 0);
+
+            var preparatoryCalendarWorks = new List<CalendarWork> { totalPreparatoryCalendarWork };
+            _calendarWorksProvider
+                .Setup(x => x.CreatePreparatoryCalendarWorks(estimate.PreparatoryEstimateWorks, estimate.ConstructionStartDate))
+                .Returns(preparatoryCalendarWorks);
+
             var mainCalendarWorks = new List<CalendarWork>();
-            _calendarWorkCreator.Setup(x => x.CreateMainCalendarWorks(mainEstimateWorks, lastPreparatoryCalendarWork, constructionStartDate,
-                construcitonDuration, otherExpensesPercentages)).Returns(mainCalendarWorks);
+            _calendarWorksProvider
+                .Setup(x => x.CreateMainCalendarWorks(estimate.MainEstimateWorks, totalPreparatoryCalendarWork,
+                estimate.ConstructionStartDate, estimate.ConstructionDurationCeiling, otherExpensesPercentages, TotalWorkChapter.TotalWork1To12Chapter))
+                .Returns(mainCalendarWorks);
 
-            var calendarPlan = calendarPlanCreator.Create(estimate, otherExpensesPercentages);
+            var expectedCalendarPlan = new CalendarPlan(preparatoryCalendarWorks, mainCalendarWorks, estimate.ConstructionStartDate, estimate.ConstructionDurationCeiling);
 
-            _calendarWorkCreator.Verify(x => x.CreatePreparatoryCalendarWorks(preparatoryEstimateWorks, constructionStartDate), Times.Once);
-            _calendarWorkCreator.Verify(x => x.CreateMainCalendarWorks(mainEstimateWorks, lastPreparatoryCalendarWork, constructionStartDate, 
-                construcitonDuration, otherExpensesPercentages), Times.Once);
+            var actualCalendarPlan = _calendarPlanCreator.Create(estimate, otherExpensesPercentages, TotalWorkChapter.TotalWork1To12Chapter);
 
-            Assert.AreEqual(preparatoryCalendarWorks, calendarPlan.PreparatoryCalendarWorks);
-            Assert.AreEqual(mainCalendarWorks, calendarPlan.MainCalendarWorks);
-            Assert.AreEqual(construcitonDuration, calendarPlan.ConstructionDuration);
-            Assert.AreEqual(constructionStartDate, calendarPlan.ConstructionStartDate);
+            Assert.AreEqual(expectedCalendarPlan, actualCalendarPlan);
+            _calendarWorksProvider.Verify(x => x.CreatePreparatoryCalendarWorks(estimate.PreparatoryEstimateWorks, estimate.ConstructionStartDate), Times.Once);
+            _calendarWorksProvider.Verify(x => x.CreateMainCalendarWorks(estimate.MainEstimateWorks, totalPreparatoryCalendarWork,
+                estimate.ConstructionStartDate, estimate.ConstructionDurationCeiling, otherExpensesPercentages, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
         }
     }
 }

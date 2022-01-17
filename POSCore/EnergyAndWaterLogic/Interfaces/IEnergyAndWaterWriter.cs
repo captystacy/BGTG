@@ -2,6 +2,6 @@
 {
     public interface IEnergyAndWaterWriter
     {
-        void Write(EnergyAndWater energyAndWater, string templatePath, string savePath, string fileName);
+        void Write(EnergyAndWater energyAndWater, string templatePath, string savePath);
     }
 }

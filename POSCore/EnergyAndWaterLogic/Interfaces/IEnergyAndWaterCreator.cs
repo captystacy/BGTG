@@ -2,6 +2,6 @@
 {
     public interface IEnergyAndWaterCreator
     {
-        EnergyAndWater Create(decimal totalCostIncludingContructionAndInstallationWorks, int constructionYear);
+        EnergyAndWater Create(decimal totalCostIncludingCAIW, int constructionYear);
     }
 }

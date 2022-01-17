@@ -7,6 +7,6 @@ namespace POSWeb.Services.Interfaces
     public interface IEstimateService
     {
         Estimate Estimate { get; }
-        void ReadEstimateFiles(IEnumerable<IFormFile> estimateFiles);
+        void ReadEstimateFiles(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter);
     }
 }

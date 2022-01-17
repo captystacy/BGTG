@@ -5,6 +5,6 @@ namespace POSCore.EstimateLogic.Interfaces
 {
     public interface IEstimateManager
     {
-        Estimate GetEstimate(IEnumerable<Stream> estimateStreams);
+        Estimate GetEstimate(IEnumerable<Stream> estimateStreams, TotalWorkChapter totalWorkChapter);
     }
 }

@@ -10,7 +10,7 @@ namespace POSCore.EnergyAndWaterLogic
         private const decimal _coef4 = 2.93M;
         private const int _coef5 = 1000;
 
-        private const int _smrVolumeCoef = 100;
+        private const int _caiwVolumeCoef = 100;
         private const int _energyCoef = 205;
         private const decimal _waterCoef = 0.3M;
         private const decimal _compressedAirCoef = 3.9M;
@@ -18,15 +18,15 @@ namespace POSCore.EnergyAndWaterLogic
 
         private const int _multiplier = 10000;
 
-        public EnergyAndWater Create(decimal totalCostIncludingContructionAndInstallationWorks, int constructionYear)
+        public EnergyAndWater Create(decimal totalCostIncludingCAIW, int constructionYear)
         {
-            var temp = totalCostIncludingContructionAndInstallationWorks * _multiplier / _coef1 / _coef2 / _coef3 / _coef4 / _coef5;
-            var smrVolume = temp * _smrVolumeCoef;
-            var energy = temp * _energyCoef;
-            var water = temp * _waterCoef;
-            var compressedAir = temp * _compressedAirCoef;
-            var oxygen = temp * _oxygenCoef;
-            return new EnergyAndWater(constructionYear, smrVolume, energy, water, compressedAir, oxygen);
+            var temp = totalCostIncludingCAIW * _multiplier / _coef1 / _coef2 / _coef3 / _coef4 / _coef5;
+            var caiwVolume = decimal.Round(temp * _caiwVolumeCoef, 3);
+            var energy = decimal.Round(temp * _energyCoef, 3);
+            var water = decimal.Round(temp * _waterCoef, 3);
+            var compressedAir = decimal.Round(temp * _compressedAirCoef, 3);
+            var oxygen = decimal.Round(temp * _oxygenCoef, 3);
+            return new EnergyAndWater(constructionYear, caiwVolume, energy, water, compressedAir, oxygen);
         }
     }
 }

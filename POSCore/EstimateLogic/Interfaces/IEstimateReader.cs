@@ -4,6 +4,6 @@ namespace POSCore.EstimateLogic.Interfaces
 {
     public interface IEstimateReader
     {
-        Estimate Read(Stream stream);
+        Estimate Read(Stream stream, TotalWorkChapter totalWorkChapter);
     }
 }
