@@ -49,20 +49,22 @@ namespace BGTGWebTests.Services
             var userFullName = "BGTG\\kss";
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 100);
             _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
-            var laborCostsDuration = new LaborCostsDuration(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true, true);
-            _laborCostsDurationCreatorMock.Setup(x => x.Create(estimate.LaborCosts + laborCostsDurationVM.TechnologicalLaborCosts,
+            var laborCostsDuration = new LaborCostsDuration(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true, true,
+                laborCostsDurationVM.TechnologicalLaborCosts);
+
+            _laborCostsDurationCreatorMock.Setup(x => x.Create(estimate.LaborCosts,
                 laborCostsDurationVM.WorkingDayDuration, laborCostsDurationVM.Shift, laborCostsDurationVM.NumberOfWorkingDays,
-                laborCostsDurationVM.NumberOfEmployees, laborCostsDurationVM.AcceptanceTimeIncluded)).Returns(laborCostsDuration);
+                laborCostsDurationVM.NumberOfEmployees, laborCostsDurationVM.AcceptanceTimeIncluded, laborCostsDurationVM.TechnologicalLaborCosts)).Returns(laborCostsDuration);
             _webHostEnvironmentMock.Setup(x => x.WebRootPath).Returns("wwwroot");
 
             _laborCostsDurationService.WriteLaborCostsDuration(estimateFiles, laborCostsDurationVM, userFullName);
 
             _estimateServiceMock.Verify(x => x.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
-            _laborCostsDurationCreatorMock.Verify(x => x.Create(estimate.LaborCosts + laborCostsDurationVM.TechnologicalLaborCosts,
+            _laborCostsDurationCreatorMock.Verify(x => x.Create(estimate.LaborCosts,
                 laborCostsDurationVM.WorkingDayDuration, laborCostsDurationVM.Shift, laborCostsDurationVM.NumberOfWorkingDays,
-                laborCostsDurationVM.NumberOfEmployees, laborCostsDurationVM.AcceptanceTimeIncluded), Times.Once);
+                laborCostsDurationVM.NumberOfEmployees, laborCostsDurationVM.AcceptanceTimeIncluded, laborCostsDurationVM.TechnologicalLaborCosts), Times.Once);
             _laborCostsDurationWriterMock.Verify(x => x.Write(laborCostsDuration,
-                @"wwwroot\Templates\LaborCostsDurationTemplates\Rounding+Acceptance+Techcosts+Template.docx",
+                @"wwwroot\Templates\LaborCostsDurationTemplates\Rounding+Acceptance+Template.docx",
                 @"wwwroot\UsersFiles\LaborCostsDurations\LaborCostsDurationBGTGkss.docx"), Times.Once);
             _webHostEnvironmentMock.VerifyGet(x => x.WebRootPath, Times.Exactly(2));
             _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);

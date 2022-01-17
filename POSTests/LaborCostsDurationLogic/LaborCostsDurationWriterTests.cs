@@ -14,7 +14,7 @@ namespace POSTests.LaborCostsDurationLogic
 
         private LaborCostsDuration CreateDefaultLaborCostsDuration()
         {
-            return new LaborCostsDuration(1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, true, true);
+            return new LaborCostsDuration(1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, true, true, 0);
         }
 
         [SetUp]
@@ -29,7 +29,7 @@ namespace POSTests.LaborCostsDurationLogic
             var laborCostsDuration = CreateDefaultLaborCostsDuration();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), _laborCostsDurationFileName);
-            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding+Acceptance+Techcosts-Template.docx");
+            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding+Acceptance+Template.docx");
 
             _laborCostsDurationWriter.Write(laborCostsDuration, templatePath, savePath);
 
@@ -54,7 +54,7 @@ namespace POSTests.LaborCostsDurationLogic
             var laborCostsDuration = CreateDefaultLaborCostsDuration();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), _laborCostsDurationFileName);
-            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding+Acceptance-Techcosts-Template.docx");
+            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding+Acceptance-Template.docx");
 
             _laborCostsDurationWriter.Write(laborCostsDuration, templatePath, savePath);
 
@@ -79,7 +79,7 @@ namespace POSTests.LaborCostsDurationLogic
             var laborCostsDuration = CreateDefaultLaborCostsDuration();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), _laborCostsDurationFileName);
-            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding-Acceptance-Techcosts-Template.docx");
+            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding-Acceptance-Template.docx");
 
             _laborCostsDurationWriter.Write(laborCostsDuration, templatePath, savePath);
 
@@ -104,7 +104,7 @@ namespace POSTests.LaborCostsDurationLogic
             var laborCostsDuration = CreateDefaultLaborCostsDuration();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), _laborCostsDurationFileName);
-            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding-Acceptance+Techcosts-Template.docx");
+            var templatePath = Path.Combine(_laborCostsDurationTemplatesDirectory, "Rounding-Acceptance+Template.docx");
 
             _laborCostsDurationWriter.Write(laborCostsDuration, templatePath, savePath);
 

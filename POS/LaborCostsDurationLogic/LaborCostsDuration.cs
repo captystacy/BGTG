@@ -4,8 +4,9 @@ namespace POS.LaborCostsDurationLogic
 {
     public class LaborCostsDuration : IEquatable<LaborCostsDuration>
     {
-        public decimal Duration { get; set; }
+        public decimal Duration { get; }
         public decimal LaborCosts { get; }
+        public decimal TechnologicalLaborCosts { get; }
         public decimal WorkingDayDuration { get; }
         public decimal Shift { get; }
         public decimal NumberOfWorkingDays { get; }
@@ -19,10 +20,11 @@ namespace POS.LaborCostsDurationLogic
 
         public LaborCostsDuration(decimal duration, decimal laborCosts, decimal workingDayDuration, decimal shift,
             decimal numberOfWorkingDaysInMonth, int numberOfEmployees, decimal totalDuration, decimal preparatoryPeriod,
-            decimal roundedDuration, decimal acceptanceTime, bool acceptanceTimeIncluded, bool roundingIncluded)
+            decimal roundedDuration, decimal acceptanceTime, bool acceptanceTimeIncluded, bool roundingIncluded, decimal technologicalLaborCosts)
         {
             Duration = duration;
-            LaborCosts = laborCosts;
+            TechnologicalLaborCosts = technologicalLaborCosts;
+            LaborCosts = laborCosts + TechnologicalLaborCosts;
             WorkingDayDuration = workingDayDuration;
             Shift = shift;
             NumberOfWorkingDays = numberOfWorkingDaysInMonth;
@@ -44,6 +46,7 @@ namespace POS.LaborCostsDurationLogic
 
             return Duration == other.Duration
                 && LaborCosts == other.LaborCosts
+                && TechnologicalLaborCosts == other.TechnologicalLaborCosts
                 && WorkingDayDuration == other.WorkingDayDuration
                 && Shift == other.Shift
                 && NumberOfWorkingDays == other.NumberOfWorkingDays
@@ -63,6 +66,7 @@ namespace POS.LaborCostsDurationLogic
             var hashcode = new HashCode();
             hashcode.Add(Duration);
             hashcode.Add(LaborCosts);
+            hashcode.Add(TechnologicalLaborCosts);
             hashcode.Add(WorkingDayDuration);
             hashcode.Add(Shift);
             hashcode.Add(NumberOfWorkingDays);
@@ -90,7 +94,7 @@ namespace POS.LaborCostsDurationLogic
 
         public override string ToString()
         {
-            return string.Join(", ", Duration, LaborCosts, WorkingDayDuration, Shift, NumberOfEmployees,
+            return string.Join(", ", Duration, LaborCosts, TechnologicalLaborCosts, WorkingDayDuration, Shift, NumberOfEmployees,
                 RoundedDuration, TotalDuration, PreparatoryPeriod, AcceptanceTime, AcceptanceTimeIncluded,
                 RoundingIncluded);
         }

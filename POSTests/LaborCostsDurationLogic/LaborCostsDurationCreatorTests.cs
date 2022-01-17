@@ -28,11 +28,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 0.1M;
             var acceptanceTime = 0.5M;
             var roundingIncluded = false;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, true);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, true, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -52,11 +53,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 0.5M;
             var acceptanceTime = 0.5M;
             var roundingIncluded = true;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -76,11 +78,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 0.5M;
             var acceptanceTime = 0.5M;
             var roundingIncluded = true;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -100,11 +103,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 0.5M;
             var acceptanceTime = 0.5M;
             var roundingIncluded = true;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -124,11 +128,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 0.3M;
             var acceptanceTime = 0.5M;
             var roundingIncluded = false;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -148,11 +153,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 3M;
             var acceptanceTime = 0M;
             var roundingIncluded = true;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -172,11 +178,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 4.5M;
             var acceptanceTime = 0M;
             var roundingIncluded = true;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }
@@ -196,11 +203,12 @@ namespace POSTests.LaborCostsDurationLogic
             var roundedDuration = 3M;
             var acceptanceTime = 0M;
             var roundingIncluded = true;
+            var technologicalLaborCosts = 0;
 
             var expectedLaborCostsDuration = new LaborCostsDuration(duration, laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth,
-                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded);
+                numberOfEmployees, totalDuration, preparatoryPeriod, roundedDuration, acceptanceTime, acceptanceTimeIncluded, roundingIncluded, technologicalLaborCosts);
 
-            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
+            var actualLaborCostsDuration = _laborCostsDurationCreator.Create(laborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded, technologicalLaborCosts);
 ;
             Assert.AreEqual(expectedLaborCostsDuration, actualLaborCostsDuration);
         }

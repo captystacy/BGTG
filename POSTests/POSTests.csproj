@@ -20,7 +20,6 @@
 	<ItemGroup>
 		<Folder Include="EnergyAndWaterLogic\EnergyAndWaterTemplates\" />
 		<Folder Include="EstimateLogic\EstimateSourceFiles\" />
-		<Folder Include="LaborCostsDurationLogic\LaborCostsDurationTemplates\" />
 	</ItemGroup>
 
 </Project>

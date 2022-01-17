@@ -16,6 +16,10 @@ namespace POS.LaborCostsDurationLogic
         private const string _preparatoryPeriodPattern = "%PP%";
         private const string _acceptanceTimePattern = "%AT%";
 
+        private const string _technologicalLaborCostsPattern = "%TLC%";
+        private const string _technologicalLaborCostsText =
+            " (трудозатраты по сметам и трудозатраты по технологической карте)";
+
         public void Write(LaborCostsDuration laborCostsDuration, string templatePath, string savePath)
         {
             using (var document = DocX.Load(templatePath))
@@ -27,6 +31,10 @@ namespace POS.LaborCostsDurationLogic
 
         private void ReplacePatternsWithActualValues(DocX document, LaborCostsDuration laborCostsDuration)
         {
+            document.ReplaceText(_technologicalLaborCostsPattern,
+                laborCostsDuration.TechnologicalLaborCosts > 0 
+                ? _technologicalLaborCostsText 
+                : string.Empty);
             document.ReplaceText(_numberOfWorkingDaysInMonthPattern, laborCostsDuration.NumberOfWorkingDays.ToString());
             document.ReplaceText(_numberOfEmployeesPattern, laborCostsDuration.NumberOfEmployees.ToString());
             document.ReplaceText(_workingDayDurationPattern, laborCostsDuration.WorkingDayDuration.ToString());

@@ -24,7 +24,6 @@
 	<ItemGroup>
 		<Folder Include="wwwroot\lib\" />
 		<Folder Include="wwwroot\Templates\EnergyAndWaterTemplates\" />
-		<Folder Include="wwwroot\Templates\LaborCostsDurationTemplates\" />
 		<Folder Include="wwwroot\UsersFiles\CalendarPlans\" />
 		<Folder Include="wwwroot\UsersFiles\LaborCostsDurations\" />
 		<Folder Include="wwwroot\UsersFiles\EnergyAndWaters\" />
