@@ -5,16 +5,16 @@ namespace POS.EnergyAndWaterLogic
     public class EnergyAndWater : IEquatable<EnergyAndWater>
     {
         public int ConstructionYear { get; }
-        public decimal CAIWVolume { get; }
+        public decimal VolumeCAIW { get; }
         public decimal Energy { get; }
         public decimal Water { get; }
         public decimal CompressedAir { get; }
         public decimal Oxygen { get; }
 
-        public EnergyAndWater(int constructionYear, decimal caiwVolume, decimal energy, decimal water, decimal compressedAir, decimal oxygen)
+        public EnergyAndWater(int constructionYear, decimal volumeCAIW, decimal energy, decimal water, decimal compressedAir, decimal oxygen)
         {
             ConstructionYear = constructionYear;
-            CAIWVolume = caiwVolume;
+            VolumeCAIW = volumeCAIW;
             Energy = energy;
             Water = water;
             CompressedAir = compressedAir;
@@ -29,7 +29,7 @@ namespace POS.EnergyAndWaterLogic
             }
 
             return ConstructionYear == other.ConstructionYear
-                && CAIWVolume == other.CAIWVolume
+                && VolumeCAIW == other.VolumeCAIW
                 && Energy == other.Energy
                 && Water == other.Water
                 && CompressedAir == other.CompressedAir
@@ -50,11 +50,11 @@ namespace POS.EnergyAndWaterLogic
 
         public override bool Equals(object obj) => Equals(obj as EnergyAndWater);
 
-        public override int GetHashCode() => HashCode.Combine(ConstructionYear, CAIWVolume, Energy, Water, CompressedAir, Oxygen);
+        public override int GetHashCode() => HashCode.Combine(ConstructionYear, VolumeCAIW, Energy, Water, CompressedAir, Oxygen);
 
         public override string ToString()
         {
-            return string.Join(", ", ConstructionYear, CAIWVolume, Energy, Water, CompressedAir, Oxygen);
+            return string.Join(", ", ConstructionYear, VolumeCAIW, Energy, Water, CompressedAir, Oxygen);
         }
     }
 }

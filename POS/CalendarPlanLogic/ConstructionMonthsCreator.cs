@@ -19,8 +19,8 @@ namespace POS.CalendarPlanLogic
 
                 var date = constructionStartDate.AddMonths(i);
                 var investmentVolume = totalCost * percentages[i];
-                var caiwVolume = totalCostIncludingCAIW * percentages[i];
-                var constructionMonth = new ConstructionMonth(date, investmentVolume, caiwVolume, percentages[i], i);
+                var volumeCAIW = totalCostIncludingCAIW * percentages[i];
+                var constructionMonth = new ConstructionMonth(date, investmentVolume, volumeCAIW, percentages[i], i);
                 constructionMonths.Add(constructionMonth);
             }
 

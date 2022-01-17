@@ -7,7 +7,7 @@ namespace POS.EnergyAndWaterLogic
     public class EnergyAndWaterWriter : IEnergyAndWaterWriter
     {
         private const string _constructionYearPattern = "%CY%";
-        private const string _caiwVolumePattern = "%CAIWV%";
+        private const string _volumeCAIWPattern = "%CAIWV%";
         private const string _energyPattern = "%E%";
         private const string _waterPattern = "%W%";
         private const string _compressedAirPattern = "%CA%";
@@ -27,7 +27,7 @@ namespace POS.EnergyAndWaterLogic
         private void ModifyEnergyAndWaterTable(Row row, EnergyAndWater energyAndWater)
         {
             row.ReplaceText(_constructionYearPattern, energyAndWater.ConstructionYear.ToString());
-            row.ReplaceText(_caiwVolumePattern, energyAndWater.CAIWVolume.ToString());
+            row.ReplaceText(_volumeCAIWPattern, energyAndWater.VolumeCAIW.ToString());
             row.ReplaceText(_energyPattern, energyAndWater.Energy.ToString());
             row.ReplaceText(_waterPattern, energyAndWater.Water.ToString());
             row.ReplaceText(_compressedAirPattern, energyAndWater.CompressedAir.ToString());

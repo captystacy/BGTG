@@ -6,15 +6,15 @@ namespace POS.CalendarPlanLogic
     {
         public DateTime Date { get; }
         public decimal InvestmentVolume { get; }
-        public decimal CAIWVolume { get; }
+        public decimal VolumeCAIW { get; }
         public decimal PercentPart { get; set; }
         public int CreationIndex { get; }
 
-        public ConstructionMonth(DateTime date, decimal investmentVolume, decimal caiwVolume, decimal percentePart, int creationIndex)
+        public ConstructionMonth(DateTime date, decimal investmentVolume, decimal volumeCAIW, decimal percentePart, int creationIndex)
         {
             Date = date;
             InvestmentVolume = investmentVolume;
-            CAIWVolume = caiwVolume;
+            VolumeCAIW = volumeCAIW;
             PercentPart = percentePart;
             CreationIndex = creationIndex;
         }
@@ -28,14 +28,14 @@ namespace POS.CalendarPlanLogic
 
             return Date == other.Date
                 && InvestmentVolume == other.InvestmentVolume
-                && CAIWVolume == other.CAIWVolume
+                && VolumeCAIW == other.VolumeCAIW
                 && PercentPart == other.PercentPart
                 && CreationIndex == other.CreationIndex;
         }
 
         public override bool Equals(object obj) => Equals(obj as ConstructionMonth);
 
-        public override int GetHashCode() => HashCode.Combine(Date, InvestmentVolume, CAIWVolume, PercentPart, CreationIndex);
+        public override int GetHashCode() => HashCode.Combine(Date, InvestmentVolume, VolumeCAIW, PercentPart, CreationIndex);
 
         public static bool operator ==(ConstructionMonth constructionMonth1, ConstructionMonth constructionMonth2)
         {
@@ -51,7 +51,7 @@ namespace POS.CalendarPlanLogic
 
         public override string ToString()
         {
-            return string.Join(", ", Date, InvestmentVolume, CAIWVolume, PercentPart, CreationIndex);
+            return string.Join(", ", Date, InvestmentVolume, VolumeCAIW, PercentPart, CreationIndex);
         }
     }
 }

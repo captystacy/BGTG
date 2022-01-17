@@ -96,23 +96,23 @@ namespace POSTests.CalendarPlanLogic
             {
                 var workName = calendarPlanTable.Rows[row].Paragraphs[0].Text;
                 var totalCost = decimal.Parse(calendarPlanTable.Rows[row].Paragraphs[1].Text);
-                var totalCostIncludingCaiw = decimal.Parse(calendarPlanTable.Rows[row].Paragraphs[2].Text);
+                var totalCostIncludingCAIW = decimal.Parse(calendarPlanTable.Rows[row].Paragraphs[2].Text);
 
                 var constructionMonths = new List<ConstructionMonth>();
                 for (int column = 3; column < calendarPlanTable.ColumnCount; column++)
                 {
                     decimal.TryParse(calendarPlanTable.Rows[row].Paragraphs[column].Text, out var investmentVolume);
-                    decimal.TryParse(calendarPlanTable.Rows[row + 1].Paragraphs[column].Text, out var caiwVolume);
+                    decimal.TryParse(calendarPlanTable.Rows[row + 1].Paragraphs[column].Text, out var volumeCAIW);
 
                     var percent = workName == CalendarPlanInfo.TotalWorkName && calendarWorks.Exists(x => x.WorkName == CalendarPlanInfo.MainOverallPreparatoryWorkName)
                         ? decimal.Parse(calendarPlanTable.Rows[row + 2].Paragraphs[column - 1].Text.Replace("%", string.Empty)) / 100
                         : investmentVolume / totalCost;
 
-                    var constructionMonth = new ConstructionMonth(constructionStartDate.AddMonths(column - 3), investmentVolume, caiwVolume, percent, column - 3);
+                    var constructionMonth = new ConstructionMonth(constructionStartDate.AddMonths(column - 3), investmentVolume, volumeCAIW, percent, column - 3);
                     constructionMonths.Add(constructionMonth);
                 }
 
-                calendarWorks.Add(new CalendarWork(workName, totalCost, totalCostIncludingCaiw, constructionMonths, 0));
+                calendarWorks.Add(new CalendarWork(workName, totalCost, totalCostIncludingCAIW, constructionMonths, 0));
             }
 
             return calendarWorks;

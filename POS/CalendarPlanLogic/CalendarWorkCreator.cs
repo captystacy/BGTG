@@ -15,31 +15,31 @@ namespace POS.CalendarPlanLogic
             _constructionMonthsCreator = constructionMonthsCreator;
         }
 
-        private CalendarWork Create(string workName, decimal totalCost, decimal totalCostIncludingCaiw, int estimateChapter, IEnumerable<ConstructionMonth> constructionMonths)
+        private CalendarWork Create(string workName, decimal totalCost, decimal totalCostIncludingCAIW, int estimateChapter, IEnumerable<ConstructionMonth> constructionMonths)
         {
-            return new CalendarWork(workName, totalCost, totalCostIncludingCaiw, constructionMonths, estimateChapter);
+            return new CalendarWork(workName, totalCost, totalCostIncludingCAIW, constructionMonths, estimateChapter);
         }
 
-        private CalendarWork Create(string workName, decimal totalCost, decimal totalCostIncludingCaiw, int estimateChapter,
+        private CalendarWork Create(string workName, decimal totalCost, decimal totalCostIncludingCAIW, int estimateChapter,
             DateTime constructionStartDate, List<decimal> percentages)
         {
-            var constructionMonths = _constructionMonthsCreator.Create(constructionStartDate, totalCost, totalCostIncludingCaiw, percentages);
-            return Create(workName, totalCost, totalCostIncludingCaiw, estimateChapter, constructionMonths);
+            var constructionMonths = _constructionMonthsCreator.Create(constructionStartDate, totalCost, totalCostIncludingCAIW, percentages);
+            return Create(workName, totalCost, totalCostIncludingCAIW, estimateChapter, constructionMonths);
         }
 
         public CalendarWork Create(EstimateWork estimateWork, DateTime constructionStartDate)
         {
-            var totalCostIncludingCaiw = estimateWork.TotalCost - estimateWork.EquipmentCost - estimateWork.OtherProductsCost;
-            return Create(estimateWork.WorkName, estimateWork.TotalCost, totalCostIncludingCaiw, estimateWork.Chapter, constructionStartDate, estimateWork.Percentages);
+            var totalCostIncludingCAIW = estimateWork.TotalCost - estimateWork.EquipmentCost - estimateWork.OtherProductsCost;
+            return Create(estimateWork.WorkName, estimateWork.TotalCost, totalCostIncludingCAIW, estimateWork.Chapter, constructionStartDate, estimateWork.Percentages);
         }
 
         public CalendarWork CreateAnyPreparatoryWork(string workName, List<CalendarWork> preparatoryCalendarWorks, int estimateChapter,
             DateTime constructionStartDate, List<decimal> percentages)
         {
             var totalCost = preparatoryCalendarWorks.Sum(x => x.TotalCost);
-            var totalCostIncludingCaiw = preparatoryCalendarWorks.Sum(x => x.TotalCostIncludingCAIW);
-            var constructionMonths = _constructionMonthsCreator.Create(constructionStartDate, totalCost, totalCostIncludingCaiw, percentages);
-            return Create(workName, totalCost, totalCostIncludingCaiw, estimateChapter, constructionMonths);
+            var totalCostIncludingCAIW = preparatoryCalendarWorks.Sum(x => x.TotalCostIncludingCAIW);
+            var constructionMonths = _constructionMonthsCreator.Create(constructionStartDate, totalCost, totalCostIncludingCAIW, percentages);
+            return Create(workName, totalCost, totalCostIncludingCAIW, estimateChapter, constructionMonths);
         }
 
         public CalendarWork CreateMainTotalWork(List<CalendarWork> mainCalendarWorks, CalendarWork initialMainTotalWork, DateTime constructionStartDate, int constructionDurationCeiling)
@@ -48,7 +48,7 @@ namespace POS.CalendarPlanLogic
                     new ConstructionMonth(
                         constructionStartDate.AddMonths(i),
                         mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume).Value,
-                        mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.CAIWVolume).Value,
+                        mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.VolumeCAIW).Value,
                         (mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume) / initialMainTotalWork.TotalCost).Value,
                         i
                 )).ToList();
@@ -61,8 +61,8 @@ namespace POS.CalendarPlanLogic
             DateTime constructionStartDate, List<decimal> percentages)
         {
             var totalCost = initialMainTotalWork.TotalCost - mainCalendarWorks.Sum(x => x.TotalCost);
-            var totalCostIncludingCaiw = initialMainTotalWork.TotalCostIncludingCAIW - mainCalendarWorks.Sum(x => x.TotalCostIncludingCAIW);
-            return Create(CalendarPlanInfo.MainOtherExpensesWorkName, totalCost, totalCostIncludingCaiw, CalendarPlanInfo.MainOtherExpensesWorkChapter, constructionStartDate, percentages);
+            var totalCostIncludingCAIW = initialMainTotalWork.TotalCostIncludingCAIW - mainCalendarWorks.Sum(x => x.TotalCostIncludingCAIW);
+            return Create(CalendarPlanInfo.MainOtherExpensesWorkName, totalCost, totalCostIncludingCAIW, CalendarPlanInfo.MainOtherExpensesWorkChapter, constructionStartDate, percentages);
         }
     }
 }

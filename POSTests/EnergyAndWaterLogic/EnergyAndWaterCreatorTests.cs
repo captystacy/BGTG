@@ -18,13 +18,13 @@ namespace POSTests.EnergyAndWaterLogic
         {
             var totalCostIncludingCAIW = 12.986M;
             var constructionYear = 2021;
-            var caiwVolume = 0.45M;
+            var volumeCAIW = 0.45M;
             var energy = 0.923M;
             var water = 0.001M;
             var compressedAir = 0.018M;
             var oxygen = 19.803M;
 
-            var expectedEnergyAndWater = new EnergyAndWater(constructionYear, caiwVolume, energy, water, compressedAir, oxygen);
+            var expectedEnergyAndWater = new EnergyAndWater(constructionYear, volumeCAIW, energy, water, compressedAir, oxygen);
 
             var actualEnergyAndWater = _energyAndWaterCreator.Create(totalCostIncludingCAIW, constructionYear);
 

@@ -11,7 +11,7 @@ namespace POS.CalendarPlanLogic
     {
         private const string _workNamePattern = "%WN%";
         private const string _totalCostPattern = "%TC%";
-        private const string _totalCostIncludingCaiwPattern = "%TIC%";
+        private const string _totalCostIncludingCAIWPattern = "%TIC%";
         private const string _dateAcceptancePattern = "%DA%";
 
         private const string _decimalFormat = "{0:f3}";
@@ -92,13 +92,13 @@ namespace POS.CalendarPlanLogic
 
             newTopRow.ReplaceText(_workNamePattern, calendarWork.WorkName);
             newTopRow.ReplaceText(_totalCostPattern, string.Format(_decimalFormat, calendarWork.TotalCost));
-            newTopRow.ReplaceText(_totalCostIncludingCaiwPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingCAIW));
+            newTopRow.ReplaceText(_totalCostIncludingCAIWPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingCAIW));
             var constructionMonths = calendarWork.ConstructionMonths.ToArray();
             foreach (var constructionMonth in constructionMonths)
             {
                 var creationIndex = constructionMonth.CreationIndex;
                 newTopRow.ReplaceText($"%IV{creationIndex}%", string.Format(_decimalFormat, constructionMonth.InvestmentVolume));
-                newBottomRow.ReplaceText($"%IW{creationIndex}%", string.Format(_decimalFormat, constructionMonth.CAIWVolume));
+                newBottomRow.ReplaceText($"%IW{creationIndex}%", string.Format(_decimalFormat, constructionMonth.VolumeCAIW));
             }
         }
 
