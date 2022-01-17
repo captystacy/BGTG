@@ -1,4 +1,5 @@
-﻿using POSCore.EnergyAndWaterLogic.Interfaces;
+﻿using System;
+using POSCore.EnergyAndWaterLogic.Interfaces;
 
 namespace POSCore.EnergyAndWaterLogic
 {
@@ -26,7 +27,10 @@ namespace POSCore.EnergyAndWaterLogic
             var water = decimal.Round(temp * _waterCoef, 3);
             var compressedAir = decimal.Round(temp * _compressedAirCoef, 3);
             var oxygen = decimal.Round(temp * _oxygenCoef, 3);
-            return new EnergyAndWater(constructionYear, caiwVolume, energy, water, compressedAir, oxygen);
+            return new EnergyAndWater(constructionYear < 1900
+                    ? DateTime.Today.Year
+                    : constructionYear,
+                caiwVolume, energy, water, compressedAir, oxygen);
         }
     }
 }
