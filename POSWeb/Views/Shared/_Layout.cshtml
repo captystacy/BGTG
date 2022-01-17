@@ -3,39 +3,42 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ПОС</title>
-    <link rel="icon" href="~/icons/logo.svg?v=1.1">
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css?v=1.1" />
-    <link rel="stylesheet" href="~/css/site.css?v=1.1" />
-    <link rel="stylesheet" href="~/css/icons.css?v=1.1" />
-    <script src="~/lib/popper.js/umd/popper.min.js?v=1.1"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.min.js?v=1.1"></script>
-    <script src="~/lib/jquery/jquery.min.js?v=1.1"></script>
+    <title>БГТГ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css?" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-regal-blue border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">П❅С</a>
+                <a class="navbar-brand" asp-controller="home" asp-action="index"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <p class="nav navbar-text navbar-right">Привет, @User.Identity.Name!</p>
+                    <p class="nav navbar-text navbar-right text-white">Привет, @User.Identity.Name!</p>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="pos" asp-action="index">ПОС</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container-fluid">
+    <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-    <footer class="footer text-muted">
+    <footer class="border-top footer text-white bg-regal-blue">
         <div class="container">
-            &copy; 2021 - ПОС
+            &copy; 1987–2022, НИИ Белгипротопгаз
         </div>
     </footer>
 </body>

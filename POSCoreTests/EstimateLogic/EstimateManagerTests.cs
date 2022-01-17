@@ -10,30 +10,31 @@ namespace POSCoreTests.EstimateLogic
 {
     public class EstimateManagerTests
     {
+        private EstimateManager _estimateManager;
         private Mock<IEstimateReader> _estimateReaderMock;
         private Mock<IEstimateConnector> _estimateConnectorMock;
 
-        private EstimateManager CreateDefaultEstimateManager()
+        [SetUp]
+        public void SetUp()
         {
             _estimateReaderMock = new Mock<IEstimateReader>();
             _estimateConnectorMock = new Mock<IEstimateConnector>();
-            return new EstimateManager(_estimateReaderMock.Object, _estimateConnectorMock.Object);
+            _estimateManager = new EstimateManager(_estimateReaderMock.Object, _estimateConnectorMock.Object);
         }
 
         [Test]
         public void GetEstimate_OneEstimateStream_OneEstimate()
         {
-            var estimateManager = CreateDefaultEstimateManager();
             var stream = new Mock<Stream>();
             var streams = new List<Stream>() { stream.Object };
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
             var estimates = new List<Estimate> { estimate };
-            _estimateReaderMock.Setup(x => x.Read(stream.Object)).Returns(estimate);
+            _estimateReaderMock.Setup(x => x.Read(stream.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate);
             _estimateConnectorMock.Setup(x => x.Connect(estimates)).Returns(estimate);
 
-            var result = estimateManager.GetEstimate(streams);
+            var result = _estimateManager.GetEstimate(streams, TotalWorkChapter.TotalWork1To12Chapter);
 
-            _estimateReaderMock.Verify(x => x.Read(stream.Object), Times.Once);
+            _estimateReaderMock.Verify(x => x.Read(stream.Object, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
             _estimateConnectorMock.Verify(x => x.Connect(estimates), Times.Once);
             Assert.AreSame(estimate, result);
         }
@@ -41,7 +42,6 @@ namespace POSCoreTests.EstimateLogic
         [Test]
         public void GetEstimate_TwoEstimateStreams_OneEstimate()
         {
-            var estimateManager = CreateDefaultEstimateManager();
             var stream1 = new Mock<Stream>();
             var stream2 = new Mock<Stream>();
             var streams = new List<Stream>() { stream1.Object, stream2.Object };
@@ -49,14 +49,14 @@ namespace POSCoreTests.EstimateLogic
             var estimate2 = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
             var estimates = new List<Estimate> { estimate1, estimate2 };
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
-            _estimateReaderMock.Setup(x => x.Read(stream1.Object)).Returns(estimate1);
-            _estimateReaderMock.Setup(x => x.Read(stream2.Object)).Returns(estimate2);
+            _estimateReaderMock.Setup(x => x.Read(stream1.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate1);
+            _estimateReaderMock.Setup(x => x.Read(stream2.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate2);
             _estimateConnectorMock.Setup(x => x.Connect(estimates)).Returns(estimate);
 
-            var result = estimateManager.GetEstimate(streams);
+            var result = _estimateManager.GetEstimate(streams, TotalWorkChapter.TotalWork1To12Chapter);
 
-            _estimateReaderMock.Verify(x => x.Read(stream1.Object), Times.Once);
-            _estimateReaderMock.Verify(x => x.Read(stream2.Object), Times.Once);
+            _estimateReaderMock.Verify(x => x.Read(stream1.Object, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
+            _estimateReaderMock.Verify(x => x.Read(stream2.Object,TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
             _estimateConnectorMock.Verify(x=>x.Connect(estimates), Times.Once);
             Assert.AreSame(estimate, result);
         }

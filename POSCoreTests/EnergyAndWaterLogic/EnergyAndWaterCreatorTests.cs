@@ -5,26 +5,30 @@ namespace POSCoreTests.EnergyAndWaterLogic
 {
     public class EnergyAndWaterCreatorTests
     {
-        private EnergyAndWaterCreator CreateDefaultEnergyAndWaterCreator()
+        private EnergyAndWaterCreator _energyAndWaterCreator;
+
+        [SetUp]
+        public void SetUp()
         {
-            return new EnergyAndWaterCreator();
+            _energyAndWaterCreator = new EnergyAndWaterCreator();
         }
 
         [Test]
-        public void Create_TotalCostIncludingContructionAndInstallationWorks_CorrectEnergyAndWater()
+        public void Create_TotalCostIncludingCAIW_CorrectEnergyAndWater()
         {
-            var energyAndWaterCreator = CreateDefaultEnergyAndWaterCreator();
+            var totalCostIncludingCAIW = 12.986M;
             var constructionYear = 2021;
-            var totalCostIncludingContructionAndInstallationWorks = 12.986M;
+            var caiwVolume = 0.45M;
+            var energy = 0.923M;
+            var water = 0.001M;
+            var compressedAir = 0.018M;
+            var oxygen = 19.803M;
 
-            var energyAndWater = energyAndWaterCreator.Create(totalCostIncludingContructionAndInstallationWorks, constructionYear);
+            var expectedEnergyAndWater = new EnergyAndWater(constructionYear, caiwVolume, energy, water, compressedAir, oxygen);
 
-            Assert.AreEqual(constructionYear, energyAndWater.ConstructionYear);
-            Assert.AreEqual(0.45, decimal.Round(energyAndWater.SmrVolume, 3));
-            Assert.AreEqual(0.923, decimal.Round(energyAndWater.Energy, 3));
-            Assert.AreEqual(0.001, decimal.Round(energyAndWater.Water, 3));
-            Assert.AreEqual(0.018, decimal.Round(energyAndWater.CompressedAir, 3));
-            Assert.AreEqual(19.803, decimal.Round(energyAndWater.Oxygen, 3));
+            var actualEnergyAndWater = _energyAndWaterCreator.Create(totalCostIncludingCAIW, constructionYear);
+
+            Assert.AreEqual(expectedEnergyAndWater, actualEnergyAndWater);
         }
     }
 }

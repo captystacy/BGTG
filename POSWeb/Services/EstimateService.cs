@@ -18,10 +18,10 @@ namespace POSWeb.Services
             _estimateManager = estimateManager;
         }
 
-        public void ReadEstimateFiles(IEnumerable<IFormFile> estimateFiles)
+        public void ReadEstimateFiles(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter)
         {
             var estimateStreams = estimateFiles.Select(x => x.OpenReadStream());
-            Estimate = _estimateManager.GetEstimate(estimateStreams);
+            Estimate = _estimateManager.GetEstimate(estimateStreams, totalWorkChapter);
         }
     }
 }

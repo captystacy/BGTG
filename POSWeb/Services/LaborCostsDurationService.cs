@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using POSCore.DurationLogic.LaborCosts.Interfaces;
+using POSCore.LaborCostsDurationLogic.Interfaces;
 using POSWeb.Helpers;
 using POSWeb.Models;
 using POSWeb.Services.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using POSCore.EstimateLogic;
 
 namespace POSWeb.Services
 {
@@ -37,14 +38,13 @@ namespace POSWeb.Services
 
         public void WriteLaborCostsDuration(IEnumerable<IFormFile> estimateFiles, LaborCostsDurationVM laborCostsDurationVM, string userFullName)
         {
-            _estimateService.ReadEstimateFiles(estimateFiles);
+            _estimateService.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
             var laborCostsDuration = _laborCostsDurationCreator.Create(_estimateService.Estimate.LaborCosts + laborCostsDurationVM.TechnologicalLaborCosts, laborCostsDurationVM.WorkingDayDuration, laborCostsDurationVM.Shift,
                 laborCostsDurationVM.NumberOfWorkingDays, laborCostsDurationVM.NumberOfEmployees, laborCostsDurationVM.AcceptanceTimeIncluded);
             var templateFileName = GetLaborCostsDurationTemplateFileName(laborCostsDuration.RoundingIncluded, laborCostsDuration.AcceptanceTimeIncluded, laborCostsDurationVM.TechnologicalLaborCosts);
             var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _laborCostsDurationTemplatesPath, templateFileName);
-            var savePath = GetLaborCostsDurationsPath();
-            var fileName = GetLaborCostsDurationFileName(userFullName);
-            _laborCostsDurationWriter.Write(laborCostsDuration, templatePath, savePath, fileName);
+            var savePath = Path.Combine(GetLaborCostsDurationsPath(), GetLaborCostsDurationFileName(userFullName));
+            _laborCostsDurationWriter.Write(laborCostsDuration, templatePath, savePath);
         }
 
         private string GetLaborCostsDurationTemplateFileName(bool roundingIncluded, bool acceptanceTimeIncluded, decimal technologistsLaborCosts)

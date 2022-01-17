@@ -1,21 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace POSCore.CalendarPlanLogic
 {
-    public class CalendarPlan
+    public class CalendarPlan : IEquatable<CalendarPlan>
     {
-        public List<CalendarWork> PreparatoryCalendarWorks { get; }
-        public List<CalendarWork> MainCalendarWorks { get; }
+        public IEnumerable<CalendarWork> PreparatoryCalendarWorks { get; }
+        public IEnumerable<CalendarWork> MainCalendarWorks { get; }
         public DateTime ConstructionStartDate { get; }
-        public decimal ConstructionDuration { get; }
+        public int ConstructionDurationCeiling { get; }
 
-        public CalendarPlan(List<CalendarWork> preparatoryCalendarWorks, List<CalendarWork> mainCalendarWorks, DateTime constructionStartDate, decimal constructionDuration)
+        public CalendarPlan(IEnumerable<CalendarWork> preparatoryCalendarWorks, IEnumerable<CalendarWork> mainCalendarWorks, DateTime constructionStartDate, int constructionDurationCeiling)
         {
             PreparatoryCalendarWorks = preparatoryCalendarWorks;
             MainCalendarWorks = mainCalendarWorks;
             ConstructionStartDate = constructionStartDate;
-            ConstructionDuration = constructionDuration;
+            ConstructionDurationCeiling = constructionDurationCeiling;
+        }
+
+        public bool Equals(CalendarPlan other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return PreparatoryCalendarWorks.SequenceEqual(other.PreparatoryCalendarWorks)
+                && MainCalendarWorks.SequenceEqual(other.MainCalendarWorks)
+                && ConstructionStartDate == other.ConstructionStartDate
+                && ConstructionDurationCeiling == other.ConstructionDurationCeiling;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as CalendarPlan);
+
+        public override int GetHashCode() => HashCode.Combine(PreparatoryCalendarWorks, MainCalendarWorks, ConstructionStartDate, ConstructionDurationCeiling);
+
+        public static bool operator ==(CalendarPlan calendarPlan1, CalendarPlan calendarPlan2)
+        {
+            if (calendarPlan1 is null)
+            {
+                return calendarPlan2 is null;
+            }
+
+            return calendarPlan1.Equals(calendarPlan2);
+        }
+
+        public static bool operator !=(CalendarPlan calendarPlan1, CalendarPlan calendarPlan2) => !(calendarPlan1 == calendarPlan2);
+
+        public override string ToString()
+        {
+            return "[" + string.Join("; ", PreparatoryCalendarWorks) + "], "
+                + "[" + string.Join("; ", MainCalendarWorks) + "], "
+                + string.Join(", ", ConstructionStartDate, ConstructionDurationCeiling);
         }
     }
 }

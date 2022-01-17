@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 using POSCore.CalendarPlanLogic.Interfaces;
@@ -8,60 +7,92 @@ using POSWeb.Services;
 using POSWeb.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using POSCore.CalendarPlanLogic;
+using POSWeb.Models;
 
 namespace POSWebTests.Services
 {
     //TODO: bad class, need to split logic, it is untestable
     public class CalendarPlanServiceTests
     {
-        private Mock<IEstimateService> _estimateService;
+        private CalendarPlanService _calendarPlanService;
+        private Mock<IMapper> _mapperMock;
+        private Mock<IEstimateService> _estimateServiceMock;
         private Mock<ICalendarPlanCreator> _calendarPlanCreatorMock;
         private Mock<ICalendarPlanWriter> _calendarPlanWriterMock;
         private Mock<IWebHostEnvironment> _webHostEnvironmentMock;
 
-        private CalendarPlanService CreateDefaultCalendarPlanService()
+        [SetUp]
+        public void SetUp()
         {
-            _estimateService = new Mock<IEstimateService>();
+            _mapperMock = new Mock<IMapper>();
+            _estimateServiceMock = new Mock<IEstimateService>();
             _calendarPlanCreatorMock = new Mock<ICalendarPlanCreator>();
             _calendarPlanWriterMock = new Mock<ICalendarPlanWriter>();
             _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
+            _calendarPlanService = new CalendarPlanService(_estimateServiceMock.Object, _calendarPlanCreatorMock.Object, _calendarPlanWriterMock.Object,
+                _webHostEnvironmentMock.Object, _mapperMock.Object);
 
-            return new CalendarPlanService(_estimateService.Object, _calendarPlanCreatorMock.Object, _calendarPlanWriterMock.Object,
-                _webHostEnvironmentMock.Object);
         }
 
         [Test]
-        public void GetEstimate()
+        public void GetCalendarPlanVM()
         {
-            var calendarPlanService = CreateDefaultCalendarPlanService();
             var estimateFiles = new List<IFormFile>();
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
-            _estimateService.Setup(x => x.Estimate).Returns(estimate);
+            var calendarPlanVM = new CalendarPlanVM()
+            {
+                UserWorks = new List<UserWorkVM>()
+                {
+                    new UserWorkVM()
+                    {
+                        WorkName = CalendarPlanInfo.TotalWorkName,
+                        Chapter = CalendarPlanInfo.MainTotalWork1To12Chapter
+                    },
+                }
+            };
+            _estimateServiceMock.SetupGet(x => x.Estimate).Returns(estimate);
+            _mapperMock.Setup(x => x.Map<CalendarPlanVM>(estimate)).Returns(calendarPlanVM);
 
-            var result = calendarPlanService.GetEstimate(estimateFiles);
+            var expectedCalendarPlanVM = new CalendarPlanVM()
+            {
+                UserWorks = new List<UserWorkVM>()
+                {
+                    new UserWorkVM()
+                    {
+                        WorkName = CalendarPlanInfo.MainOtherExpensesWorkName,
+                        Chapter = CalendarPlanInfo.MainOtherExpensesWorkChapter,
+                        Percentages = new List<decimal>()
+                    }
+                }
+            };
 
-            _estimateService.Verify(x => x.ReadEstimateFiles(estimateFiles), Times.Once);
-            _estimateService.VerifyGet(x => x.Estimate, Times.Once);
-            Assert.AreSame(estimate, result);
+            var actualCalendarPlanVM = _calendarPlanService.GetCalendarPlanVM(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+
+            _estimateServiceMock.Verify(x => x.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
+            _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);
+            _mapperMock.Verify(x => x.Map<CalendarPlanVM>(estimate), Times.Once);
+            Assert.AreEqual(expectedCalendarPlanVM, actualCalendarPlanVM);
         }
 
         [Test]
         public void GetCalendarPlansPath()
         {
-            var calendarPlanService = CreateDefaultCalendarPlanService();
             _webHostEnvironmentMock.Setup(x => x.WebRootPath).Returns("www");
 
-            var energyAndWatersPath = calendarPlanService.GetCalendarPlansPath();
+            var energyAndWatersPath = _calendarPlanService.GetCalendarPlansPath();
 
             Assert.AreEqual("www\\UsersFiles\\CalendarPlans", energyAndWatersPath);
         }
 
+        [Test]
         public void GetCalendarPlanFileName()
         {
-            var calendarPlanService = CreateDefaultCalendarPlanService();
             var userFullName = "BGTG\\kss";
 
-            var calendarPlanFileName = calendarPlanService.GetCalendarPlanFileName(userFullName);
+            var calendarPlanFileName = _calendarPlanService.GetCalendarPlanFileName(userFullName);
 
             Assert.AreEqual($"CalendarPlanBGTGkss.docx", calendarPlanFileName);
         }
@@ -69,14 +100,12 @@ namespace POSWebTests.Services
         [Test]
         public void GetDownloadCalendarPlanFileName()
         {
-            var calendarPlanService = CreateDefaultCalendarPlanService();
             var objectCipher = "5.5-20.548";
-            var estimate = new Estimate(null, null, default(DateTime), 0, objectCipher, 0);
-            _estimateService.Setup(x => x.Estimate).Returns(estimate);
+            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, objectCipher, 0);
+            _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
 
-            var downloadCalendarPlanName = calendarPlanService.GetDownloadCalendarPlanFileName();
+            var downloadCalendarPlanName = _calendarPlanService.GetDownloadCalendarPlanFileName(objectCipher);
 
-            _estimateService.VerifyGet(x => x.Estimate, Times.Once);
             Assert.AreEqual($"{objectCipher}КП.docx", downloadCalendarPlanName);
         }
     }

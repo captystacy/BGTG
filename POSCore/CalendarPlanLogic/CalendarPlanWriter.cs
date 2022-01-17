@@ -1,7 +1,7 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
+using System.Linq;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
@@ -9,51 +9,109 @@ namespace POSCore.CalendarPlanLogic
 {
     public class CalendarPlanWriter : ICalendarPlanWriter
     {
-        private const string _workNamePattern = "WN";
-        private const string _totalCostPattern = "TC";
-        private const string _totalCostIncludingContructionAndInstallationWorksPattern = "TIC";
-        private const string _investmentVolumePattern = "IV";
-        private const string _contructionAndInstallationWorksVolumePattern = "IWV";
-        private const string _datePattern = "D";
-        private const string _dateAcceptancePattern = "DA";
-        private const string _percentPattern = "P";
+        private const string _workNamePattern = "%WN%";
+        private const string _totalCostPattern = "%TC%";
+        private const string _totalCostIncludingCaiwPattern = "%TIC%";
+        private const string _dateAcceptancePattern = "%DA%";
 
         private const string _decimalFormat = "{0:f3}";
         private const string _percentFormat = "{0:P2}";
 
-        public void Write(CalendarPlan calendarPlan, string templatePath, string savePath, string fileName)
+        private const int _topPatternRowIndex = 2;
+        private const int _bottomPatternRowIndex = 3;
+
+        public void Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath, string savePath)
         {
-            using (var document = DocX.Load(templatePath))
+            using (var preparatoryDocument = DocX.Load(preparatoryTemplatePath))
             {
-                var constructionMonths = calendarPlan.MainCalendarWorks.Find(x => x.EstimateChapter == 10).ConstructionPeriod.ConstructionMonths;
+                var constructionMonths = calendarPlan.MainCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.ToArray();
 
-                var preparatoryCalendarPlanPatternTable = document.Tables[0];
-                ModifyCalendarPlanTable(preparatoryCalendarPlanPatternTable, calendarPlan.PreparatoryCalendarWorks, constructionMonths);
+                var preparatoryTable = preparatoryDocument.Tables[0];
+                ModifyCalendarPlanTable(preparatoryTable, calendarPlan.PreparatoryCalendarWorks, constructionMonths);
 
-                var mainCalendarPlanPattrenTable = document.Tables[1];
-                ModifyCalendarPlanTable(mainCalendarPlanPattrenTable, calendarPlan.MainCalendarWorks, constructionMonths);
+                using (var mainDocument = DocX.Load(mainTemplatePath))
+                {
+                    var mainTable = mainDocument.Tables[0];
 
-                var saveAsPath = Path.Combine(savePath, fileName);
-                document.SaveAs(saveAsPath);
+                    ModifyCalendarPlanTable(mainTable, calendarPlan.MainCalendarWorks, constructionMonths);
+
+                    if (calendarPlan.ConstructionDurationCeiling > 1)
+                    {
+                        mainTable.MergeCellsInColumn(mainTable.ColumnCount - 1, _topPatternRowIndex,
+                            mainTable.RowCount - 2);
+                        mainTable.Rows[_topPatternRowIndex].Cells[mainTable.ColumnCount - 1].Paragraphs[0]
+                            .Append("Приемка объекта в эксплуатацию").FontSize(12);
+                    }
+
+                    preparatoryDocument.InsertDocument(mainDocument);
+                    preparatoryDocument.SaveAs(savePath);
+                }
             }
         }
 
-        private void ModifyCalendarPlanTable(Table calendarPlanPatternTable, List<CalendarWork> calendarWorks, List<ConstructionMonth> constructionMonths)
+        private void ModifyCalendarPlanTable(Table table, IEnumerable<CalendarWork> calendarWorks, ConstructionMonth[] constructionMonths)
         {
-            ReplaceDatePatternWithActualDate(calendarPlanPatternTable, constructionMonths);
+            ReplaceDatePatternWithActualDate(table, constructionMonths);
 
-            var i = 2;
+            var topPatternRow = table.Rows[_topPatternRowIndex];
+            var bottomPatternRow = table.Rows[_bottomPatternRowIndex];
             foreach (var calendarWork in calendarWorks)
             {
-                ReplaceWorkPatternsWithActualValues(calendarPlanPatternTable.Rows[i], calendarPlanPatternTable.Rows[i + 1], calendarWork);
-                i += 2;
+                AddRowToTable(table, topPatternRow, bottomPatternRow, calendarWork);
+            }
+            topPatternRow.Remove();
+            bottomPatternRow.Remove();
+
+            ReplacePercentPartsWithActualPercentages(table, constructionMonths);
+
+            MergeExtraConstructionMonthIntoDash(table);
+        }
+
+        private void ReplaceDatePatternWithActualDate(Table calendarPlanPatternTable, ConstructionMonth[] constructionMonths)
+        {
+            var monthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+
+            for (int i = 0; i < constructionMonths.Length; i++)
+            {
+                var monthName = monthNames[constructionMonths[i].Date.Month - 1];
+                calendarPlanPatternTable.Rows[1].ReplaceText($"%D{i}%", monthName + " " + constructionMonths[i].Date.Year);
             }
 
-            ReplacePercentPartsWithActualPercentages(calendarPlanPatternTable, constructionMonths);
+            if (constructionMonths.Length > 1)
+            {
+                var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
+                var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
+                calendarPlanPatternTable.Rows[1].ReplaceText(_dateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
+            }
+        }
 
-            RemoveExtraRows(calendarPlanPatternTable);
+        private void AddRowToTable(Table table, Row topPatternRow, Row bottomPatternRow, CalendarWork calendarWork)
+        {
+            var newTopRow = table.InsertRow(topPatternRow, table.RowCount - 2);
+            var newBottomRow = table.InsertRow(bottomPatternRow, table.RowCount - 2);
 
-            MergeExtraConstructionMonthIntoDash(calendarPlanPatternTable);
+            newTopRow.ReplaceText(_workNamePattern, calendarWork.WorkName);
+            newTopRow.ReplaceText(_totalCostPattern, string.Format(_decimalFormat, calendarWork.TotalCost));
+            newTopRow.ReplaceText(_totalCostIncludingCaiwPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingCAIW));
+            var constructionMonths = calendarWork.ConstructionMonths.ToArray();
+            foreach (var constructionMonth in constructionMonths)
+            {
+                var creationIndex = constructionMonth.CreationIndex;
+                newTopRow.ReplaceText($"%IV{creationIndex}%", string.Format(_decimalFormat, constructionMonth.InvestmentVolume));
+                newBottomRow.ReplaceText($"%IW{creationIndex}%", string.Format(_decimalFormat, constructionMonth.CAIWVolume));
+            }
+        }
+
+        private void ReplacePercentPartsWithActualPercentages(Table calendarPlanPatternTable, ConstructionMonth[] constructionMonths)
+        {
+            var lastRow = calendarPlanPatternTable.Rows[^1];
+            if (lastRow.Paragraphs.Count > 1)
+            {
+                for (int i = 0; i < constructionMonths.Length; i++)
+                {
+                    lastRow.ReplaceText($"%P{i}%", string.Format(_percentFormat, constructionMonths[i].PercentPart));
+                }
+            }
         }
 
         private void MergeExtraConstructionMonthIntoDash(Table calendarPlanPatternTable)
@@ -63,7 +121,7 @@ namespace POSCore.CalendarPlanLogic
                 for (int columnIndex = 3; columnIndex < calendarPlanPatternTable.Rows[rowIndex].Paragraphs.Count; columnIndex++)
                 {
                     var paragraph = calendarPlanPatternTable.Rows[rowIndex].Paragraphs[columnIndex];
-                    if (paragraph.Text.StartsWith(_investmentVolumePattern))
+                    if (paragraph.Text.StartsWith("%IV"))
                     {
                         var nextRowParagraph = calendarPlanPatternTable.Rows[rowIndex + 1].Paragraphs[columnIndex];
                         paragraph.RemoveText(0, paragraph.Text.Length);
@@ -72,61 +130,6 @@ namespace POSCore.CalendarPlanLogic
                         paragraph.Append("-").FontSize(12);
                     }
                 }
-            }
-        }
-
-        private void ReplacePercentPartsWithActualPercentages(Table calendarPlanPatternTable, List<ConstructionMonth> constructionMonths)
-        {
-            var lastRow = calendarPlanPatternTable.Rows[^1];
-            if (lastRow.Paragraphs.Count > 1)
-            {
-                for (int i = 0; i < constructionMonths.Count; i++)
-                {
-                    lastRow.ReplaceText(_percentPattern + i, string.Format(_percentFormat, constructionMonths[i].PercentPart));
-                }
-            }
-        }
-
-        private void ReplaceDatePatternWithActualDate(Table calendarPlanPatternTable, List<ConstructionMonth> constructionMonths)
-        {
-            var monthNames = CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.MonthNames;
-
-            for (int i = 0; i < constructionMonths.Count; i++)
-            {
-                var monthName = monthNames[constructionMonths[i].Date.Month - 1];
-                calendarPlanPatternTable.Rows[1].ReplaceText(_datePattern + i, monthName + " " + constructionMonths[i].Date.Year);
-            }
-
-            if (constructionMonths.Count > 1)
-            {
-                var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
-                var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
-                calendarPlanPatternTable.Rows[1].ReplaceText(_dateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
-            }
-        }
-
-        private void RemoveExtraRows(Table calendarPlanPatternTable)
-        {
-            for (int rowIndex = 2; rowIndex < calendarPlanPatternTable.Rows.Count - 1; rowIndex++)
-            {
-                if (calendarPlanPatternTable.Rows[rowIndex].Paragraphs[0].Text == _workNamePattern)
-                {
-                    calendarPlanPatternTable.Rows[rowIndex + 1].Remove();
-                    calendarPlanPatternTable.Rows[rowIndex].Remove();
-                    rowIndex -= 2;
-                }
-            }
-        }
-
-        private void ReplaceWorkPatternsWithActualValues(Row topPatternRow, Row bottomPatternRow, CalendarWork calendarWork)
-        {
-            topPatternRow.ReplaceText(_workNamePattern, calendarWork.WorkName);
-            topPatternRow.ReplaceText(_totalCostPattern, string.Format(_decimalFormat, calendarWork.TotalCost));
-            topPatternRow.ReplaceText(_totalCostIncludingContructionAndInstallationWorksPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingContructionAndInstallationWorks));
-            for (int i = 0; i < calendarWork.ConstructionPeriod.ConstructionMonths.Count; i++)
-            {
-                topPatternRow.ReplaceText(_investmentVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].CreationIndex, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].InvestmentVolume));
-                bottomPatternRow.ReplaceText(_contructionAndInstallationWorksVolumePattern + calendarWork.ConstructionPeriod.ConstructionMonths[i].CreationIndex, string.Format(_decimalFormat, calendarWork.ConstructionPeriod.ConstructionMonths[i].ContructionAndInstallationWorksVolume));
             }
         }
     }

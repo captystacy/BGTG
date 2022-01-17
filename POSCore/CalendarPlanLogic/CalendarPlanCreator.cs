@@ -1,25 +1,34 @@
 ﻿using POSCore.CalendarPlanLogic.Interfaces;
 using POSCore.EstimateLogic;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace POSCore.CalendarPlanLogic
 {
     public class CalendarPlanCreator : ICalendarPlanCreator
     {
-        private readonly ICalendarWorkCreator _calendarWorkCreator;
+        private readonly ICalendarWorksProvider _calendarWorksProvider;
 
-        public CalendarPlanCreator(ICalendarWorkCreator calendarWorkCreator)
+        public CalendarPlanCreator(ICalendarWorksProvider calendarWorksProvider)
         {
-            _calendarWorkCreator = calendarWorkCreator;
+            _calendarWorksProvider = calendarWorksProvider;
         }
 
-        public CalendarPlan Create(Estimate estimate, List<decimal> otherExpensesPercentages)
+        public CalendarPlan Create(Estimate estimate, List<decimal> otherExpensesPercentages, TotalWorkChapter totalWorkChapter)
         {
-            var preparatoryCalendarWorks = _calendarWorkCreator.CreatePreparatoryCalendarWorks(estimate.PreparatoryEstimateWorks, 
+            var preparatoryCalendarWorks = _calendarWorksProvider.CreatePreparatoryCalendarWorks(
+                estimate.PreparatoryEstimateWorks,
                 estimate.ConstructionStartDate);
-            var mainCalendarWorks = _calendarWorkCreator.CreateMainCalendarWorks(estimate.MainEstimateWorks, preparatoryCalendarWorks[^1], 
-                estimate.ConstructionStartDate, estimate.ConstructionDuration, otherExpensesPercentages);
-            return new CalendarPlan(preparatoryCalendarWorks, mainCalendarWorks, estimate.ConstructionStartDate, estimate.ConstructionDuration);
+
+            var mainCalendarWorks = _calendarWorksProvider.CreateMainCalendarWorks(
+                estimate.MainEstimateWorks, 
+                preparatoryCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName),
+                estimate.ConstructionStartDate, 
+                estimate.ConstructionDurationCeiling, 
+                otherExpensesPercentages,
+                totalWorkChapter);
+
+            return new CalendarPlan(preparatoryCalendarWorks, mainCalendarWorks, estimate.ConstructionStartDate, estimate.ConstructionDurationCeiling);
         }
     }
 }

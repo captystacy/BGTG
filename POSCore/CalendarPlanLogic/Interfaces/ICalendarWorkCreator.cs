@@ -7,7 +7,8 @@ namespace POSCore.CalendarPlanLogic.Interfaces
     public interface ICalendarWorkCreator
     {
         CalendarWork Create(EstimateWork estimateWork, DateTime constructionStartDate);
-        List<CalendarWork> CreatePreparatoryCalendarWorks(List<EstimateWork> preparatoryEstimateWorks, DateTime constructionStartDate);
-        List<CalendarWork> CreateMainCalendarWorks(List<EstimateWork> mainEstimateWorks, CalendarWork preparatoryTotalWork, DateTime constructionStartDate, decimal constructionDuration, List<decimal> otherExpensesPercentages);
+        CalendarWork CreateAnyPreparatoryWork(string workName, List<CalendarWork> preparatoryCalendarWorks, int estimateChapter, DateTime constructionStartDate, List<decimal> percentages);
+        CalendarWork CreateMainTotalWork(List<CalendarWork> mainCalendarWorks, CalendarWork initialTotalMainWork, DateTime constructionStartDate, int constructionDurationCeiling);
+        CalendarWork CreateOtherExpensesWork(List<CalendarWork> mainCalendarWorks, CalendarWork initialTotalMainWork, DateTime constructionStartDate, List<decimal> percentages);
     }
 }

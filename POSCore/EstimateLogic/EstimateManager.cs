@@ -16,9 +16,9 @@ namespace POSCore.EstimateLogic
             _estimateConnector = estimateConnector;
         }
 
-        public Estimate GetEstimate(IEnumerable<Stream> estimateStreams)
+        public Estimate GetEstimate(IEnumerable<Stream> estimateStreams, TotalWorkChapter totalWorkChapter)
         {
-            var estimates = estimateStreams.Select(s => _estimateReader.Read(s));
+            var estimates = estimateStreams.Select(s => _estimateReader.Read(s, totalWorkChapter));
             return _estimateConnector.Connect(estimates.ToList());
         }
     }

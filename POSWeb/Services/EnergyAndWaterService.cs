@@ -6,6 +6,8 @@ using POSWeb.Helpers;
 using POSWeb.Services.Interfaces;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using POSCore.EstimateLogic;
 
 namespace POSWeb.Services
 {
@@ -18,7 +20,7 @@ namespace POSWeb.Services
         private readonly ICalendarWorkCreator _calendarWorkCreator;
 
         private const string _energyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
-        private const string _energyAndWaterTemplatePath = "Templates";
+        private const string _energyAndWaterTemplatePath = "Templates\\EnergyAndWaterTemplates";
         private const string _energyAndWatersPath = "UsersFiles\\EnergyAndWaters";
 
         public EnergyAndWaterService(IEstimateService estimateService, IEnergyAndWaterCreator energyAndWaterCreator, 
@@ -33,21 +35,19 @@ namespace POSWeb.Services
 
         public void WriteEnergyAndWater(IEnumerable<IFormFile> estimateFiles, string userFullName)
         {
-            _estimateService.ReadEstimateFiles(estimateFiles);
-            var mainTotalCostIncludingContructionAndInstallationWorks = GetMainTotalCostIncludingContructionAndInstallationWorks();
-            var energyAndWater = _energyAndWaterCreator.Create(mainTotalCostIncludingContructionAndInstallationWorks, _estimateService.Estimate.ConstructionStartDate.Year);
+            _estimateService.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+            var mainTotalCostIncludingCAIW = GetMainTotalCostIncludingCAIW();
+            var energyAndWater = _energyAndWaterCreator.Create(mainTotalCostIncludingCAIW, _estimateService.Estimate.ConstructionStartDate.Year);
             var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _energyAndWaterTemplatePath, _energyAndWaterTemplateFileName);
-            var savePath = GetEnergyAndWatersPath();
-            var fileName = GetEnergyAndWaterFileName(userFullName);
-            _energyAndWaterWriter.Write(energyAndWater, templatePath, savePath, fileName);
+            var savePath = Path.Combine(GetEnergyAndWatersPath(), GetEnergyAndWaterFileName(userFullName));
+            _energyAndWaterWriter.Write(energyAndWater, templatePath, savePath);
         }
 
-        private decimal GetMainTotalCostIncludingContructionAndInstallationWorks()
+        private decimal GetMainTotalCostIncludingCAIW()
         {
-            var totalEstimateWork = _estimateService.Estimate.MainEstimateWorks.Find(x => x.Chapter == 10);
-            totalEstimateWork.Percentages = new List<decimal>();
+            var totalEstimateWork = _estimateService.Estimate.MainEstimateWorks.Single(x => x.Chapter == 12);
             var totalCalendarWork = _calendarWorkCreator.Create(totalEstimateWork, _estimateService.Estimate.ConstructionStartDate);
-            return totalCalendarWork.TotalCostIncludingContructionAndInstallationWorks;
+            return totalCalendarWork.TotalCostIncludingCAIW;
         }
 
         public string GetEnergyAndWatersPath()

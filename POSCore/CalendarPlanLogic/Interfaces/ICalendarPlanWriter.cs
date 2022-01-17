@@ -2,6 +2,6 @@
 {
     public interface ICalendarPlanWriter
     {
-        void Write(CalendarPlan calendarPlan, string templatePath, string savePath, string fileName);
+        void Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath, string savePath);
     }
 }
