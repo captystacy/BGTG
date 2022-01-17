@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using POSCore.EstimateLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using NUnit.Framework;
+using POS.EstimateLogic;
 
-namespace POSCoreTests.EstimateLogic
+namespace POSTests.EstimateLogic
 {
     public class EstimateConnetorTests
     {

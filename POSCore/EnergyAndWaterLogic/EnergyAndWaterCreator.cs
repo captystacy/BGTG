@@ -1,7 +1,7 @@
 ﻿using System;
-using POSCore.EnergyAndWaterLogic.Interfaces;
+using POS.EnergyAndWaterLogic.Interfaces;
 
-namespace POSCore.EnergyAndWaterLogic
+namespace POS.EnergyAndWaterLogic
 {
     public class EnergyAndWaterCreator : IEnergyAndWaterCreator
     {

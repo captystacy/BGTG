@@ -1,4 +1,4 @@
-﻿namespace POSCore.EstimateLogic
+﻿namespace POS.EstimateLogic
 {
     public enum TotalWorkChapter
     {

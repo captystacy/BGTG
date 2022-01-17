@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace POSCore.EstimateLogic.Interfaces
+namespace POS.EstimateLogic.Interfaces
 {
     public interface IEstimateConnector
     {

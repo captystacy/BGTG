@@ -1,8 +1,8 @@
-﻿using POSCore.EstimateLogic.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using POS.EstimateLogic.Interfaces;
 
-namespace POSCore.EstimateLogic
+namespace POS.EstimateLogic
 {
     public class EstimateConnector : IEstimateConnector
     {

@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using POSCore.EstimateLogic;
-using POSCore.EstimateLogic.Interfaces;
-using POSWeb.Services.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using POS.EstimateLogic;
+using POS.EstimateLogic.Interfaces;
 
-namespace POSWeb.Services
+namespace BGTGWeb.Services
 {
     public class EstimateService : IEstimateService
     {

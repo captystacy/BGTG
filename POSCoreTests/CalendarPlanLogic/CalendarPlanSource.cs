@@ -1,8 +1,8 @@
-﻿using POSCore.CalendarPlanLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using POS.CalendarPlanLogic;
 
-namespace POSCoreTests.CalendarPlanLogic
+namespace POSTests.CalendarPlanLogic
 {
     public static class CalendarPlanSource
     {

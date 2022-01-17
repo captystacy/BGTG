@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace POSCore.CalendarPlanLogic
+namespace POS.CalendarPlanLogic
 {
     public class CalendarWork : IEquatable<CalendarWork>
     {

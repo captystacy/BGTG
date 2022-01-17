@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.Collections.Generic;
+using BGTGWeb.Models;
+using BGTGWeb.Services;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
-using POSCore.EstimateLogic;
-using POSCore.LaborCostsDurationLogic;
-using POSCore.LaborCostsDurationLogic.Interfaces;
-using POSWeb.Models;
-using POSWeb.Services;
-using POSWeb.Services.Interfaces;
-using System;
-using System.Collections.Generic;
+using POS.EstimateLogic;
+using POS.LaborCostsDurationLogic;
+using POS.LaborCostsDurationLogic.Interfaces;
 
-namespace POSWebTests.Services
+namespace BGTGWebTests.Services
 {
     public class LaborCostsDurationServiceTests
     {

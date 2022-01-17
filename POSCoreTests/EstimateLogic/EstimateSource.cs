@@ -1,8 +1,8 @@
-﻿using POSCore.EstimateLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using POS.EstimateLogic;
 
-namespace POSCoreTests.EstimateLogic
+namespace POSTests.EstimateLogic
 {
     public static class EstimateSource
     {

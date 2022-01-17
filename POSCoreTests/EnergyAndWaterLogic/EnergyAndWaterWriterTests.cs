@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
-using POSCore.EnergyAndWaterLogic;
-using System.IO;
+﻿using System.IO;
+using NUnit.Framework;
+using POS.EnergyAndWaterLogic;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
-namespace POSCoreTests.EnergyAndWaterLogic
+namespace POSTests.EnergyAndWaterLogic
 {
     public class EnergyAndWaterWriterTests
     {

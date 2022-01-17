@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using POSWeb.Models.Attributes;
 
-namespace POSWeb.Models
+namespace BGTGWeb.Models
 {
     public class UserWorkVM
     {

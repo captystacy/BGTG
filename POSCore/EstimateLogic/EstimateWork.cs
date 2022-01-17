@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace POSCore.EstimateLogic
+namespace POS.EstimateLogic
 {
     public class EstimateWork : IEquatable<EstimateWork>
     {

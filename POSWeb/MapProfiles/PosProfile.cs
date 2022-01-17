@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using POSCore.CalendarPlanLogic;
-using POSCore.EstimateLogic;
-using POSWeb.Models;
-using System.Linq;
+﻿using System.Linq;
+using AutoMapper;
+using BGTGWeb.Models;
+using POS.CalendarPlanLogic;
+using POS.EstimateLogic;
 
-namespace POSWeb.MapProfiles
+namespace BGTGWeb.MapProfiles
 {
     public class PosProfile : Profile
     {

@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
-using POSCore.CalendarPlanLogic;
-using POSCoreTests.EstimateLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using POS.CalendarPlanLogic;
+using POSTests.EstimateLogic;
 
-namespace POSCoreTests.CalendarPlanLogic
+namespace POSTests.CalendarPlanLogic
 {
     public class ConstructionMonthsCreatorTests
     {

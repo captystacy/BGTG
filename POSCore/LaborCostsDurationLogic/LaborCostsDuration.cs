@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace POSCore.LaborCostsDurationLogic
+namespace POS.LaborCostsDurationLogic
 {
     public class LaborCostsDuration : IEquatable<LaborCostsDuration>
     {

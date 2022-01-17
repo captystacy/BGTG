@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Moq;
-using NUnit.Framework;
-using POSCore.CalendarPlanLogic.Interfaces;
-using POSCore.EstimateLogic;
-using POSWeb.Services;
-using POSWeb.Services.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using BGTGWeb.Models;
+using BGTGWeb.Services;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using POSCore.CalendarPlanLogic;
-using POSWeb.Models;
+using Moq;
+using NUnit.Framework;
+using POS.CalendarPlanLogic;
+using POS.CalendarPlanLogic.Interfaces;
+using POS.EstimateLogic;
 
-namespace POSWebTests.Services
+namespace BGTGWebTests.Services
 {
     //TODO: bad class, need to split logic, it is untestable
     public class CalendarPlanServiceTests

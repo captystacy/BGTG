@@ -1,4 +1,4 @@
-﻿namespace POSWeb.Models
+﻿namespace BGTGWeb.Models
 {
     public class LaborCostsDurationVM
     {

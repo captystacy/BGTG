@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\POSCore\POSCore.csproj" />
+		<ProjectReference Include="..\POSCore\POS.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

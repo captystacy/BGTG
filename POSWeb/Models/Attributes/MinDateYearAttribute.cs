@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace POSWeb.Models.Attributes
+namespace BGTGWeb.Models.Attributes
 {
     public class MinDateYearAttribute : ValidationAttribute
     {

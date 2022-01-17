@@ -1,9 +1,8 @@
-﻿using POSCore.EnergyAndWaterLogic.Interfaces;
-using System.IO;
+﻿using POS.EnergyAndWaterLogic.Interfaces;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
-namespace POSCore.EnergyAndWaterLogic
+namespace POS.EnergyAndWaterLogic
 {
     public class EnergyAndWaterWriter : IEnergyAndWaterWriter
     {

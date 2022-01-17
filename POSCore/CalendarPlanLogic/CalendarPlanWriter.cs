@@ -1,11 +1,11 @@
-﻿using POSCore.CalendarPlanLogic.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using POS.CalendarPlanLogic.Interfaces;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
-namespace POSCore.CalendarPlanLogic
+namespace POS.CalendarPlanLogic
 {
     public class CalendarPlanWriter : ICalendarPlanWriter
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace POSCore.CalendarPlanLogic.Interfaces
+namespace POS.CalendarPlanLogic.Interfaces
 {
     public interface IConstructionMonthsCreator
     {

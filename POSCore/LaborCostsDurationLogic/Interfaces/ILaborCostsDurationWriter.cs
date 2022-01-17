@@ -1,4 +1,4 @@
-﻿namespace POSCore.LaborCostsDurationLogic.Interfaces
+﻿namespace POS.LaborCostsDurationLogic.Interfaces
 {
     public interface ILaborCostsDurationWriter
     {

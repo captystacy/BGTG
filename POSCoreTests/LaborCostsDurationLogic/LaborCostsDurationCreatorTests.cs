@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using POSCore.LaborCostsDurationLogic;
+using POS.LaborCostsDurationLogic;
 
-namespace POSCoreTests.LaborCostsDurationLogic
+namespace POSTests.LaborCostsDurationLogic
 {
     public class LaborCostsDurationCreatorTests
     {

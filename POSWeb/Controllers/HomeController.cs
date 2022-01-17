@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using POSWeb.Models;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using BGTGWeb.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace POSWeb.Controllers
+namespace BGTGWeb.Controllers
 {
     public class HomeController : Controller
     {

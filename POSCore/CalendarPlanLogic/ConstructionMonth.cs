@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace POSCore.CalendarPlanLogic
+namespace POS.CalendarPlanLogic
 {
     public class ConstructionMonth : IEquatable<ConstructionMonth>
     {

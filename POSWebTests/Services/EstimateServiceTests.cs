@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Moq;
-using NUnit.Framework;
-using POSCore.EstimateLogic;
-using POSCore.EstimateLogic.Interfaces;
-using POSWeb.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using BGTGWeb.Services;
+using Microsoft.AspNetCore.Http;
+using Moq;
+using NUnit.Framework;
+using POS.EstimateLogic;
+using POS.EstimateLogic.Interfaces;
 
-namespace POSWebTests.Services
+namespace BGTGWebTests.Services
 {
     public class EstimateServiceTests
     {

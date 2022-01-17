@@ -1,4 +1,4 @@
-﻿namespace POSWeb.Helpers
+﻿namespace BGTGWeb.Helpers
 {
     public static class StringHelper
     {

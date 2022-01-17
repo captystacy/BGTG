@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.Collections.Generic;
+using BGTGWeb.Services;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
-using POSCore.CalendarPlanLogic;
-using POSCore.CalendarPlanLogic.Interfaces;
-using POSCore.EnergyAndWaterLogic;
-using POSCore.EnergyAndWaterLogic.Interfaces;
-using POSCore.EstimateLogic;
-using POSWeb.Services;
-using POSWeb.Services.Interfaces;
-using System;
-using System.Collections.Generic;
+using POS.CalendarPlanLogic;
+using POS.CalendarPlanLogic.Interfaces;
+using POS.EnergyAndWaterLogic;
+using POS.EnergyAndWaterLogic.Interfaces;
+using POS.EstimateLogic;
 
-namespace POSWebTests.Services
+namespace BGTGWebTests.Services
 {
     public class EnergyAndWaterServiceTests
     {

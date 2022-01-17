@@ -1,15 +1,15 @@
-﻿using NUnit.Framework;
-using POSCore.CalendarPlanLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NUnit.Framework;
+using POS.CalendarPlanLogic;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
-namespace POSCoreTests.CalendarPlanLogic
+namespace POSTests.CalendarPlanLogic
 {
     [SetCulture("ru-RU")]
     public class CalendarPlanWriterTests

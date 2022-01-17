@@ -1,4 +1,4 @@
-﻿namespace POSCore.EnergyAndWaterLogic.Interfaces
+﻿namespace POS.EnergyAndWaterLogic.Interfaces
 {
     public interface IEnergyAndWaterWriter
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace POSCore.CalendarPlanLogic
+namespace POS.CalendarPlanLogic
 {
     public static class CalendarPlanInfo
     {

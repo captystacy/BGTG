@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using POSCore.EnergyAndWaterLogic;
+using POS.EnergyAndWaterLogic;
 
-namespace POSCoreTests.EnergyAndWaterLogic
+namespace POSTests.EnergyAndWaterLogic
 {
     public class EnergyAndWaterCreatorTests
     {

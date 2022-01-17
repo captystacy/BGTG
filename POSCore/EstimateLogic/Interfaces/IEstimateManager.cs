@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace POSCore.EstimateLogic.Interfaces
+namespace POS.EstimateLogic.Interfaces
 {
     public interface IEstimateManager
     {

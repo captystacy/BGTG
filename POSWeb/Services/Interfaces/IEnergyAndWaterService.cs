@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
-namespace POSWeb.Services.Interfaces
+namespace BGTGWeb.Services.Interfaces
 {
     public interface IEnergyAndWaterService
     {

@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
-using POSCore.EstimateLogic;
-using System.IO;
+﻿using System.IO;
+using NUnit.Framework;
+using POS.EstimateLogic;
 
-namespace POSCoreTests.EstimateLogic
+namespace POSTests.EstimateLogic
 {
     public class EstimateReaderTests
     {

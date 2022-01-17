@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using POSWeb.Models;
-using POSWeb.Services.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using POSCore.EstimateLogic;
+using BGTGWeb.Models;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using POS.EstimateLogic;
 
-namespace POSWeb.Controllers
+namespace BGTGWeb.Controllers
 {
     public class PosController : Controller
     {

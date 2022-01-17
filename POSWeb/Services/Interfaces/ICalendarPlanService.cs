@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using POSWeb.Models;
-using System.Collections.Generic;
-using POSCore.EstimateLogic;
+﻿using System.Collections.Generic;
+using BGTGWeb.Models;
+using Microsoft.AspNetCore.Http;
+using POS.EstimateLogic;
 
-namespace POSWeb.Services.Interfaces
+namespace BGTGWeb.Services.Interfaces
 {
     public interface ICalendarPlanService
     {

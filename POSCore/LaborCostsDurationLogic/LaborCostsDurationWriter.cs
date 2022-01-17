@@ -1,7 +1,7 @@
-﻿using POSCore.LaborCostsDurationLogic.Interfaces;
+﻿using POS.LaborCostsDurationLogic.Interfaces;
 using Xceed.Words.NET;
 
-namespace POSCore.LaborCostsDurationLogic
+namespace POS.LaborCostsDurationLogic
 {
     public class LaborCostsDurationWriter : ILaborCostsDurationWriter
     {

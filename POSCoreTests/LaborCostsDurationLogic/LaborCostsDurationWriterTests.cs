@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using POSCore.LaborCostsDurationLogic;
-using System.IO;
+﻿using System.IO;
+using NUnit.Framework;
+using POS.LaborCostsDurationLogic;
 using Xceed.Words.NET;
 
-namespace POSCoreTests.LaborCostsDurationLogic
+namespace POSTests.LaborCostsDurationLogic
 {
     public class LaborCostsDurationWriterTests
     {

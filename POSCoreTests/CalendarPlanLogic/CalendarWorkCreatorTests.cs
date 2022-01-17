@@ -1,12 +1,12 @@
-﻿using Moq;
-using NUnit.Framework;
-using POSCore.CalendarPlanLogic;
-using POSCore.CalendarPlanLogic.Interfaces;
-using POSCoreTests.EstimateLogic;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Moq;
+using NUnit.Framework;
+using POS.CalendarPlanLogic;
+using POS.CalendarPlanLogic.Interfaces;
+using POSTests.EstimateLogic;
 
-namespace POSCoreTests.CalendarPlanLogic
+namespace POSTests.CalendarPlanLogic
 {
     public class CalendarWorkCreatorTests
     {

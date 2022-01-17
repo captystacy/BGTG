@@ -1,4 +1,4 @@
-﻿namespace POSCore.CalendarPlanLogic.Interfaces
+﻿namespace POS.CalendarPlanLogic.Interfaces
 {
     public interface ICalendarPlanWriter
     {

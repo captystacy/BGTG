@@ -1,8 +1,8 @@
-﻿using POSCore.CalendarPlanLogic.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using POS.CalendarPlanLogic.Interfaces;
 
-namespace POSCore.CalendarPlanLogic
+namespace POS.CalendarPlanLogic
 {
     public class ConstructionMonthsCreator : IConstructionMonthsCreator
     {

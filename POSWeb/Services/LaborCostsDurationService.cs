@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using POSCore.LaborCostsDurationLogic.Interfaces;
-using POSWeb.Helpers;
-using POSWeb.Models;
-using POSWeb.Services.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using POSCore.EstimateLogic;
+using BGTGWeb.Helpers;
+using BGTGWeb.Models;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using POS.EstimateLogic;
+using POS.LaborCostsDurationLogic.Interfaces;
 
-namespace POSWeb.Services
+namespace BGTGWeb.Services
 {
     public class LaborCostsDurationService : ILaborCostsDurationService
     {

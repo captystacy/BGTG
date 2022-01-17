@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace POSCore.EnergyAndWaterLogic
+namespace POS.EnergyAndWaterLogic
 {
     public class EnergyAndWater : IEquatable<EnergyAndWater>
     {

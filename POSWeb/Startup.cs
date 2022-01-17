@@ -1,22 +1,22 @@
 using AutoMapper;
+using BGTGWeb.MapProfiles;
+using BGTGWeb.Services;
+using BGTGWeb.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using POSCore.CalendarPlanLogic;
-using POSCore.CalendarPlanLogic.Interfaces;
-using POSCore.EnergyAndWaterLogic;
-using POSCore.EnergyAndWaterLogic.Interfaces;
-using POSCore.EstimateLogic;
-using POSCore.EstimateLogic.Interfaces;
-using POSCore.LaborCostsDurationLogic;
-using POSCore.LaborCostsDurationLogic.Interfaces;
-using POSWeb.MapProfiles;
-using POSWeb.Services;
-using POSWeb.Services.Interfaces;
+using POS.CalendarPlanLogic;
+using POS.CalendarPlanLogic.Interfaces;
+using POS.EnergyAndWaterLogic;
+using POS.EnergyAndWaterLogic.Interfaces;
+using POS.EstimateLogic;
+using POS.EstimateLogic.Interfaces;
+using POS.LaborCostsDurationLogic;
+using POS.LaborCostsDurationLogic.Interfaces;
 
-namespace POSWeb
+namespace BGTGWeb
 {
     public class Startup
     {

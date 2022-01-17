@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using POSCore.EstimateLogic;
-using POSWeb.Models.Attributes;
+using BGTGWeb.Models.Attributes;
+using POS.EstimateLogic;
 
-namespace POSWeb.Models
+namespace BGTGWeb.Models
 {
     public class CalendarPlanVM
     {

@@ -1,7 +1,7 @@
-﻿using POSCore.LaborCostsDurationLogic.Interfaces;
-using System;
+﻿using System;
+using POS.LaborCostsDurationLogic.Interfaces;
 
-namespace POSCore.LaborCostsDurationLogic
+namespace POS.LaborCostsDurationLogic
 {
     public class LaborCostsDurationCreator : ILaborCostsDurationCreator
     {

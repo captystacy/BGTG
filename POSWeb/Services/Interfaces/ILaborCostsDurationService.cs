@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using POSWeb.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using BGTGWeb.Models;
+using Microsoft.AspNetCore.Http;
 
-namespace POSWeb.Services.Interfaces
+namespace BGTGWeb.Services.Interfaces
 {
     public interface ILaborCostsDurationService
     {

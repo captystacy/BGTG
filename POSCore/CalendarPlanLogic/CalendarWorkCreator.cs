@@ -1,10 +1,10 @@
-﻿using POSCore.CalendarPlanLogic.Interfaces;
-using POSCore.EstimateLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using POS.CalendarPlanLogic.Interfaces;
+using POS.EstimateLogic;
 
-namespace POSCore.CalendarPlanLogic
+namespace POS.CalendarPlanLogic
 {
     public class CalendarWorkCreator : ICalendarWorkCreator
     {

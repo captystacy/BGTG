@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using POSCore.CalendarPlanLogic.Interfaces;
-using POSCore.EnergyAndWaterLogic.Interfaces;
-using POSWeb.Helpers;
-using POSWeb.Services.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using POSCore.EstimateLogic;
+using BGTGWeb.Helpers;
+using BGTGWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using POS.CalendarPlanLogic.Interfaces;
+using POS.EnergyAndWaterLogic.Interfaces;
+using POS.EstimateLogic;
 
-namespace POSWeb.Services
+namespace BGTGWeb.Services
 {
     public class EnergyAndWaterService : IEnergyAndWaterService
     {

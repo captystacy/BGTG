@@ -1,12 +1,12 @@
-﻿using Moq;
-using NUnit.Framework;
-using POSCore.EstimateLogic;
-using POSCore.EstimateLogic.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Moq;
+using NUnit.Framework;
+using POS.EstimateLogic;
+using POS.EstimateLogic.Interfaces;
 
-namespace POSCoreTests.EstimateLogic
+namespace POSTests.EstimateLogic
 {
     public class EstimateManagerTests
     {
