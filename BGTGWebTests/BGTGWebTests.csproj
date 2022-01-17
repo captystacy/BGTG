@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\POSWeb\BGTGWeb.csproj" />
+    <ProjectReference Include="..\BGTGWeb\BGTGWeb.csproj" />
   </ItemGroup>
 
 </Project>
