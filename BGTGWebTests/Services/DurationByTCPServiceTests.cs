@@ -1,5 +1,5 @@
-﻿using BGTGWeb.Models;
-using BGTGWeb.Services;
+﻿using BGTGWeb.Services;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using NUnit.Framework;
@@ -31,21 +31,21 @@ namespace BGTGWebTests.Services
                 DurationCalculationType.Interpolation, 0, 0, 0, 0, 0, null);
 
             var userFullName = "BGTG\\kss";
-            var durationByTCPVM = new DurationByTCPVM();
+            var durationByTCPViewModel = new DurationByTCPViewModel();
 
             _webHostEnvironmentMock.Setup(x => x.WebRootPath).Returns("www");
 
-            _durationByTCPCreatorMock.Setup(x => x.Create(durationByTCPVM.PipelineMaterial,
-                durationByTCPVM.PipelineDiameter, durationByTCPVM.PipelineLength, durationByTCPVM.AppendixKey,
-                durationByTCPVM.PipelineCategoryName)).Returns(durationByTCP);
+            _durationByTCPCreatorMock.Setup(x => x.Create(durationByTCPViewModel.PipelineMaterial,
+                durationByTCPViewModel.PipelineDiameter, durationByTCPViewModel.PipelineLength, durationByTCPViewModel.AppendixKey,
+                durationByTCPViewModel.PipelineCategoryName)).Returns(durationByTCP);
 
-            var isWritten = _durationByTCPService.Write(durationByTCPVM, userFullName);
+            var isWritten = _durationByTCPService.Write(durationByTCPViewModel, userFullName);
 
             Assert.True(isWritten);
             _webHostEnvironmentMock.VerifyGet(x => x.WebRootPath, Times.Exactly(2));
-            _durationByTCPCreatorMock.Verify(x => x.Create(durationByTCPVM.PipelineMaterial,
-                durationByTCPVM.PipelineDiameter, durationByTCPVM.PipelineLength, durationByTCPVM.AppendixKey,
-                durationByTCPVM.PipelineCategoryName), Times.Once);
+            _durationByTCPCreatorMock.Verify(x => x.Create(durationByTCPViewModel.PipelineMaterial,
+                durationByTCPViewModel.PipelineDiameter, durationByTCPViewModel.PipelineLength, durationByTCPViewModel.AppendixKey,
+                durationByTCPViewModel.PipelineCategoryName), Times.Once);
             _durationByTCPWriterMock.Verify(x => x.Write(durationByTCP,
                 @"www\Templates\DurationByTCPTemplates\InterpolationTemplate.docx",
                 @"www\UsersFiles\DurationByTCP\DurationByTCPBGTGkss.docx"), Times.Once);

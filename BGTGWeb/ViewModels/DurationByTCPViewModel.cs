@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BGTGWeb.Models
+namespace BGTGWeb.ViewModels
 {
-    public class DurationByTCPVM
+    public class DurationByTCPViewModel
     {
         public char AppendixKey { get; set; }
         public string PipelineCategoryName { get; set; }

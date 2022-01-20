@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using BGTGWeb.Models;
 using BGTGWeb.Services;
 using BGTGWeb.Services.Interfaces;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -38,15 +38,15 @@ namespace BGTGWebTests.Services
         }
 
         [Test]
-        public void GetCalendarPlanVM()
+        public void GetCalendarPlanViewModel()
         {
             var estimateFiles = new List<IFormFile>();
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
-            var calendarPlanVM = new CalendarPlanVM()
+            var calendarPlanViewModel = new CalendarPlanViewModel()
             {
-                UserWorks = new List<UserWorkVM>()
+                UserWorks = new List<UserWorkViewModel>()
                 {
-                    new UserWorkVM()
+                    new UserWorkViewModel()
                     {
                         WorkName = CalendarPlanInfo.TotalWorkName,
                         Chapter = (int)TotalWorkChapter.TotalWork1To12Chapter
@@ -54,13 +54,13 @@ namespace BGTGWebTests.Services
                 }
             };
             _estimateServiceMock.SetupGet(x => x.Estimate).Returns(estimate);
-            _mapperMock.Setup(x => x.Map<CalendarPlanVM>(estimate)).Returns(calendarPlanVM);
+            _mapperMock.Setup(x => x.Map<CalendarPlanViewModel>(estimate)).Returns(calendarPlanViewModel);
 
-            var expectedCalendarPlanVM = new CalendarPlanVM()
+            var expectedCalendarPlanViewModel = new CalendarPlanViewModel()
             {
-                UserWorks = new List<UserWorkVM>()
+                UserWorks = new List<UserWorkViewModel>()
                 {
-                    new UserWorkVM()
+                    new UserWorkViewModel()
                     {
                         WorkName = CalendarPlanInfo.MainOtherExpensesWorkName,
                         Chapter = CalendarPlanInfo.MainOtherExpensesWorkChapter,
@@ -69,12 +69,12 @@ namespace BGTGWebTests.Services
                 }
             };
 
-            var actualCalendarPlanVM = _calendarPlanService.GetCalendarPlanVM(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+            var actualCalendarPlanViewModel = _calendarPlanService.GetCalendarPlanViewModel(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
             _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
             _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);
-            _mapperMock.Verify(x => x.Map<CalendarPlanVM>(estimate), Times.Once);
-            Assert.AreEqual(expectedCalendarPlanVM, actualCalendarPlanVM);
+            _mapperMock.Verify(x => x.Map<CalendarPlanViewModel>(estimate), Times.Once);
+            Assert.AreEqual(expectedCalendarPlanViewModel, actualCalendarPlanViewModel);
         }
 
         [Test]

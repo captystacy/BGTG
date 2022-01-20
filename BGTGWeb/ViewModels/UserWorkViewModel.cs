@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BGTGWeb.Models
+namespace BGTGWeb.ViewModels
 {
-    public class UserWorkVM
+    public class UserWorkViewModel
     {
         public virtual string WorkName { get; set; }
         public int Chapter { get; set; }
@@ -12,7 +12,7 @@ namespace BGTGWeb.Models
 
         public override bool Equals(object obj)
         {
-            var other = obj as UserWorkVM;
+            var other = obj as UserWorkViewModel;
 
             if (other == null)
             {

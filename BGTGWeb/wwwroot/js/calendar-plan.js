@@ -29,7 +29,7 @@
     const posBtns =
         $('#estimate-calculations #duration-by-labor-costs-btn, #estimate-calculations #calendar-plan-btn, #estimate-calculations #energy-and-water-btn');
 
-    let calendarPlanVM;
+    let calendarPlanViewModel;
 
     estimateFiles.change(function () {
         if ($(this).val()) {
@@ -50,18 +50,18 @@
         appendTotalWorkChapter(formData);
         $.ajax(
             {
-                url: '/Pos/GetCalendarPlanVM',
+                url: '/Pos/GetCalendarPlanViewModel',
                 data: formData,
                 processData: false,
                 contentType: false,
                 type: 'POST',
                 success: function (viewModel) {
-                    calendarPlanVM = viewModel;
+                    calendarPlanViewModel = viewModel;
                     if (calendarPlanFailures.hasClass(dFlexClass)) {
                         let constructionStartDate = constructionStartDateFailure.find('input').val();
                         if (constructionStartDateFailure.hasClass(dFlexClass)) {
                             if (constructionStartDate) {
-                                calendarPlanVM.constructionStartDate = constructionStartDate;
+                                calendarPlanViewModel.constructionStartDate = constructionStartDate;
                             } else {
                                 spinner.removeClass(dInlineBlockClass);
                                 return;
@@ -71,15 +71,15 @@
                         let constructionDuration = constructionDurationFailure.find('input').val();
                         if (constructionDurationFailure.hasClass(dFlexClass)) {
                             if (constructionDuration && constructionDuration >= 1 && constructionDuration <= 21) {
-                                calendarPlanVM.constructionDurationCeiling = Math.ceil(constructionDuration);
+                                calendarPlanViewModel.constructionDurationCeiling = Math.ceil(constructionDuration);
                             } else {
                                 spinner.removeClass(dInlineBlockClass);
                                 return;
                             }
                         }
                     } else {
-                        let constructionStartDateIsCorrupted = new Date(Date.parse(calendarPlanVM.constructionStartDate)).getFullYear() <= 1900;
-                        let constructionDurationIsCorrupted = calendarPlanVM.constructionDurationCeiling == 0;
+                        let constructionStartDateIsCorrupted = new Date(Date.parse(calendarPlanViewModel.constructionStartDate)).getFullYear() <= 1900;
+                        let constructionDurationIsCorrupted = calendarPlanViewModel.constructionDurationCeiling == 0;
                         if (constructionDurationIsCorrupted || constructionStartDateIsCorrupted) {
                             calendarPlanFailures.addClass(dFlexClass);
 
@@ -96,17 +96,17 @@
                         }
                     }
 
-                    if (calendarPlanVM.constructionDurationCeiling == 1) {
+                    if (calendarPlanViewModel.constructionDurationCeiling == 1) {
                         downloadOneMonthCalendarPlanAjax(formData);
                     } else {
                         monthRow.empty();
                         columnPercentsRow.empty();
-                        appendDateRow(calendarPlanVM.constructionStartDate, calendarPlanVM.constructionDurationCeiling);
+                        appendDateRow(calendarPlanViewModel.constructionStartDate, calendarPlanViewModel.constructionDurationCeiling);
 
                         percentagesTableBody.empty();
-                        appendRows(calendarPlanVM);
+                        appendRows(calendarPlanViewModel);
 
-                        appendAcceptanceTimeCell(calendarPlanVM.userWorks.length);
+                        appendAcceptanceTimeCell(calendarPlanViewModel.userWorks.length);
 
                         spinner.removeClass(dInlineBlockClass);
                         percentagesTable.show();
@@ -125,11 +125,11 @@
     }
 
     function appendConstructionStartDate(formData) {
-        formData.append('ConstructionStartDate', calendarPlanVM.constructionStartDate);
+        formData.append('ConstructionStartDate', calendarPlanViewModel.constructionStartDate);
     }
 
     function appendConstructionDurationCeiling(formData) {
-        formData.append('ConstructionDurationCeiling', calendarPlanVM.constructionDurationCeiling);
+        formData.append('ConstructionDurationCeiling', calendarPlanViewModel.constructionDurationCeiling);
     }
 
     function appendTotalWorkChapter(formData) {
@@ -148,8 +148,8 @@
     }
 
     function appendUserWorksForOneMonth(formData) {
-        for (let i = 0; i < calendarPlanVM.userWorks.length; i++) {
-            formData.append(`UserWorks[${i}].WorkName`, calendarPlanVM.userWorks[i].workName);
+        for (let i = 0; i < calendarPlanViewModel.userWorks.length; i++) {
+            formData.append(`UserWorks[${i}].WorkName`, calendarPlanViewModel.userWorks[i].workName);
             formData.append(`UserWorks[${i}].Percentages[0]`, 1);
         }
     }
@@ -176,10 +176,10 @@
         }
     }
 
-    function appendRows(calendarPlanVM) {
-        for (let i = 0; i < calendarPlanVM.userWorks.length; i++) {
+    function appendRows(calendarPlanViewModel) {
+        for (let i = 0; i < calendarPlanViewModel.userWorks.length; i++) {
             let inputRow = '';
-            for (let j = 0; j < calendarPlanVM.constructionDurationCeiling; j++) {
+            for (let j = 0; j < calendarPlanViewModel.constructionDurationCeiling; j++) {
                 inputRow += `
                         <td>
                             <div class="input-group mb-1 mt-1" style="min-width: 6rem;">
@@ -194,8 +194,8 @@
             let userRow = `
                     <tr>
                         <th scope="row">
-                            ${calendarPlanVM.userWorks[i].workName}
-                            <input name="UserWorks[${i}].WorkName" type="hidden" value="${calendarPlanVM.userWorks[i].workName}"/>
+                            ${calendarPlanViewModel.userWorks[i].workName}
+                            <input name="UserWorks[${i}].WorkName" type="hidden" value="${calendarPlanViewModel.userWorks[i].workName}"/>
                         </th>
                         ${inputRow}
                     </tr>`;
@@ -281,7 +281,7 @@
             contentType: false,
             type: 'POST',
             success: function () {
-                window.location = `/Pos/DownloadCalendarPlan?objectCipher=${calendarPlanVM.objectCipher}`;
+                window.location = `/Pos/DownloadCalendarPlan?objectCipher=${calendarPlanViewModel.objectCipher}`;
             }
         });
     }

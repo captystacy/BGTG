@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using BGTGWeb.Models.Attributes;
+using BGTGWeb.ViewModels.Attributes;
 using POS.EstimateLogic;
 
-namespace BGTGWeb.Models
+namespace BGTGWeb.ViewModels
 {
-    public class CalendarPlanVM
+    public class CalendarPlanViewModel
     {
         public string ObjectCipher { get; set; }
 
@@ -16,12 +16,12 @@ namespace BGTGWeb.Models
 
         [Range(1, 21)]
         public int ConstructionDurationCeiling { get; set; }
-        public virtual List<UserWorkVM> UserWorks { get; set; }
+        public virtual List<UserWorkViewModel> UserWorks { get; set; }
         public TotalWorkChapter TotalWorkChapter { get; set; }
 
         public override bool Equals(object obj)
         {
-            var other = obj as CalendarPlanVM;
+            var other = obj as CalendarPlanViewModel;
 
             if (other == null)
             {

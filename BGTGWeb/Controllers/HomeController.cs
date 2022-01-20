@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using BGTGWeb.Models;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGTGWeb.Controllers
@@ -14,7 +14,7 @@ namespace BGTGWeb.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorVM { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

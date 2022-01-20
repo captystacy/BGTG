@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BGTGWeb.Models.Attributes
+namespace BGTGWeb.ViewModels.Attributes
 {
     public class MinDateYearAttribute : ValidationAttribute
     {

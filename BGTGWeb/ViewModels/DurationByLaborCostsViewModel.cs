@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BGTGWeb.Models
+namespace BGTGWeb.ViewModels
 {
-    public class DurationByLaborCostsVM
+    public class DurationByLaborCostsViewModel
     {
         [Range(0, double.MaxValue)]
         public decimal NumberOfWorkingDays { get; set; }

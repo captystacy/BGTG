@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using BGTGWeb.Helpers;
-using BGTGWeb.Models;
 using BGTGWeb.Services.Interfaces;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using POS.DurationLogic.DurationByTCP;
 using POS.DurationLogic.DurationByTCP.Interfaces;
@@ -31,10 +31,10 @@ namespace BGTGWeb.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public bool Write(DurationByTCPVM durationByTCPVM, string userFullName)
+        public bool Write(DurationByTCPViewModel durationByTCPViewModel, string userFullName)
         {
-            var durationByTCP = _durationByTCPCreator.Create(durationByTCPVM.PipelineMaterial, durationByTCPVM.PipelineDiameter,
-                durationByTCPVM.PipelineLength, durationByTCPVM.AppendixKey, durationByTCPVM.PipelineCategoryName);
+            var durationByTCP = _durationByTCPCreator.Create(durationByTCPViewModel.PipelineMaterial, durationByTCPViewModel.PipelineDiameter,
+                durationByTCPViewModel.PipelineLength, durationByTCPViewModel.AppendixKey, durationByTCPViewModel.PipelineCategoryName);
 
             if (durationByTCP == null)
             {

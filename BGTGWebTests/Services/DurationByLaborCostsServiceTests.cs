@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BGTGWeb.Models;
 using BGTGWeb.Services;
 using BGTGWeb.Services.Interfaces;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -37,7 +37,7 @@ namespace BGTGWebTests.Services
         public void Write()
         {
             var estimateFiles = new List<IFormFile>();
-            var durationByLaborCostsVM = new DurationByLaborCostsVM()
+            var durationByLaborCostsViewModel = new DurationByLaborCostsViewModel()
             {
                 AcceptanceTimeIncluded = true,
                 NumberOfEmployees = 4,
@@ -49,27 +49,27 @@ namespace BGTGWebTests.Services
             var userFullName = "BGTG\\kss";
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 100);
             _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
-            var durationByLaborCosts = new DurationByLaborCosts(0, 0, 0, durationByLaborCostsVM.TechnologicalLaborCosts,
+            var durationByLaborCosts = new DurationByLaborCosts(0, 0, 0, durationByLaborCostsViewModel.TechnologicalLaborCosts,
                 0, 0, 0, 0, 0, 0, 0, 0, true, true);
 
 
             _durationByLaborCostsCreatorMock.Setup(x => x.Create(estimate.LaborCosts,
-                    durationByLaborCostsVM.TechnologicalLaborCosts,
-                    durationByLaborCostsVM.WorkingDayDuration, durationByLaborCostsVM.Shift,
-                    durationByLaborCostsVM.NumberOfWorkingDays,
-                    durationByLaborCostsVM.NumberOfEmployees, durationByLaborCostsVM.AcceptanceTimeIncluded))
+                    durationByLaborCostsViewModel.TechnologicalLaborCosts,
+                    durationByLaborCostsViewModel.WorkingDayDuration, durationByLaborCostsViewModel.Shift,
+                    durationByLaborCostsViewModel.NumberOfWorkingDays,
+                    durationByLaborCostsViewModel.NumberOfEmployees, durationByLaborCostsViewModel.AcceptanceTimeIncluded))
                 .Returns(durationByLaborCosts);
 
             _webHostEnvironmentMock.Setup(x => x.WebRootPath).Returns("wwwroot");
 
-            _durationByLaborCostsService.Write(estimateFiles, durationByLaborCostsVM, userFullName);
+            _durationByLaborCostsService.Write(estimateFiles, durationByLaborCostsViewModel, userFullName);
 
             _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
             _durationByLaborCostsCreatorMock.Verify(x => x.Create(estimate.LaborCosts,
-                durationByLaborCostsVM.TechnologicalLaborCosts,
-                durationByLaborCostsVM.WorkingDayDuration, durationByLaborCostsVM.Shift,
-                durationByLaborCostsVM.NumberOfWorkingDays,
-                durationByLaborCostsVM.NumberOfEmployees, durationByLaborCostsVM.AcceptanceTimeIncluded), Times.Once);
+                durationByLaborCostsViewModel.TechnologicalLaborCosts,
+                durationByLaborCostsViewModel.WorkingDayDuration, durationByLaborCostsViewModel.Shift,
+                durationByLaborCostsViewModel.NumberOfWorkingDays,
+                durationByLaborCostsViewModel.NumberOfEmployees, durationByLaborCostsViewModel.AcceptanceTimeIncluded), Times.Once);
             _durationByLaborCostsWriterMock.Verify(x => x.Write(durationByLaborCosts,
                 @"wwwroot\Templates\DurationByLaborCostsTemplates\Rounding+Acceptance+Template.docx",
                 @"wwwroot\UsersFiles\DurationByLaborCosts\DurationByLaborCostsBGTGkss.docx"), Times.Once);

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using BGTGWeb.Models;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Http;
 
 namespace BGTGWeb.Services.Interfaces
 {
     public interface IDurationByLaborCostsService : ISavable
     {
-        void Write(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsVM durationByLaborCostsVM, string userFullName);
+        void Write(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsViewModel durationByLaborCostsViewModel, string userFullName);
     }
 }

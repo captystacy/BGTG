@@ -1,6 +1,6 @@
-namespace BGTGWeb.Models
+namespace BGTGWeb.ViewModels
 {
-    public class ErrorVM
+    public class ErrorViewModel
     {
         public string RequestId { get; set; }
 

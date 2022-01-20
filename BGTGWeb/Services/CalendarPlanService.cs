@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using AutoMapper;
 using BGTGWeb.Helpers;
-using BGTGWeb.Models;
 using BGTGWeb.Services.Interfaces;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using POS.CalendarPlanLogic;
@@ -34,32 +34,32 @@ namespace BGTGWeb.Services
             _mapper = mapper;
         }
 
-        public CalendarPlanVM GetCalendarPlanVM(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter)
+        public CalendarPlanViewModel GetCalendarPlanViewModel(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter)
         {
             _estimateService.Read(estimateFiles, totalWorkChapter);
 
-            var calendarPlanVM = _mapper.Map<CalendarPlanVM>(_estimateService.Estimate);
+            var calendarPlanViewModel = _mapper.Map<CalendarPlanViewModel>(_estimateService.Estimate);
 
-            calendarPlanVM.UserWorks.RemoveAll(x => x.Chapter == (int)totalWorkChapter);
-            calendarPlanVM.UserWorks.Add(new UserWorkVM()
+            calendarPlanViewModel.UserWorks.RemoveAll(x => x.Chapter == (int)totalWorkChapter);
+            calendarPlanViewModel.UserWorks.Add(new UserWorkViewModel()
             {
                 WorkName = CalendarPlanInfo.MainOtherExpensesWorkName,
                 Chapter = CalendarPlanInfo.MainOtherExpensesWorkChapter,
                 Percentages = new List<decimal>(),
             });
 
-            return calendarPlanVM;
+            return calendarPlanViewModel;
         }
 
-        public IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, CalendarPlanViewModel calendarPlanViewModel)
         {
-            var calendarPlan = CalculateCalendarPlan(estimateFiles, calendarPlanVM);
-            return calendarPlan.MainCalendarWorks.Single(x => x.EstimateChapter == (int)calendarPlanVM.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
+            var calendarPlan = CalculateCalendarPlan(estimateFiles, calendarPlanViewModel);
+            return calendarPlan.MainCalendarWorks.Single(x => x.EstimateChapter == (int)calendarPlanViewModel.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
         }
 
-        public void Write(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName)
+        public void Write(IEnumerable<IFormFile> estimateFiles, CalendarPlanViewModel calendarPlanViewModel, string userFullName)
         {
-            var calendarPlan = CalculateCalendarPlan(estimateFiles, calendarPlanVM);
+            var calendarPlan = CalculateCalendarPlan(estimateFiles, calendarPlanViewModel);
 
             var preparatoryTemplatePath = GetPreparatoryTemplatePath();
             var mainTemplatePath = GetMainTemplatePath();
@@ -69,31 +69,31 @@ namespace BGTGWeb.Services
             _calendarPlanWriter.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath, savePath);
         }
 
-        private CalendarPlan CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        private CalendarPlan CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanViewModel calendarPlanViewModel)
         {
-            _estimateService.Read(estimateFiles, calendarPlanVM.TotalWorkChapter);
+            _estimateService.Read(estimateFiles, calendarPlanViewModel.TotalWorkChapter);
 
             if (_estimateService.Estimate.ConstructionStartDate == default)
             {
-                _estimateService.Estimate.ConstructionStartDate = calendarPlanVM.ConstructionStartDate;
+                _estimateService.Estimate.ConstructionStartDate = calendarPlanViewModel.ConstructionStartDate;
             }
 
             if (_estimateService.Estimate.ConstructionDurationCeiling == 0)
             {
-                _estimateService.Estimate.ConstructionDurationCeiling = calendarPlanVM.ConstructionDurationCeiling;
+                _estimateService.Estimate.ConstructionDurationCeiling = calendarPlanViewModel.ConstructionDurationCeiling;
             }
 
-            var otherExpensesWork = calendarPlanVM.UserWorks.Find(x => x.WorkName == CalendarPlanInfo.MainOtherExpensesWorkName);
-            calendarPlanVM.UserWorks.Remove(otherExpensesWork);
+            var otherExpensesWork = calendarPlanViewModel.UserWorks.Find(x => x.WorkName == CalendarPlanInfo.MainOtherExpensesWorkName);
+            calendarPlanViewModel.UserWorks.Remove(otherExpensesWork);
 
-            SetEstimatePercentages(calendarPlanVM.UserWorks);
+            SetEstimatePercentages(calendarPlanViewModel.UserWorks);
 
-            var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, calendarPlanVM.TotalWorkChapter);
+            var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, calendarPlanViewModel.TotalWorkChapter);
 
             return calendarPlan;
         }
 
-        private void SetEstimatePercentages(List<UserWorkVM> userWorks)
+        private void SetEstimatePercentages(List<UserWorkViewModel> userWorks)
         {
             userWorks.ForEach(userWork =>
             {

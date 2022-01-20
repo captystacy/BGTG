@@ -2,8 +2,8 @@
 using System.IO;
 using System.Text;
 using BGTGWeb.Helpers;
-using BGTGWeb.Models;
 using BGTGWeb.Services.Interfaces;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using POS.DurationLogic.DurationByLaborCosts.Interfaces;
@@ -35,12 +35,12 @@ namespace BGTGWeb.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public void Write(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsVM durationByLaborCostsVM, string userFullName)
+        public void Write(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsViewModel durationByLaborCostsViewModel, string userFullName)
         {
             _estimateService.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
-            var durationByLaborCosts = _durationByLaborCostsCreator.Create(_estimateService.Estimate.LaborCosts, durationByLaborCostsVM.TechnologicalLaborCosts, durationByLaborCostsVM.WorkingDayDuration, durationByLaborCostsVM.Shift,
-                durationByLaborCostsVM.NumberOfWorkingDays, durationByLaborCostsVM.NumberOfEmployees, durationByLaborCostsVM.AcceptanceTimeIncluded);
+            var durationByLaborCosts = _durationByLaborCostsCreator.Create(_estimateService.Estimate.LaborCosts, durationByLaborCostsViewModel.TechnologicalLaborCosts, durationByLaborCostsViewModel.WorkingDayDuration, durationByLaborCostsViewModel.Shift,
+                durationByLaborCostsViewModel.NumberOfWorkingDays, durationByLaborCostsViewModel.NumberOfEmployees, durationByLaborCostsViewModel.AcceptanceTimeIncluded);
 
             var templatePath = GetTemplatePath(durationByLaborCosts.RoundingIncluded, durationByLaborCosts.AcceptanceTimeIncluded);
 

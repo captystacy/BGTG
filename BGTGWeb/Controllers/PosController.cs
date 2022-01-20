@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using BGTGWeb.Models;
 using BGTGWeb.Services.Interfaces;
+using BGTGWeb.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.EstimateLogic;
@@ -29,31 +29,31 @@ namespace BGTGWeb.Controllers
         {
             return View();
         }
-        public IActionResult GetCalendarPlanVM(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter)
+        public IActionResult GetCalendarPlanViewModel(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter)
         {
-            var calendarPlanVM = _calendarPlanService.GetCalendarPlanVM(estimateFiles, totalWorkChapter);
-            return Json(calendarPlanVM);
+            var calendarPlanViewModel = _calendarPlanService.GetCalendarPlanViewModel(estimateFiles, totalWorkChapter);
+            return Json(calendarPlanViewModel);
         }
 
-        public IActionResult GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public IActionResult GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, CalendarPlanViewModel calendarPlanViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var totalPercentages = _calendarPlanService.GetTotalPercentages(estimateFiles, calendarPlanVM);
+            var totalPercentages = _calendarPlanService.GetTotalPercentages(estimateFiles, calendarPlanViewModel);
             return Json(totalPercentages);
         }
 
-        public IActionResult WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
+        public IActionResult WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanViewModel calendarPlanViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            _calendarPlanService.Write(estimateFiles, calendarPlanVM, User.Identity.Name);
+            _calendarPlanService.Write(estimateFiles, calendarPlanViewModel, User.Identity.Name);
             return new OkResult();
         }
 
@@ -66,14 +66,14 @@ namespace BGTGWeb.Controllers
             return PhysicalFile(path, DocxMimeType, fileName);
         }
 
-        public IActionResult DownloadDurationByLaborCosts(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsVM durationByLaborCostsVM)
+        public IActionResult DownloadDurationByLaborCosts(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsViewModel durationByLaborCostsViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            _durationByLaborCostsService.Write(estimateFiles, durationByLaborCostsVM, User.Identity.Name);
+            _durationByLaborCostsService.Write(estimateFiles, durationByLaborCostsViewModel, User.Identity.Name);
 
             var path = _durationByLaborCostsService.GetSavePath(User.Identity.Name);
 
@@ -93,9 +93,9 @@ namespace BGTGWeb.Controllers
             return PhysicalFile(path, DocxMimeType, fileName);
         }
 
-        public IActionResult DownloadDurationByTCP(DurationByTCPVM durationByTCPVM)
+        public IActionResult DownloadDurationByTCP(DurationByTCPViewModel durationByTCPViewModel)
         {
-            if (!ModelState.IsValid || !_durationByTCPService.Write(durationByTCPVM, User.Identity.Name))
+            if (!ModelState.IsValid || !_durationByTCPService.Write(durationByTCPViewModel, User.Identity.Name))
             {
                 return BadRequest();
             }
