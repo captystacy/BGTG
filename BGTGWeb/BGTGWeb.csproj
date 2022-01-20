@@ -32,16 +32,4 @@
 		<Folder Include="wwwroot\UsersFiles\DurationByTCP\" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding+Acceptance+Template.docx" />
-	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding+Acceptance-Template.docx" />
-	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding-Acceptance+Template.docx" />
-	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding-Acceptance-Template.docx" />
-	  <None Include="wwwroot\Templates\DurationByTCPTemplates\ExtrapolationAscendingTemplate.docx" />
-	  <None Include="wwwroot\Templates\DurationByTCPTemplates\ExtrapolationDescendingTemplate.docx" />
-	  <None Include="wwwroot\Templates\DurationByTCPTemplates\InterpolationTemplate.docx" />
-	  <None Include="wwwroot\Templates\DurationByTCPTemplates\StepwiseExtrapolationAscendingTemplate.docx" />
-	  <None Include="wwwroot\Templates\DurationByTCPTemplates\StepwiseExtrapolationDescendingTemplate.docx" />
-	</ItemGroup>
-
 </Project>
