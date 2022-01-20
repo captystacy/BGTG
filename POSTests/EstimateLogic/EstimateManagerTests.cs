@@ -27,7 +27,7 @@ namespace POSTests.EstimateLogic
         {
             var stream = new Mock<Stream>();
             var streams = new List<Stream>() { stream.Object };
-            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
+            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
             var estimates = new List<Estimate> { estimate };
             _estimateReaderMock.Setup(x => x.Read(stream.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate);
             _estimateConnectorMock.Setup(x => x.Connect(estimates)).Returns(estimate);
@@ -45,10 +45,10 @@ namespace POSTests.EstimateLogic
             var stream1 = new Mock<Stream>();
             var stream2 = new Mock<Stream>();
             var streams = new List<Stream>() { stream1.Object, stream2.Object };
-            var estimate1 = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
-            var estimate2 = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
+            var estimate1 = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
+            var estimate2 = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
             var estimates = new List<Estimate> { estimate1, estimate2 };
-            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
+            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
             _estimateReaderMock.Setup(x => x.Read(stream1.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate1);
             _estimateReaderMock.Setup(x => x.Read(stream2.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate2);
             _estimateConnectorMock.Setup(x => x.Connect(estimates)).Returns(estimate);

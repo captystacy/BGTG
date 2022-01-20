@@ -9,12 +9,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using POS.CalendarPlanLogic;
 using POS.CalendarPlanLogic.Interfaces;
+using POS.DurationLogic;
+using POS.DurationLogic.DurationByLaborCosts;
+using POS.DurationLogic.DurationByLaborCosts.Interfaces;
+using POS.DurationLogic.DurationByTCP;
+using POS.DurationLogic.DurationByTCP.Interfaces;
+using POS.DurationLogic.DurationByTCP.TCP;
+using POS.DurationLogic.DurationByTCP.TCP.Interfaces;
+using POS.DurationLogic.Interfaces;
 using POS.EnergyAndWaterLogic;
 using POS.EnergyAndWaterLogic.Interfaces;
 using POS.EstimateLogic;
 using POS.EstimateLogic.Interfaces;
-using POS.LaborCostsDurationLogic;
-using POS.LaborCostsDurationLogic.Interfaces;
 
 namespace BGTGWeb
 {
@@ -42,8 +48,14 @@ namespace BGTGWeb
             services.AddSingleton<IEnergyAndWaterCreator, EnergyAndWaterCreator>();
             services.AddSingleton<IEnergyAndWaterWriter, EnergyAndWaterWriter>();
 
-            services.AddSingleton<ILaborCostsDurationCreator, LaborCostsDurationCreator>();
-            services.AddSingleton<ILaborCostsDurationWriter, LaborCostsDurationWriter>();
+            services.AddSingleton<IDurationByLaborCostsCreator, DurationByLaborCostsCreator>();
+            services.AddSingleton<IDurationRounder, DurationRounder>();
+            services.AddSingleton<IDurationByLaborCostsWriter, DurationByLaborCostsWriter>();
+
+            services.AddSingleton<ITCP212Helper, TCP212Helper>();
+            services.AddSingleton<IDurationByTCPEngineer, DurationByTCPEngineer>();
+            services.AddSingleton<IDurationByTCPWriter, DurationByTCPWriter>();
+            services.AddSingleton<IDurationByTCPCreator, DurationByTCPCreator>();
 
             RegisterServices(services);
             services.AddSingleton(provider => new MapperConfiguration(cfg =>
@@ -60,7 +72,8 @@ namespace BGTGWeb
             services.AddScoped<IEstimateService, EstimateService>();
             services.AddScoped<ICalendarPlanService, CalendarPlanService>();
             services.AddScoped<IEnergyAndWaterService, EnergyAndWaterService>();
-            services.AddScoped<ILaborCostsDurationService, LaborCostsDurationService>();
+            services.AddScoped<IDurationByLaborCostsService, DurationByLaborCostsService>();
+            services.AddScoped<IDurationByTCPService, DurationByTCPService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

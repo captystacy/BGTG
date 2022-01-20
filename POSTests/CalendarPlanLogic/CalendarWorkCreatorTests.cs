@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using POS.CalendarPlanLogic;
 using POS.CalendarPlanLogic.Interfaces;
+using POS.EstimateLogic;
 using POSTests.EstimateLogic;
 
 namespace POSTests.CalendarPlanLogic
@@ -70,7 +71,7 @@ namespace POSTests.CalendarPlanLogic
             var constructionDurationCeiling = EstimateSource.Estimate548VAT.ConstructionDurationCeiling;
             var preparatoryPercentages = CalendarPlanInfo.PreparatoryPercentages.ToList();
             var mainCalendarWorks = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.ToList();
-            var initialMainTotalWork = mainCalendarWorks.Find(x => x.EstimateChapter == CalendarPlanInfo.MainTotalWork1To12Chapter);
+            var initialMainTotalWork = mainCalendarWorks.Find(x => x.EstimateChapter == (int) TotalWorkChapter.TotalWork1To12Chapter);
             mainCalendarWorks.Remove(initialMainTotalWork);
 
             var expectedCalendarWork = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName);

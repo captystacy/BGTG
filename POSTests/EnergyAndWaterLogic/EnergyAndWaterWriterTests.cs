@@ -8,9 +8,9 @@ namespace POSTests.EnergyAndWaterLogic
 {
     public class EnergyAndWaterWriterTests
     {
-        private const string _energyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
-        private const string _energyAndWaterFileName = "EnergyAndWater.docx";
-        private const string _energyAndWaterTemplatesDirectory = @"..\..\..\EnergyAndWaterLogic\EnergyAndWaterTemplates";
+        private const string EnergyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
+        private const string EnergyAndWaterFileName = "EnergyAndWater.docx";
+        private const string EnergyAndWaterTemplatesDirectory = @"..\..\..\EnergyAndWaterLogic\EnergyAndWaterTemplates";
 
         private EnergyAndWaterWriter _energyAndWaterWriter;
 
@@ -29,8 +29,8 @@ namespace POSTests.EnergyAndWaterLogic
         public void Write_EneryAndWater_SaveCorrectEnergyAndWater()
         {
             var expectedEnergyAndWater = CreateDefaultEnergyAndWater();
-            var templatePath = Path.Combine(_energyAndWaterTemplatesDirectory, _energyAndWaterTemplateFileName);
-            var savePath = Path.Combine(Directory.GetCurrentDirectory(), _energyAndWaterFileName);
+            var templatePath = Path.Combine(EnergyAndWaterTemplatesDirectory, EnergyAndWaterTemplateFileName);
+            var savePath = Path.Combine(Directory.GetCurrentDirectory(), EnergyAndWaterFileName);
 
             _energyAndWaterWriter.Write(expectedEnergyAndWater, templatePath, savePath);
 

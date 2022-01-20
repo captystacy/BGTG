@@ -23,38 +23,37 @@ namespace POS.EnergyAndWaterLogic
 
         public bool Equals(EnergyAndWater other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return ConstructionYear == other.ConstructionYear
-                && VolumeCAIW == other.VolumeCAIW
-                && Energy == other.Energy
-                && Water == other.Water
-                && CompressedAir == other.CompressedAir
-                && Oxygen == other.Oxygen;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return ConstructionYear == other.ConstructionYear && VolumeCAIW == other.VolumeCAIW && Energy == other.Energy && Water == other.Water && CompressedAir == other.CompressedAir && Oxygen == other.Oxygen;
         }
 
-        public static bool operator ==(EnergyAndWater energyAndWater1, EnergyAndWater energyAndWater2)
+        public override bool Equals(object obj)
         {
-            if (energyAndWater1 is null)
-            {
-                return energyAndWater2 is null;
-            }
-
-            return energyAndWater1.Equals(energyAndWater2);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((EnergyAndWater) obj);
         }
 
-        public static bool operator !=(EnergyAndWater energyAndWater1, EnergyAndWater energyAndWater2) => !(energyAndWater1 == energyAndWater2);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ConstructionYear, VolumeCAIW, Energy, Water, CompressedAir, Oxygen);
+        }
 
-        public override bool Equals(object obj) => Equals(obj as EnergyAndWater);
+        public static bool operator ==(EnergyAndWater left, EnergyAndWater right)
+        {
+            return Equals(left, right);
+        }
 
-        public override int GetHashCode() => HashCode.Combine(ConstructionYear, VolumeCAIW, Energy, Water, CompressedAir, Oxygen);
+        public static bool operator !=(EnergyAndWater left, EnergyAndWater right)
+        {
+            return !Equals(left, right);
+        }
 
         public override string ToString()
         {
-            return string.Join(", ", ConstructionYear, VolumeCAIW, Energy, Water, CompressedAir, Oxygen);
+            return $"{nameof(ConstructionYear)}: {ConstructionYear}, {nameof(VolumeCAIW)}: {VolumeCAIW}, {nameof(Energy)}: {Energy}, {nameof(Water)}: {Water}, {nameof(CompressedAir)}: {CompressedAir}, {nameof(Oxygen)}: {Oxygen}";
         }
     }
 }

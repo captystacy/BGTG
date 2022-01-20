@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace POS.EstimateLogic
 {
@@ -25,38 +24,38 @@ namespace POS.EstimateLogic
 
         public bool Equals(EstimateWork other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return WorkName == other.WorkName
-                && Chapter == other.Chapter
-                && EquipmentCost == other.EquipmentCost
-                && OtherProductsCost == other.OtherProductsCost
-                && TotalCost == other.TotalCost;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return WorkName == other.WorkName && Chapter == other.Chapter && EquipmentCost == other.EquipmentCost &&
+                   OtherProductsCost == other.OtherProductsCost && TotalCost == other.TotalCost;
         }
 
-        public override bool Equals(object obj) => Equals(obj as EstimateWork);
-
-        public override int GetHashCode() => HashCode.Combine(WorkName, Chapter, EquipmentCost, OtherProductsCost, TotalCost);
-
-        public static bool operator ==(EstimateWork estimateWork1, EstimateWork estimateWork2)
+        public override bool Equals(object obj)
         {
-            if (estimateWork1 is null)
-            {
-                return estimateWork2 is null;
-            }
-
-            return estimateWork1.Equals(estimateWork2);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((EstimateWork)obj);
         }
 
-        public static bool operator !=(EstimateWork estimateWork1, EstimateWork estimateWork2) => !(estimateWork1 == estimateWork2);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(WorkName, Chapter, EquipmentCost, OtherProductsCost, TotalCost, Percentages);
+        }
+
+        public static bool operator ==(EstimateWork left, EstimateWork right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(EstimateWork left, EstimateWork right)
+        {
+            return !Equals(left, right);
+        }
 
         public override string ToString()
         {
-            return string.Join(", ", WorkName, Chapter, EquipmentCost, OtherProductsCost, TotalCost)
-                + (Percentages.Any() ? ", [" + string.Join(", ", Percentages) + "]" : string.Empty);
+            return $"{nameof(WorkName)}: {WorkName}, {nameof(Chapter)}: {Chapter}, {nameof(EquipmentCost)}: {EquipmentCost}, {nameof(OtherProductsCost)}: {OtherProductsCost}, {nameof(TotalCost)}: {TotalCost}, {nameof(Percentages)}: {Percentages}";
         }
     }
 }

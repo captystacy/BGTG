@@ -11,52 +11,52 @@ namespace POS.EstimateLogic
 {
     public class EstimateReader : IEstimateReader
     {
-        private const string _possibleFirstUnappropriateWorkSheet = "Лист";
+        private const string PossibleFirstUnappropriateWorkSheet = "Лист";
 
-        private const int _objectCipherRow = 17;
-        private const int _objectCipherColumn = 3;
+        private const int ObjectCipherRow = 17;
+        private const int ObjectCipherColumn = 3;
 
-        private const int _constructionStartDateRow = 20;
-        private const int _constructionStartDateColumn = 3;
+        private const int ConstructionStartDateRow = 20;
+        private const int ConstructionStartDateColumn = 3;
 
-        private const int _constructionDurationRow = 21;
-        private const int _constructionDurationColumn = 3;
+        private const int ConstructionDurationRow = 21;
+        private const int ConstructionDurationColumn = 3;
 
-        private const int _startRow = 27;
-        private const int _endRow = 158;
+        private const int StartRow = 27;
+        private const int EndRow = 158;
 
-        private const int _patternsColumn = 1;
-        private const int _workNamesColumn = 2;
-        private const int _chaptersColumn = 2;
-        private const int _equipmentCostColumn = 7;
-        private const int _otherProductsCostColumn = 8;
-        private const int _totalCostColumn = 9;
-        private const int _laborCostsColumn = 9;
+        private const int PatternsColumn = 1;
+        private const int WorkNamesColumn = 2;
+        private const int ChaptersColumn = 2;
+        private const int EquipmentCostColumn = 7;
+        private const int OtherProductsCostColumn = 8;
+        private const int TotalCostColumn = 9;
+        private const int LaborCostsColumn = 9;
 
         #region Estimate calculations patterns that will be skipped
-        private const string _tablePattern = "ТАБЛИЦА";
-        private const string _actPattern = "АКТ";
-        private const string _referencePattern = "СПРАВКА";
-        private const string _taxPattern = "НАЛОГ";
-        private const string _subItemPattern = "ПОДПУНКТ";
-        private const string _estimatePattern = "СМЕТА";
-        private const string _reportPattern = "ОТЧЕТ";
+        private const string TablePattern = "ТАБЛИЦА";
+        private const string ActPattern = "АКТ";
+        private const string ReferencePattern = "СПРАВКА";
+        private const string TaxPattern = "НАЛОГ";
+        private const string SubItemPattern = "ПОДПУНКТ";
+        private const string EstimatePattern = "СМЕТА";
+        private const string ReportPattern = "ОТЧЕТ";
         #endregion
 
         #region Estimate works that will not be included
-        private const string _compensatoryLandingsWorkName = "КОМПЕНСАЦИОННЫЕ ПОСАДКИ";
+        private const string CompensatoryLandingsWorkName = "КОМПЕНСАЦИОННЫЕ ПОСАДКИ";
         #endregion
 
-        private const string _subUnit1To9Pattern = "ПОДПУНКТ 30.10 ИНСТРУКЦИИ";
-        private const string _subUnit1To11Pattern = "ПОДПУНКТ 31.6 ИНСТРУКЦИИ";
-        private const string _subUnit1To12Pattern = "ПОДПУНКТ 33.3.2  ИНСТРУКЦИИ";
-        private const string _nrr103Pattern = "НРР 8.01.103-2017";
-        private const string _laborCostsPattern = "ИТОГО ПО ГЛАВЕ 1-8";
-        private const string _totalWork1To9SearchPattern = "ИТОГО ПО ГЛАВАМ 1-9";
-        private const string _totalWork1To11SearchPattern = "ИТОГО ПО ГЛАВАМ 1-11";
-        private const string _totalWork1To12SearchPattern = "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ";
+        private const string SubUnit1To9Pattern = "ПОДПУНКТ 30.10 ИНСТРУКЦИИ";
+        private const string SubUnit1To11Pattern = "ПОДПУНКТ 31.6 ИНСТРУКЦИИ";
+        private const string SubUnit1To12Pattern = "ПОДПУНКТ 33.3.2  ИНСТРУКЦИИ";
+        private const string Nrr103Pattern = "НРР 8.01.103-2017";
+        private const string LaborCostsPattern = "ИТОГО ПО ГЛАВЕ 1-8";
+        private const string TotalWork1To9SearchPattern = "ИТОГО ПО ГЛАВАМ 1-9";
+        private const string TotalWork1To11SearchPattern = "ИТОГО ПО ГЛАВАМ 1-11";
+        private const string TotalWork1To12SearchPattern = "ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ";
 
-        private const string _chapterPattern = "ГЛАВА";
+        private const string ChapterPattern = "ГЛАВА";
 
         public EstimateReader()
         {
@@ -72,47 +72,47 @@ namespace POS.EstimateLogic
 
             string objectCipher;
             DateTime constructionStartDate;
-            int constructionDurationCeiling;
+            decimal constructionDuration;
 
             var laborCosts = 0;
             using (var package = new ExcelPackage(stream))
             {
-                var workSheet = package.Workbook.Worksheets[0].Name.StartsWith(_possibleFirstUnappropriateWorkSheet)
+                var workSheet = package.Workbook.Worksheets[0].Name.StartsWith(PossibleFirstUnappropriateWorkSheet)
                     ? package.Workbook.Worksheets[1]
                     : package.Workbook.Worksheets[0];
 
-                objectCipher = workSheet.Cells[_objectCipherRow, _objectCipherColumn].Text;
-                constructionStartDate = ParseConstructionStartDate(workSheet.Cells[_constructionStartDateRow, _constructionStartDateColumn].Text);
-                constructionDurationCeiling = ParseConstructionDuration(workSheet.Cells[_constructionDurationRow, _constructionDurationColumn].Text);
+                objectCipher = workSheet.Cells[ObjectCipherRow, ObjectCipherColumn].Text;
+                constructionStartDate = ParseConstructionStartDate(workSheet.Cells[ConstructionStartDateRow, ConstructionStartDateColumn].Text);
+                constructionDuration = ParseConstructionDuration(workSheet.Cells[ConstructionDurationRow, ConstructionDurationColumn].Text);
 
-                for (int row = _startRow; row <= _endRow; row++)
+                for (int row = StartRow; row <= EndRow; row++)
                 {
-                    var estimateCalculationCellStr = workSheet.Cells[row, _patternsColumn].Text;
+                    var estimateCalculationCellStr = workSheet.Cells[row, PatternsColumn].Text;
 
                     var totalWorkPattern = totalWorkChapter switch
                     {
-                        TotalWorkChapter.TotalWork1To9Chapter => _subUnit1To9Pattern,
-                        TotalWorkChapter.TotalWork1To11Chapter => _subUnit1To11Pattern,
-                        TotalWorkChapter.TotalWork1To12Chapter => _subUnit1To12Pattern,
+                        TotalWorkChapter.TotalWork1To9Chapter => SubUnit1To9Pattern,
+                        TotalWorkChapter.TotalWork1To11Chapter => SubUnit1To11Pattern,
+                        TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12Pattern,
                         _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
                     };
 
                     if (estimateCalculationCellStr == totalWorkPattern
                         || !string.IsNullOrEmpty(estimateCalculationCellStr)
-                        && !estimateCalculationCellStr.StartsWith(_tablePattern)
-                        && !estimateCalculationCellStr.StartsWith(_actPattern)
-                        && !estimateCalculationCellStr.StartsWith(_referencePattern)
-                        && !estimateCalculationCellStr.StartsWith(_taxPattern)
-                        && !estimateCalculationCellStr.StartsWith(_subItemPattern)
-                        && !estimateCalculationCellStr.StartsWith(_estimatePattern)
-                        && !estimateCalculationCellStr.StartsWith(_reportPattern))
+                        && !estimateCalculationCellStr.StartsWith(TablePattern)
+                        && !estimateCalculationCellStr.StartsWith(ActPattern)
+                        && !estimateCalculationCellStr.StartsWith(ReferencePattern)
+                        && !estimateCalculationCellStr.StartsWith(TaxPattern)
+                        && !estimateCalculationCellStr.StartsWith(SubItemPattern)
+                        && !estimateCalculationCellStr.StartsWith(EstimatePattern)
+                        && !estimateCalculationCellStr.StartsWith(ReportPattern))
                     {
-                        if (estimateCalculationCellStr == _compensatoryLandingsWorkName)
+                        if (estimateCalculationCellStr == CompensatoryLandingsWorkName)
                         {
                             continue;
                         }
 
-                        if (estimateCalculationCellStr.StartsWith(_nrr103Pattern))
+                        if (estimateCalculationCellStr.StartsWith(Nrr103Pattern))
                         {
                             laborCosts = ParseLaborCosts(workSheet, row);
                             continue;
@@ -120,9 +120,9 @@ namespace POS.EstimateLogic
 
                         var estimateWork = estimateCalculationCellStr switch
                         {
-                            _subUnit1To9Pattern => ParseTotalEstimateWorkRow(workSheet, row, totalWorkChapter),
-                            _subUnit1To11Pattern => ParseTotalEstimateWorkRow(workSheet, row, totalWorkChapter),
-                            _subUnit1To12Pattern => ParseTotalEstimateWorkRow(workSheet, row, totalWorkChapter),
+                            SubUnit1To9Pattern => ParseTotalEstimateWorkRow(workSheet, row, totalWorkChapter),
+                            SubUnit1To11Pattern => ParseTotalEstimateWorkRow(workSheet, row, totalWorkChapter),
+                            SubUnit1To12Pattern => ParseTotalEstimateWorkRow(workSheet, row, totalWorkChapter),
                             _ => ParseEstimateWorkRow(workSheet, row),
                         };
 
@@ -139,14 +139,16 @@ namespace POS.EstimateLogic
                 stream.Close();
             }
 
-            return new Estimate(preparatoryEstimateWorks, mainEstimateWorks, constructionStartDate, constructionDurationCeiling, objectCipher, laborCosts);
+            var constructionDurationCeiling = (int)decimal.Ceiling(constructionDuration);
+
+            return new Estimate(preparatoryEstimateWorks, mainEstimateWorks, constructionStartDate, constructionDuration, constructionDurationCeiling, objectCipher, laborCosts);
         }
 
         private int ParseLaborCosts(ExcelWorksheet workSheet, int row)
         {
-            var laborCostsRow = Enumerable.Range(_startRow, row - _startRow).Reverse().First(i => workSheet.Cells[i, _workNamesColumn].Text == _laborCostsPattern);
+            var laborCostsRow = Enumerable.Range(StartRow, row - StartRow).Reverse().First(i => workSheet.Cells[i, WorkNamesColumn].Text == LaborCostsPattern);
 
-            var laborCostsCellStr = workSheet.Cells[laborCostsRow, _laborCostsColumn].Text;
+            var laborCostsCellStr = workSheet.Cells[laborCostsRow, LaborCostsColumn].Text;
 
             var laborCostsStr = Regex.Match(laborCostsCellStr, @"\d+$").Value;
 
@@ -157,26 +159,26 @@ namespace POS.EstimateLogic
         {
             var totalWorkSearchPattern = totalWorkChapter switch
             {
-                TotalWorkChapter.TotalWork1To9Chapter => _totalWork1To9SearchPattern,
-                TotalWorkChapter.TotalWork1To11Chapter => _totalWork1To11SearchPattern,
-                TotalWorkChapter.TotalWork1To12Chapter => _totalWork1To12SearchPattern,
+                TotalWorkChapter.TotalWork1To9Chapter => TotalWork1To9SearchPattern,
+                TotalWorkChapter.TotalWork1To11Chapter => TotalWork1To11SearchPattern,
+                TotalWorkChapter.TotalWork1To12Chapter => TotalWork1To12SearchPattern,
                 _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
             };
 
             var totalWorkRow = Enumerable
-                .Range(row + 1, _endRow)
-                .First(i => workSheet.Cells[i, _workNamesColumn].Text == totalWorkSearchPattern);
+                .Range(row + 1, EndRow)
+                .First(i => workSheet.Cells[i, WorkNamesColumn].Text == totalWorkSearchPattern);
 
             return ParseEstimateWorkRow(workSheet, totalWorkRow, (int)totalWorkChapter);
         }
 
-        private int ParseConstructionDuration(string constructionDurationCellStr)
+        private decimal ParseConstructionDuration(string constructionDurationCellStr)
         {
             var durationStr = Regex.Match(constructionDurationCellStr, @"^[\d,]+").Value;
 
             decimal.TryParse(durationStr, out var duration);
 
-            return (int)decimal.Ceiling(duration);
+            return duration;
         }
 
         private DateTime ParseConstructionStartDate(string constructionStartDateCellStr)
@@ -210,8 +212,8 @@ namespace POS.EstimateLogic
 
             for (int i = 1; i < row; i++)
             {
-                var chapterCellStr = workSheet.Cells[row - i, _chaptersColumn].Text;
-                if (chapterCellStr.StartsWith(_chapterPattern))
+                var chapterCellStr = workSheet.Cells[row - i, ChaptersColumn].Text;
+                if (chapterCellStr.StartsWith(ChapterPattern))
                 {
                     var chapterStr = Regex.Match(chapterCellStr, @"\d+").Value;
                     int.TryParse(chapterStr, out chapter);
@@ -224,10 +226,10 @@ namespace POS.EstimateLogic
 
         private EstimateWork ParseEstimateWorkRow(ExcelWorksheet workSheet, int row, int mainTotalEstimateWorkChapter = 0)
         {
-            var workNameCellLowerStr = workSheet.Cells[row, _workNamesColumn].Text.ToLower();
-            var equipmentCostCellStr = workSheet.Cells[row, _equipmentCostColumn].Text;
-            var otherProductsCostCellStr = workSheet.Cells[row, _otherProductsCostColumn].Text;
-            var totalCostCellStr = workSheet.Cells[row, _totalCostColumn].Text;
+            var workNameCellLowerStr = workSheet.Cells[row, WorkNamesColumn].Text.ToLower();
+            var equipmentCostCellStr = workSheet.Cells[row, EquipmentCostColumn].Text;
+            var otherProductsCostCellStr = workSheet.Cells[row, OtherProductsCostColumn].Text;
+            var totalCostCellStr = workSheet.Cells[row, TotalCostColumn].Text;
 
             var workName = char.ToUpper(workNameCellLowerStr[0]) + workNameCellLowerStr.Substring(1);
             var chapter = mainTotalEstimateWorkChapter == 0 ? ParseChapter(workSheet, row) : mainTotalEstimateWorkChapter;

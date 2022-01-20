@@ -17,7 +17,7 @@ namespace POSTests.EstimateLogic
                 new EstimateWork("Электрохимическая защита", 0.04M, 0, 0.632M, 2),
                 new EstimateWork("Благоустройство территории", 0, 0, 0.02M, 7),
                 new EstimateWork("Всего по сводному сметному расчету", 0.041M, 2.536M, 3.226M, 12),
-            }, new DateTime(2022, 8, 1), 1, "5.5-20.548", 16);
+            }, new DateTime(2022, 8, 1), 0.7M, 1, "5.5-20.548", 16);
 
         public readonly static Estimate Estimate158VAT = new Estimate(new List<EstimateWork>
             {
@@ -51,7 +51,7 @@ namespace POSTests.EstimateLogic
                 new EstimateWork("Тепловые сети", 0.048M, 0, 20.679M, 6),
                 new EstimateWork("Благоустройство", 0, 13.617M, 782.52M, 7),
                 new EstimateWork("Всего по сводному сметному расчету", 465.022M, 1789.066M, 5614.264M, 12),
-            }, new DateTime(2019, 7, 1), 6, "5.4-18.158", 79827);
+            }, new DateTime(2019, 7, 1), 6, 6, "5.4-18.158", 79827);
 
         public readonly static Estimate Estimate158VATFree = new Estimate(new List<EstimateWork>
             {
@@ -69,6 +69,6 @@ namespace POSTests.EstimateLogic
                 new EstimateWork("Узел редуцирования", 0.019M, 0, 0.836M, 6),
                 new EstimateWork("Благоустройство", 0, 4.803M, 282.087M, 7),
                 new EstimateWork("Всего по сводному сметному расчету", 47.492M, 111.785M, 828.585M, 12),
-            }, new DateTime(2019, 7, 1), 6, "5.4-18.158", 283);
+            }, new DateTime(2019, 7, 1), 6, 6, "5.4-18.158", 283);
     }
 }

@@ -12,31 +12,38 @@
             </div>
         </td>`;
 
-    const spinner = $('.pos .choose-estimates #spinner');
-    const estimateFiles = $('.pos #estimate-files');
+    const spinner = $('#estimate-calculations #choose-estimates #spinner');
+    const estimateFiles = $('#estimate-calculations #estimate-files');
 
-    const percentagesTable = $('.pos #percentages-table');
-    const calendarPlanBtns = $('.pos #calendar-plan-btns')
-    const percentagesTableBody = $('.pos #percentages-table tbody');
-    const monthRow = $('.pos #month-row');
-    const columnPercentsRow = $('.pos #column-percents-row');
+    const percentagesTable = $('#estimate-calculations #percentages-table');
+    const calendarPlanBtns = $('#estimate-calculations #calendar-plan-btns');
+    const percentagesTableBody = $('#estimate-calculations #percentages-table tbody');
+    const monthRow = $('#estimate-calculations #month-row');
+    const columnPercentsRow = $('#estimate-calculations #column-percents-row');
 
-    const calendarPlanFailures = $('.pos #calendar-plan-failures');
-    const constructionStartDateFailure = $('.pos #construction-start-date-failure');
-    const constructionDurationFailure = $('.pos #construction-duration-failure');
+    const calendarPlanFailures = $('#estimate-calculations #calendar-plan-failures');
+    const constructionStartDateFailure = $('#estimate-calculations #construction-start-date-failure');
+    const constructionDurationFailure = $('#estimate-calculations #construction-duration-failure');
 
-    const calendarPlanTotalWorkChapters = $('.pos #calendar-plan-total-work-chapters');
+    const calendarPlanTotalWorkChapters = $('#estimate-calculations #calendar-plan-total-work-chapters');
+    const posBtns =
+        $('#estimate-calculations #duration-by-labor-costs-btn, #estimate-calculations #calendar-plan-btn, #estimate-calculations #energy-and-water-btn');
 
     let calendarPlanVM;
 
     estimateFiles.change(function () {
-        $('.pos #pos-btns').addClass(dFlexClass);
+        if ($(this).val()) {
+            posBtns.prop('disabled', false);
+        } else {
+            posBtns.prop('disabled', true);
+        }
+
         percentagesTable.hide();
         calendarPlanBtns.removeClass(dFlexClass);
         calendarPlanFailures.removeClass(dFlexClass);
     });
 
-    $('.pos #calendar-plan-btn').click(function () {
+    $('#estimate-calculations #calendar-plan-btn').click(function () {
         spinner.addClass(dInlineBlockClass);
         let formData = new FormData();
         appendEstimateFiles(formData);
@@ -207,7 +214,7 @@
         percentagesTableBody.find('tr:first-child').append(acceptanceTimeCell);
     }
 
-    $('.pos #calculate-percentages').click(function () {
+    $('#estimate-calculations #calculate-percentages').click(function () {
         spinner.addClass(dInlineBlockClass);
         let formData = new FormData();
         appendEstimateFiles(formData);
@@ -254,7 +261,7 @@
         return mainTotalWorkRow;
     }
 
-    $('.pos #download-calendar-plan-btn').click(function () {
+    $('#estimate-calculations #download-calendar-plan-btn').click(function () {
         let formData = new FormData();
 
         appendEstimateFiles(formData);

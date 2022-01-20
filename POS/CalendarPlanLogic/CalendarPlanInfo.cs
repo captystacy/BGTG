@@ -17,9 +17,6 @@ namespace POS.CalendarPlanLogic
         public const int PreparatoryTemporaryBuildingsWorkChapter = 8;
         public const int MainOverallPreparatoryTotalWorkChapter = 1;
         public const int MainOtherExpensesWorkChapter = 10;
-        public const int MainTotalWork1To9Chapter = 9;
-        public const int MainTotalWork1To11Chapter = 11;
-        public const int MainTotalWork1To12Chapter = 12;
 
         public static readonly IEnumerable<decimal> PreparatoryPercentages = new decimal[] { 1 };
     }

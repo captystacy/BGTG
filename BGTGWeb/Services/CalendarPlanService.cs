@@ -21,8 +21,8 @@ namespace BGTGWeb.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
 
-        private const string _calendarPlansPath = "UsersFiles\\CalendarPlans";
-        private const string _calendarPlanTemplatesPath = "Templates\\CalendarPlanTemplates";
+        private const string CalendarPlansSavePath = @"UsersFiles\CalendarPlans";
+        private const string CalendarPlanTemplatesPath = @"Templates\CalendarPlanTemplates";
 
         public CalendarPlanService(IEstimateService estimateService, ICalendarPlanCreator calendarPlanCreator,
             ICalendarPlanWriter calendarPlanWriter, IWebHostEnvironment webHostEnvironment, IMapper mapper)
@@ -36,11 +36,11 @@ namespace BGTGWeb.Services
 
         public CalendarPlanVM GetCalendarPlanVM(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter)
         {
-            _estimateService.ReadEstimateFiles(estimateFiles, totalWorkChapter);
+            _estimateService.Read(estimateFiles, totalWorkChapter);
 
             var calendarPlanVM = _mapper.Map<CalendarPlanVM>(_estimateService.Estimate);
 
-            calendarPlanVM.UserWorks.RemoveAll(x => x.Chapter == CalendarPlanInfo.MainTotalWork1To12Chapter);
+            calendarPlanVM.UserWorks.RemoveAll(x => x.Chapter == (int)totalWorkChapter);
             calendarPlanVM.UserWorks.Add(new UserWorkVM()
             {
                 WorkName = CalendarPlanInfo.MainOtherExpensesWorkName,
@@ -54,22 +54,24 @@ namespace BGTGWeb.Services
         public IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
         {
             var calendarPlan = CalculateCalendarPlan(estimateFiles, calendarPlanVM);
-            return calendarPlan.MainCalendarWorks.Single(x => x.EstimateChapter == CalendarPlanInfo.MainTotalWork1To12Chapter).ConstructionMonths.Select(x => x.PercentPart);
+            return calendarPlan.MainCalendarWorks.Single(x => x.EstimateChapter == (int)calendarPlanVM.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
         }
 
-        public void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName)
+        public void Write(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName)
         {
             var calendarPlan = CalculateCalendarPlan(estimateFiles, calendarPlanVM);
-            var preparatoryTemplatePath = Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlanTemplatesPath, "PreparatoryCalendarPlanTemplate.docx");
-            var mainTemplatePath = Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlanTemplatesPath, $"MainCalendarPlanTemplate{_estimateService.Estimate.ConstructionDurationCeiling}.docx");
-            var savePath = Path.Combine(GetCalendarPlansPath(), GetCalendarPlanFileName(userFullName));
+
+            var preparatoryTemplatePath = GetPreparatoryTemplatePath();
+            var mainTemplatePath = GetMainTemplatePath();
+
+            var savePath = GetSavePath(userFullName);
 
             _calendarPlanWriter.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath, savePath);
         }
 
         private CalendarPlan CalculateCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM)
         {
-            _estimateService.ReadEstimateFiles(estimateFiles, calendarPlanVM.TotalWorkChapter);
+            _estimateService.Read(estimateFiles, calendarPlanVM.TotalWorkChapter);
 
             if (_estimateService.Estimate.ConstructionStartDate == default)
             {
@@ -99,17 +101,22 @@ namespace BGTGWeb.Services
             });
         }
 
-        public string GetCalendarPlansPath()
+        private string GetPreparatoryTemplatePath()
         {
-            return Path.Combine(_webHostEnvironment.WebRootPath, _calendarPlansPath);
+            return Path.Combine(_webHostEnvironment.WebRootPath, CalendarPlanTemplatesPath, "PreparatoryCalendarPlanTemplate.docx");
         }
 
-        public string GetCalendarPlanFileName(string userFullName)
+        private string GetMainTemplatePath()
         {
-            return $"CalendarPlan{userFullName.RemoveBackslashes()}.docx";
+            return Path.Combine(_webHostEnvironment.WebRootPath, CalendarPlanTemplatesPath, $"MainCalendarPlanTemplate{_estimateService.Estimate.ConstructionDurationCeiling}.docx");
         }
 
-        public string GetDownloadCalendarPlanFileName(string objectCipher)
+        public string GetSavePath(string userFullName)
+        {
+            return Path.Combine(_webHostEnvironment.WebRootPath, CalendarPlansSavePath, $"CalendarPlan{userFullName.RemoveBackslashes()}.docx");
+        }
+
+        public string GetFileName(string objectCipher)
         {
             return $"{objectCipher}КП.docx";
         }

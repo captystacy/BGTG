@@ -23,7 +23,7 @@ namespace BGTGWebTests.Services
         }
 
         [Test]
-        public void ReadEstimateFiles()
+        public void Read()
         {
             var estimateFile1Mock = new Mock<IFormFile>();
             var estimateFile2Mock = new Mock<IFormFile>();
@@ -33,10 +33,10 @@ namespace BGTGWebTests.Services
             var estimateStreams = new List<Stream> { stream1Mock.Object, stream2Mock.Object };
             estimateFile1Mock.Setup(x => x.OpenReadStream()).Returns(stream1Mock.Object);
             estimateFile2Mock.Setup(x => x.OpenReadStream()).Returns(stream2Mock.Object);
-            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
+            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
             _estimateManagerMock.Setup(x => x.GetEstimate(estimateStreams, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate);
 
-            _estimateService.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+            _estimateService.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
             estimateFile1Mock.Verify(x => x.OpenReadStream(), Times.Once);
             estimateFile2Mock.Verify(x => x.OpenReadStream(), Times.Once);

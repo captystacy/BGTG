@@ -59,7 +59,7 @@ namespace POSTests.EstimateLogic
                 new EstimateWork("Благоустройство", 0, 18.42M, 1064.607M, 7),
                 new EstimateWork("Всего по сводному сметному расчету", 512.514M, 1900.851M, 6442.849M, 12),
 
-            }, new DateTime(2019, 7, 1), 6, "5.4-18.158", 80110);
+            }, new DateTime(2019, 7, 1), 6, 6, "5.4-18.158", 80110);
 
             var actualEstimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate158VAT, EstimateSource.Estimate158VATFree });
 

@@ -1,14 +1,9 @@
 ﻿:root {
     --bg-regal-blue: #00427D;
-    --bg-cerulean: #00A3D3;
 }
 
 .bg-regal-blue {
     background-color: var(--bg-regal-blue);
-}
-
-.bg-cerulean {
-    background-color: var(--bg-cerulean);
 }
 
 a.navbar-brand {
