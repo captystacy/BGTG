@@ -5,13 +5,10 @@ using POS.EstimateLogic;
 
 namespace BGTGWeb.Services.Interfaces
 {
-    public interface ICalendarPlanService
+    public interface ICalendarPlanService : ISavable
     {
         CalendarPlanVM GetCalendarPlanVM(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter);
-        void WriteCalendarPlan(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName);
+        void Write(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM, string userFullName);
         IEnumerable<decimal> GetTotalPercentages(IEnumerable<IFormFile> estimateFiles, CalendarPlanVM calendarPlanVM);
-        string GetCalendarPlansPath();
-        string GetCalendarPlanFileName(string userFullName);
-        string GetDownloadCalendarPlanFileName(string objectCipher);
     }
 }

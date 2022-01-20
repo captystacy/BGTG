@@ -21,37 +21,39 @@ namespace POS.CalendarPlanLogic
 
         public bool Equals(ConstructionMonth other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return Date == other.Date
-                && InvestmentVolume == other.InvestmentVolume
-                && VolumeCAIW == other.VolumeCAIW
-                && PercentPart == other.PercentPart
-                && CreationIndex == other.CreationIndex;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Date.Equals(other.Date) && InvestmentVolume == other.InvestmentVolume &&
+                   VolumeCAIW == other.VolumeCAIW && PercentPart == other.PercentPart &&
+                   CreationIndex == other.CreationIndex;
         }
 
-        public override bool Equals(object obj) => Equals(obj as ConstructionMonth);
-
-        public override int GetHashCode() => HashCode.Combine(Date, InvestmentVolume, VolumeCAIW, PercentPart, CreationIndex);
-
-        public static bool operator ==(ConstructionMonth constructionMonth1, ConstructionMonth constructionMonth2)
+        public override bool Equals(object obj)
         {
-            if (constructionMonth1 is null)
-            {
-                return constructionMonth2 is null;
-            }
-
-            return constructionMonth1.Equals(constructionMonth2);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ConstructionMonth) obj);
         }
 
-        public static bool operator !=(ConstructionMonth constructionMonth1, ConstructionMonth constructionMonth2) => !(constructionMonth1 == constructionMonth2);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Date, InvestmentVolume, VolumeCAIW, PercentPart, CreationIndex);
+        }
+
+        public static bool operator ==(ConstructionMonth left, ConstructionMonth right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ConstructionMonth left, ConstructionMonth right)
+        {
+            return !Equals(left, right);
+        }
 
         public override string ToString()
         {
-            return string.Join(", ", Date, InvestmentVolume, VolumeCAIW, PercentPart, CreationIndex);
+            return $"{nameof(Date)}: {Date}, {nameof(InvestmentVolume)}: {InvestmentVolume}, {nameof(VolumeCAIW)}: {VolumeCAIW}, {nameof(PercentPart)}: {PercentPart}, {nameof(CreationIndex)}: {CreationIndex}";
         }
     }
 }

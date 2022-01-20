@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using BGTGWeb.Models;
 using BGTGWeb.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -11,17 +10,19 @@ namespace BGTGWeb.Controllers
     public class PosController : Controller
     {
         private readonly ICalendarPlanService _calendarPlanService;
-        private readonly ILaborCostsDurationService _laborCostsDurationService;
+        private readonly IDurationByLaborCostsService _durationByLaborCostsService;
         private readonly IEnergyAndWaterService _energyAndWaterService;
+        private readonly IDurationByTCPService _durationByTCPService;
 
-        private const string _docxMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        private const string DocxMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
-        public PosController(ICalendarPlanService calendarPlanService, ILaborCostsDurationService laborCostsDurationService,
-            IEnergyAndWaterService energyAndWaterService)
+        public PosController(ICalendarPlanService calendarPlanService, IDurationByLaborCostsService durationByLaborCostsService,
+            IEnergyAndWaterService energyAndWaterService, IDurationByTCPService durationByTCPService)
         {
             _calendarPlanService = calendarPlanService;
-            _laborCostsDurationService = laborCostsDurationService;
+            _durationByLaborCostsService = durationByLaborCostsService;
             _energyAndWaterService = energyAndWaterService;
+            _durationByTCPService = durationByTCPService;
         }
 
         public IActionResult Index()
@@ -38,7 +39,7 @@ namespace BGTGWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new BadRequestResult();
+                return BadRequest();
             }
 
             var totalPercentages = _calendarPlanService.GetTotalPercentages(estimateFiles, calendarPlanVM);
@@ -49,40 +50,61 @@ namespace BGTGWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new BadRequestResult();
+                return BadRequest();
             }
 
-            _calendarPlanService.WriteCalendarPlan(estimateFiles, calendarPlanVM, User.Identity.Name);
+            _calendarPlanService.Write(estimateFiles, calendarPlanVM, User.Identity.Name);
             return new OkResult();
         }
 
         public IActionResult DownloadCalendarPlan(string objectCipher)
         {
-            var calendarPlansPath = _calendarPlanService.GetCalendarPlansPath();
-            var calendarPlanFileName = _calendarPlanService.GetCalendarPlanFileName(User.Identity.Name);
-            var filePath = Path.Combine(calendarPlansPath, calendarPlanFileName);
-            var downloadCalendarPlanName = _calendarPlanService.GetDownloadCalendarPlanFileName(objectCipher);
-            return PhysicalFile(filePath, _docxMimeType, downloadCalendarPlanName);
+            var path = _calendarPlanService.GetSavePath(User.Identity.Name);
+
+            var fileName = _calendarPlanService.GetFileName(objectCipher);
+
+            return PhysicalFile(path, DocxMimeType, fileName);
         }
 
-        public IActionResult DownloadLaborCostsDuration(IEnumerable<IFormFile> estimateFiles, LaborCostsDurationVM laborCostsDurationVM)
+        public IActionResult DownloadDurationByLaborCosts(IEnumerable<IFormFile> estimateFiles, DurationByLaborCostsVM durationByLaborCostsVM)
         {
-            _laborCostsDurationService.WriteLaborCostsDuration(estimateFiles, laborCostsDurationVM, User.Identity.Name);
-            var laborCostsDurationsPath = _laborCostsDurationService.GetLaborCostsDurationsPath();
-            var laborCostsDurationFileName = _laborCostsDurationService.GetLaborCostsDurationFileName(User.Identity.Name);
-            var filePath = Path.Combine(laborCostsDurationsPath, laborCostsDurationFileName);
-            var downloadLaborCostsDurationName = _laborCostsDurationService.GetDownloadLaborCostsDurationFileName();
-            return PhysicalFile(filePath, _docxMimeType, downloadLaborCostsDurationName);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            _durationByLaborCostsService.Write(estimateFiles, durationByLaborCostsVM, User.Identity.Name);
+
+            var path = _durationByLaborCostsService.GetSavePath(User.Identity.Name);
+
+            var fileName = _durationByLaborCostsService.GetFileName();
+
+            return PhysicalFile(path, DocxMimeType, fileName);
         }
 
         public IActionResult DownloadEnergyAndWater(IEnumerable<IFormFile> estimateFiles)
         {
-            _energyAndWaterService.WriteEnergyAndWater(estimateFiles, User.Identity.Name);
-            var energyAndWatersPath = _energyAndWaterService.GetEnergyAndWatersPath();
-            var energyAndWaterFileName = _energyAndWaterService.GetEnergyAndWaterFileName(User.Identity.Name);
-            var filePath = Path.Combine(energyAndWatersPath, energyAndWaterFileName);
-            var downloadEnergyAndWaterName = _energyAndWaterService.GetDownloadEnergyAndWaterFileName();
-            return PhysicalFile(filePath, _docxMimeType, downloadEnergyAndWaterName);
+            _energyAndWaterService.Write(estimateFiles, User.Identity.Name);
+
+            var path = _energyAndWaterService.GetSavePath(User.Identity.Name);
+
+            var fileName = _energyAndWaterService.GetFileName();
+
+            return PhysicalFile(path, DocxMimeType, fileName);
+        }
+
+        public IActionResult DownloadDurationByTCP(DurationByTCPVM durationByTCPVM)
+        {
+            if (!ModelState.IsValid || !_durationByTCPService.Write(durationByTCPVM, User.Identity.Name))
+            {
+                return BadRequest();
+            }
+
+            var path = _durationByTCPService.GetSavePath(User.Identity.Name);
+
+            var fileName = _durationByTCPService.GetFileName();
+
+            return PhysicalFile(path, DocxMimeType, fileName);
         }
     }
 }

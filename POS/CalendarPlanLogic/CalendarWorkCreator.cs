@@ -54,7 +54,7 @@ namespace POS.CalendarPlanLogic
                 )).ToList();
 
             return Create(CalendarPlanInfo.TotalWorkName, initialMainTotalWork.TotalCost, initialMainTotalWork.TotalCostIncludingCAIW,
-                CalendarPlanInfo.MainTotalWork1To12Chapter, constructionMonths);
+                initialMainTotalWork.EstimateChapter, constructionMonths);
         }
 
         public CalendarWork CreateOtherExpensesWork(List<CalendarWork> mainCalendarWorks, CalendarWork initialMainTotalWork,

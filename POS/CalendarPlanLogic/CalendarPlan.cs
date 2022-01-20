@@ -21,38 +21,40 @@ namespace POS.CalendarPlanLogic
 
         public bool Equals(CalendarPlan other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return PreparatoryCalendarWorks.SequenceEqual(other.PreparatoryCalendarWorks)
-                && MainCalendarWorks.SequenceEqual(other.MainCalendarWorks)
-                && ConstructionStartDate == other.ConstructionStartDate
-                && ConstructionDurationCeiling == other.ConstructionDurationCeiling;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return PreparatoryCalendarWorks.SequenceEqual(other.PreparatoryCalendarWorks) &&
+                   MainCalendarWorks.SequenceEqual(other.MainCalendarWorks) &&
+                   ConstructionStartDate.Equals(other.ConstructionStartDate) &&
+                   ConstructionDurationCeiling == other.ConstructionDurationCeiling;
         }
 
-        public override bool Equals(object obj) => Equals(obj as CalendarPlan);
-
-        public override int GetHashCode() => HashCode.Combine(PreparatoryCalendarWorks, MainCalendarWorks, ConstructionStartDate, ConstructionDurationCeiling);
-
-        public static bool operator ==(CalendarPlan calendarPlan1, CalendarPlan calendarPlan2)
+        public override bool Equals(object obj)
         {
-            if (calendarPlan1 is null)
-            {
-                return calendarPlan2 is null;
-            }
-
-            return calendarPlan1.Equals(calendarPlan2);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((CalendarPlan)obj);
         }
 
-        public static bool operator !=(CalendarPlan calendarPlan1, CalendarPlan calendarPlan2) => !(calendarPlan1 == calendarPlan2);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(PreparatoryCalendarWorks, MainCalendarWorks, ConstructionStartDate, ConstructionDurationCeiling);
+        }
+
+        public static bool operator ==(CalendarPlan left, CalendarPlan right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(CalendarPlan left, CalendarPlan right)
+        {
+            return !Equals(left, right);
+        }
 
         public override string ToString()
         {
-            return "[" + string.Join("; ", PreparatoryCalendarWorks) + "], "
-                + "[" + string.Join("; ", MainCalendarWorks) + "], "
-                + string.Join(", ", ConstructionStartDate, ConstructionDurationCeiling);
+            return $"{nameof(PreparatoryCalendarWorks)}: {PreparatoryCalendarWorks}, {nameof(MainCalendarWorks)}: {MainCalendarWorks}, {nameof(ConstructionStartDate)}: {ConstructionStartDate}, {nameof(ConstructionDurationCeiling)}: {ConstructionDurationCeiling}";
         }
     }
 }

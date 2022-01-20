@@ -24,6 +24,7 @@ namespace POS.EstimateLogic
             return new Estimate(preparatoryEstimateWorksConnected, 
                 mainEstimateWorksConnected, 
                 estimates[0].ConstructionStartDate, 
+                estimates[0].ConstructionDuration, 
                 estimates[0].ConstructionDurationCeiling, 
                 estimates[0].ObjectCipher, 
                 laborCosts);

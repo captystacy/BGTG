@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace BGTGWeb.Services.Interfaces
 {
-    public interface IEnergyAndWaterService
+    public interface IEnergyAndWaterService : ISavable
     {
-        void WriteEnergyAndWater(IEnumerable<IFormFile> estimateFiles, string userFullName);
-        string GetEnergyAndWatersPath();
-        string GetEnergyAndWaterFileName(string userFullName);
-        string GetDownloadEnergyAndWaterFileName();
+        void Write(IEnumerable<IFormFile> estimateFiles, string userFullName);
     }
 }

@@ -70,7 +70,7 @@ namespace POSTests.CalendarPlanLogic
             var constructionDurationCeiling = EstimateSource.Estimate548VAT.ConstructionDurationCeiling;
             var estimateWorks = EstimateSource.Estimate548VAT.MainEstimateWorks.ToList();
             var middleCalendarWorks = MiddleCalendarWorksSource.MainCalendarWorks548.ToList();
-            var initialTotalWork = middleCalendarWorks.Find(x => x.EstimateChapter == CalendarPlanInfo.MainTotalWork1To12Chapter);
+            var initialTotalWork = middleCalendarWorks.Find(x => x.EstimateChapter == (int)TotalWorkChapter.TotalWork1To12Chapter);
             var preparatoryTotalWork = CalendarPlanSource.CalendarPlan548.PreparatoryCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName);
             var expectedCalendarWorks = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.ToList();
 

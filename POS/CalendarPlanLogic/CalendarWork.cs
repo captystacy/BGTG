@@ -6,7 +6,7 @@ namespace POS.CalendarPlanLogic
 {
     public class CalendarWork : IEquatable<CalendarWork>
     {
-        public string WorkName { get; set; }
+        public string WorkName { get; }
         public decimal TotalCost { get; }
         public decimal TotalCostIncludingCAIW { get; }
         public IEnumerable<ConstructionMonth> ConstructionMonths { get; }
@@ -23,38 +23,39 @@ namespace POS.CalendarPlanLogic
 
         public bool Equals(CalendarWork other)
         {
-            if (other == null || !ConstructionMonths.SequenceEqual(other.ConstructionMonths))
-            {
-                return false;
-            }
-
-            return WorkName == other.WorkName
-                && TotalCost == other.TotalCost
-                && TotalCostIncludingCAIW == other.TotalCostIncludingCAIW
-                && EstimateChapter == other.EstimateChapter;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return WorkName == other.WorkName && TotalCost == other.TotalCost &&
+                   TotalCostIncludingCAIW == other.TotalCostIncludingCAIW &&
+                   ConstructionMonths.SequenceEqual(other.ConstructionMonths) && EstimateChapter == other.EstimateChapter;
         }
 
-        public override bool Equals(object obj) => Equals(obj as CalendarWork);
-
-        public override int GetHashCode() => HashCode.Combine(WorkName, TotalCost, TotalCostIncludingCAIW,
-            ConstructionMonths, EstimateChapter);
-
-        public static bool operator ==(CalendarWork calendarWork1, CalendarWork calendarWork2)
+        public override bool Equals(object obj)
         {
-            if (calendarWork1 is null)
-            {
-                return calendarWork2 is null;
-            }
-
-            return calendarWork1.Equals(calendarWork2);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((CalendarWork)obj);
         }
 
-        public static bool operator !=(CalendarWork calendarWork1, CalendarWork calendarWork2) => !(calendarWork1 == calendarWork2);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(WorkName, TotalCost, TotalCostIncludingCAIW, ConstructionMonths, EstimateChapter);
+        }
+
+        public static bool operator ==(CalendarWork left, CalendarWork right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(CalendarWork left, CalendarWork right)
+        {
+            return !Equals(left, right);
+        }
 
         public override string ToString()
         {
-            return string.Join(", ", WorkName, TotalCost, TotalCostIncludingCAIW, EstimateChapter)
-                + (ConstructionMonths.Any() ? ", [" + string.Join(", ", ConstructionMonths) + "]" : string.Empty);
+            return $"{nameof(WorkName)}: {WorkName}, {nameof(TotalCost)}: {TotalCost}, {nameof(TotalCostIncludingCAIW)}: {TotalCostIncludingCAIW}, {nameof(ConstructionMonths)}: {ConstructionMonths}, {nameof(EstimateChapter)}: {EstimateChapter}";
         }
     }
 }

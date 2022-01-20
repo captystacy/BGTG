@@ -25,10 +25,23 @@
 		<Folder Include="wwwroot\lib\" />
 		<Folder Include="wwwroot\Templates\EnergyAndWaterTemplates\" />
 		<Folder Include="wwwroot\UsersFiles\CalendarPlans\" />
-		<Folder Include="wwwroot\UsersFiles\LaborCostsDurations\" />
+		<Folder Include="wwwroot\UsersFiles\DurationByLaborCosts\" />
 		<Folder Include="wwwroot\UsersFiles\EnergyAndWaters\" />
 		<Folder Include="wwwroot\UsersFiles\CalendarPlans\" />
 		<Folder Include="wwwroot\UsersFiles\EnergyAndWaters\" />
+		<Folder Include="wwwroot\UsersFiles\DurationByTCP\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding+Acceptance+Template.docx" />
+	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding+Acceptance-Template.docx" />
+	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding-Acceptance+Template.docx" />
+	  <None Include="wwwroot\Templates\DurationByLaborCostsTemplates\Rounding-Acceptance-Template.docx" />
+	  <None Include="wwwroot\Templates\DurationByTCPTemplates\ExtrapolationAscendingTemplate.docx" />
+	  <None Include="wwwroot\Templates\DurationByTCPTemplates\ExtrapolationDescendingTemplate.docx" />
+	  <None Include="wwwroot\Templates\DurationByTCPTemplates\InterpolationTemplate.docx" />
+	  <None Include="wwwroot\Templates\DurationByTCPTemplates\StepwiseExtrapolationAscendingTemplate.docx" />
+	  <None Include="wwwroot\Templates\DurationByTCPTemplates\StepwiseExtrapolationDescendingTemplate.docx" />
 	</ItemGroup>
 
 </Project>

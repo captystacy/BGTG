@@ -19,9 +19,9 @@ namespace BGTGWeb.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICalendarWorkCreator _calendarWorkCreator;
 
-        private const string _energyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
-        private const string _energyAndWaterTemplatePath = "Templates\\EnergyAndWaterTemplates";
-        private const string _energyAndWatersPath = "UsersFiles\\EnergyAndWaters";
+        private const string EnergyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
+        private const string EnergyAndWaterTemplatePath = @"Templates\EnergyAndWaterTemplates";
+        private const string EnergyAndWatersPath = @"UsersFiles\EnergyAndWaters";
 
         public EnergyAndWaterService(IEstimateService estimateService, IEnergyAndWaterCreator energyAndWaterCreator, 
             IEnergyAndWaterWriter energyAndWaterWriter, IWebHostEnvironment webHostEnvironment, ICalendarWorkCreator calendarWorkCreator)
@@ -33,13 +33,18 @@ namespace BGTGWeb.Services
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public void WriteEnergyAndWater(IEnumerable<IFormFile> estimateFiles, string userFullName)
+        public void Write(IEnumerable<IFormFile> estimateFiles, string userFullName)
         {
-            _estimateService.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+            _estimateService.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+
             var mainTotalCostIncludingCAIW = GetMainTotalCostIncludingCAIW();
+
             var energyAndWater = _energyAndWaterCreator.Create(mainTotalCostIncludingCAIW, _estimateService.Estimate.ConstructionStartDate.Year);
-            var templatePath = Path.Combine(_webHostEnvironment.WebRootPath, _energyAndWaterTemplatePath, _energyAndWaterTemplateFileName);
-            var savePath = Path.Combine(GetEnergyAndWatersPath(), GetEnergyAndWaterFileName(userFullName));
+
+            var templatePath = GetTemplatePath();
+
+            var savePath = GetSavePath(userFullName);
+
             _energyAndWaterWriter.Write(energyAndWater, templatePath, savePath);
         }
 
@@ -50,19 +55,19 @@ namespace BGTGWeb.Services
             return totalCalendarWork.TotalCostIncludingCAIW;
         }
 
-        public string GetEnergyAndWatersPath()
+        private string GetTemplatePath()
         {
-            return Path.Combine(_webHostEnvironment.WebRootPath, _energyAndWatersPath);
+            return Path.Combine(_webHostEnvironment.WebRootPath, EnergyAndWaterTemplatePath, EnergyAndWaterTemplateFileName);
         }
 
-        public string GetEnergyAndWaterFileName(string userFullName)
+        public string GetSavePath(string userFullName)
         {
-            return $"EnergyAndWater{userFullName.RemoveBackslashes()}.docx";
+            return Path.Combine(_webHostEnvironment.WebRootPath, EnergyAndWatersPath, $"EnergyAndWater{userFullName.RemoveBackslashes()}.docx");
         }
 
-        public string GetDownloadEnergyAndWaterFileName()
+        public string GetFileName(string objectCipher = null)
         {
-            return $"{_estimateService.Estimate.ObjectCipher}ЭИВ.docx";
+            return $"{objectCipher ?? _estimateService.Estimate.ObjectCipher}ЭИВ.docx";
         }
     }
 }

@@ -7,6 +7,6 @@ namespace BGTGWeb.Services.Interfaces
     public interface IEstimateService
     {
         Estimate Estimate { get; }
-        void ReadEstimateFiles(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter);
+        void Read(IEnumerable<IFormFile> estimateFiles, TotalWorkChapter totalWorkChapter);
     }
 }

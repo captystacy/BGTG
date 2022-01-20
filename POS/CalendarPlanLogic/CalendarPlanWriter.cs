@@ -9,16 +9,18 @@ namespace POS.CalendarPlanLogic
 {
     public class CalendarPlanWriter : ICalendarPlanWriter
     {
-        private const string _workNamePattern = "%WN%";
-        private const string _totalCostPattern = "%TC%";
-        private const string _totalCostIncludingCAIWPattern = "%TIC%";
-        private const string _dateAcceptancePattern = "%DA%";
+        private const string WorkNamePattern = "%WN%";
+        private const string TotalCostPattern = "%TC%";
+        private const string TotalCostIncludingCAIWPattern = "%TIC%";
+        private const string DateAcceptancePattern = "%DA%";
 
-        private const string _decimalFormat = "{0:f3}";
-        private const string _percentFormat = "{0:P2}";
+        private const string DecimalFormat = "{0:f3}";
+        private const string PercentFormat = "{0:P2}";
 
-        private const int _topPatternRowIndex = 2;
-        private const int _bottomPatternRowIndex = 3;
+        private const int TopPatternRowIndex = 2;
+        private const int BottomPatternRowIndex = 3;
+
+        private const string AcceptanceTimeCellStr = "Приемка объекта в эксплуатацию";
 
         public void Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath, string savePath)
         {
@@ -37,10 +39,10 @@ namespace POS.CalendarPlanLogic
 
                     if (calendarPlan.ConstructionDurationCeiling > 1)
                     {
-                        mainTable.MergeCellsInColumn(mainTable.ColumnCount - 1, _topPatternRowIndex,
+                        mainTable.MergeCellsInColumn(mainTable.ColumnCount - 1, TopPatternRowIndex,
                             mainTable.RowCount - 2);
-                        mainTable.Rows[_topPatternRowIndex].Cells[mainTable.ColumnCount - 1].Paragraphs[0]
-                            .Append("Приемка объекта в эксплуатацию").FontSize(12);
+                        mainTable.Rows[TopPatternRowIndex].Cells[mainTable.ColumnCount - 1].Paragraphs[0]
+                            .Append(AcceptanceTimeCellStr).FontSize(12);
                     }
 
                     preparatoryDocument.InsertDocument(mainDocument);
@@ -53,8 +55,8 @@ namespace POS.CalendarPlanLogic
         {
             ReplaceDatePatternWithActualDate(table, constructionMonths);
 
-            var topPatternRow = table.Rows[_topPatternRowIndex];
-            var bottomPatternRow = table.Rows[_bottomPatternRowIndex];
+            var topPatternRow = table.Rows[TopPatternRowIndex];
+            var bottomPatternRow = table.Rows[BottomPatternRowIndex];
             foreach (var calendarWork in calendarWorks)
             {
                 AddRowToTable(table, topPatternRow, bottomPatternRow, calendarWork);
@@ -81,7 +83,7 @@ namespace POS.CalendarPlanLogic
             {
                 var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
                 var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
-                calendarPlanPatternTable.Rows[1].ReplaceText(_dateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
+                calendarPlanPatternTable.Rows[1].ReplaceText(DateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
             }
         }
 
@@ -90,15 +92,15 @@ namespace POS.CalendarPlanLogic
             var newTopRow = table.InsertRow(topPatternRow, table.RowCount - 2);
             var newBottomRow = table.InsertRow(bottomPatternRow, table.RowCount - 2);
 
-            newTopRow.ReplaceText(_workNamePattern, calendarWork.WorkName);
-            newTopRow.ReplaceText(_totalCostPattern, string.Format(_decimalFormat, calendarWork.TotalCost));
-            newTopRow.ReplaceText(_totalCostIncludingCAIWPattern, string.Format(_decimalFormat, calendarWork.TotalCostIncludingCAIW));
+            newTopRow.ReplaceText(WorkNamePattern, calendarWork.WorkName);
+            newTopRow.ReplaceText(TotalCostPattern, string.Format(DecimalFormat, calendarWork.TotalCost));
+            newTopRow.ReplaceText(TotalCostIncludingCAIWPattern, string.Format(DecimalFormat, calendarWork.TotalCostIncludingCAIW));
             var constructionMonths = calendarWork.ConstructionMonths.ToArray();
             foreach (var constructionMonth in constructionMonths)
             {
                 var creationIndex = constructionMonth.CreationIndex;
-                newTopRow.ReplaceText($"%IV{creationIndex}%", string.Format(_decimalFormat, constructionMonth.InvestmentVolume));
-                newBottomRow.ReplaceText($"%IW{creationIndex}%", string.Format(_decimalFormat, constructionMonth.VolumeCAIW));
+                newTopRow.ReplaceText($"%IV{creationIndex}%", string.Format(DecimalFormat, constructionMonth.InvestmentVolume));
+                newBottomRow.ReplaceText($"%IW{creationIndex}%", string.Format(DecimalFormat, constructionMonth.VolumeCAIW));
             }
         }
 
@@ -109,7 +111,7 @@ namespace POS.CalendarPlanLogic
             {
                 for (int i = 0; i < constructionMonths.Length; i++)
                 {
-                    lastRow.ReplaceText($"%P{i}%", string.Format(_percentFormat, constructionMonths[i].PercentPart));
+                    lastRow.ReplaceText($"%P{i}%", string.Format(PercentFormat, constructionMonths[i].PercentPart));
                 }
             }
         }

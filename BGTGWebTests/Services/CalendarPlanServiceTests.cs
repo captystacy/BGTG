@@ -41,7 +41,7 @@ namespace BGTGWebTests.Services
         public void GetCalendarPlanVM()
         {
             var estimateFiles = new List<IFormFile>();
-            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, "", 0);
+            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, "", 0);
             var calendarPlanVM = new CalendarPlanVM()
             {
                 UserWorks = new List<UserWorkVM>()
@@ -49,7 +49,7 @@ namespace BGTGWebTests.Services
                     new UserWorkVM()
                     {
                         WorkName = CalendarPlanInfo.TotalWorkName,
-                        Chapter = CalendarPlanInfo.MainTotalWork1To12Chapter
+                        Chapter = (int)TotalWorkChapter.TotalWork1To12Chapter
                     },
                 }
             };
@@ -71,42 +71,32 @@ namespace BGTGWebTests.Services
 
             var actualCalendarPlanVM = _calendarPlanService.GetCalendarPlanVM(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
-            _estimateServiceMock.Verify(x => x.ReadEstimateFiles(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
+            _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
             _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);
             _mapperMock.Verify(x => x.Map<CalendarPlanVM>(estimate), Times.Once);
             Assert.AreEqual(expectedCalendarPlanVM, actualCalendarPlanVM);
         }
 
         [Test]
-        public void GetCalendarPlansPath()
+        public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.WebRootPath).Returns("www");
-
-            var energyAndWatersPath = _calendarPlanService.GetCalendarPlansPath();
-
-            Assert.AreEqual("www\\UsersFiles\\CalendarPlans", energyAndWatersPath);
-        }
-
-        [Test]
-        public void GetCalendarPlanFileName()
-        {
             var userFullName = "BGTG\\kss";
 
-            var calendarPlanFileName = _calendarPlanService.GetCalendarPlanFileName(userFullName);
+            var savePath = _calendarPlanService.GetSavePath(userFullName);
 
-            Assert.AreEqual($"CalendarPlanBGTGkss.docx", calendarPlanFileName);
+            _webHostEnvironmentMock.VerifyGet(x => x.WebRootPath, Times.Once);
+            Assert.AreEqual(@"www\UsersFiles\CalendarPlans\CalendarPlanBGTGkss.docx", savePath);
         }
 
         [Test]
-        public void GetDownloadCalendarPlanFileName()
+        public void GetFileName()
         {
             var objectCipher = "5.5-20.548";
-            var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, objectCipher, 0);
-            _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
 
-            var downloadCalendarPlanName = _calendarPlanService.GetDownloadCalendarPlanFileName(objectCipher);
+            var fileName = _calendarPlanService.GetFileName(objectCipher);
 
-            Assert.AreEqual($"{objectCipher}КП.docx", downloadCalendarPlanName);
+            Assert.AreEqual($"{objectCipher}КП.docx", fileName);
         }
     }
 }
