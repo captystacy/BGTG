@@ -28,28 +28,28 @@ namespace BGTG.POS.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public string Getcalendarplanviewmodel(IFormFileCollection estimateFiles, TotalWorkChapter totalWorkChapter)
+        public string GetCalendarPlanViewModel(IFormFileCollection estimateFiles, TotalWorkChapter totalWorkChapter)
         {
             var calendarPlanViewModel = _calendarPlanService.GetCalendarPlanViewModel(estimateFiles, totalWorkChapter);
             return JsonSerializer.Serialize(calendarPlanViewModel);
         }
 
         [HttpPost("[action]")]
-        public string Gettotalpercentages(IFormFileCollection estimateFiles, CalendarPlanViewModel calendarPlanViewModel)
+        public string GetTotalPercentages(IFormFileCollection estimateFiles, CalendarPlanViewModel calendarPlanViewModel)
         {
             var totalPercentages = _calendarPlanService.GetTotalPercentages(estimateFiles, calendarPlanViewModel);
             return JsonSerializer.Serialize(totalPercentages);
         }
 
         [HttpPost("[action]")]
-        public IActionResult Writecalendarplan(IFormFileCollection estimateFiles, CalendarPlanViewModel calendarPlanViewModel, string userFullName)
+        public IActionResult WriteCalendarPlan(IFormFileCollection estimateFiles, CalendarPlanViewModel calendarPlanViewModel, string userFullName)
         {
             _calendarPlanService.Write(estimateFiles, calendarPlanViewModel, userFullName);
             return new OkResult();
         }
 
         [HttpPost("[action]")]
-        public IActionResult Downloadcalendarplan(string userFullName)
+        public IActionResult DownloadCalendarPlan(string userFullName)
         {
             var path = _calendarPlanService.GetSavePath(userFullName);
 
@@ -57,7 +57,7 @@ namespace BGTG.POS.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult Downloaddurationbylc(IFormFileCollection estimateFiles, DurationByLCViewModel durationByLaborCostsViewModel, string userFullName)
+        public IActionResult DownloadDurationByLC(IFormFileCollection estimateFiles, DurationByLCViewModel durationByLaborCostsViewModel, string userFullName)
         {
             _durationByLCService.Write(estimateFiles, durationByLaborCostsViewModel, userFullName);
 
@@ -67,7 +67,7 @@ namespace BGTG.POS.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult Downloadenergyandwater(IFormFileCollection estimateFiles, string userFullName)
+        public IActionResult DownloadEnergyAndWater(IFormFileCollection estimateFiles, string userFullName)
         {
             _energyAndWaterService.Write(estimateFiles, userFullName);
 
@@ -77,7 +77,7 @@ namespace BGTG.POS.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult Downloaddurationbytcp([FromBody] DurationByTCPViewModel durationByTCPViewModel)
+        public IActionResult DownloadDurationByTCP([FromBody] DurationByTCPViewModel durationByTCPViewModel)
         {
             _durationByTCPService.Write(durationByTCPViewModel);
 

@@ -38,7 +38,7 @@ namespace BGTG.Web.Controllers
             multipartContent.Add(new StringContent(totalWorkChapter.ToString()), "totalWorkChapter");
             FillMultipartContent(multipartContent, estimateFiles);
 
-            var response = await _httpClient.PostAsync("/api/Home/Getcalendarplanviewmodel", multipartContent);
+            var response = await _httpClient.PostAsync("/api/Home/get-calendar-plan-view-model", multipartContent);
 
             var json = await response.Content.ReadAsStringAsync();
 
@@ -58,7 +58,7 @@ namespace BGTG.Web.Controllers
             FillMultipartContent(multipartContent, estimateFiles);
             FillMultipartContent(multipartContent, calendarPlanViewModel);
 
-            var response = await _httpClient.PostAsync("/api/Home/Gettotalpercentages", multipartContent);
+            var response = await _httpClient.PostAsync("/api/Home/get-total-percentages", multipartContent);
 
             var totalPercentages = JsonSerializer.Deserialize<IEnumerable<decimal>>(await response.Content.ReadAsStringAsync());
 
@@ -78,7 +78,7 @@ namespace BGTG.Web.Controllers
 
             multipartContent.Add(new StringContent(User.Identity.Name), "userFullName");
 
-            await _httpClient.PostAsync("/api/Home/Writecalendarplan", multipartContent);
+            await _httpClient.PostAsync("/api/Home/write-calendar-plan", multipartContent);
 
             return Ok();
         }
@@ -115,7 +115,7 @@ namespace BGTG.Web.Controllers
             var multipartContent = new MultipartFormDataContent();
             multipartContent.Add(new StringContent(User.Identity.Name), "userFullName");
 
-            var response = await _httpClient.PostAsync("/api/Home/Downloadcalendarplan", multipartContent);
+            var response = await _httpClient.PostAsync("/api/Home/download-calendar-plan", multipartContent);
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -133,7 +133,7 @@ namespace BGTG.Web.Controllers
             FillMultipartContent(multipartContent, estimateFiles);
             FillMultipartContent(multipartContent, durationByLaborLCViewModel);
 
-            var response = await _httpClient.PostAsync("/api/Home/Downloaddurationbylc", multipartContent);
+            var response = await _httpClient.PostAsync("/api/Home/download-duration-by-lc", multipartContent);
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -156,7 +156,7 @@ namespace BGTG.Web.Controllers
             multipartContent.Add(new StringContent(User.Identity.Name), "userFullName");
             FillMultipartContent(multipartContent, estimateFiles);
 
-            var response = await _httpClient.PostAsync("/api/Home/Downloadenergyandwater", multipartContent);
+            var response = await _httpClient.PostAsync("/api/Home/download-energy-and-water", multipartContent);
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -172,7 +172,7 @@ namespace BGTG.Web.Controllers
 
             durationByTCPViewModel.UserFullName = User.Identity.Name;
 
-            var response = await _httpClient.PostAsJsonAsync("/api/Home/Downloaddurationbytcp", durationByTCPViewModel);
+            var response = await _httpClient.PostAsJsonAsync("/api/Home/download-duration-by-tcp", durationByTCPViewModel);
 
             if (!response.IsSuccessStatusCode)
             {

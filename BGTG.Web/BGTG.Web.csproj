@@ -6,11 +6,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <FileAlignment>2048</FileAlignment>
+		<FileAlignment>2048</FileAlignment>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <FileAlignment>2048</FileAlignment>
+		<FileAlignment>2048</FileAlignment>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,8 +20,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\BGTG.POS\BGTG.POS.Entities\BGTG.POS.Entities.csproj" />
-	  <ProjectReference Include="..\BGTG.POS\BGTG.POS.Web\BGTG.POS.Web.csproj" />
+		<ProjectReference Include="..\BGTG.POS\BGTG.POS.Entities\BGTG.POS.Entities.csproj" />
+		<ProjectReference Include="..\BGTG.POS\BGTG.POS.Web\BGTG.POS.Web.csproj" />
 	</ItemGroup>
 
 </Project>
