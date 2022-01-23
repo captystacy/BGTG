@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,9 +21,12 @@ namespace BGTG.Web
         {
             services.AddHttpClient("POS", options =>
             {
-                options.BaseAddress = new Uri("https://localhost:20001/");
+                options.BaseAddress = new Uri("http://localhost:20001/");
             });
             services.AddRouting(x => x.LowercaseUrls = true);
+            services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+                .AddNegotiate();
+            services.AddAuthorization(x => x.FallbackPolicy = x.DefaultPolicy);
             services.AddControllersWithViews();
         }
 
@@ -43,6 +47,7 @@ namespace BGTG.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseRequestLocalization();

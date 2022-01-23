@@ -7,7 +7,10 @@ namespace BGTG.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args)
+                .ConfigureWebHost(x => x.ConfigureKestrel(x => x.ListenAnyIP(5000)))
+                .Build()
+                .Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

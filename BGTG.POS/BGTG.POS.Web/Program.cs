@@ -1,12 +1,3 @@
-// ---------------------------------------
-// Name: Microservice Template
-// Author: Calabonga (calabonga.net)
-// Version: 2.2.0
-// Based on: ASP.NET Core 3.1
-// Created Date: 2019-10-06
-// Updated Date 2020-09-27
-// ---------------------------------------
-
 using BGTG.POS.Core;
 using BGTG.POS.Data.DatabaseInitialization;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +11,11 @@ namespace BGTG.POS.Web
     {
         public static void Main(string[] args)
         {
-            var webHost = CreateHostBuilder(args).Build();
+            var builder = CreateHostBuilder(args);
+
+            builder.ConfigureWebHost(x => x.ConfigureKestrel(x => x.ListenAnyIP(20001)));
+
+            var webHost = builder.Build();
             using (var scope = webHost.Services.CreateScope())
             {
                 DatabaseInitializer.Seed(scope.ServiceProvider);
