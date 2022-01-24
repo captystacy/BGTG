@@ -41,6 +41,7 @@ namespace BGTG.POS.Tools.EstimateTool
         private const string SubItemPattern = "ПОДПУНКТ";
         private const string EstimatePattern = "СМЕТА";
         private const string ReportPattern = "ОТЧЕТ";
+        private const string DecreePattern = "УКАЗ";
         #endregion
 
         #region Estimate works that will not be included
@@ -105,7 +106,8 @@ namespace BGTG.POS.Tools.EstimateTool
                         && !estimateCalculationCellStr.StartsWith(TaxPattern)
                         && !estimateCalculationCellStr.StartsWith(SubItemPattern)
                         && !estimateCalculationCellStr.StartsWith(EstimatePattern)
-                        && !estimateCalculationCellStr.StartsWith(ReportPattern))
+                        && !estimateCalculationCellStr.StartsWith(ReportPattern)
+                        && !estimateCalculationCellStr.StartsWith(DecreePattern))
                     {
                         if (estimateCalculationCellStr == CompensatoryLandingsWorkName)
                         {
