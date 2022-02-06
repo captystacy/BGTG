@@ -6,7 +6,7 @@
         {
             new PipelineCategory("Уличные трубопроводы водо-, газоснабжения и канализации, сооружаемые в траншеях с откосами", new[]
             {
-                new PipelineComponent(new[] { "стальных" }, new []
+                new PipelineComponent(new[] { "стальных труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 500, "до 500"), new []
                     {
@@ -37,7 +37,7 @@
                         new PipelineStandard(1.5M, 6M, 0.5M),
                     }),
                 }),
-                new PipelineComponent(new[] { "чугунных", "асбестоцементных", "керамических", "бестонных", "железобетонных", "стеклопластиковых" }, new []
+                new PipelineComponent(new[] { "чугунных труб", "асбестоцементных труб", "керамических труб", "бестонных труб", "железобетонных труб", "стеклопластиковых труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 500, "до 500"), new []
                     {
@@ -68,7 +68,7 @@
                         new PipelineStandard(1.5M, 8.5M, 0.5M),
                     }),
                 }),
-                new PipelineComponent(new[] { "полиэтиленовых" }, new []
+                new PipelineComponent(new[] { "полиэтиленовых труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 300, "до 300"), new []
                     {
@@ -88,7 +88,7 @@
             }),
             new PipelineCategory("Уличные трубопроводы водо-, газоснабжения и канализации, сооружаемые в траншеях с креплением стенок", new[]
             {
-                new PipelineComponent(new[] { "стальных" }, new []
+                new PipelineComponent(new[] { "стальных труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 500, "до 500"), new []
                     {
@@ -119,7 +119,7 @@
                         new PipelineStandard(1.5M, 8.5M, 0.5M),
                     }),
                 }),
-                new PipelineComponent(new[] { "чугунных", "асбестоцементных", "керамических", "бестонных", "железобетонных", "стеклопластиковых" }, new []
+                new PipelineComponent(new[] { "чугунных труб", "асбестоцементных труб", "керамических труб", "бестонных труб", "железобетонных труб", "стеклопластиковых труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 500, "до 500"), new []
                     {
@@ -150,7 +150,7 @@
                         new PipelineStandard(1.5M, 11M, 0.5M),
                     }),
                 }),
-                new PipelineComponent(new[] { "полиэтиленовых" }, new []
+                new PipelineComponent(new[] { "полиэтиленовых труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 300, "до 300"), new []
                     {
@@ -270,7 +270,7 @@
         {
             new PipelineCategory("Наружные трубопроводы", new[]
             {
-                new PipelineComponent(new[] { "стальных" }, new []
+                new PipelineComponent(new[] { "стальных труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 400, "до 400"),new []
                     {
@@ -304,7 +304,7 @@
                         new PipelineStandard(50M, 24M, 2M),
                     }),
                 }),
-                new PipelineComponent(new[] { "полиэтиленовых" }, new []
+                new PipelineComponent(new[] { "полиэтиленовых труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 301, "300"),new []
                     {
@@ -319,7 +319,7 @@
                         new PipelineStandard(5M, 4.5M, 0M),
                     })
                 }),
-                new PipelineComponent(new[] { "чугунных", "асбестоцементных", "керамических", "бестонных", "стеклопластиковых" }, new []
+                new PipelineComponent(new[] { "чугунных труб", "асбестоцементных труб", "керамических труб", "бестонных труб", "стеклопластиковых труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 800, "500"),new []
                     {
@@ -347,7 +347,7 @@
                         new PipelineStandard(50M, 30M, 2M),
                     }),
                 }),
-                new PipelineComponent(new[] { "железобетонных" }, new []
+                new PipelineComponent(new[] { "железобетонных труб" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 800, "500"),new []
                     {
@@ -405,7 +405,7 @@
             }),
             new PipelineCategory("Распределительная газовая сеть", new[]
             {
-                new PipelineComponent(new[] { "стальных в две нитки" }, new []
+                new PipelineComponent(new[] { "стальных труб в две нитки" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 200, "до 200"),new []
                     {
@@ -418,7 +418,7 @@
                         new PipelineStandard(3M, 3.5M, 0.2M),
                     }),
                 }),
-                new PipelineComponent(new[] { "стальных в одну нитку" }, new []
+                new PipelineComponent(new[] { "стальных труб в одну нитку" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 200, "до 200"),new []
                     {
@@ -433,7 +433,7 @@
                         new PipelineStandard(10M, 8.5M, 0.5M),
                     }),
                 }),
-                new PipelineComponent(new[] { "полиэтиленовых в одну нитку" }, new []
+                new PipelineComponent(new[] { "полиэтиленовых труб в одну нитку" }, new []
                 {
                     new PipelineCharacteristic(new DiameterRange(0, 200, "до 200"),new []
                     {

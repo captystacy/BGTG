@@ -16,21 +16,21 @@
     const componentMaterialsAppendixA2And3 = ['сборных железобетонных лотковых элементов'];
 
     const componentMaterailsAppendixB1 = [
-        'стальных в две нитки',
-        'стальных в одну нитку',
-        'полиэтиленовых в одну нитку'
+        'стальных труб в две нитки',
+        'стальных труб в одну нитку',
+        'полиэтиленовых труб в одну нитку'
     ];
 
     const defaultComponentMaterials =
         [
-            'стальных',
-            'полиэтиленовых',
-            'чугунных',
-            'асбестоцементных',
-            'керамических',
-            'бестонных',
-            'железобетонных',
-            'стеклопластиковых'
+            'стальных труб',
+            'полиэтиленовых труб',
+            'чугунных труб',
+            'асбестоцементных труб',
+            'керамических труб',
+            'бестонных труб',
+            'железобетонных труб',
+            'стеклопластиковых труб'
         ];
 
     const durationByTCPSpinner = $('#duration-by-tcp-download-btn #spinner');
@@ -78,9 +78,9 @@
         if (appendixACategories[2] == value || appendixACategories[3] == value) {
             options = getOptions(componentMaterialsAppendixA2And3, 'из');
         } else if (appendixBCategories[1] == value) {
-            options = getOptions(componentMaterailsAppendixB1, 'из', 'труб');
+            options = getOptions(componentMaterailsAppendixB1, 'из');
         } else {
-            options = getOptions(defaultComponentMaterials, 'из', 'труб');
+            options = getOptions(defaultComponentMaterials, 'из');
         }
 
         pipelineMaterial.append(options);
@@ -91,17 +91,13 @@
         pipelineDiameterAndLengthAndDownloadBtn.prop('disabled', false);
     });
 
-    function getOptions(array, prefix, postfix) {
+    function getOptions(array, prefix) {
         let options = '';
 
         array.forEach(x => {
             let optionText = prefix
                 ? prefix + ' ' + x
                 : x;
-
-            optionText = postfix
-                ? optionText + ' ' + postfix
-                : optionText;
 
             options += `<option value="${x}">${optionText}</opiton>`;
         });

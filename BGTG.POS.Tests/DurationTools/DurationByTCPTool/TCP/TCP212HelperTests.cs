@@ -38,7 +38,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool.TCP
         [Test]
         public void GetPipelineCharacteristic_UrbanSlopesSteelPipelineWith300Diameter_CorrectPipelineCharacteristic()
         {
-            var pipelineMaterial = "стальных";
+            var pipelineMaterial = "стальных труб";
             var pipelineDiameter = 300;
             var appendix = TCP212.AppendixA;
             var pipelineCategoryName = "Уличные трубопроводы водо-, газоснабжения и канализации, сооружаемые в траншеях с откосами";
@@ -59,7 +59,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool.TCP
         [Test]
         public void GetPipelineCharacteristic_UrbanFastenersSteelPipelineWith300Diameter_CorrectPipelineCharacteristic()
         {
-            var pipelineMaterial = "стальных";
+            var pipelineMaterial = "стальных труб";
             var pipelineDiameter = 300;
             var appendix = TCP212.AppendixA;
             var pipelineCategoryName = "Уличные трубопроводы водо-, газоснабжения и канализации, сооружаемые в траншеях с креплением стенок";
@@ -80,7 +80,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool.TCP
         [Test]
         public void GetPipelineCharacteristic_CountrySteelPipelineWith300Diameter_CorrectPipelineCharacteristic()
         {
-            var pipelineMaterial = "стальных";
+            var pipelineMaterial = "стальных труб";
             var pipelineDiameter = 300;
             var appendix = TCP212.AppendixB;
             var pipelineCategoryName = "Наружные трубопроводы";
