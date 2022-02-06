@@ -6,13 +6,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="Infrastructure\Managers\**" />
-		<Content Remove="Infrastructure\Managers\**" />
-		<EmbeddedResource Remove="Infrastructure\Managers\**" />
-		<None Remove="Infrastructure\Managers\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="AppData\**">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
