@@ -1,4 +1,9 @@
-﻿:root {
+﻿@font-face {
+    font-family: Montserrat-Regular;
+    src: url(../fonts/Montserrat-Regular.ttf);
+}
+
+:root {
     --bg-regal-blue: #00427D;
 }
 
@@ -74,6 +79,7 @@ body {
     margin-bottom: 60px;
     background: url(../icons/bg-logo-uncolored.svg) no-repeat center;
     background-size: contain;
+    font-family: Montserrat-Regular;
 }
 
 .footer {
