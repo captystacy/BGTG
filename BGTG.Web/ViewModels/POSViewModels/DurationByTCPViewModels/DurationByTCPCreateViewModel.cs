@@ -17,7 +17,7 @@ namespace BGTG.Web.ViewModels.POSViewModels.DurationByTCPViewModels
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrEmpty(ObjectCipher) || !Regex.IsMatch(ObjectCipher, AppData.ObjectCipherRegexPattern))
+            if (string.IsNullOrEmpty(ObjectCipher) || !(Regex.IsMatch(ObjectCipher, AppData.ObjectCipherRegexPattern1) || Regex.IsMatch(ObjectCipher, AppData.ObjectCipherRegexPattern2)))
             {
                 yield return new ValidationResult(AppData.ObjectCipherValidationMessage);
             }

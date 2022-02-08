@@ -39,7 +39,7 @@
                                             </h2>
                                             <div id="pos-@id" class="accordion-collapse collapse">
                                                 <div class="accordion-body">
-                                                    <div class="row row-cols-1 row-cols-md-4 g-4">
+                                                    <div class="row row-cols-1 row-cols-md-3 g-4">
                                                         @if (constructionObject.POSViewModel.DurationByLCViewModel != null)
                                                         {
                                                             <div class="col history-item">
@@ -62,7 +62,7 @@
                                                                             Количество работающих в бригаде: <b>@constructionObject.POSViewModel.DurationByLCViewModel.NumberOfEmployees чел.</b>
                                                                         </p>
                                                                         <p class="card-text">
-                                                                            Дата создания: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedAt.ToString(AppData.DateTimeFormat)</b>
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedAt</b>
                                                                         </p>
                                                                         <p class="card-text">
                                                                             Инженер: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedBy</b>
@@ -110,10 +110,10 @@
                                                                             Подготовительный период: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PreparatoryPeriod.ToString(AppData.DecimalFormat) мес.</b>
                                                                         </p>
                                                                         <p class="card-text">
-                                                                            Сеть из <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineMaterial</b> труб диаметром <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineDiameter мм.</b> и длиной <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineLength.ToString(AppData.DecimalFormat) км.</b>
+                                                                            Сеть из <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineMaterial</b> диаметром <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineDiameter мм.</b> и длиной <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineLength.ToString(AppData.DecimalFormat) км.</b>
                                                                         </p>
                                                                         <p class="card-text">
-                                                                            Дата создания: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedAt.ToString(AppData.DateTimeFormat)</b>
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedAt</b>
                                                                         </p>
                                                                         <p class="card-text">
                                                                             Инженер: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedBy</b>
@@ -161,7 +161,7 @@
                                                                             Продолжительность: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.ConstructionDuration.ToString(AppData.DecimalFormat) мес.</b>
                                                                         </p>
                                                                         <p class="card-text">
-                                                                            Дата создания: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedAt.ToString(AppData.DateTimeFormat)</b>
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedAt</b>
                                                                         </p>
                                                                         <p class="card-text">
                                                                             Инженер: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedBy</b>
@@ -209,7 +209,7 @@
                                                                             Вода: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.Water.ToString(AppData.DecimalFormat) л/с</b>
                                                                         </p>
                                                                         <p class="card-text">
-                                                                            Дата создания: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedAt.ToString(AppData.DateTimeFormat)</b>
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedAt</b>
                                                                         </p>
                                                                         <p class="card-text">
                                                                             Инженер: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedBy</b>

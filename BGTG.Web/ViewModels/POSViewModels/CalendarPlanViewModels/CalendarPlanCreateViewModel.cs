@@ -35,7 +35,7 @@ namespace BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels
                 yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
             }
 
-            if (string.IsNullOrEmpty(ObjectCipher) || !Regex.IsMatch(ObjectCipher, AppData.ObjectCipherRegexPattern))
+            if (string.IsNullOrEmpty(ObjectCipher) || !(Regex.IsMatch(ObjectCipher, AppData.ObjectCipherRegexPattern1) || Regex.IsMatch(ObjectCipher, AppData.ObjectCipherRegexPattern2)))
             {
                 yield return new ValidationResult(AppData.ObjectCipherValidationMessage);
             }

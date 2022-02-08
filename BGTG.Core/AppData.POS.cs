@@ -7,9 +7,6 @@
         public const string DurationByTCPDownloadFileName = "Продолжительность по ТКП.docx";
         public const string EnergyAndWaterDownloadFileName = "Энергия и вода.docx";
 
-        public const string ObjectCipherRegexPattern = @"^\d\.\d-\d+\.\d+$";
-        public const string ObjectCipherValidationMessage = "Шифр объекта указан в неправильном формате. Правильный формат: Ц.Ц-Ч.Ч, где Ц - цифра, Ч - число.";
-
         public const string PipelineDiameterValidationMessage = "Диаметр трубопровода не может быть отрицательным или равным нулю.";
 
         public const string PipelineLengthValidationMessage = "Длина трубопровода не может быть отрицательна.";

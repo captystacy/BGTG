@@ -49,6 +49,10 @@ namespace BGTG.Core
 
         public const string DateTimeMonthAndYearFormat = "MMMM yyyy";
 
-        public const string DateTimeFormat = "d MMMM yyyy HH:mm:ss";
+
+        public const string ObjectCipherRegexPattern1 = @"^\d\.\d-\d+\.\d+$";
+        public const string ObjectCipherRegexPattern2 = @"^\d\.\d-\d+\.\d+-\d+$";
+
+        public const string ObjectCipherValidationMessage = "Шифр объекта указан в неправильном формате. Правильный формат: Ц.Ц-Ч.Ч или Ц.Ц-Ч.Ч-Ч, где Ц - цифра, Ч - число.";
     }
 }
