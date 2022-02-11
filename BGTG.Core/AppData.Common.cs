@@ -49,6 +49,7 @@ namespace BGTG.Core
 
         public const string DateTimeMonthAndYearFormat = "MMMM yyyy";
 
+        public const string DateTimeMonthAndYearShortFormat = "MM.yy";
 
         public const string ObjectCipherRegexPattern1 = @"^\d\.\d-\d+\.\d+$";
         public const string ObjectCipherRegexPattern2 = @"^\d\.\d-\d+\.\d+-\d+$";

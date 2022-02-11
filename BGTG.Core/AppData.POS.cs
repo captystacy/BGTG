@@ -2,6 +2,9 @@
 {
     public partial class AppData
     {
+        public const string ECPProjectDownloadFileName = "ЭХЗ.docx";
+        public const string TitlePageDownloadFileName = "Титульник.docx";
+        public const string TableOfContentsDownloadFileName = "Содержание.docx";
         public const string CalendarPlanDownloadFileName = "Календарный план.docx";
         public const string DurationByLCDownloadFileName = "Продолжительность по трудозатратам.docx";
         public const string DurationByTCPDownloadFileName = "Продолжительность по ТКП.docx";
@@ -44,5 +47,19 @@
         public const string BadDurationByTCPId = "Продолжительность по ТКП не найдена по данному ID.";
 
         public const string BadEnergyAndWaterId = "Энергия и вода не найдена по данному ID.";
+
+        public const string ConstructionObjectIsNull = "Объекта по данному шифру ещё нет в базе.";
+
+        public const string POSIsNull = "Раздела ПОС по данному шифру ещё нет в базе.";
+
+        public const string DurationByLCNotCalculated = "Не рассчитана продолжительность по трудозатрам. Чтобы рассчитать перейдите на вкладку \"Сметные расчеты\"";
+
+        public const string CalendarPlanNotCalculated = "Не рассчитан календарный план. Чтобы рассчитать перейдите на вкладку \"Сметные расчеты\"";
+
+        public const string EnergyAndWaterNotCalculated = "Не рассчитана потребность в энергии и воде. Чтобы рассчитать перейдите на вкладку \"Сметные расчеты\"";
+
+        public const string ECPProjectOnly4Or8Employees = "На данный момент созданы шаблоны только для 4 или 8 рабочих в бригаде.";
+
+        public const string ObjectNameValidationMessage = "Имя объекта не может быть пустым.";
     }
 }
