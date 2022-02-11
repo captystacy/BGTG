@@ -1,6 +1,10 @@
-﻿@section Scripts {
+﻿@using BGTG.Web.Infrastructure.Helpers
+@using BGTG.POS.ProjectTool
+@using BGTG.POS
+@section Scripts {
     <script src="~/js/pos/estimate-calculations.js" asp-append-version="true"></script>
     <script src="~/js/pos/duration-by-tcp.js" asp-append-version="true"></script>
+    <script src="~/js/pos/project.js" asp-append-version="true"></script>
 }
 
 <div id="pos">
@@ -14,6 +18,9 @@
         </li>
         <li class="nav-item">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#duration-by-tcp" type="button">Продолжительность по ТКП</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#project" type="button">Записка</button>
         </li>
     </ul>
     <div class="tab-content mt-3">
@@ -57,7 +64,7 @@
                             </div>
                             <hr class="dropdown-divider">
                             <div class="d-flex align-items-center px-1 form-check form-switch" style="padding-left: 3.3rem !important;">
-                                <input class="form-check-input me-3" style="transform: scale(1.5);" type="checkbox" id="acceptance-time-included" value="true" checked>
+                                <input class="form-check-input me-3" style="transform: scale(1.5);" type="checkbox" id="acceptance-time-included" checked>
                                 <label class="form-check-label" for="acceptance-time-included">Включать время на приемку</label>
                             </div>
                         </div>
@@ -204,6 +211,85 @@
                     <button type="submit" class="d-none" id="duration-by-tcp-download-submit-btn"></button>
                 </form>
             </div>
+        </div>
+        <div class="tab-pane fade" id="project">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Полное наименование объекта</span>
+                <input type="text" id="object-name" class="form-control">
+            </div>
+            <div class="d-flex">
+                <i class="bi bi-info-circle text-primary" style="font-size: 1.6rem; margin-right: 0.3rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="В шаблоне отсутсвуют краткие сведения о стр-ве, подготовка, таблица с машинами и механизмами (Разделы 3, 6, 14)."></i>
+                <select class="form-select mb-3" id="project-template">
+                    <option selected disabled>Выберите шаблон</option>
+                    @foreach (var projectTemplate in EnumHelper<ProjectTemplate>.GetValuesWithDisplayNames())
+                    {
+                        <option value="@projectTemplate.Key">@projectTemplate.Value</option>
+                    }
+                </select>
+            </div>
+            <select class="form-select mb-3" id="chief-project-engineer">
+                <option selected disabled>Выберите ГИПа</option>
+                @foreach (var chiefProjectEngineer in EnumHelper<ChiefProjectEngineer>.GetValuesWithDisplayNames())
+                {
+                    <option value="@chiefProjectEngineer.Key">@chiefProjectEngineer.Value</option>
+                }
+            </select>
+            <select class="form-select mb-3" id="designer-engineer">
+                <option selected disabled>Выберите проектировщика</option>
+                @foreach (var designerEngineer in EnumHelper<DesignerEngineer>.GetValuesWithDisplayNames())
+                {
+                    <option value="@designerEngineer.Key">@designerEngineer.Value</option>
+                }
+            </select>
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-info-circle text-primary" style="font-size: 1.6rem; margin-right: 0.3rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="Если отключен, то в записке будет указано, что бытовой городок будет находится на территории Заказчика (Разделы 3 (посл. абзац), 13)."></i>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="true" id="household-town-included" checked>
+                    <label class="form-check-label user-select-none" for="household-town-included">
+                        Бытовой городок
+                    </label>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <button type="button" id="title-page-download-btn" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                        </span>
+                        Скачать титульник
+                        <i class="bi bi-download"></i>
+                    </button>
+                    <form asp-controller="TitlePages" asp-action="Download" method="get">
+                        <button type="submit" class="d-none" id="title-page-download-submit-btn"></button>
+                    </form>
+                </div>
+                <div class="col d-flex justify-content-center align-items-center">
+                    <button type="button" id="table-of-contents-download-btn" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                        </span>
+                        Скачать содержание
+                        <i class="bi bi-download"></i>
+                    </button>
+                    <form asp-controller="TableOfContents" asp-action="Download" method="get">
+                        <button type="submit" class="d-none" id="table-of-contents-download-submit-btn"></button>
+                    </form>
+                </div>
+                <div class="col">
+                    <div class="float-end">
+                        <button type="button" id="project-download-btn" class="btn btn-primary">
+                            <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                            </span>
+                            Скачать проект
+                            <i class="bi bi-download"></i>
+                        </button>
+                        <form asp-controller="Projects" asp-action="Download" method="get">
+                            <button type="submit" class="d-none" id="project-download-submit-btn"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <p>
+                Для добавления <b>своего шаблона</b>, <b>ГИПа</b> в шаблон, <b>себя</b> в шаблон, обратитесь в 37 отдел к Капитану С.С. Там же ждут предложения по поводу улучшения уже существующих шаблонов.
+            </p>
         </div>
     </div>
 </div>

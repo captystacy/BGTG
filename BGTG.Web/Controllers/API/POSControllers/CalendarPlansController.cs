@@ -7,6 +7,7 @@ using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.Web.Infrastructure.Services.Interfaces;
+using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels;
 using Calabonga.Microservices.Core.QueryParams;
 using Calabonga.OperationResults;

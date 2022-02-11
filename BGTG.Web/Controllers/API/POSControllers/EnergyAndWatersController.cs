@@ -6,6 +6,7 @@ using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.Web.Infrastructure.Services.Interfaces;
+using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.EnergyAndWaterViewModels;
 using Calabonga.Microservices.Core.QueryParams;
 using Calabonga.OperationResults;

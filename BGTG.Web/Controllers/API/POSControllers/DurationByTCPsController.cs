@@ -7,6 +7,7 @@ using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
 using BGTG.POS.DurationTools.DurationByTCPTool;
 using BGTG.Web.Infrastructure.Services.Interfaces;
+using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.DurationByTCPViewModels;
 using Calabonga.OperationResults;
 using Calabonga.UnitOfWork;
