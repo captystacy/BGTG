@@ -34,14 +34,14 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             };
             var windowsName = "BGTG\\kss";
 
-            var templatePath = @"wwwroot\AppData\Templates\TableOfContentsTemplates\ECP\Saiko.docx";
+            var templatePath = @"wwwroot\AppData\Templates\TableOfContentsTemplates\ECP\Saiko\Unknown.docx";
             var savePath = @"wwwroot\AppData\UserFiles\TableOfContentsFiles\BGTGkss.docx";
 
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
 
             _tableOfContentsService.Write(viewModel, windowsName);
 
-            _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
+            _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(3));
 
             _tableOfContentsWriterMock.Verify(x => x.Write(viewModel.ObjectCipher, templatePath, savePath), Times.Once);
         }

@@ -60,11 +60,10 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 ObjectCipher = "5.5-20.548",
                 ChiefProjectEngineer = ChiefProjectEngineer.Saiko,
                 ProjectTemplate = ProjectTemplate.ECP,
-                DesignerEngineer = DesignerEngineer.Kapitan,
                 HouseholdTownIncluded = true,
             };
 
-            var templatePath = @"wwwroot\AppData\Templates\ProjectTemplates\ECP\Saiko\Kapitan\Employees4\HouseholdTown+.docx";
+            var templatePath = @"wwwroot\AppData\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
             var savePath = @"wwwroot\AppData\UserFiles\ProjectFiles\BGTGkss.docx";
 
             var constructionObject = new ConstructionObjectEntity
@@ -117,7 +116,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             _calendarPlanServiceMock.Verify(x => x.GetSavePath(windowsName), Times.Once);
             _energyAndWaterServiceMock.Verify(x => x.GetSavePath(windowsName), Times.Once);
 
-            _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
+            _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(3));
 
             _ecpProjectWriterMock.Verify(
                 x => x.Write(viewModel.ObjectCipher, durationByLC, calendarPlan.ConstructionStartDate, durationByLCPath,

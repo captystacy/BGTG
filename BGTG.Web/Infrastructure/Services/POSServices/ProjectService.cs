@@ -100,7 +100,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             var calendarPlanPath = _calendarPlanService.GetSavePath(windowsName);
             var energyAndWaterPath = _energyAndWaterService.GetSavePath(windowsName);
 
-            var templatePath = GetTemplatePath(viewModel, durationByLC.NumberOfEmployees);
+            var templatePath = GetTemplatePath(viewModel, durationByLC.NumberOfEmployees, windowsName);
             var savePath = GetSavePath(windowsName);
 
             _ecpProjectWriter.Write(viewModel.ObjectCipher, durationByLC, calendarPlan.ConstructionStartDate, durationByLCPath, calendarPlanPath, energyAndWaterPath, templatePath, savePath);
@@ -109,13 +109,22 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return operationResult;
         }
 
-        private string GetTemplatePath(ProjectViewModel viewModel, int numberOfEmployees)
+        private string GetTemplatePath(ProjectViewModel viewModel, int numberOfEmployees, string windowsName)
         {
             var householdTownChar = viewModel.HouseholdTownIncluded ? '+' : '-';
             var templateFileName = $"HouseholdTown{householdTownChar}.docx";
-            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
+            var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
                 viewModel.ProjectTemplate.ToString(), viewModel.ChiefProjectEngineer.ToString(),
-                viewModel.DesignerEngineer.ToString(), $"Employees{numberOfEmployees}", templateFileName);
+                windowsName.RemoveBackslashes(), $"Employees{numberOfEmployees}", templateFileName);
+
+            if (!File.Exists(templatePath))
+            {
+                return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
+                    viewModel.ProjectTemplate.ToString(), viewModel.ChiefProjectEngineer.ToString(),
+                    AppData.Unknown, $"Employees{numberOfEmployees}", templateFileName);
+            }
+
+            return templatePath;
         }
 
         public string GetSavePath(string windowsName)

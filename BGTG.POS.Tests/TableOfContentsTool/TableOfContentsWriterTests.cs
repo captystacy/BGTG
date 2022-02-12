@@ -10,7 +10,7 @@ namespace BGTG.POS.Tests.TableOfContentsTool
         private TableOfContentsWriter _tableOfContentsWriter;
 
         private const string TableOfContentsFileName = "TableOfContents.docx";
-        private const string TableOfContentsTemplatesDirectory = @"..\..\..\TableOfContentsTool\TableOfContentsTemplates\ECP\";
+        private const string TableOfContentsTemplatesDirectory = @"..\..\..\TableOfContentsTool\TableOfContentsTemplates\ECP\Saiko";
 
         [SetUp]
         public void SetUp()
@@ -21,7 +21,7 @@ namespace BGTG.POS.Tests.TableOfContentsTool
         [Test]
         public void Write_ConstructionObject548()
         {
-            var templateFileName = "Saiko.docx";
+            var templateFileName = "BGTGkss.docx";
             var templatePath = Path.Combine(TableOfContentsTemplatesDirectory, templateFileName);
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), TableOfContentsFileName);
             var objectCipher = "5.5-20.548";

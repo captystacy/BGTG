@@ -12,7 +12,7 @@ namespace BGTG.POS.Tests.ProjectTool
         private ECPProjectWriter _ecpProjectWriter;
 
         private const string ECPProjectFileName = "Project.docx";
-        private const string ECPProjectTemplatesDirectory = @"..\..\..\ProjectTool\ProjectTemplates\ECP\Saiko\Kapitan\Employees4";
+        private const string ECPProjectTemplatesDirectory = @"..\..\..\ProjectTool\ProjectTemplates\ECP\Saiko\BGTGkss\Employees4";
 
         [SetUp]
         public void SetUp()

@@ -234,13 +234,6 @@
                     <option value="@chiefProjectEngineer.Key">@chiefProjectEngineer.Value</option>
                 }
             </select>
-            <select class="form-select mb-3" id="designer-engineer">
-                <option selected disabled>Выберите проектировщика</option>
-                @foreach (var designerEngineer in EnumHelper<DesignerEngineer>.GetValuesWithDisplayNames())
-                {
-                    <option value="@designerEngineer.Key">@designerEngineer.Value</option>
-                }
-            </select>
             <div class="d-flex align-items-center mb-3">
                 <i class="bi bi-info-circle text-primary" style="font-size: 1.6rem; margin-right: 0.3rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="Если отключен, то в записке будет указано, что бытовой городок будет находится на территории Заказчика (Разделы 3 (посл. абзац), 13)."></i>
                 <div class="form-check">
@@ -288,7 +281,7 @@
                 </div>
             </div>
             <p>
-                Для добавления <b>своего шаблона</b>, <b>ГИПа</b> в шаблон, <b>себя</b> в шаблон, обратитесь в 37 отдел к Капитану С.С. Там же ждут предложения по поводу улучшения уже существующих шаблонов.
+                Для добавления <b>своего шаблона</b>, <b>ГИПа</b> в шаблон, <b>себя (вашу фамилию, фамилии вашего начальника и нормоконтролера, подписи)</b> в шаблон, обратитесь в 37 отдел к Капитану С.С. Там же ждут предложения по поводу улучшения уже существующих шаблонов.
             </p>
         </div>
     </div>

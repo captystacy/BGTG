@@ -12,7 +12,6 @@ namespace BGTG.Web.ViewModels.POSViewModels
         public string ObjectCipher { get; set; }
         public ProjectTemplate ProjectTemplate { get; set; }
         public ChiefProjectEngineer ChiefProjectEngineer { get; set; }
-        public DesignerEngineer DesignerEngineer { get; set; }
         public bool HouseholdTownIncluded { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

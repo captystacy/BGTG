@@ -13,14 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Remove="AppData\Templates\ProjectTemplates\ECP\Saiko\Kapitan\Employees4\HouseholdTown+.docx" />
-	  <Content Remove="AppData\Templates\ProjectTemplates\ECP\Saiko\Kapitan\Employees4\HouseholdTown-.docx" />
-	  <Content Remove="AppData\Templates\ProjectTemplates\ECP\Saiko\Kapitan\Employees8\HouseholdTown+.docx" />
-	  <Content Remove="AppData\Templates\ProjectTemplates\ECP\Saiko\Kapitan\Employees8\HouseholdTown-.docx" />
-	  <Content Remove="AppData\Templates\TableOfContentsTemplates\ECP\Saiko.docx" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="10.0.0" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
 		<PackageReference Include="Calabonga.AspNetCore.Controllers" Version="1.1.1" />
@@ -57,11 +49,6 @@
 	  <ProjectReference Include="..\BGTG.Data\BGTG.Data.csproj" />
 	  <ProjectReference Include="..\BGTG.Entities\BGTG.Entities.csproj" />
 	  <ProjectReference Include="..\BGTG.POS\BGTG.POS.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="AppData\UserFiles\TableOfContentsFiles\" />
-	  <Folder Include="AppData\UserFiles\TitlePageFiles\" />
 	</ItemGroup>
 
 </Project>
