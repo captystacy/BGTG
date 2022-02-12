@@ -38,7 +38,7 @@ namespace BGTG.POS.CalendarPlanTool
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Date, InvestmentVolume, VolumeCAIW, PercentPart, CreationIndex);
+            return HashCode.Combine(Date, InvestmentVolume, VolumeCAIW, CreationIndex);
         }
 
         public static bool operator ==(ConstructionMonth left, ConstructionMonth right)

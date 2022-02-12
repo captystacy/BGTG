@@ -4,6 +4,6 @@ namespace BGTG.Web.Infrastructure.Services.POSServices.Interfaces
 {
     public interface ITableOfContentsService : ISavable
     {
-        void Write(TableOfContentsViewModel viewModel, string windowsName);
+        void Write(TableOfContentsViewModel viewModel, string identityName);
     }
 }

@@ -22,10 +22,10 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public void Write(TitlePageViewModel viewModel, string windowsName)
+        public void Write(TitlePageViewModel viewModel, string identityName)
         {
             var templatePath = GetTemplatePath(viewModel.ChiefProjectEngineer);
-            var savePath = GetSavePath(windowsName);
+            var savePath = GetSavePath(identityName);
 
             _titlePageWriter.Write(viewModel.ObjectCipher, viewModel.ObjectName, templatePath, savePath);
         }
@@ -35,9 +35,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"{chiefProjectEngineer}.docx");
         }
 
-        public string GetSavePath(string windowsName)
+        public string GetSavePath(string identityName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{identityName.RemoveBackslashes()}.docx");
         }
     }
 }

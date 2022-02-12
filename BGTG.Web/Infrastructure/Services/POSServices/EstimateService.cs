@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using BGTG.POS.EstimateTool;
 using BGTG.POS.EstimateTool.Interfaces;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 

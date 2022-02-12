@@ -31,14 +31,14 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 ObjectCipher = "5.5-20.548",
                 ObjectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района"
             };
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
             var templatePath = @"wwwroot\AppData\Templates\TitlePageTemplates\Saiko.docx";
             var savePath = @"wwwroot\AppData\UserFiles\TitlePageFiles\BGTGkss.docx";
 
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
 
-            _titlePageService.Write(viewModel, windowsName);
+            _titlePageService.Write(viewModel, identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
 
@@ -49,9 +49,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _titlePageService.GetSavePath(windowsName);
+            var savePath = _titlePageService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\TitlePageFiles\BGTGkss.docx", savePath);

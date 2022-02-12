@@ -28,7 +28,7 @@ namespace BGTG.POS.Tests.CalendarPlanTool
             var constructionStartDate = EstimateSource.Estimate548VAT.ConstructionStartDate;
             var preparatoryEstimateWorks = EstimateSource.Estimate548VAT.PreparatoryEstimateWorks.ToList();
             var middleCalendarWorks = MiddleCalendarWorksSource.PreparatoryCalendarWorks548.ToList();
-            var exepectedCalendarWorks = CalendarPlanSource.CalendarPlan548.PreparatoryCalendarWorks.ToList();
+            var expectedCalendarWorks = CalendarPlanSource.CalendarPlan548.PreparatoryCalendarWorks.ToList();
 
             for (int i = 0; i < preparatoryEstimateWorks.Count; i++)
             {
@@ -40,26 +40,26 @@ namespace BGTG.POS.Tests.CalendarPlanTool
                 .Setup(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.PreparatoryWorkName, calendarWorksChapter1, CalendarPlanInfo.PreparatoryWorkChapter, constructionStartDate, preparatoryPercentages))
                 .Returns(calendarWorksChapter1[0]);
 
-            var temporaryBuildingsWork = exepectedCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.PreparatoryTemporaryBuildingsWorkName);
+            var temporaryBuildingsWork = expectedCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.PreparatoryTemporaryBuildingsWorkName);
             var calendarWorksChapter8 = middleCalendarWorks.FindAll(x => x.EstimateChapter == 8);
             _calendarWorkCreatorMock
                 .Setup(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.PreparatoryTemporaryBuildingsWorkName, calendarWorksChapter8, CalendarPlanInfo.PreparatoryTemporaryBuildingsWorkChapter, constructionStartDate, preparatoryPercentages))
                 .Returns(temporaryBuildingsWork);
 
-            var totalWork = exepectedCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName);
+            var totalWork = expectedCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName);
             _calendarWorkCreatorMock
                 .Setup(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.TotalWorkName, new List<CalendarWork> { temporaryBuildingsWork }, CalendarPlanInfo.PreparatoryTotalWorkChapter, constructionStartDate, preparatoryPercentages))
                 .Returns(totalWork);
             var actualCalendarWorks = _calendarWorksProvider.CreatePreparatoryCalendarWorks(preparatoryEstimateWorks, constructionStartDate);
 
-            Assert.That(actualCalendarWorks, Is.EquivalentTo(exepectedCalendarWorks));
+            Assert.That(actualCalendarWorks, Is.EquivalentTo(expectedCalendarWorks));
             for (int i = 0; i < preparatoryEstimateWorks.Count; i++)
             {
                 _calendarWorkCreatorMock.Verify(x => x.Create(preparatoryEstimateWorks[i], constructionStartDate), Times.Once);
             }
             _calendarWorkCreatorMock.Verify(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.PreparatoryWorkName, calendarWorksChapter1, CalendarPlanInfo.PreparatoryWorkChapter, constructionStartDate, preparatoryPercentages), Times.Once);
             _calendarWorkCreatorMock.Verify(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.PreparatoryTemporaryBuildingsWorkName, calendarWorksChapter8, CalendarPlanInfo.PreparatoryTemporaryBuildingsWorkChapter, constructionStartDate, preparatoryPercentages), Times.Once);
-            _calendarWorkCreatorMock.Verify(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.TotalWorkName, exepectedCalendarWorks, CalendarPlanInfo.PreparatoryTotalWorkChapter, constructionStartDate, preparatoryPercentages), Times.Once);
+            _calendarWorkCreatorMock.Verify(x => x.CreateAnyPreparatoryWork(CalendarPlanInfo.TotalWorkName, expectedCalendarWorks, CalendarPlanInfo.PreparatoryTotalWorkChapter, constructionStartDate, preparatoryPercentages), Times.Once);
         }
 
         [Test]
@@ -80,17 +80,17 @@ namespace BGTG.POS.Tests.CalendarPlanTool
             }
 
             var overallPreparatoryWork = new CalendarWork(CalendarPlanInfo.MainOverallPreparatoryWorkName, preparatoryTotalWork.TotalCost, preparatoryTotalWork.TotalCostIncludingCAIW, preparatoryTotalWork.ConstructionMonths, CalendarPlanInfo.MainOverallPreparatoryTotalWorkChapter);
-            var electrochemichalWork = middleCalendarWorks.Single(x => x.WorkName == "Электрохимическая защита");
+            var electroChemichalWork = middleCalendarWorks.Single(x => x.WorkName == "Электрохимическая защита");
             var landscapingWork = middleCalendarWorks.Single(x => x.WorkName == "Благоустройство территории");
 
             var otherExpensesWork = expectedCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.MainOtherExpensesWorkName);
             _calendarWorkCreatorMock
-                .Setup(x => x.CreateOtherExpensesWork(new List<CalendarWork> { overallPreparatoryWork, electrochemichalWork, landscapingWork }, initialTotalWork, constructionStartDate, otherExpensesPercentages))
+                .Setup(x => x.CreateOtherExpensesWork(new List<CalendarWork> { overallPreparatoryWork, electroChemichalWork, landscapingWork }, initialTotalWork, constructionStartDate, otherExpensesPercentages))
                 .Returns(otherExpensesWork);
 
             var mainTotalWork = expectedCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName);
             _calendarWorkCreatorMock
-                .Setup(x => x.CreateMainTotalWork(new List<CalendarWork> { overallPreparatoryWork, electrochemichalWork, landscapingWork, otherExpensesWork }, initialTotalWork, constructionStartDate, constructionDurationCeiling))
+                .Setup(x => x.CreateMainTotalWork(new List<CalendarWork> { overallPreparatoryWork, electroChemichalWork, landscapingWork, otherExpensesWork }, initialTotalWork, constructionStartDate, constructionDurationCeiling))
                 .Returns(mainTotalWork);
 
             var actualCalendarWorks = _calendarWorksProvider.CreateMainCalendarWorks(estimateWorks, preparatoryTotalWork, constructionStartDate, constructionDurationCeiling, otherExpensesPercentages, TotalWorkChapter.TotalWork1To12Chapter);

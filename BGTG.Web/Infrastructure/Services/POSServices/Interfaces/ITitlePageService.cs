@@ -4,6 +4,6 @@ namespace BGTG.Web.Infrastructure.Services.POSServices.Interfaces
 {
     public interface ITitlePageService : ISavable
     {
-        void Write(TitlePageViewModel viewModel, string windowsName);
+        void Write(TitlePageViewModel viewModel, string identityName);
     }
 }

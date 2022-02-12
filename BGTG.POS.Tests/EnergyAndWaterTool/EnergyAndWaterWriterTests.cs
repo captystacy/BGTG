@@ -26,7 +26,7 @@ namespace BGTG.POS.Tests.EnergyAndWaterTool
         }
 
         [Test]
-        public void Write_EneryAndWater_SaveCorrectEnergyAndWater()
+        public void Write_EnergyAndWater_SaveCorrectEnergyAndWater()
         {
             var expectedEnergyAndWater = CreateDefaultEnergyAndWater();
             var templatePath = Path.Combine(EnergyAndWaterTemplatesDirectory, EnergyAndWaterTemplateFileName);
@@ -34,24 +34,22 @@ namespace BGTG.POS.Tests.EnergyAndWaterTool
 
             _energyAndWaterWriter.Write(expectedEnergyAndWater, templatePath, savePath);
 
-            using (var document = DocX.Load(savePath))
-            {
-                var energyAndWaterRow = document.Tables[0].Rows[2];
-                var actualEnergyAndWater = ParseEnergyAndWater(energyAndWaterRow);
+            using var document = DocX.Load(savePath);
+            var energyAndWaterRow = document.Tables[0].Rows[2];
+            var actualEnergyAndWater = ParseEnergyAndWater(energyAndWaterRow);
 
-                Assert.AreEqual(expectedEnergyAndWater, actualEnergyAndWater);
-            }
+            Assert.AreEqual(expectedEnergyAndWater, actualEnergyAndWater);
         }
 
         private EnergyAndWater ParseEnergyAndWater(Row energyAndWaterRow)
         {
             var constructionYear = int.Parse(energyAndWaterRow.Paragraphs[0].Text);
-            var vonumeCAIW = decimal.Parse(energyAndWaterRow.Paragraphs[1].Text);
+            var volumeCAIW = decimal.Parse(energyAndWaterRow.Paragraphs[1].Text);
             var energy = decimal.Parse(energyAndWaterRow.Paragraphs[2].Text);
             var water = decimal.Parse(energyAndWaterRow.Paragraphs[3].Text);
             var compressedAir = decimal.Parse(energyAndWaterRow.Paragraphs[4].Text);
             var oxygen = decimal.Parse(energyAndWaterRow.Paragraphs[5].Text);
-            return new EnergyAndWater(constructionYear, vonumeCAIW, energy, water, compressedAir, oxygen);
+            return new EnergyAndWater(constructionYear, volumeCAIW, energy, water, compressedAir, oxygen);
         }
     }
 }

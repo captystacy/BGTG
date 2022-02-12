@@ -38,34 +38,32 @@ namespace BGTG.POS.Tests.CalendarPlanTool
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), "CalendarPlan548VAT.docx");
             _calendarPlanWriter.Write(expectedCalendarPlan, preparatoryTemplatePath, mainTemplatePath, savePath);
 
-            using (var document = DocX.Load(savePath))
-            {
-                var preparatoryCalendarPlanTable = document.Tables[0];
-                var mainCalendarPlanTable = document.Tables[1];
+            using var document = DocX.Load(savePath);
+            var preparatoryCalendarPlanTable = document.Tables[0];
+            var mainCalendarPlanTable = document.Tables[1];
 
-                var actualCalendarPlan = ParseCalendarPlan(preparatoryCalendarPlanTable, mainCalendarPlanTable);
+            var actualCalendarPlan = ParseCalendarPlan(preparatoryCalendarPlanTable, mainCalendarPlanTable);
 
-                Assert.That(actualCalendarPlan.PreparatoryCalendarWorks, Is.EquivalentTo(expectedCalendarPlan.PreparatoryCalendarWorks));
-                Assert.That(actualCalendarPlan.MainCalendarWorks, Is.EquivalentTo(expectedCalendarPlan.MainCalendarWorks));
-                Assert.AreEqual(expectedCalendarPlan, actualCalendarPlan);
-            }
+            Assert.That(actualCalendarPlan.PreparatoryCalendarWorks, Is.EquivalentTo(expectedCalendarPlan.PreparatoryCalendarWorks));
+            Assert.That(actualCalendarPlan.MainCalendarWorks, Is.EquivalentTo(expectedCalendarPlan.MainCalendarWorks));
+            Assert.AreEqual(expectedCalendarPlan, actualCalendarPlan);
         }
 
         private CalendarPlan ParseCalendarPlan(Table preparatoryCalendarPlanTable, Table mainCalendarPlanTable)
         {
-            var preparatoryDates = ParseDates(preparatoryCalendarPlanTable.Rows[1]);
-            var mainDates = ParseDates(mainCalendarPlanTable.Rows[1]);
+            var preparatoryDates = ParseDates(preparatoryCalendarPlanTable.Rows[1]).ToList();
+            var mainDates = ParseDates(mainCalendarPlanTable.Rows[1]).ToList();
 
-            var constructionStartDate = preparatoryDates.First() == mainDates.First()
-                ? preparatoryDates.First()
+            var constructionStartDate = preparatoryDates[0] == mainDates[0]
+                ? preparatoryDates[0]
                 : default;
 
             var preparatoryCalendarWorks =
                 ParseCalendarWorks(preparatoryCalendarPlanTable, constructionStartDate);
 
-            var mainCalendarWorks = ParseCalendarWorks(mainCalendarPlanTable, constructionStartDate);
+            var mainCalendarWorks = ParseCalendarWorks(mainCalendarPlanTable, constructionStartDate).ToList();
 
-            var constructionDurationCeiling = mainCalendarWorks.SingleOrDefault(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.Count();
+            var constructionDurationCeiling = mainCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.Count();
 
             return new CalendarPlan(preparatoryCalendarWorks,
                 mainCalendarWorks, constructionStartDate, CalendarPlanSource.CalendarPlan548.ConstructionDuration, constructionDurationCeiling);

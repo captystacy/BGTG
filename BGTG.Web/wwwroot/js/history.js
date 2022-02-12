@@ -6,9 +6,9 @@
         let historyItem = $(this).parents('.history-item');
         let calendarPlanId = historyItem.find('#calendar-plan-id').val();
 
-        $.post(`api/calendar-plans/write-by-id/${calendarPlanId}`, function (operationResult) {
-            if (!operationResult.ok) {
-                appendAlerts(operationResult);
+        $.post(`api/calendar-plans/write-by-id/${calendarPlanId}`, function (operation) {
+            if (!operation.ok) {
+                appendAlerts(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -27,9 +27,9 @@
         $.ajax({
             url: `api/calendar-plans/delete-item/${calendarPlanId}`,
             type: 'DELETE',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -47,9 +47,9 @@
         let historyItem = $(this).parents('.history-item');
         let durationByLCId = historyItem.find('#duration-by-lc-id').val();
 
-        $.post(`api/duration-by-lcs/write-by-id/${durationByLCId}`, function (operationResult) {
-            if (!operationResult.ok) {
-                appendAlerts(operationResult);
+        $.post(`api/duration-by-lcs/write-by-id/${durationByLCId}`, function (operation) {
+            if (!operation.ok) {
+                appendAlerts(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -68,9 +68,9 @@
         $.ajax({
             url: `api/duration-by-lcs/delete-item/${durationByLCId}`,
             type: 'DELETE',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -88,9 +88,9 @@
         let historyItem = $(this).parents('.history-item');
         let durationByTCPId = historyItem.find('#duration-by-tcp-id').val();
 
-        $.post(`api/duration-by-tcps/write-by-id/${durationByTCPId}`, function (operationResult) {
-            if (!operationResult.ok) {
-                appendAlerts(operationResult);
+        $.post(`api/duration-by-tcps/write-by-id/${durationByTCPId}`, function (operation) {
+            if (!operation.ok) {
+                appendAlerts(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -109,9 +109,9 @@
         $.ajax({
             url: `api/duration-by-tcps/delete-item/${durationByTCPId}`,
             type: 'DELETE',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -129,9 +129,9 @@
         let historyItem = $(this).parents('.history-item');
         let energyAndWaterId = historyItem.find('#energy-and-water-id').val();
 
-        $.post(`api/energy-and-waters/write-by-id/${energyAndWaterId}`, function (operationResult) {
-            if (!operationResult.ok) {
-                appendAlerts(operationResult);
+        $.post(`api/energy-and-waters/write-by-id/${energyAndWaterId}`, function (operation) {
+            if (!operation.ok) {
+                appendAlerts(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -150,9 +150,9 @@
         $.ajax({
             url: `api/energy-and-waters/delete-item/${energyAndWaterId}`,
             type: 'DELETE',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }

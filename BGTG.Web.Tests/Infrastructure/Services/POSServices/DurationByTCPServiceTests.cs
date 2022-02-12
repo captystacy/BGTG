@@ -31,7 +31,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 DurationCalculationType.Interpolation, 0, 0, 0, 0, 0, 'A', 0);
 
             var durationByTCPCreateViewModel = new DurationByTCPCreateViewModel();
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
             var templatePath = @"wwwroot\AppData\Templates\DurationByTCPTemplates\Interpolation.docx";
             var savePath = @"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx";
@@ -42,7 +42,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 durationByTCPCreateViewModel.PipelineDiameter, durationByTCPCreateViewModel.PipelineLength, durationByTCPCreateViewModel.AppendixKey,
                 durationByTCPCreateViewModel.PipelineCategoryName)).Returns(durationByTCP);
 
-            var result = _durationByTCPService.Write(durationByTCPCreateViewModel, windowsName);
+            var result = _durationByTCPService.Write(durationByTCPCreateViewModel, identityName);
 
             Assert.AreEqual(durationByTCP, result);
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
@@ -56,9 +56,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _durationByTCPService.GetSavePath(windowsName);
+            var savePath = _durationByTCPService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx", savePath);

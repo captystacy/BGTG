@@ -48,7 +48,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 WorkingDayDuration = 8,
                 TechnologicalLaborCosts = 110,
             };
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, 100);
             _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
             var durationByLC = new DurationByLC(0, 0, 0, durationByLCCreateViewModel.TechnologicalLaborCosts,
@@ -66,7 +66,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
 
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
 
-            var result = _durationByLCService.Write(durationByLCCreateViewModel, windowsName);
+            var result = _durationByLCService.Write(durationByLCCreateViewModel, identityName);
 
             Assert.AreEqual(durationByLC, result);
             _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
@@ -85,9 +85,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _durationByLCService.GetSavePath(windowsName);
+            var savePath = _durationByLCService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByLCFiles\BGTGkss.docx", savePath);

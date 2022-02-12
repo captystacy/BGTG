@@ -20,22 +20,22 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]")]
         public ActionResult<OperationResult<string>> Write([FromForm] TableOfContentsViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             _tableOfContentsService.Write(viewModel, User.Identity.Name);
 
-            operationResult.Result = string.Empty;
+            operation.Result = string.Empty;
 
-            return OperationResultBeforeReturn(operationResult);
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpGet("[action]")]

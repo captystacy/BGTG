@@ -6,7 +6,6 @@ using BGTG.Core.Exceptions;
 using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
 using BGTG.POS.DurationTools.DurationByTCPTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.DurationByTCPViewModels;
 using Calabonga.OperationResults;
@@ -45,22 +44,22 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]")]
         public async Task<ActionResult<OperationResult<string>>> Write([FromForm] DurationByTCPCreateViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var durationByTCP = _durationByTCPService.Write(viewModel, User.Identity.Name);
 
             if (durationByTCP == null)
             {
-                operationResult.AddError(AppData.DurationByTCPBadParametersValidationMessage);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(AppData.DurationByTCPBadParametersValidationMessage);
+                return OperationResultBeforeReturn(operation);
             }
 
             var constructionObject = await _constructionObjectRepository.GetFirstOrDefaultAsync(x => x.Cipher == viewModel.ObjectCipher, null, x => x
@@ -87,8 +86,8 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
             if (!UnitOfWork.LastSaveChangesResult.IsOk)
             {
-                operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                return OperationResultBeforeReturn(operation);
             }
 
             var now = new DateTime(DateTime.Now.Ticks);
@@ -121,26 +120,26 @@ namespace BGTG.Web.Controllers.API.POSControllers
                         break;
                     }
                 default:
-                    operationResult.AddError(AppData.DurationByTCPUnknown);
-                    return OperationResultBeforeReturn(operationResult);
+                    operation.AddError(AppData.DurationByTCPUnknown);
+                    return OperationResultBeforeReturn(operation);
             }
 
             if (!UnitOfWork.LastSaveChangesResult.IsOk)
             {
-                operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpPost("[action]/{id:guid}")]
         public async Task<ActionResult<OperationResult<string>>> WriteById(Guid id)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
-            operationResult.Result = string.Empty;
+            operation.Result = string.Empty;
 
             var interpolationDurationByTCPEntity = await _interpolationDurationByTCPRepository.GetFirstOrDefaultAsync(x => x.Id == id, null, x => x.Include(x => x.CalculationPipelineStandards));
             if (interpolationDurationByTCPEntity != null)
@@ -149,7 +148,7 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
                 _durationByTCPService.Write(interpolationDurationByTCP, User.Identity.Name);
 
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var extrapolationDurationByTCPEntity = await _extrapolationDurationByTCPRepository.GetFirstOrDefaultAsync(x => x.Id == id, null, x => x.Include(x => x.CalculationPipelineStandards));
@@ -159,7 +158,7 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
                 _durationByTCPService.Write(extrapolationDurationByTCP, User.Identity.Name);
 
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var stepwiseExtrapolationDurationByTCPEntity = await _stepwiseExtrapolationDurationByTCPRepository.GetFirstOrDefaultAsync(x => x.Id == id, null,
@@ -170,11 +169,11 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
                 _durationByTCPService.Write(stepwiseExtrapolationDurationByTCP, User.Identity.Name);
 
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.AddError(AppData.BadDurationByTCPId);
-            return OperationResultBeforeReturn(operationResult);
+            operation.AddError(AppData.BadDurationByTCPId);
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpGet("[action]")]
@@ -193,9 +192,9 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpDelete("[action]/{id:guid}")]
         public async Task<ActionResult<OperationResult<string>>> DeleteItem(Guid id)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
-            operationResult.Result = string.Empty;
+            operation.Result = string.Empty;
 
             var interpolationDurationByTCPEntity = await _interpolationDurationByTCPRepository.FindAsync(id);
             if (interpolationDurationByTCPEntity != null)
@@ -206,11 +205,11 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
                 if (!UnitOfWork.LastSaveChangesResult.IsOk)
                 {
-                    operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                    return OperationResultBeforeReturn(operationResult);
+                    operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                    return OperationResultBeforeReturn(operation);
                 }
 
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var extrapolationDurationByTCPEntity = await _extrapolationDurationByTCPRepository.FindAsync(id);
@@ -222,11 +221,11 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
                 if (!UnitOfWork.LastSaveChangesResult.IsOk)
                 {
-                    operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                    return OperationResultBeforeReturn(operationResult);
+                    operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                    return OperationResultBeforeReturn(operation);
                 }
 
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var stepwiseExtrapolationDurationByTCPEntity = await _stepwiseExtrapolationDurationByTCPRepository.FindAsync(id);
@@ -238,15 +237,15 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
                 if (!UnitOfWork.LastSaveChangesResult.IsOk)
                 {
-                    operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                    return OperationResultBeforeReturn(operationResult);
+                    operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                    return OperationResultBeforeReturn(operation);
                 }
 
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.AddError(new MicroserviceNotFoundException());
-            return OperationResultBeforeReturn(operationResult);
+            operation.AddError(new MicroserviceNotFoundException());
+            return OperationResultBeforeReturn(operation);
         }
     }
 }

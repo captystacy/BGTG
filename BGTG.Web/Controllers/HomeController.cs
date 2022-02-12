@@ -18,10 +18,10 @@ namespace BGTG.Web.Controllers
 
         public IActionResult Index(PagedListQueryParams queryParams)
         {
-            var operationResult = _constructionObjectsController.GetPaged(queryParams).Value;
+            var operation = _constructionObjectsController.GetPaged(queryParams).Value;
 
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
-            return View(operationResult);
+            return View(operation);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

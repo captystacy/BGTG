@@ -119,9 +119,9 @@
 
         $.post('api/duration-by-tcps/write',
             durationByTCP,
-            function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     durationByTCPSpinner.removeClass(dInlineBlockClass);
                     return;
                 }

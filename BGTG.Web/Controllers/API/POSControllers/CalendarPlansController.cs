@@ -6,7 +6,6 @@ using BGTG.Core;
 using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using BGTG.POS.CalendarPlanTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels;
 using Calabonga.Microservices.Core.QueryParams;
@@ -41,51 +40,51 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]")]
         public ActionResult<OperationResult<CalendarPlanCreateViewModel>> GetCalendarPlanCreateViewmodel([FromForm] CalendarPlanPreCreateViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<CalendarPlanCreateViewModel>();
+            var operation = OperationResult.CreateResult<CalendarPlanCreateViewModel>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.Result = _calendarPlanService.GetCalendarPlanCreateViewModel(viewModel);
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = _calendarPlanService.GetCalendarPlanCreateViewModel(viewModel);
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpPost("[action]")]
         public ActionResult<OperationResult<IEnumerable<decimal>>> GetTotalPercentages([FromForm] CalendarPlanCreateViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<IEnumerable<decimal>>();
+            var operation = OperationResult.CreateResult<IEnumerable<decimal>>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.Result = _calendarPlanService.GetTotalPercentages(viewModel);
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = _calendarPlanService.GetTotalPercentages(viewModel);
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<OperationResult<string>>> Write([FromForm] CalendarPlanCreateViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var calendarPlan = _calendarPlanService.Write(viewModel, User.Identity.Name);
@@ -97,12 +96,12 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
             if (!UnitOfWork.LastSaveChangesResult.IsOk)
             {
-                operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpGet("[action]")]
@@ -116,7 +115,7 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]/{id:guid}")]
         public async Task<ActionResult<OperationResult<string>>> WriteById(Guid id)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             var calendarPlanEntity = await Repository.GetFirstOrDefaultAsync(x => x.Id == id, null,
                 x => x
@@ -125,16 +124,16 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
             if (calendarPlanEntity == null)
             {
-                operationResult.AddError(AppData.BadCalendarPlanId);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(AppData.BadCalendarPlanId);
+                return OperationResultBeforeReturn(operation);
             }
 
             var calendarPlan = CurrentMapper.Map<CalendarPlan>(calendarPlanEntity);
 
             _calendarPlanService.Write(calendarPlan, User.Identity.Name);
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
     }
 }

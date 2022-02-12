@@ -88,9 +88,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _calendarPlanService.GetSavePath(windowsName);
+            var savePath = _calendarPlanService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\CalendarPlanFiles\BGTGkss.docx", savePath);

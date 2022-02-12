@@ -6,14 +6,14 @@ namespace BGTG.POS.Tests.EstimateTool
 {
     public class EstimateReaderTests
     {
-        private EstimateReader _estmateReader;
+        private EstimateReader _estimateReader;
 
-        private const string _estmateSourceFilesDirectory = @"..\..\..\EstimateTool\EstimateSourceFiles";
+        private const string EstimateSourceFilesDirectory = @"..\..\..\EstimateTool\EstimateSourceFiles";
 
         [SetUp]
         public void SetUp()
         {
-            _estmateReader = new EstimateReader();
+            _estimateReader = new EstimateReader();
         }
 
         [Test]
@@ -21,12 +21,12 @@ namespace BGTG.POS.Tests.EstimateTool
         {
             var expectedEstimate = EstimateSource.Estimate548VAT;
 
-            var estimatePath = Path.Combine(_estmateSourceFilesDirectory, "5.5-20.548VAT.xlsx");
+            var estimatePath = Path.Combine(EstimateSourceFilesDirectory, "5.5-20.548VAT.xlsx");
 
-            var actualEstimate = default(Estimate);
+            Estimate actualEstimate;
             using (var fileStream = new FileStream(estimatePath, FileMode.Open))
             {
-                actualEstimate = _estmateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
+                actualEstimate = _estimateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
             }
 
             Assert.AreEqual(expectedEstimate, actualEstimate);
@@ -37,12 +37,12 @@ namespace BGTG.POS.Tests.EstimateTool
         {
             var expectedEstimate = EstimateSource.Estimate158VAT;
 
-            var estimatePath = Path.Combine(_estmateSourceFilesDirectory, "5.4-18.158VAT.xlsx");
+            var estimatePath = Path.Combine(EstimateSourceFilesDirectory, "5.4-18.158VAT.xlsx");
 
-            var actualEstimate = default(Estimate);
+            Estimate actualEstimate;
             using (var fileStream = new FileStream(estimatePath, FileMode.Open))
             {
-                actualEstimate = _estmateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
+                actualEstimate = _estimateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
             }
 
             Assert.AreEqual(expectedEstimate, actualEstimate);

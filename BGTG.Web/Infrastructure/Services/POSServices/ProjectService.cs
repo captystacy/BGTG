@@ -40,9 +40,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<OperationResult<string>> Write(ProjectViewModel viewModel, string windowsName)
+        public async Task<OperationResult<string>> Write(ProjectViewModel viewModel, string identityName)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             var constructionObject = await _constructionObjectRepository.GetFirstOrDefaultAsync(x => x.Cipher == viewModel.ObjectCipher, null,
                 x => x.Include(x => x.POS).ThenInclude(x => x.DurationByLC)
@@ -52,70 +52,69 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
             if (constructionObject == null)
             {
-                operationResult.AddError(AppData.ConstructionObjectIsNull);
-                return operationResult;
+                operation.AddError(AppData.ConstructionObjectIsNull);
+                return operation;
             }
 
             if (constructionObject.POS == null)
             {
-                operationResult.AddError(AppData.POSIsNull);
-                return operationResult;
+                operation.AddError(AppData.POSIsNull);
+                return operation;
             }
 
             if (constructionObject.POS.DurationByLC == null)
             {
-                operationResult.AddError(AppData.DurationByLCNotCalculated);
-                return operationResult;
+                operation.AddError(AppData.DurationByLCNotCalculated);
+                return operation;
             }
 
             if (constructionObject.POS.DurationByLC.NumberOfEmployees != 4 &&
                 constructionObject.POS.DurationByLC.NumberOfEmployees != 8)
             {
-                operationResult.AddError(AppData.ECPProjectOnly4Or8Employees);
-                return operationResult;
+                operation.AddError(AppData.ECPProjectOnly4Or8Employees);
+                return operation;
             }
 
             if (constructionObject.POS.CalendarPlan == null)
             {
-                operationResult.AddError(AppData.CalendarPlanNotCalculated);
-                return operationResult;
+                operation.AddError(AppData.CalendarPlanNotCalculated);
+                return operation;
             }
 
             if (constructionObject.POS.EnergyAndWater == null)
             {
-                operationResult.AddError(AppData.EnergyAndWaterNotCalculated);
-                return operationResult;
+                operation.AddError(AppData.EnergyAndWaterNotCalculated);
+                return operation;
             }
 
             var durationByLC = _mapper.Map<DurationByLC>(constructionObject.POS.DurationByLC);
-            _durationByLCService.Write(durationByLC, windowsName);
+            _durationByLCService.Write(durationByLC, identityName);
 
             var calendarPlan = _mapper.Map<CalendarPlan>(constructionObject.POS.CalendarPlan);
-            _calendarPlanService.Write(calendarPlan, windowsName);
+            _calendarPlanService.Write(calendarPlan, identityName);
 
             var energyAndWater = _mapper.Map<EnergyAndWater>(constructionObject.POS.EnergyAndWater);
-            _energyAndWaterService.Write(energyAndWater, windowsName);
+            _energyAndWaterService.Write(energyAndWater, identityName);
 
-            var durationByLCPath = _durationByLCService.GetSavePath(windowsName);
-            var calendarPlanPath = _calendarPlanService.GetSavePath(windowsName);
-            var energyAndWaterPath = _energyAndWaterService.GetSavePath(windowsName);
+            var durationByLCPath = _durationByLCService.GetSavePath(identityName);
+            var calendarPlanPath = _calendarPlanService.GetSavePath(identityName);
+            var energyAndWaterPath = _energyAndWaterService.GetSavePath(identityName);
 
-            var templatePath = GetTemplatePath(viewModel, durationByLC.NumberOfEmployees, windowsName);
-            var savePath = GetSavePath(windowsName);
+            var templatePath = GetTemplatePath(viewModel, durationByLC.NumberOfEmployees, identityName);
+            var savePath = GetSavePath(identityName);
 
             _ecpProjectWriter.Write(viewModel.ObjectCipher, durationByLC, calendarPlan.ConstructionStartDate, durationByLCPath, calendarPlanPath, energyAndWaterPath, templatePath, savePath);
 
-            operationResult.Result = string.Empty;
-            return operationResult;
+            operation.Result = string.Empty;
+            return operation;
         }
 
-        private string GetTemplatePath(ProjectViewModel viewModel, int numberOfEmployees, string windowsName)
+        private string GetTemplatePath(ProjectViewModel viewModel, int numberOfEmployees, string identityName)
         {
-            var householdTownChar = viewModel.HouseholdTownIncluded ? '+' : '-';
-            var templateFileName = $"HouseholdTown{householdTownChar}.docx";
+            var templateFileName = $"HouseholdTown{TemplateHelper.GetPlusOrMinus(viewModel.HouseholdTownIncluded)}.docx";
             var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
                 viewModel.ProjectTemplate.ToString(), viewModel.ChiefProjectEngineer.ToString(),
-                windowsName.RemoveBackslashes(), $"Employees{numberOfEmployees}", templateFileName);
+                identityName.RemoveBackslashes(), $"Employees{numberOfEmployees}", templateFileName);
 
             if (!File.Exists(templatePath))
             {
@@ -127,9 +126,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return templatePath;
         }
 
-        public string GetSavePath(string windowsName)
+        public string GetSavePath(string identityName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{identityName.RemoveBackslashes()}.docx");
         }
     }
 }

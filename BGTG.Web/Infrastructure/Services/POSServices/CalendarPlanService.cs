@@ -5,7 +5,6 @@ using AutoMapper;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.CalendarPlanTool.Interfaces;
 using BGTG.Web.Infrastructure.Helpers;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels;
 using BGTG.Web.ViewModels.POSViewModels.CalendarWorkViewModels;
@@ -60,19 +59,19 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return calendarPlan.MainCalendarWorks.Single(x => x.EstimateChapter == (int)viewModel.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
         }
 
-        public CalendarPlan Write(CalendarPlanCreateViewModel viewModel, string windowsName)
+        public CalendarPlan Write(CalendarPlanCreateViewModel viewModel, string identityName)
         {
             var calendarPlan = CalculateCalendarPlan(viewModel.EstimateFiles, viewModel);
 
-            return Write(calendarPlan, windowsName);
+            return Write(calendarPlan, identityName);
         }
 
-        public CalendarPlan Write(CalendarPlan calendarPlan, string windowsName)
+        public CalendarPlan Write(CalendarPlan calendarPlan, string identityName)
         {
             var preparatoryTemplatePath = GetPreparatoryTemplatePath();
             var mainTemplatePath = GetMainTemplatePath(calendarPlan.ConstructionDurationCeiling);
 
-            var savePath = GetSavePath(windowsName);
+            var savePath = GetSavePath(identityName);
 
             _calendarPlanWriter.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath, savePath);
 
@@ -103,7 +102,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
             SetEstimatePercentages(viewModel.CalendarWorkViewModels);
 
-            var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, viewModel.TotalWorkChapter);
+            var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork?.Percentages ?? new List<decimal>(), viewModel.TotalWorkChapter);
 
             return calendarPlan;
         }
@@ -126,9 +125,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"Main{constructionDurationCeiling}.docx");
         }
 
-        public string GetSavePath(string windowsName)
+        public string GetSavePath(string identityName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{identityName.RemoveBackslashes()}.docx");
         }
     }
 }

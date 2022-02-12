@@ -6,7 +6,7 @@ namespace BGTG.POS.Tests.EstimateTool
 {
     public static class EstimateSource
     {
-        public readonly static Estimate Estimate548VAT = new Estimate(new List<EstimateWork>
+        public static readonly Estimate Estimate548VAT = new Estimate(new List<EstimateWork>
             {
                 new EstimateWork("Вынос трассы в натуру", 0, 0.013M, 0.013M, 1),
                 new EstimateWork("Одд на период производства работ", 0, 0, 0.005M, 8),
@@ -19,7 +19,7 @@ namespace BGTG.POS.Tests.EstimateTool
                 new EstimateWork("Всего по сводному сметному расчету", 0.041M, 2.536M, 3.226M, 12),
             }, new DateTime(2022, 8, 1), 0.7M, 1, 16);
 
-        public readonly static Estimate Estimate158VAT = new Estimate(new List<EstimateWork>
+        public static readonly Estimate Estimate158VAT = new Estimate(new List<EstimateWork>
             {
                 new EstimateWork("Демонтажные работы", 0, 11.537M, 107.797M, 1),
                 new EstimateWork("Подготовительные работы", 0, 0, 3.266M, 1),
@@ -53,7 +53,7 @@ namespace BGTG.POS.Tests.EstimateTool
                 new EstimateWork("Всего по сводному сметному расчету", 465.022M, 1789.066M, 5614.264M, 12),
             }, new DateTime(2019, 7, 1), 6, 6, 79827);
 
-        public readonly static Estimate Estimate158VATFree = new Estimate(new List<EstimateWork>
+        public static readonly Estimate Estimate158VATFree = new Estimate(new List<EstimateWork>
             {
                 new EstimateWork("Демонтажные работы", 0, 0.122M, 1.677M, 1),
                 new EstimateWork("Подготовительные работы", 0, 0, 0.828M, 1),

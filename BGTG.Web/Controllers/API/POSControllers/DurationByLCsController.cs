@@ -5,7 +5,6 @@ using BGTG.Core;
 using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.DurationByLCToolEntities;
 using BGTG.POS.DurationTools.DurationByLCTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.DurationByLCViewModels;
 using Calabonga.Microservices.Core.QueryParams;
@@ -39,15 +38,15 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]")]
         public async Task<ActionResult<OperationResult<string>>> Write([FromForm] DurationByLCCreateViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var durationByLC = _durationByLCService.Write(viewModel, User.Identity.Name);
@@ -59,12 +58,12 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
             if (!UnitOfWork.LastSaveChangesResult.IsOk)
             {
-                operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpGet("[action]")]
@@ -83,22 +82,22 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]/{id:guid}")]
         public async Task<ActionResult<OperationResult<string>>> WriteById(Guid id)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             var durationByLCEntity = await Repository.GetFirstOrDefaultAsync(predicate: x => x.Id == id);
 
             if (durationByLCEntity == null)
             {
-                operationResult.AddError(AppData.BadDurationByLCId);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(AppData.BadDurationByLCId);
+                return OperationResultBeforeReturn(operation);
             }
 
             var durationByLC = CurrentMapper.Map<DurationByLC>(durationByLCEntity);
 
             _durationByLCService.Write(durationByLC, User.Identity.Name);
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
     }
 }

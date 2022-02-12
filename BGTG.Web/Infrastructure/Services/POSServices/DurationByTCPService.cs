@@ -3,7 +3,6 @@ using System.IO;
 using BGTG.POS.DurationTools.DurationByTCPTool;
 using BGTG.POS.DurationTools.DurationByTCPTool.Interfaces;
 using BGTG.Web.Infrastructure.Helpers;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.DurationByTCPViewModels;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +31,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public DurationByTCP Write(DurationByTCPCreateViewModel viewModel, string windowsName)
+        public DurationByTCP Write(DurationByTCPCreateViewModel viewModel, string identityName)
         {
             var durationByTCP = _durationByTCPCreator.Create(viewModel.PipelineMaterial, viewModel.PipelineDiameter,
                 viewModel.PipelineLength, viewModel.AppendixKey, viewModel.PipelineCategoryName);
@@ -42,14 +41,14 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
                 return null;
             }
 
-            return Write(durationByTCP, windowsName);
+            return Write(durationByTCP, identityName);
         }
 
-        public DurationByTCP Write(DurationByTCP durationByTCP, string windowsName)
+        public DurationByTCP Write(DurationByTCP durationByTCP, string identityName)
         {
             var templatePath = GetTemplatePath(durationByTCP.DurationCalculationType);
 
-            var savePath = GetSavePath(windowsName);
+            var savePath = GetSavePath(identityName);
 
             _durationByTCPWriter.Write(durationByTCP, templatePath, savePath);
 
@@ -71,9 +70,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, templateFileName);
         }
 
-        public string GetSavePath(string windowsName)
+        public string GetSavePath(string identityName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{identityName.RemoveBackslashes()}.docx");
         }
     }
 }

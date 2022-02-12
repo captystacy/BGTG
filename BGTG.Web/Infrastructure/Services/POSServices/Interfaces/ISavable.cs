@@ -2,6 +2,6 @@
 {
     public interface ISavable
     {
-        string GetSavePath(string windowsName);
+        string GetSavePath(string identityName);
     }
 }

@@ -5,7 +5,6 @@ using BGTG.POS.CalendarPlanTool.Interfaces;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.POS.EnergyAndWaterTool.Interfaces;
 using BGTG.POS.EstimateTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.EnergyAndWaterViewModels;
@@ -45,7 +44,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var constructionStartDate = new DateTime(1999, 9, 21);
             var totalEstimateWork = new EstimateWork("", 0, 0, 0, 12);
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>() { totalEstimateWork }, constructionStartDate, 0, 0, 0);
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
             var templatePath = @"wwwroot\AppData\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
             var savePath = @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx";
@@ -61,7 +60,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var energyAndWater = new EnergyAndWater(0, 0, 0, 0, 0, 0);
             _energyAndWaterCreatorMock.Setup(x => x.Create(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year)).Returns(energyAndWater);
 
-            var result = _energyAndWaterService.Write(energyAndWaterCreateViewModel, windowsName);
+            var result = _energyAndWaterService.Write(energyAndWaterCreateViewModel, identityName);
 
             Assert.AreEqual(energyAndWater, result);
             _webHostEnvironmentMock.Verify(x => x.ContentRootPath, Times.Exactly(2));
@@ -76,9 +75,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _energyAndWaterService.GetSavePath(windowsName);
+            var savePath = _energyAndWaterService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx", savePath);

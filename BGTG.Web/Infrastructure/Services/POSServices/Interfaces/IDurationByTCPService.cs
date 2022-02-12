@@ -5,7 +5,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices.Interfaces
 {
     public interface IDurationByTCPService : ISavable
     {
-        DurationByTCP Write(DurationByTCPCreateViewModel viewModel, string windowsName);
-        DurationByTCP Write(DurationByTCP durationByTCP, string windowsName);
+        DurationByTCP Write(DurationByTCPCreateViewModel viewModel, string identityName);
+        DurationByTCP Write(DurationByTCP durationByTCP, string identityName);
     }
 }

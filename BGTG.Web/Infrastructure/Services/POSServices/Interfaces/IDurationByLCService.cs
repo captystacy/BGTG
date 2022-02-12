@@ -5,7 +5,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices.Interfaces
 {
     public interface IDurationByLCService : ISavable
     {
-        DurationByLC Write(DurationByLCCreateViewModel viewModel, string windowsName);
-        DurationByLC Write(DurationByLC durationByLC, string windowsName);
+        DurationByLC Write(DurationByLCCreateViewModel viewModel, string identityName);
+        DurationByLC Write(DurationByLC durationByLC, string identityName);
     }
 }

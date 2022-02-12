@@ -32,14 +32,14 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 ProjectTemplate = ProjectTemplate.ECP,
                 ChiefProjectEngineer = ChiefProjectEngineer.Saiko
             };
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
             var templatePath = @"wwwroot\AppData\Templates\TableOfContentsTemplates\ECP\Saiko\Unknown.docx";
             var savePath = @"wwwroot\AppData\UserFiles\TableOfContentsFiles\BGTGkss.docx";
 
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
 
-            _tableOfContentsService.Write(viewModel, windowsName);
+            _tableOfContentsService.Write(viewModel, identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(3));
 
@@ -50,9 +50,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _tableOfContentsService.GetSavePath(windowsName);
+            var savePath = _tableOfContentsService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\TableOfContentsFiles\BGTGkss.docx", savePath);

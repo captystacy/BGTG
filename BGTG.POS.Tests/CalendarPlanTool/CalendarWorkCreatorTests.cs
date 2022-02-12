@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.CalendarPlanTool.Interfaces;
@@ -26,7 +27,7 @@ namespace BGTG.POS.Tests.CalendarPlanTool
         {
             var constructionStartDate = EstimateSource.Estimate548VAT.ConstructionStartDate;
             var electrochemicalCalendarWorkName = "Электрохимическая защита";
-            var constructionMonths = new List<ConstructionMonth>();
+            var constructionMonths = Array.Empty<ConstructionMonth>();
             var estimateWork = EstimateSource.Estimate548VAT.MainEstimateWorks.Single(x => x.WorkName == electrochemicalCalendarWorkName);
 
             var calendarWork = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.Single(x => x.WorkName == electrochemicalCalendarWorkName);
@@ -48,7 +49,7 @@ namespace BGTG.POS.Tests.CalendarPlanTool
             var preparatoryPercentages = CalendarPlanInfo.PreparatoryPercentages.ToList();
             var calendarWorksChapter8 = MiddleCalendarWorksSource.PreparatoryCalendarWorks548.Where(x => x.EstimateChapter == 8).ToList();
 
-            var constructionMonths = new List<ConstructionMonth>();
+            var constructionMonths = Array.Empty<ConstructionMonth>();
             var totalCost = 0.017M;
             var totalCostIncludingCAIW = 0.017M;
             _constructionMonthsCreatorMock.Setup(x => x.Create(constructionStartDate, totalCost, totalCostIncludingCAIW, preparatoryPercentages)).Returns(constructionMonths);
@@ -69,9 +70,8 @@ namespace BGTG.POS.Tests.CalendarPlanTool
         {
             var constructionStartDate = EstimateSource.Estimate548VAT.ConstructionStartDate;
             var constructionDurationCeiling = EstimateSource.Estimate548VAT.ConstructionDurationCeiling;
-            var preparatoryPercentages = CalendarPlanInfo.PreparatoryPercentages.ToList();
             var mainCalendarWorks = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.ToList();
-            var initialMainTotalWork = mainCalendarWorks.Find(x => x.EstimateChapter == (int) TotalWorkChapter.TotalWork1To12Chapter);
+            var initialMainTotalWork = mainCalendarWorks.Find(x => x.EstimateChapter == (int)TotalWorkChapter.TotalWork1To12Chapter);
             mainCalendarWorks.Remove(initialMainTotalWork);
 
             var expectedCalendarWork = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName);
@@ -85,7 +85,7 @@ namespace BGTG.POS.Tests.CalendarPlanTool
         public void CreateOtherExpensesWork_Estimate548VATMainCalendarWorks_CorrectCalendarWork()
         {
             var constructionStartDate = EstimateSource.Estimate548VAT.ConstructionStartDate;
-            var constructionMonths = new List<ConstructionMonth>();
+            var constructionMonths = Array.Empty<ConstructionMonth>();
             var otherExpensesWorkPercentages = new List<decimal> { 1 };
             var mainCalendarWorks = CalendarPlanSource.CalendarPlan548.MainCalendarWorks.ToList();
             var initialMainTotalWork = mainCalendarWorks.Find(x => x.WorkName == CalendarPlanInfo.TotalWorkName);

@@ -4,11 +4,14 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=POS/@EntryIndexedValue">POS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=TC/@EntryIndexedValue">TC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=TCP/@EntryIndexedValue">TCP</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=VAT/@EntryIndexedValue">VAT</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/JavaScriptNaming/Abbreviations/=LC/@EntryIndexedValue">LC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/JavaScriptNaming/Abbreviations/=POS/@EntryIndexedValue">POS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/JavaScriptNaming/Abbreviations/=TCP/@EntryIndexedValue">TCP</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=BGTG/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Btns/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Chemichal/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=electro/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Gkss/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Kapitan/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=LCBGT/@EntryIndexedValue">True</s:Boolean>

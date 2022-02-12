@@ -52,14 +52,14 @@
                 processData: false,
                 contentType: false,
                 type: 'POST',
-                success: function (operationResult) {
-                    if (!operationResult.ok) {
-                        appendAlerts(operationResult);
+                success: function (operation) {
+                    if (!operation.ok) {
+                        appendAlerts(operation);
                         calendarPlanSpinner.removeClass(dInlineBlockClass);
                         return;
                     }
 
-                    calendarPlanCreateViewModel = operationResult.result;
+                    calendarPlanCreateViewModel = operation.result;
                     if (estimateFailures.hasClass(dFlexClass)) {
                         let constructionStartDate = constructionStartDateFailure.find('input').val();
                         if (constructionStartDateFailure.hasClass(dFlexClass)) {
@@ -243,9 +243,9 @@
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     calculatePercentagesSpinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -254,7 +254,7 @@
                 if (mainTotalWorkRowAlreadyOnPage.length) {
                     mainTotalWorkRowAlreadyOnPage.remove();
                 }
-                let mainTotalWorkRow = generateMainTotalWorkRow(operationResult.result);
+                let mainTotalWorkRow = generateMainTotalWorkRow(operation.result);
 
                 calculatePercentagesSpinner.removeClass(dInlineBlockClass);
                 percentagesTableBody.append(mainTotalWorkRow);
@@ -301,9 +301,9 @@
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     calendarPlanSpinner.removeClass(dInlineBlockClass);
                     calendarPlanDownloadSpinner.removeClass(dInlineBlockClass);
                     return;
@@ -377,9 +377,9 @@
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     durationByLCSpinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -403,9 +403,9 @@
             processData: false,
             contentType: false,
             type: 'POST',
-            success: function (operationResult) {
-                if (!operationResult.ok) {
-                    appendAlerts(operationResult);
+            success: function (operation) {
+                if (!operation.ok) {
+                    appendAlerts(operation);
                     energyAndWaterSpinner.removeClass(dInlineBlockClass);
                     return;
                 }

@@ -22,20 +22,20 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]")]
         public async Task<ActionResult<OperationResult<string>>> Write([FromForm] ProjectViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult = await _projectService.Write(viewModel, User.Identity.Name);
+            operation = await _projectService.Write(viewModel, User.Identity.Name);
 
-            return OperationResultBeforeReturn(operationResult);
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpGet("[action]")]

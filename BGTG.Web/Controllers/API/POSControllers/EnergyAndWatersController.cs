@@ -5,7 +5,6 @@ using BGTG.Core;
 using BGTG.Data.CustomRepositories.Interfaces;
 using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
 using BGTG.POS.EnergyAndWaterTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.EnergyAndWaterViewModels;
 using Calabonga.Microservices.Core.QueryParams;
@@ -39,15 +38,15 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]")]
         public async Task<ActionResult<OperationResult<string>>> Write([FromForm] EnergyAndWaterCreateViewModel viewModel)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Root.Errors)
                 {
-                    operationResult.AddError(error.ErrorMessage);
+                    operation.AddError(error.ErrorMessage);
                 }
-                return OperationResultBeforeReturn(operationResult);
+                return OperationResultBeforeReturn(operation);
             }
 
             var energyAndWater = _energyAndWaterService.Write(viewModel, User.Identity.Name);
@@ -59,12 +58,12 @@ namespace BGTG.Web.Controllers.API.POSControllers
 
             if (!UnitOfWork.LastSaveChangesResult.IsOk)
             {
-                operationResult.AddError(UnitOfWork.LastSaveChangesResult.Exception);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(UnitOfWork.LastSaveChangesResult.Exception);
+                return OperationResultBeforeReturn(operation);
             }
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
 
         [HttpGet("[action]")]
@@ -83,22 +82,22 @@ namespace BGTG.Web.Controllers.API.POSControllers
         [HttpPost("[action]/{id:guid}")]
         public async Task<ActionResult<OperationResult<string>>> WriteById(Guid id)
         {
-            var operationResult = OperationResult.CreateResult<string>();
+            var operation = OperationResult.CreateResult<string>();
 
             var energyAndWaterEntity = await Repository.GetFirstOrDefaultAsync(predicate: x => x.Id == id);
 
             if (energyAndWaterEntity == null)
             {
-                operationResult.AddError(AppData.BadEnergyAndWaterId);
-                return OperationResultBeforeReturn(operationResult);
+                operation.AddError(AppData.BadEnergyAndWaterId);
+                return OperationResultBeforeReturn(operation);
             }
 
             var energyAndWater = CurrentMapper.Map<EnergyAndWater>(energyAndWaterEntity);
 
             _energyAndWaterService.Write(energyAndWater, User.Identity.Name);
 
-            operationResult.Result = string.Empty;
-            return OperationResultBeforeReturn(operationResult);
+            operation.Result = string.Empty;
+            return OperationResultBeforeReturn(operation);
         }
     }
 }

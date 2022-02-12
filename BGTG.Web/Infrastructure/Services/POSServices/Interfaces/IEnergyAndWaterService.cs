@@ -5,7 +5,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices.Interfaces
 {
     public interface IEnergyAndWaterService : ISavable
     {
-        EnergyAndWater Write(EnergyAndWaterCreateViewModel viewModel, string windowsName);
-        EnergyAndWater Write(EnergyAndWater energyAndWater, string windowsName);
+        EnergyAndWater Write(EnergyAndWaterCreateViewModel viewModel, string identityName);
+        EnergyAndWater Write(EnergyAndWater energyAndWater, string identityName);
     }
 }

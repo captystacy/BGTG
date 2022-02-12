@@ -50,7 +50,7 @@ namespace BGTG.POS.EstimateTool
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(LaborCosts, ConstructionStartDate, ConstructionDuration, ConstructionDurationCeiling, PreparatoryEstimateWorks, MainEstimateWorks);
+            return HashCode.Combine(LaborCosts, PreparatoryEstimateWorks, MainEstimateWorks);
         }
 
         public static bool operator ==(Estimate left, Estimate right)

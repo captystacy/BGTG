@@ -54,7 +54,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         [Test]
         public async Task Write()
         {
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
             var viewModel = new ProjectViewModel
             {
                 ObjectCipher = "5.5-20.548",
@@ -92,13 +92,13 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             _mapperMock.Setup(x => x.Map<EnergyAndWater>(constructionObject.POS.EnergyAndWater)).Returns(energyAndWater);
 
             var durationByLCPath = @"wwwroot\AppData\UserFiles\DurationByLCFiles\DurationByLCBGTGkss.docx";
-            _durationByLCServiceMock.Setup(x => x.GetSavePath(windowsName)).Returns(durationByLCPath);
+            _durationByLCServiceMock.Setup(x => x.GetSavePath(identityName)).Returns(durationByLCPath);
             var calendarPlanPath = @"wwwroot\AppData\UserFiles\CalendarPlanFiles\CalendarPlanBGTGkss.docx";
-            _calendarPlanServiceMock.Setup(x => x.GetSavePath(windowsName)).Returns(calendarPlanPath);
+            _calendarPlanServiceMock.Setup(x => x.GetSavePath(identityName)).Returns(calendarPlanPath);
             var energyAndWaterPath = @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\EnergyAndWaterBGTGkss.docx";
-            _energyAndWaterServiceMock.Setup(x => x.GetSavePath(windowsName)).Returns(energyAndWaterPath);
+            _energyAndWaterServiceMock.Setup(x => x.GetSavePath(identityName)).Returns(energyAndWaterPath);
 
-            await _projectService.Write(viewModel, windowsName);
+            await _projectService.Write(viewModel, identityName);
 
             _constructionObjectRepositoryMock.Verify(x => x.GetFirstOrDefaultAsync(
                 It.IsAny<Expression<Func<ConstructionObjectEntity, bool>>>(), null,
@@ -108,13 +108,13 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             _mapperMock.Verify(x => x.Map<CalendarPlan>(constructionObject.POS.CalendarPlan), Times.Once);
             _mapperMock.Verify(x => x.Map<EnergyAndWater>(constructionObject.POS.EnergyAndWater), Times.Once);
 
-            _durationByLCServiceMock.Verify(x => x.Write(durationByLC, windowsName), Times.Once);
-            _calendarPlanServiceMock.Verify(x => x.Write(calendarPlan, windowsName), Times.Once);
-            _energyAndWaterServiceMock.Verify(x => x.Write(energyAndWater, windowsName), Times.Once);
+            _durationByLCServiceMock.Verify(x => x.Write(durationByLC, identityName), Times.Once);
+            _calendarPlanServiceMock.Verify(x => x.Write(calendarPlan, identityName), Times.Once);
+            _energyAndWaterServiceMock.Verify(x => x.Write(energyAndWater, identityName), Times.Once);
 
-            _durationByLCServiceMock.Verify(x => x.GetSavePath(windowsName), Times.Once);
-            _calendarPlanServiceMock.Verify(x => x.GetSavePath(windowsName), Times.Once);
-            _energyAndWaterServiceMock.Verify(x => x.GetSavePath(windowsName), Times.Once);
+            _durationByLCServiceMock.Verify(x => x.GetSavePath(identityName), Times.Once);
+            _calendarPlanServiceMock.Verify(x => x.GetSavePath(identityName), Times.Once);
+            _energyAndWaterServiceMock.Verify(x => x.GetSavePath(identityName), Times.Once);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(3));
 
@@ -127,9 +127,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
         public void GetSavePath()
         {
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
-            var windowsName = "BGTG\\kss";
+            var identityName = "BGTG\\kss";
 
-            var savePath = _projectService.GetSavePath(windowsName);
+            var savePath = _projectService.GetSavePath(identityName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
             Assert.AreEqual(@"wwwroot\AppData\UserFiles\ProjectFiles\BGTGkss.docx", savePath);

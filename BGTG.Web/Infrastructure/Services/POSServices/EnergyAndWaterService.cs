@@ -5,7 +5,6 @@ using BGTG.POS.EnergyAndWaterTool;
 using BGTG.POS.EnergyAndWaterTool.Interfaces;
 using BGTG.POS.EstimateTool;
 using BGTG.Web.Infrastructure.Helpers;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.EnergyAndWaterViewModels;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +33,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             _calendarWorkCreator = calendarWorkCreator;
         }
 
-        public EnergyAndWater Write(EnergyAndWaterCreateViewModel viewModel, string windowsName)
+        public EnergyAndWater Write(EnergyAndWaterCreateViewModel viewModel, string identityName)
         {
             _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
@@ -42,14 +41,14 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
             var energyAndWater = _energyAndWaterCreator.Create(mainTotalCostIncludingCAIW, _estimateService.Estimate.ConstructionStartDate.Year);
 
-            return Write(energyAndWater, windowsName);
+            return Write(energyAndWater, identityName);
         }
 
-        public EnergyAndWater Write(EnergyAndWater energyAndWater, string windowsName)
+        public EnergyAndWater Write(EnergyAndWater energyAndWater, string identityName)
         {
             var templatePath = GetTemplatePath();
 
-            var savePath = GetSavePath(windowsName);
+            var savePath = GetSavePath(identityName);
 
             _energyAndWaterWriter.Write(energyAndWater, templatePath, savePath);
 
@@ -68,9 +67,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, EnergyAndWaterTemplateFileName);
         }
 
-        public string GetSavePath(string windowsName)
+        public string GetSavePath(string identityName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{identityName.RemoveBackslashes()}.docx");
         }
     }
 }

@@ -22,19 +22,19 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public void Write(TableOfContentsViewModel viewModel, string windowsName)
+        public void Write(TableOfContentsViewModel viewModel, string identityName)
         {
-            var templatePath = GetTemplatePath(viewModel, windowsName);
-            var savePath = GetSavePath(windowsName);
+            var templatePath = GetTemplatePath(viewModel, identityName);
+            var savePath = GetSavePath(identityName);
 
             _tableOfContentsWriter.Write(viewModel.ObjectCipher, templatePath, savePath);
         }
 
-        private string GetTemplatePath(TableOfContentsViewModel viewModel, string windowsName)
+        private string GetTemplatePath(TableOfContentsViewModel viewModel, string identityName)
         {
             var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
                 viewModel.ProjectTemplate.ToString(), viewModel.ChiefProjectEngineer.ToString(),
-                $"{windowsName.RemoveBackslashes()}.docx");
+                $"{identityName.RemoveBackslashes()}.docx");
 
             if (!File.Exists(templatePath))
             {
@@ -46,9 +46,9 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
             return templatePath;
         }
 
-        public string GetSavePath(string windowsName)
+        public string GetSavePath(string identityName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{identityName.RemoveBackslashes()}.docx");
         }
     }
 }
