@@ -19,11 +19,11 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
         private const string TemplatesPath = @"AppData\Templates\DurationByTCPTemplates";
         private const string UserFilesPath = @"AppData\UserFiles\DurationByTCPFiles";
 
-        private const string InterpolationTemplateFileName = "InterpolationTemplate.docx";
-        private const string ExtrapolationAscendingTemplateFileName = "ExtrapolationAscendingTemplate.docx";
-        private const string ExtrapolationDescendingTemplateFileName = "ExtrapolationDescendingTemplate.docx";
-        private const string StepwiseExtrapolationAscendingTemplateFileName = "StepwiseExtrapolationAscendingTemplate.docx";
-        private const string StepwiseExtrapolationDescendingTemplateFileName = "StepwiseExtrapolationDescendingTemplate.docx";
+        private const string InterpolationTemplateFileName = "Interpolation.docx";
+        private const string ExtrapolationAscendingTemplateFileName = "ExtrapolationAscending.docx";
+        private const string ExtrapolationDescendingTemplateFileName = "ExtrapolationDescending.docx";
+        private const string StepwiseExtrapolationAscendingTemplateFileName = "StepwiseExtrapolationAscending.docx";
+        private const string StepwiseExtrapolationDescendingTemplateFileName = "StepwiseExtrapolationDescending.docx";
 
         public DurationByTCPService(IDurationByTCPCreator durationByTCPCreator, IDurationByTCPWriter durationByTCPWriter, IWebHostEnvironment webHostEnvironment)
         {
@@ -73,7 +73,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
         public string GetSavePath(string windowsName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"DurationByTCP{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
         }
     }
 }

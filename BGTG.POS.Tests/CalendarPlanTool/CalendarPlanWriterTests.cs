@@ -11,12 +11,11 @@ using Xceed.Words.NET;
 
 namespace BGTG.POS.Tests.CalendarPlanTool
 {
-    [SetCulture("ru-RU")]
     public class CalendarPlanWriterTests
     {
         private CalendarPlanWriter _calendarPlanWriter;
 
-        private const string _calendarPlanTemplatesDirectory = @"..\..\..\CalendarPlanTool\CalendarPlanTemplates";
+        private const string CalendarPlanTemplatesDirectory = @"..\..\..\CalendarPlanTool\CalendarPlanTemplates";
 
         [SetUp]
         public void SetUp()
@@ -33,8 +32,8 @@ namespace BGTG.POS.Tests.CalendarPlanTool
                     new CalendarWork(x.WorkName, x.TotalCost, x.TotalCostIncludingCAIW, x.ConstructionMonths, 0)),
                 CalendarPlanSource.CalendarPlan548.ConstructionStartDate, 0.7M, 1);
 
-            var preparatoryTemplatePath = Path.Combine(_calendarPlanTemplatesDirectory, "PreparatoryCalendarPlanTemplate.docx");
-            var mainTemplatePath = Path.Combine(_calendarPlanTemplatesDirectory, "MainCalendarPlanTemplate1.docx");
+            var preparatoryTemplatePath = Path.Combine(CalendarPlanTemplatesDirectory, "Preparatory.docx");
+            var mainTemplatePath = Path.Combine(CalendarPlanTemplatesDirectory, "Main1.docx");
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), "CalendarPlan548VAT.docx");
             _calendarPlanWriter.Write(expectedCalendarPlan, preparatoryTemplatePath, mainTemplatePath, savePath);

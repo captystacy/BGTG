@@ -367,7 +367,7 @@
         formData.append('Shift', $('#estimate-calculations #shift').val());
         formData.append('NumberOfEmployees', $('#estimate-calculations #number-of-employees').val());
         formData.append('TechnologicalLaborCosts', $('#estimate-calculations #technological-labor-costs').val());
-        formData.append('AcceptanceTimeIncluded', $('#estimate-calculations #acceptance-time-included').val());
+        formData.append('AcceptanceTimeIncluded', $('#estimate-calculations #acceptance-time-included').prop('checked'));
         appendEstimateFiles(formData);
         appendObjectCipher(formData);
 

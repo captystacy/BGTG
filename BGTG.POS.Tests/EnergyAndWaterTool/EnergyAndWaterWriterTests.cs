@@ -8,7 +8,7 @@ namespace BGTG.POS.Tests.EnergyAndWaterTool
 {
     public class EnergyAndWaterWriterTests
     {
-        private const string EnergyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
+        private const string EnergyAndWaterTemplateFileName = "EnergyAndWater.docx";
         private const string EnergyAndWaterFileName = "EnergyAndWater.docx";
         private const string EnergyAndWaterTemplatesDirectory = @"..\..\..\EnergyAndWaterTool\EnergyAndWaterTemplates";
 

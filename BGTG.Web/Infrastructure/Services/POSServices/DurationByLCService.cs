@@ -1,10 +1,9 @@
 ﻿using System.IO;
-using System.Text;
+using BGTG.Core;
 using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.POS.DurationTools.DurationByLCTool.Interfaces;
 using BGTG.POS.EstimateTool;
 using BGTG.Web.Infrastructure.Helpers;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.DurationByLCViewModels;
 using Microsoft.AspNetCore.Hosting;
@@ -17,12 +16,6 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
         private readonly IDurationByLCCreator _durationByLCCreator;
         private readonly IDurationByLCWriter _durationByLCWriter;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
-        private const string RoundingTemplatePart = "Rounding";
-        private const string AcceptanceTemplatePart = "Acceptance";
-        private const string TemplateEndPart = "Template.docx";
-        private const char PlusChar = '+';
-        private const char MinusChar = '-';
 
         private const string TemplatesPath = @"AppData\Templates\DurationByLCTemplates";
         private const string UserFilesPath = @"AppData\UserFiles\DurationByLCFiles";
@@ -58,24 +51,17 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
         private string GetTemplatePath(bool roundingIncluded, bool acceptanceTimeIncluded)
         {
-            var templateFileName = new StringBuilder();
-            templateFileName.Append(RoundingTemplatePart);
-            templateFileName.Append(GetPlusOrMinus(roundingIncluded));
-            templateFileName.Append(AcceptanceTemplatePart);
-            templateFileName.Append(GetPlusOrMinus(acceptanceTimeIncluded));
-            templateFileName.Append(TemplateEndPart);
-
-            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, templateFileName.ToString());
+            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"Rounding{GetPlusOrMinus(roundingIncluded)}Acceptance{GetPlusOrMinus(acceptanceTimeIncluded)}.docx");
         }
 
         private char GetPlusOrMinus(bool condition)
         {
-            return condition ? PlusChar : MinusChar;
+            return condition ? AppData.PlusChar : AppData.MinusChar;
         }
 
         public string GetSavePath(string windowsName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"DurationByLC{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
         }
     }
 }

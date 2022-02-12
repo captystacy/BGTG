@@ -9,7 +9,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
     {
         private DurationByLCWriter _durationByLCWriter;
 
-        private const string DurationByLCFileName = "durationByLC.docx";
+        private const string DurationByLCFileName = "DurationByLC.docx";
         private const string DurationByLCTemplatesDirectory = @"..\..\..\DurationTools\DurationByLCTool\DurationByLCTemplates";
 
         private DurationByLC CreateDefaultDurationByLC()
@@ -29,7 +29,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
             var durationByLC = CreateDefaultDurationByLC();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), DurationByLCFileName);
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding+Acceptance+Template.docx");
+            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding+Acceptance+.docx");
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
@@ -54,7 +54,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
             var durationByLC = CreateDefaultDurationByLC();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), DurationByLCFileName);
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding+Acceptance-Template.docx");
+            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding+Acceptance-.docx");
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
@@ -79,7 +79,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
             var durationByLC = CreateDefaultDurationByLC();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), DurationByLCFileName);
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding-Acceptance-Template.docx");
+            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding-Acceptance-.docx");
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
@@ -104,7 +104,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
             var durationByLC = CreateDefaultDurationByLC();
 
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), DurationByLCFileName);
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding-Acceptance+Template.docx");
+            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding-Acceptance+.docx");
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 

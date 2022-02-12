@@ -46,6 +46,10 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var totalEstimateWork = new EstimateWork("", 0, 0, 0, 12);
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>() { totalEstimateWork }, constructionStartDate, 0, 0, 0);
             var windowsName = "BGTG\\kss";
+
+            var templatePath = @"wwwroot\AppData\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
+            var savePath = @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx";
+
             var energyAndWaterCreateViewModel = new EnergyAndWaterCreateViewModel()
             {
                 EstimateFiles = estimateFiles,
@@ -65,10 +69,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Exactly(3));
             _calendarWorkCreatorMock.Verify(x => x.Create(totalEstimateWork, constructionStartDate), Times.Once);
             _energyAndWaterCreatorMock.Verify(x => x.Create(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year), Times.Once);
-            _energyAndWaterWriterMock.Verify(
-                x => x.Write(energyAndWater,
-                    @"wwwroot\AppData\Templates\EnergyAndWaterTemplates\EnergyAndWaterTemplate.docx",
-                    @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\EnergyAndWaterBGTGkss.docx"), Times.Once);
+            _energyAndWaterWriterMock.Verify(x => x.Write(energyAndWater, templatePath, savePath), Times.Once);
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var savePath = _energyAndWaterService.GetSavePath(windowsName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-            Assert.AreEqual(@"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\EnergyAndWaterBGTGkss.docx", savePath);
+            Assert.AreEqual(@"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx", savePath);
         }
     }
 }

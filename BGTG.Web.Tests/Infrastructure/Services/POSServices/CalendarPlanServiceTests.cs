@@ -4,7 +4,6 @@ using AutoMapper;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.CalendarPlanTool.Interfaces;
 using BGTG.POS.EstimateTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels;
@@ -94,7 +93,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var savePath = _calendarPlanService.GetSavePath(windowsName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-            Assert.AreEqual(@"wwwroot\AppData\UserFiles\CalendarPlanFiles\CalendarPlanBGTGkss.docx", savePath);
+            Assert.AreEqual(@"wwwroot\AppData\UserFiles\CalendarPlanFiles\BGTGkss.docx", savePath);
         }
     }
 }

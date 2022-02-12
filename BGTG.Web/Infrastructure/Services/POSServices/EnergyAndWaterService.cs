@@ -20,7 +20,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICalendarWorkCreator _calendarWorkCreator;
 
-        private const string EnergyAndWaterTemplateFileName = "EnergyAndWaterTemplate.docx";
+        private const string EnergyAndWaterTemplateFileName = "EnergyAndWater.docx";
         private const string TemplatesPath = @"AppData\Templates\EnergyAndWaterTemplates";
         private const string UserFilesPath = @"AppData\UserFiles\EnergyAndWaterFiles";
 
@@ -70,7 +70,7 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
         public string GetSavePath(string windowsName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"EnergyAndWater{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
         }
     }
 }

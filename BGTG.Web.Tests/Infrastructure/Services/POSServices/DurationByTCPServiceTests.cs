@@ -33,6 +33,9 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var durationByTCPCreateViewModel = new DurationByTCPCreateViewModel();
             var windowsName = "BGTG\\kss";
 
+            var templatePath = @"wwwroot\AppData\Templates\DurationByTCPTemplates\Interpolation.docx";
+            var savePath = @"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx";
+
             _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
 
             _durationByTCPCreatorMock.Setup(x => x.Create(durationByTCPCreateViewModel.PipelineMaterial,
@@ -46,9 +49,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             _durationByTCPCreatorMock.Verify(x => x.Create(durationByTCPCreateViewModel.PipelineMaterial,
                 durationByTCPCreateViewModel.PipelineDiameter, durationByTCPCreateViewModel.PipelineLength, durationByTCPCreateViewModel.AppendixKey,
                 durationByTCPCreateViewModel.PipelineCategoryName), Times.Once);
-            _durationByTCPWriterMock.Verify(x => x.Write(durationByTCP,
-                @"wwwroot\AppData\Templates\DurationByTCPTemplates\InterpolationTemplate.docx",
-                @"wwwroot\AppData\UserFiles\DurationByTCPFiles\DurationByTCPBGTGkss.docx"), Times.Once);
+            _durationByTCPWriterMock.Verify(x => x.Write(durationByTCP, templatePath , savePath), Times.Once);
         }
 
         [Test]
@@ -60,7 +61,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var savePath = _durationByTCPService.GetSavePath(windowsName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-            Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByTCPFiles\DurationByTCPBGTGkss.docx", savePath);
+            Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx", savePath);
         }
     }
 }

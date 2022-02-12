@@ -41,6 +41,9 @@ namespace BGTG.Core
 
         public const string Unknown = "Unknown";
 
+        public const char PlusChar = '+';
+        public const char MinusChar = '-';
+
         public const string DocxMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
         public const string DecimalFormat = "G29";

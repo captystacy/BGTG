@@ -42,7 +42,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
                 pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
                 roundedDuration, preparatoryPeriod, durationChange, volumeChange, appendix.Key, appendix.Page);
 
-            var templateFileName = "InterpolationTemplate.docx";
+            var templateFileName = "Interpolation.docx";
             var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
             var saveFileName = "InterpolationDurationByTCP.docx";
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), saveFileName);
@@ -91,7 +91,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
                 pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
                 roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, appendix.Key, appendix.Page);
 
-            var templateFileName = "ExtrapolationAscendingTemplate.docx";
+            var templateFileName = "ExtrapolationAscending.docx";
             var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
             var saveFileName = "ExtrapolationAscendingDurationByTCP.docx";
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), saveFileName);
@@ -138,7 +138,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
                 pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
                 roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, appendix.Key, appendix.Page);
 
-            var templateFileName = "ExtrapolationDescendingTemplate.docx";
+            var templateFileName = "ExtrapolationDescending.docx";
             var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
             var saveFileName = "ExtrapolationDescendingDurationByTCP.docx";
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), saveFileName);
@@ -188,7 +188,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
                 pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
                 roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration, stepwisePipelineStandard, appendix.Key, appendix.Page);
 
-            var templateFileName = "StepwiseExtrapolationAscendingTemplate.docx";
+            var templateFileName = "StepwiseExtrapolationAscending.docx";
             var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
             var saveFileName = "StepwiseExtrapolationAscendingDurationByTCP.docx";
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), saveFileName);
@@ -241,7 +241,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
                 pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
                 roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration, stepwisePipelineStandard, appendix.Key, appendix.Page);
 
-            var templateFileName = "StepwiseExtrapolationDescendingTemplate.docx";
+            var templateFileName = "StepwiseExtrapolationDescending.docx";
             var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
             var saveFileName = "StepwiseExtrapolationDescendingDurationByTCP.docx";
             var savePath = Path.Combine(Directory.GetCurrentDirectory(), saveFileName);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.POS.DurationTools.DurationByLCTool.Interfaces;
 using BGTG.POS.EstimateTool;
-using BGTG.Web.Infrastructure.Services.Interfaces;
 using BGTG.Web.Infrastructure.Services.POSServices;
 using BGTG.Web.Infrastructure.Services.POSServices.Interfaces;
 using BGTG.Web.ViewModels.POSViewModels.DurationByLCViewModels;
@@ -55,6 +54,8 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var durationByLC = new DurationByLC(0, 0, 0, durationByLCCreateViewModel.TechnologicalLaborCosts,
                 0, 0, 0, 0, 0, 0, 0, 0, true, true);
 
+            var templatePath = @"wwwroot\AppData\Templates\DurationByLCTemplates\Rounding+Acceptance+.docx";
+            var savePath = @"wwwroot\AppData\UserFiles\DurationByLCFiles\BGTGkss.docx";
 
             _durationByLCCreatorMock.Setup(x => x.Create(estimate.LaborCosts,
                     durationByLCCreateViewModel.TechnologicalLaborCosts,
@@ -74,9 +75,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
                 durationByLCCreateViewModel.WorkingDayDuration, durationByLCCreateViewModel.Shift,
                 durationByLCCreateViewModel.NumberOfWorkingDays,
                 durationByLCCreateViewModel.NumberOfEmployees, durationByLCCreateViewModel.AcceptanceTimeIncluded), Times.Once);
-            _durationByLCWriterMock.Verify(x => x.Write(durationByLC,
-                @"wwwroot\AppData\Templates\DurationByLCTemplates\Rounding+Acceptance+Template.docx",
-                @"wwwroot\AppData\UserFiles\DurationByLCFiles\DurationByLCBGTGkss.docx"), Times.Once);
+            _durationByLCWriterMock.Verify(x => x.Write(durationByLC, templatePath, savePath), Times.Once);
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
             _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);
         }
@@ -91,7 +90,7 @@ namespace BGTG.Web.Tests.Infrastructure.Services.POSServices
             var savePath = _durationByLCService.GetSavePath(windowsName);
 
             _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-            Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByLCFiles\DurationByLCBGTGkss.docx", savePath);
+            Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByLCFiles\BGTGkss.docx", savePath);
         }
     }
 }

@@ -22,6 +22,8 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
 
+        private const string PreparatoryCalendarPlanTemplateFileName = "Preparatory.docx";
+
         private const string TemplatesPath = @"AppData\Templates\CalendarPlanTemplates";
         private const string UserFilesPath = @"AppData\UserFiles\CalendarPlanFiles";
 
@@ -116,17 +118,17 @@ namespace BGTG.Web.Infrastructure.Services.POSServices
 
         private string GetPreparatoryTemplatePath()
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, "PreparatoryCalendarPlanTemplate.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, PreparatoryCalendarPlanTemplateFileName);
         }
 
         private string GetMainTemplatePath(int constructionDurationCeiling)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"MainCalendarPlanTemplate{constructionDurationCeiling}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"Main{constructionDurationCeiling}.docx");
         }
 
         public string GetSavePath(string windowsName)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"CalendarPlan{windowsName.RemoveBackslashes()}.docx");
+            return Path.Combine(_webHostEnvironment.ContentRootPath, UserFilesPath, $"{windowsName.RemoveBackslashes()}.docx");
         }
     }
 }
