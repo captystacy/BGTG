@@ -20,9 +20,7 @@ namespace BGTG.Web.Infrastructure.Mappers.Base
         /// <returns>Destination object</returns>
         public IPagedList<TMapTo> Convert(IPagedList<TMapFrom> source, IPagedList<TMapTo> destination, ResolutionContext context)
         {
-            if (source == null) return null;
             var vm = source.Items.Select(m => context.Mapper.Map<TMapFrom, TMapTo>(m)).ToList();
-
 
             var pagedList = PagedList.From<TMapTo, TMapFrom>(source, (con) => context.Mapper.Map<IEnumerable<TMapTo>>(con));
             // var pagedList = vm.ToPagedList(source.PageIndex, source.PageSize);

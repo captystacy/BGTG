@@ -13,7 +13,7 @@ namespace BGTG.POS.Tests.CalendarPlanTool
 {
     public class CalendarPlanWriterTests
     {
-        private CalendarPlanWriter _calendarPlanWriter;
+        private CalendarPlanWriter _calendarPlanWriter = null!;
 
         private const string CalendarPlanTemplatesDirectory = @"..\..\..\CalendarPlanTool\CalendarPlanTemplates";
 
@@ -63,7 +63,7 @@ namespace BGTG.POS.Tests.CalendarPlanTool
 
             var mainCalendarWorks = ParseCalendarWorks(mainCalendarPlanTable, constructionStartDate).ToList();
 
-            var constructionDurationCeiling = mainCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.Count();
+            var constructionDurationCeiling = mainCalendarWorks.First(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.Count();
 
             return new CalendarPlan(preparatoryCalendarWorks,
                 mainCalendarWorks, constructionStartDate, CalendarPlanSource.CalendarPlan548.ConstructionDuration, constructionDurationCeiling);

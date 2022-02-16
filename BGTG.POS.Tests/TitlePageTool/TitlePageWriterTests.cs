@@ -7,7 +7,7 @@ namespace BGTG.POS.Tests.TitlePageTool
 {
     public class TitlePageWriterTests
     {
-        private TitlePageWriter _titlePageWriter;
+        private TitlePageWriter _titlePageWriter = null!;
 
         private const string TitlePageFileName = "TitlePage.docx";
         private const string TitlePageTemplatesDirectory = @"..\..\..\TitlePageTool\TitlePageTemplates";

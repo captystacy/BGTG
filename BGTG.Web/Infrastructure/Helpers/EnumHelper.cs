@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 
 namespace BGTG.Web.Infrastructure.Helpers
 {
@@ -16,11 +17,11 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// Returns Enum with DisplayNames
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<T, string> GetValuesWithDisplayNames()
+        public static Dictionary<T, string?> GetValuesWithDisplayNames()
         {
             var type = typeof(T);
             var r = type.GetEnumValues();
-            var list = new Dictionary<T, string>();
+            var list = new Dictionary<T, string?>();
             foreach (var element in r)
             {
                 list.Add((T)element, GetDisplayValue((T)element));
@@ -76,19 +77,19 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static IList<string> GetDisplayValues(Enum value)
+        public static List<string?> GetDisplayValues(Enum value)
         {
             return GetNames().Select(obj => GetDisplayValue(Parse(obj))).ToList();
         }
 
-        private static string LookupResource(Type resourceManagerProvider, string resourceKey)
+        private static string? LookupResource(Type? resourceManagerProvider, string? resourceKey)
         {
-            foreach (var staticProperty in resourceManagerProvider.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
+            foreach (var staticProperty in resourceManagerProvider?.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)!)
             {
-                if (staticProperty.PropertyType == typeof(System.Resources.ResourceManager))
+                if (staticProperty.PropertyType == typeof(ResourceManager))
                 {
-                    var resourceManager = (System.Resources.ResourceManager)staticProperty.GetValue(null, null);
-                    return resourceManager.GetString(resourceKey);
+                    var resourceManager = (ResourceManager)staticProperty.GetValue(null, null)!;
+                    if (resourceKey != null) return resourceManager.GetString(resourceKey);
                 }
             }
 
@@ -100,11 +101,11 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string GetDisplayValue(T value)
+        public static string? GetDisplayValue(T value)
         {
-            var fieldInfo = value.GetType().GetField(value.ToString());
+            var fieldInfo = value.GetType().GetField(value.ToString() ?? string.Empty);
 
-            var descriptionAttributes = fieldInfo.GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
+            var descriptionAttributes = fieldInfo?.GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
             if (descriptionAttributes?.Length > 0 && descriptionAttributes[0].ResourceType != null)
             {
                 return LookupResource(descriptionAttributes[0].ResourceType, descriptionAttributes[0].Name);

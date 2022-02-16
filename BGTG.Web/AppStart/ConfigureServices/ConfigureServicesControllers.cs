@@ -1,13 +1,29 @@
-﻿using BGTG.Web.Controllers.API;
+﻿using BGTG.Web.Controllers.API.BGTG;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace BGTG.Web.AppStart.ConfigureServices
 {
+    /// <summary>
+    /// Configure controllers
+    /// </summary>
     public static class ConfigureServicesControllers
     {
-        public static void ConfigureServices(IServiceCollection services)
+        /// <summary>
+        /// Configure services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="environment"></param>
+        public static void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment)
         {
-            services.AddControllersWithViews();
+            var builder = services.AddControllersWithViews();
+
+            if (environment.IsDevelopment())
+            {
+                builder.AddRazorRuntimeCompilation();
+            }
+
             services.AddScoped<ConstructionObjectsController, ConstructionObjectsController>();
         }
     }

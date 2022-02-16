@@ -20,7 +20,7 @@
 
         $.post('api/title-pages/write', titlePageViewModel, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 titlePageSpinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -39,7 +39,7 @@
 
         $.post('api/table-of-contents/write', tableOfContentsViewModel, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 tableOfContentsSpinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -61,7 +61,7 @@
 
         $.post('api/projects/write', projectViewModel, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 projectSpinner.removeClass(dInlineBlockClass);
                 return;
             }

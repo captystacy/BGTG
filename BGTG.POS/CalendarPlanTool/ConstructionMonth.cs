@@ -19,7 +19,7 @@ namespace BGTG.POS.CalendarPlanTool
             CreationIndex = creationIndex;
         }
 
-        public bool Equals(ConstructionMonth other)
+        public bool Equals(ConstructionMonth? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -28,11 +28,11 @@ namespace BGTG.POS.CalendarPlanTool
                    CreationIndex == other.CreationIndex;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((ConstructionMonth)obj);
         }
 

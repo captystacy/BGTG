@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using BGTG.Web.Controllers.API;
+using BGTG.Web.Controllers.API.BGTG;
+using BGTG.Web.Infrastructure.QueryParams;
 using BGTG.Web.ViewModels;
-using Calabonga.Microservices.Core.QueryParams;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGTG.Web.Controllers
@@ -16,7 +16,7 @@ namespace BGTG.Web.Controllers
             _constructionObjectsController = constructionObjectsController;
         }
 
-        public IActionResult Index(PagedListQueryParams queryParams)
+        public IActionResult Index(DefaultPagedListQueryParams queryParams)
         {
             var operation = _constructionObjectsController.GetPaged(queryParams).Value;
 

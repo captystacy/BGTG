@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using BGTG.POS.CalendarPlanTool;
-using BGTG.POS.CalendarPlanTool.Interfaces;
+using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.EstimateTool;
 using BGTG.POS.Tests.EstimateTool;
 using Moq;
@@ -10,8 +10,8 @@ namespace BGTG.POS.Tests.CalendarPlanTool
 {
     public class CalendarPlanCreatorTests
     {
-        private CalendarPlanCreator _calendarPlanCreator;
-        private Mock<ICalendarWorksProvider> _calendarWorksProvider;
+        private CalendarPlanCreator _calendarPlanCreator = null!;
+        private Mock<ICalendarWorksProvider> _calendarWorksProvider = null!;
 
         [SetUp]
         public void SetUp()

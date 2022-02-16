@@ -5,7 +5,7 @@ namespace BGTG.POS.Tests.EnergyAndWaterTool
 {
     public class EnergyAndWaterCreatorTests
     {
-        private EnergyAndWaterCreator _energyAndWaterCreator;
+        private EnergyAndWaterCreator _energyAndWaterCreator = null!;
 
         [SetUp]
         public void SetUp()

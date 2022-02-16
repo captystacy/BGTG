@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<AnalysisLevel>5.0</AnalysisLevel>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Calabonga.EntityFrameworkCore.Entities.Base" Version="2.1.0" />
+		<PackageReference Include="Calabonga.EntityFrameworkCore.Entities.Base" Version="3.0.1" />
 	</ItemGroup>
 
 </Project>

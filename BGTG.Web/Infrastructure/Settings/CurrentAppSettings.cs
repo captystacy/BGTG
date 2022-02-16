@@ -1,5 +1,4 @@
-﻿
-namespace BGTG.Web.Infrastructure.Settings
+﻿namespace BGTG.Web.Infrastructure.Settings
 {
     /// <summary>
     /// Represents configuration file with current application settings

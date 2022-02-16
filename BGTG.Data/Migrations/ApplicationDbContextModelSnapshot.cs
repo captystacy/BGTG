@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace BGTG.POS.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -15,9 +17,10 @@ namespace BGTG.POS.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("BGTG.Entities.ConstructionObjectEntity", b =>
                 {
@@ -27,27 +30,27 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("Cipher")
                         .IsRequired()
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConstructionObjects");
+                    b.ToTable("ConstructionObjects", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.CalendarPlanEntity", b =>
@@ -70,8 +73,8 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<Guid>("POSId")
                         .HasColumnType("uniqueidentifier");
@@ -80,15 +83,15 @@ namespace BGTG.POS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("POSId")
                         .IsUnique();
 
-                    b.ToTable("CalendarPlans");
+                    b.ToTable("CalendarPlans", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.MainCalendarWorkEntity", b =>
@@ -111,14 +114,14 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("WorkName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CalendarPlanId");
 
-                    b.ToTable("MainCalendarWorks");
+                    b.ToTable("MainCalendarWorks", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.MainConstructionMonthEntity", b =>
@@ -149,7 +152,7 @@ namespace BGTG.POS.Data.Migrations
 
                     b.HasIndex("MainCalendarWorkId");
 
-                    b.ToTable("MainConstructionMonths");
+                    b.ToTable("MainConstructionMonths", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.PreparatoryCalendarWorkEntity", b =>
@@ -172,14 +175,14 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("WorkName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CalendarPlanId");
 
-                    b.ToTable("PreparatoryCalendarWorks");
+                    b.ToTable("PreparatoryCalendarWorks", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.PreparatoryConstructionMonthEntity", b =>
@@ -210,7 +213,7 @@ namespace BGTG.POS.Data.Migrations
 
                     b.HasIndex("PreparatoryCalendarWorkId");
 
-                    b.ToTable("PreparatoryConstructionMonths");
+                    b.ToTable("PreparatoryConstructionMonths", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByLCToolEntities.DurationByLCEntity", b =>
@@ -230,8 +233,8 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Duration")
                         .HasColumnType("money");
@@ -273,8 +276,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("WorkingDayDuration")
                         .HasColumnType("money");
@@ -284,7 +287,7 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("POSId")
                         .IsUnique();
 
-                    b.ToTable("DurationByLCs");
+                    b.ToTable("DurationByLCs", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.ExtrapolationDurationByTCPEntity", b =>
@@ -305,8 +308,8 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Duration")
                         .HasColumnType("money");
@@ -322,16 +325,16 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("PipelineDiameterPresentation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(16)")
-                        .HasMaxLength(16);
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.Property<decimal>("PipelineLength")
                         .HasColumnType("money");
 
                     b.Property<string>("PipelineMaterial")
                         .IsRequired()
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<decimal>("PreparatoryPeriod")
                         .HasColumnType("money");
@@ -346,8 +349,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("VolumeChangePercent")
                         .HasColumnType("money");
@@ -357,7 +360,7 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("POSId")
                         .IsUnique();
 
-                    b.ToTable("ExtrapolationDurationByTCPs");
+                    b.ToTable("ExtrapolationDurationByTCPs", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.ExtrapolationPipelineStandardEntity", b =>
@@ -382,7 +385,7 @@ namespace BGTG.POS.Data.Migrations
 
                     b.HasIndex("ExtrapolationDurationByTCPId");
 
-                    b.ToTable("ExtrapolationPipelineStandards");
+                    b.ToTable("ExtrapolationPipelineStandards", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.InterpolationDurationByTCPEntity", b =>
@@ -403,8 +406,8 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Duration")
                         .HasColumnType("money");
@@ -423,16 +426,16 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("PipelineDiameterPresentation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(16)")
-                        .HasMaxLength(16);
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.Property<decimal>("PipelineLength")
                         .HasColumnType("money");
 
                     b.Property<string>("PipelineMaterial")
                         .IsRequired()
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<decimal>("PreparatoryPeriod")
                         .HasColumnType("money");
@@ -444,8 +447,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("VolumeChange")
                         .HasColumnType("money");
@@ -455,7 +458,7 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("POSId")
                         .IsUnique();
 
-                    b.ToTable("InterpolationDurationByTCPs");
+                    b.ToTable("InterpolationDurationByTCPs", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.InterpolationPipelineStandardEntity", b =>
@@ -480,7 +483,7 @@ namespace BGTG.POS.Data.Migrations
 
                     b.HasIndex("InterpolationDurationByTCPId");
 
-                    b.ToTable("InterpolationPipelineStandards");
+                    b.ToTable("InterpolationPipelineStandards", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwiseExtrapolationDurationByTCPEntity", b =>
@@ -501,8 +504,8 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Duration")
                         .HasColumnType("money");
@@ -518,16 +521,16 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("PipelineDiameterPresentation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(16)")
-                        .HasMaxLength(16);
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.Property<decimal>("PipelineLength")
                         .HasColumnType("money");
 
                     b.Property<string>("PipelineMaterial")
                         .IsRequired()
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<decimal>("PreparatoryPeriod")
                         .HasColumnType("money");
@@ -545,8 +548,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("VolumeChangePercent")
                         .HasColumnType("money");
@@ -556,7 +559,7 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("POSId")
                         .IsUnique();
 
-                    b.ToTable("StepwiseExtrapolationDurationByTCPs");
+                    b.ToTable("StepwiseExtrapolationDurationByTCPs", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwiseExtrapolationPipelineStandardEntity", b =>
@@ -581,7 +584,7 @@ namespace BGTG.POS.Data.Migrations
 
                     b.HasIndex("StepwiseExtrapolationDurationByTCPId");
 
-                    b.ToTable("StepwiseExtrapolationPipelineStandards");
+                    b.ToTable("StepwiseExtrapolationPipelineStandards", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwisePipelineStandardEntity", b =>
@@ -607,7 +610,7 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("StepwiseExtrapolationDurationByTCPId")
                         .IsUnique();
 
-                    b.ToTable("StepwisePipelineStandards");
+                    b.ToTable("StepwisePipelineStandards", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.EnergyAndWaterToolEntities.EnergyAndWaterEntity", b =>
@@ -627,8 +630,8 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Energy")
                         .HasColumnType("money");
@@ -643,8 +646,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("VolumeCAIW")
                         .HasColumnType("money");
@@ -657,7 +660,7 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("POSId")
                         .IsUnique();
 
-                    b.ToTable("EnergyAndWaters");
+                    b.ToTable("EnergyAndWaters", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.POSEntity", b =>
@@ -674,15 +677,16 @@ namespace BGTG.POS.Data.Migrations
                     b.HasIndex("ConstructionObjectId")
                         .IsUnique();
 
-                    b.ToTable("POSes");
+                    b.ToTable("POSes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.EntityFrameworkCore.AutoHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Changed")
                         .HasColumnType("nvarchar(max)");
@@ -695,17 +699,17 @@ namespace BGTG.POS.Data.Migrations
 
                     b.Property<string>("RowId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TableName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AutoHistory");
+                    b.ToTable("AutoHistory", (string)null);
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.CalendarPlanEntity", b =>
@@ -715,6 +719,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.CalendarPlanToolEntities.CalendarPlanEntity", "POSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("POS");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.MainCalendarWorkEntity", b =>
@@ -724,6 +730,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("CalendarPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CalendarPlan");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.MainConstructionMonthEntity", b =>
@@ -733,6 +741,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("MainCalendarWorkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MainCalendarWork");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.PreparatoryCalendarWorkEntity", b =>
@@ -742,6 +752,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("CalendarPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CalendarPlan");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.PreparatoryConstructionMonthEntity", b =>
@@ -751,6 +763,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("PreparatoryCalendarWorkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PreparatoryCalendarWork");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByLCToolEntities.DurationByLCEntity", b =>
@@ -760,6 +774,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.DurationByLCToolEntities.DurationByLCEntity", "POSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("POS");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.ExtrapolationDurationByTCPEntity", b =>
@@ -769,6 +785,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.DurationByTCPToolEntities.ExtrapolationDurationByTCPEntity", "POSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("POS");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.ExtrapolationPipelineStandardEntity", b =>
@@ -778,6 +796,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("ExtrapolationDurationByTCPId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExtrapolationDurationByTCP");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.InterpolationDurationByTCPEntity", b =>
@@ -787,6 +807,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.DurationByTCPToolEntities.InterpolationDurationByTCPEntity", "POSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("POS");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.InterpolationPipelineStandardEntity", b =>
@@ -796,6 +818,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("InterpolationDurationByTCPId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("InterpolationDurationByTCP");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwiseExtrapolationDurationByTCPEntity", b =>
@@ -805,6 +829,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwiseExtrapolationDurationByTCPEntity", "POSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("POS");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwiseExtrapolationPipelineStandardEntity", b =>
@@ -814,6 +840,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("StepwiseExtrapolationDurationByTCPId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("StepwiseExtrapolationDurationByTCP");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwisePipelineStandardEntity", b =>
@@ -823,6 +851,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwisePipelineStandardEntity", "StepwiseExtrapolationDurationByTCPId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("StepwiseExtrapolationDurationByTCP");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.EnergyAndWaterToolEntities.EnergyAndWaterEntity", b =>
@@ -832,6 +862,8 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.EnergyAndWaterToolEntities.EnergyAndWaterEntity", "POSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("POS");
                 });
 
             modelBuilder.Entity("BGTG.Entities.POSEntities.POSEntity", b =>
@@ -841,6 +873,62 @@ namespace BGTG.POS.Data.Migrations
                         .HasForeignKey("BGTG.Entities.POSEntities.POSEntity", "ConstructionObjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ConstructionObject");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.ConstructionObjectEntity", b =>
+                {
+                    b.Navigation("POS");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.CalendarPlanEntity", b =>
+                {
+                    b.Navigation("MainCalendarWorks");
+
+                    b.Navigation("PreparatoryCalendarWorks");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.MainCalendarWorkEntity", b =>
+                {
+                    b.Navigation("ConstructionMonths");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.CalendarPlanToolEntities.PreparatoryCalendarWorkEntity", b =>
+                {
+                    b.Navigation("ConstructionMonths");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.ExtrapolationDurationByTCPEntity", b =>
+                {
+                    b.Navigation("CalculationPipelineStandards");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.InterpolationDurationByTCPEntity", b =>
+                {
+                    b.Navigation("CalculationPipelineStandards");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.DurationByTCPToolEntities.StepwiseExtrapolationDurationByTCPEntity", b =>
+                {
+                    b.Navigation("CalculationPipelineStandards");
+
+                    b.Navigation("StepwisePipelineStandard");
+                });
+
+            modelBuilder.Entity("BGTG.Entities.POSEntities.POSEntity", b =>
+                {
+                    b.Navigation("CalendarPlan");
+
+                    b.Navigation("DurationByLC");
+
+                    b.Navigation("EnergyAndWater");
+
+                    b.Navigation("ExtrapolationDurationByTCP");
+
+                    b.Navigation("InterpolationDurationByTCP");
+
+                    b.Navigation("StepwiseExtrapolationDurationByTCP");
                 });
 #pragma warning restore 612, 618
         }

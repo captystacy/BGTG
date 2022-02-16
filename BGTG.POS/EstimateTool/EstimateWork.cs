@@ -22,7 +22,7 @@ namespace BGTG.POS.EstimateTool
             Percentages = new List<decimal>();
         }
 
-        public bool Equals(EstimateWork other)
+        public bool Equals(EstimateWork? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -30,11 +30,11 @@ namespace BGTG.POS.EstimateTool
                    OtherProductsCost == other.OtherProductsCost && TotalCost == other.TotalCost;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((EstimateWork)obj);
         }
 

@@ -16,14 +16,14 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
             StepwisePipelineStandard = stepwisePipelineStandard;
         }
 
-        public bool Equals(StepwiseExtrapolationDurationByTCP other)
+        public bool Equals(StepwiseExtrapolationDurationByTCP? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return base.Equals(other) && StepwiseDuration == other.StepwiseDuration && base.Equals(other);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

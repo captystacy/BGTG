@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using BGTG.POS.DurationTools.DurationByTCPTool.Interfaces;
+using BGTG.POS.DurationTools.Base;
+using BGTG.POS.DurationTools.DurationByTCPTool.Base;
 using BGTG.POS.DurationTools.DurationByTCPTool.TCP;
 using BGTG.POS.DurationTools.DurationByTCPTool.TCP.Interfaces;
-using BGTG.POS.DurationTools.Interfaces;
 
 namespace BGTG.POS.DurationTools.DurationByTCPTool
 {
@@ -22,12 +22,12 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
             _durationRounder = durationRounder;
         }
 
-        public DurationByTCP Create(string pipelineMaterial, int pipelineDiameter, decimal pipelineLength, char appendixKey, string pipelineCategoryName)
+        public DurationByTCP? Create(string pipelineMaterial, int pipelineDiameter, decimal pipelineLength, char appendixKey, string pipelineCategoryName)
         {
             var appendix = _tcp212Helper.GetAppendix(appendixKey);
             var pipelineCharacteristic = _tcp212Helper.GetPipelineCharacteristic(appendix, pipelineMaterial, pipelineDiameter, pipelineCategoryName);
 
-            if (pipelineCharacteristic == null)
+            if (pipelineCharacteristic is null)
             {
                 return null;
             }
@@ -75,7 +75,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
         private ExtrapolationDurationByTCP CalculateExtrapolationAscending(string pipelineMaterial,
             int pipelineDiameter, string pipelineDiameterPresentation, decimal pipelineLength, char appendixKey, int appendixPage)
         {
-            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.Single();
+            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.First();
 
             var volumeChangePercent = decimal.Round(
                 (calculationPipelineStandard.PipelineLength - pipelineLength) /
@@ -101,7 +101,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
         private ExtrapolationDurationByTCP CalculateExtrapolationDescending(string pipelineMaterial,
             int pipelineDiameter, string pipelineDiameterPresentation, decimal pipelineLength, char appendixKey, int appendixPage)
         {
-            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.Single();
+            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.First();
 
             var volumeChangePercent = decimal.Round(
                 (pipelineLength - calculationPipelineStandard.PipelineLength) /
@@ -127,7 +127,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
         private StepwiseExtrapolationDurationByTCP CalculateExtrapolationStepwiseAscending(string pipelineMaterial,
             int pipelineDiameter, string pipelineDiameterPresentation, decimal pipelineLength, char appendixKey, int appendixPage)
         {
-            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.Single();
+            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.First();
 
             var stepwiseDuration = decimal.Round(calculationPipelineStandard.Duration * (100 - 50 * DurationChangeCoef) / 100, 1);
 
@@ -156,7 +156,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
         private StepwiseExtrapolationDurationByTCP CalculateExtrapolationStepwiseDescending(string pipelineMaterial,
             int pipelineDiameter, string pipelineDiameterPresentation, decimal pipelineLength, char appendixKey, int appendixPage)
         {
-            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.Single();
+            var calculationPipelineStandard = _durationByTCPEngineer.CalculationPipelineStandards.First();
 
             var stepwiseDuration = decimal.Round(calculationPipelineStandard.Duration * (100 + 100 * DurationChangeCoef) / 100, 1);
 

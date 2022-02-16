@@ -20,18 +20,18 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
             return Start <= value && value < End;
         }
 
-        public bool Equals(DiameterRange other)
+        public bool Equals(DiameterRange? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Start == other.Start && End == other.End && Presentation == other.Presentation;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((DiameterRange) obj);
         }
 

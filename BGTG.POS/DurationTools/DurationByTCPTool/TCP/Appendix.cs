@@ -18,18 +18,18 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
             PipelineCategories = pipelineCategories;
         }
 
-        public bool Equals(Appendix other)
+        public bool Equals(Appendix? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Name == other.Name && Page == other.Page && Key == other.Key && Equals(PipelineCategories, other.PipelineCategories);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Appendix)obj);
         }
 

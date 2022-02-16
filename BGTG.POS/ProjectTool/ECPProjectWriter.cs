@@ -1,7 +1,7 @@
 ﻿using System;
-using BGTG.Core;
+using BGTG.Entities.Core;
 using BGTG.POS.DurationTools.DurationByLCTool;
-using BGTG.POS.ProjectTool.Interfaces;
+using BGTG.POS.ProjectTool.Base;
 using Xceed.Words.NET;
 
 namespace BGTG.POS.ProjectTool

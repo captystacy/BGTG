@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BGTG.Web.AppStart.ConfigureServices
 {
+    /// <summary>
+    /// ASP.NET Core services registration and configurations
+    /// </summary>
     public static class ConfigureServicesAuthentication
     {
-        public static void ConfigureServices(IServiceCollection services)
+        /// <summary>
+        /// ConfigureServices Services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddAuthentication(NegotiateDefaults.AuthenticationScheme)

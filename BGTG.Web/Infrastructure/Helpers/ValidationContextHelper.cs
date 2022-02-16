@@ -15,7 +15,7 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// <param name="results"></param>
         /// <param name="validationContext"></param>
         /// <returns></returns>
-        public static bool TryValidate(object obj, out Collection<ValidationResult> results, ValidationContext validationContext = null)
+        public static bool TryValidate(object obj, out Collection<ValidationResult> results, ValidationContext? validationContext = null)
         {
             var context = validationContext ?? new ValidationContext(obj, serviceProvider: null, items: null);
             results = new Collection<ValidationResult>();

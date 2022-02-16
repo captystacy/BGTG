@@ -1,5 +1,5 @@
 ﻿using System;
-using BGTG.POS.DurationTools.Interfaces;
+using BGTG.POS.DurationTools.Base;
 
 namespace BGTG.POS.DurationTools
 {

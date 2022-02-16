@@ -21,7 +21,7 @@ namespace BGTG.POS.EnergyAndWaterTool
             Oxygen = oxygen;
         }
 
-        public bool Equals(EnergyAndWater other)
+        public bool Equals(EnergyAndWater? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -30,12 +30,12 @@ namespace BGTG.POS.EnergyAndWaterTool
                    CompressedAir == other.CompressedAir && Oxygen == other.Oxygen;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((EnergyAndWater) obj);
+            if (obj.GetType() != GetType()) return false;
+            return Equals((EnergyAndWater)obj);
         }
 
         public override int GetHashCode()

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BGTG.Core;
+using Calabonga.Microservices.Core.Extensions;
 
 namespace BGTG.Web.Infrastructure.Helpers
 {
@@ -15,7 +15,7 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// </summary>
         /// <param name="emails"></param>
         /// <returns></returns>
-        public static IEnumerable<string> GetValidEmails(string emails)
+        public static IEnumerable<string>? GetValidEmails(string emails)
         {
             if (string.IsNullOrWhiteSpace(emails))
             {

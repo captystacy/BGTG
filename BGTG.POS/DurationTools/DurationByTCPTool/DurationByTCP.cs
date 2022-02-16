@@ -34,7 +34,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
             PipelineDiameter = pipelineDiameter;
         }
 
-        public bool Equals(DurationByTCP other)
+        public bool Equals(DurationByTCP? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -47,7 +47,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
                    AppendixKey == other.AppendixKey && AppendixPage == other.AppendixPage;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

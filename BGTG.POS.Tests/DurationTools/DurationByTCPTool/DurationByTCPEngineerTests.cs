@@ -6,7 +6,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
 {
     public class DurationByTCPEngineerTests
     {
-        private DurationByTCPEngineer _durationByTCPEngineer;
+        private DurationByTCPEngineer _durationByTCPEngineer = null!;
 
         [SetUp]
         public void SetUp()

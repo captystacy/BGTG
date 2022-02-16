@@ -7,7 +7,7 @@ namespace BGTG.POS.DurationTools.DurationByLCTool
         public decimal Duration { get; }
         public decimal TotalLaborCosts { get; }
         public decimal EstimateLaborCosts { get; }
-        public decimal TechnologicalLaborCosts { get; }
+        public virtual decimal TechnologicalLaborCosts { get; }
         public decimal WorkingDayDuration { get; }
         public decimal Shift { get; }
         public decimal NumberOfWorkingDays { get; }
@@ -39,7 +39,7 @@ namespace BGTG.POS.DurationTools.DurationByLCTool
             RoundingIncluded = roundingIncluded;
         }
 
-        public bool Equals(DurationByLC other)
+        public bool Equals(DurationByLC? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -53,11 +53,11 @@ namespace BGTG.POS.DurationTools.DurationByLCTool
                    AcceptanceTimeIncluded == other.AcceptanceTimeIncluded && RoundingIncluded == other.RoundingIncluded;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((DurationByLC) obj);
         }
 

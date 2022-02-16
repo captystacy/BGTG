@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BGTG.POS.EstimateTool.Interfaces;
+using BGTG.POS.EstimateTool.Base;
 
 namespace BGTG.POS.EstimateTool
 {

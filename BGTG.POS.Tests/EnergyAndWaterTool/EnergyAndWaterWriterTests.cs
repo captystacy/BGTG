@@ -12,7 +12,7 @@ namespace BGTG.POS.Tests.EnergyAndWaterTool
         private const string EnergyAndWaterFileName = "EnergyAndWater.docx";
         private const string EnergyAndWaterTemplatesDirectory = @"..\..\..\EnergyAndWaterTool\EnergyAndWaterTemplates";
 
-        private EnergyAndWaterWriter _energyAndWaterWriter;
+        private EnergyAndWaterWriter _energyAndWaterWriter = null!;
 
         [SetUp]
         public void SetUp()

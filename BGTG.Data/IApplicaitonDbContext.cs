@@ -1,9 +1,9 @@
-﻿using BGTG.Entities;
-using BGTG.Entities.POSEntities;
-using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
-using BGTG.Entities.POSEntities.DurationByLCToolEntities;
-using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
-using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
+﻿using BGTG.Entities.BGTG;
+using BGTG.Entities.POS;
+using BGTG.Entities.POS.CalendarPlanToolEntities;
+using BGTG.Entities.POS.DurationByLCToolEntities;
+using BGTG.Entities.POS.DurationByTCPToolEntities;
+using BGTG.Entities.POS.EnergyAndWaterToolEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -54,8 +54,6 @@ namespace BGTG.Data
         ChangeTracker ChangeTracker { get; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-
-        DbQuery<TQuery> Query<TQuery>() where TQuery : class;
 
         int SaveChanges();
 

@@ -121,7 +121,7 @@
             durationByTCP,
             function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     durationByTCPSpinner.removeClass(dInlineBlockClass);
                     return;
                 }

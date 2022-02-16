@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BGTG.Core.Exceptions;
+using Calabonga.Microservices.Core.Exceptions;
 
 namespace BGTG.Web.Infrastructure.Helpers
 {
@@ -30,10 +30,8 @@ namespace BGTG.Web.Infrastructure.Helpers
                         throw new FileNotFoundException();
                     }
 
-                    using (var fs = File.OpenRead(filePath))
-                    {
-                        return SHA1.Create().ComputeHash(fs);
-                    }
+                    using var fs = File.OpenRead(filePath);
+                    return SHA1.Create().ComputeHash(fs);
                 }
                 catch (IOException ex)
                 {
@@ -57,7 +55,7 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static async Task<string> GetFileContent(string filePath)
+        public static async Task<string?> GetFileContent(string filePath)
         {
             try
             {
@@ -108,7 +106,7 @@ namespace BGTG.Web.Infrastructure.Helpers
                 var folder = Path.GetDirectoryName(filePath);
                 if (!Directory.Exists(folder))
                 {
-                    Directory.CreateDirectory(folder);
+                    Directory.CreateDirectory(folder!);
                 }
 
                 if (File.Exists(filePath))
@@ -116,11 +114,9 @@ namespace BGTG.Web.Infrastructure.Helpers
                     throw new MicroserviceFileAlreadyExistsException();
                 }
 
-                using (var fs = File.Create(filePath))
-                {
-                    var info = new UTF8Encoding(true).GetBytes(content);
-                    await fs.WriteAsync(info, 0, info.Length);
-                }
+                await using var fs = File.Create(filePath);
+                var info = new UTF8Encoding(true).GetBytes(content);
+                await fs.WriteAsync(info, 0, info.Length);
             }
             catch
             {
@@ -146,20 +142,18 @@ namespace BGTG.Web.Infrastructure.Helpers
         /// Returns Working folder path
         /// </summary>
         /// <returns></returns>
-        public static string GetWorkingFolder()
+        public static string? GetWorkingFolder()
         {
-            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var location = System.Reflection.Assembly.GetEntryAssembly()?.Location;
             return Path.GetDirectoryName(location);
         }
 
         private static string GenerateETag(byte[] data)
         {
-            using (var md5 = MD5.Create())
-            {
-                var hash = md5.ComputeHash(data);
-                var hex = BitConverter.ToString(hash);
-                return hex.Replace("-", "");
-            }
+            using var md5 = MD5.Create();
+            var hash = md5.ComputeHash(data);
+            var hex = BitConverter.ToString(hash);
+            return hex.Replace("-", "");
         }
 
         private static byte[] Combine(byte[] a, byte[] b)

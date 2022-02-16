@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BGTG.POS.CalendarPlanTool.Interfaces;
+using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.EstimateTool;
 
 namespace BGTG.POS.CalendarPlanTool
@@ -22,7 +22,7 @@ namespace BGTG.POS.CalendarPlanTool
 
             var mainCalendarWorks = _calendarWorksProvider.CreateMainCalendarWorks(
                 estimate.MainEstimateWorks,
-                preparatoryCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName),
+                preparatoryCalendarWorks.First(x => x.WorkName == CalendarPlanInfo.TotalWorkName),
                 estimate.ConstructionStartDate,
                 estimate.ConstructionDurationCeiling,
                 otherExpensesPercentages,

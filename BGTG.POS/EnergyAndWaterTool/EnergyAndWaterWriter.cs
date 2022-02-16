@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using BGTG.Core;
-using BGTG.POS.EnergyAndWaterTool.Interfaces;
+using BGTG.Entities.Core;
+using BGTG.POS.EnergyAndWaterTool.Base;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 

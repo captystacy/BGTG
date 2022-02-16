@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BGTG.POS.EstimateTool;
-using BGTG.POS.EstimateTool.Interfaces;
+using BGTG.POS.EstimateTool.Base;
 using Moq;
 using NUnit.Framework;
 
@@ -10,9 +10,9 @@ namespace BGTG.POS.Tests.EstimateTool
 {
     public class EstimateManagerTests
     {
-        private EstimateManager _estimateManager;
-        private Mock<IEstimateReader> _estimateReaderMock;
-        private Mock<IEstimateConnector> _estimateConnectorMock;
+        private EstimateManager _estimateManager = null!;
+        private Mock<IEstimateReader> _estimateReaderMock = null!;
+        private Mock<IEstimateConnector> _estimateConnectorMock = null!;
 
         [SetUp]
         public void SetUp()
@@ -26,7 +26,7 @@ namespace BGTG.POS.Tests.EstimateTool
         public void GetEstimate_OneEstimateStream_OneEstimate()
         {
             var stream = new Mock<Stream>();
-            var streams = new List<Stream>() { stream.Object };
+            var streams = new List<Stream> { stream.Object };
             var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork>(), DateTime.Today, 0, 0, 0);
             var estimates = new List<Estimate> { estimate };
             _estimateReaderMock.Setup(x => x.Read(stream.Object, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate);

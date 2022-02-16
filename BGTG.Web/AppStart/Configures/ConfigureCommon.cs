@@ -1,6 +1,6 @@
 ﻿using BGTG.Web.AppStart.ConfigureServices;
+using BGTG.Web.Infrastructure.Auth;
 using BGTG.Web.Middlewares;
-using Calabonga.Microservices.Web.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,8 +9,17 @@ using Microsoft.Extensions.Hosting;
 
 namespace BGTG.Web.AppStart.Configures
 {
+    /// <summary>
+    /// Pipeline configuration
+    /// </summary>
     public static class ConfigureCommon
     {
+        /// <summary>
+        /// Configure pipeline
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        /// <param name="mapper"></param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, AutoMapper.IConfigurationProvider mapper)
         {
             if (env.IsDevelopment())
@@ -43,7 +52,7 @@ namespace BGTG.Web.AppStart.Configures
             app.UseSwaggerUI(ConfigureServicesSwagger.SwaggerSettings);
 
             // Singleton setup for User Identity
-            UserIdentity.Instance.Configure(app.ApplicationServices.GetService<IHttpContextAccessor>());
+            IdentityHelper.Instance.Configure(app.ApplicationServices.GetService<IHttpContextAccessor>()!);
         }
     }
 }

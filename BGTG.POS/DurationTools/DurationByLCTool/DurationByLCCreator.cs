@@ -1,5 +1,5 @@
-﻿using BGTG.POS.DurationTools.DurationByLCTool.Interfaces;
-using BGTG.POS.DurationTools.Interfaces;
+﻿using BGTG.POS.DurationTools.Base;
+using BGTG.POS.DurationTools.DurationByLCTool.Base;
 
 namespace BGTG.POS.DurationTools.DurationByLCTool
 {

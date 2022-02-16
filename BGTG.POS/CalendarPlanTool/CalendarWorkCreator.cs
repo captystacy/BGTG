@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BGTG.POS.CalendarPlanTool.Interfaces;
+using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.EstimateTool;
 
 namespace BGTG.POS.CalendarPlanTool
@@ -47,9 +47,9 @@ namespace BGTG.POS.CalendarPlanTool
             var constructionMonths = Enumerable.Range(0, constructionDurationCeiling).Select(i =>
                     new ConstructionMonth(
                         constructionStartDate.AddMonths(i),
-                        mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume).Value,
-                        mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.VolumeCAIW).Value,
-                        (mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.SingleOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume) / initialTotalMainWork.TotalCost).Value,
+                        mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.FirstOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume)!.Value,
+                        mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.FirstOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.VolumeCAIW)!.Value,
+                        (mainCalendarWorks.Sum(calendarWork => calendarWork.ConstructionMonths.FirstOrDefault(constructionMonth => constructionMonth.Date == constructionStartDate.AddMonths(i))?.InvestmentVolume) / initialTotalMainWork.TotalCost)!.Value,
                         i
                 )).ToList();
 

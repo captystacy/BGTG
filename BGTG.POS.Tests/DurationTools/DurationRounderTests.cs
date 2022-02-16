@@ -5,7 +5,7 @@ namespace BGTG.POS.Tests.DurationTools
 {
     public class DurationRounderTests
     {
-        private DurationRounder _durationRounder;
+        private DurationRounder _durationRounder = null!;
 
         [SetUp]
         public void SetUp()

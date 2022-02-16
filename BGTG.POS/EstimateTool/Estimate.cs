@@ -28,7 +28,7 @@ namespace BGTG.POS.EstimateTool
             LaborCosts = laborCosts;
         }
 
-        public bool Equals(Estimate other)
+        public bool Equals(Estimate? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -40,7 +40,7 @@ namespace BGTG.POS.EstimateTool
                    MainEstimateWorks.SequenceEqual(other.MainEstimateWorks);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

@@ -41,7 +41,7 @@ namespace BGTG.Web.Middlewares
             try
             {
                 var result = JsonConvert.SerializeObject(ExceptionHelper.GetMessages(exception), Formatting.Indented);
-                if (result?.Length > 4000)
+                if (result.Length > 4000)
                 {
                     return context.Response.WriteAsync("Error message to long. Please use DEBUG in method HandleExceptionAsync to handle a whole of text of the exception");
                 }

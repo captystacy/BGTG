@@ -1,0 +1,27 @@
+﻿using BGTG.Data.ModelConfigurations.Base;
+using BGTG.Entities.POS.CalendarPlanToolEntities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace BGTG.Data.ModelConfigurations.POS.CalendarPlanToolModelConfigurations
+{
+    public class PreparatoryCalendarWorkModelConfiguration : IdentityModelConfigurationBase<PreparatoryCalendarWorkEntity>
+    {
+        protected override void AddBuilder(EntityTypeBuilder<PreparatoryCalendarWorkEntity> builder)
+        {
+            builder.Property(x => x.EstimateChapter).IsRequired();
+            builder.Property(x => x.TotalCost).HasColumnType("money").IsRequired();
+            builder.Property(x => x.TotalCostIncludingCAIW).HasColumnType("money").IsRequired();
+            builder.Property(x => x.WorkName).HasMaxLength(128).IsRequired();
+            builder.Property(x => x.CalendarPlanId).IsRequired();
+
+            builder.HasOne(x => x.CalendarPlan);
+            builder.HasMany(x => x.ConstructionMonths);
+        }
+
+        protected override string TableName()
+        {
+            return "PreparatoryCalendarWorks";
+        }
+    }
+}
