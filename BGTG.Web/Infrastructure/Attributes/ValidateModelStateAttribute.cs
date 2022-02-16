@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BGTG.Web.Infrastructure.Attributes
 {
-    /// <summary>
-    /// Custom validation handler for availability to whit OperationResult
-    /// </summary>
     public class ValidateModelStateAttribute : ActionFilterAttribute
     {
-        /// <inheritdoc />
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.ModelState.IsValid) return;
+            if (context.ModelState.IsValid)
+            {
+                return;
+            }
+
             var operation = OperationResult.CreateResult<object>();
             var messages = context.ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage));
             var message = string.Join(" ", messages);

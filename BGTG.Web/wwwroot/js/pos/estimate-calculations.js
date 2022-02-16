@@ -54,7 +54,7 @@
                 type: 'POST',
                 success: function (operation) {
                     if (!operation.ok) {
-                        appendAlerts(operation);
+                        appendValidationAlert(operation);
                         calendarPlanSpinner.removeClass(dInlineBlockClass);
                         return;
                     }
@@ -245,7 +245,7 @@
             type: 'POST',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     calculatePercentagesSpinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -303,7 +303,7 @@
             type: 'POST',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     calendarPlanSpinner.removeClass(dInlineBlockClass);
                     calendarPlanDownloadSpinner.removeClass(dInlineBlockClass);
                     return;
@@ -379,7 +379,7 @@
             type: 'POST',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     durationByLCSpinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -405,7 +405,7 @@
             type: 'POST',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     energyAndWaterSpinner.removeClass(dInlineBlockClass);
                     return;
                 }

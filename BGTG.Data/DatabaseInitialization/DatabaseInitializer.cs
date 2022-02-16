@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Linq;
-using BGTG.Entities;
-using BGTG.Entities.POSEntities;
-using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +14,7 @@ namespace BGTG.Data.DatabaseInitialization
             using var scope = serviceProvider.CreateScope();
             await using var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-            await context.Database.MigrateAsync();
+            await context!.Database.MigrateAsync();
 
             // TODO: Add your seed data here
 

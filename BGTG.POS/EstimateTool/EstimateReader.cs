@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using BGTG.POS.EstimateTool.Interfaces;
+using BGTG.POS.EstimateTool.Base;
 using OfficeOpenXml;
 
 namespace BGTG.POS.EstimateTool
@@ -138,7 +138,7 @@ namespace BGTG.POS.EstimateTool
 
             var constructionDurationCeiling = (int)decimal.Ceiling(constructionDuration);
 
-            return new Estimate(preparatoryEstimateWorks, mainEstimateWorks, constructionStartDate, constructionDuration, constructionDurationCeiling,  laborCosts);
+            return new Estimate(preparatoryEstimateWorks, mainEstimateWorks, constructionStartDate, constructionDuration, constructionDurationCeiling, laborCosts);
         }
 
         private int ParseLaborCosts(ExcelWorksheet workSheet, int row)
@@ -186,7 +186,7 @@ namespace BGTG.POS.EstimateTool
             }
 
             var monthNameLower = Regex.Match(constructionStartDateCellStr, @"[А-Я-а-я]+").Value.ToLower();
-            var month = Array.IndexOf(CultureInfo.CurrentCulture.DateTimeFormat.MonthNames, char.ToUpper(monthNameLower[0]) + monthNameLower.Substring(1)) + 1;
+            var month = Array.IndexOf(CultureInfo.CurrentCulture.DateTimeFormat.MonthNames, monthNameLower) + 1;
 
             if (month < 1 || month > 12)
             {

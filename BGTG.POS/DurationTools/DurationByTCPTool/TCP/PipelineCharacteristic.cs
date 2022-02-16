@@ -15,7 +15,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
             PipelineStandards = pipelineStandards;
         }
 
-        public bool Equals(PipelineCharacteristic other)
+        public bool Equals(PipelineCharacteristic? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -23,11 +23,11 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
                    PipelineStandards.SequenceEqual(other.PipelineStandards);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((PipelineCharacteristic) obj);
         }
 
@@ -36,7 +36,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
             return HashCode.Combine(DiameterRange, PipelineStandards);
         }
 
-        public static bool operator ==(PipelineCharacteristic left, PipelineCharacteristic right)
+        public static bool operator ==(PipelineCharacteristic? left, PipelineCharacteristic right)
         {
             return Equals(left, right);
         }

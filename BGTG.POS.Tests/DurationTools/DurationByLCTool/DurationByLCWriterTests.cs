@@ -7,7 +7,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
 {
     public class DurationByLCWriterTests
     {
-        private DurationByLCWriter _durationByLCWriter;
+        private DurationByLCWriter _durationByLCWriter = null!;
 
         private const string DurationByLCFileName = "DurationByLC.docx";
         private const string DurationByLCTemplatesDirectory = @"..\..\..\DurationTools\DurationByLCTool\DurationByLCTemplates";
@@ -33,19 +33,17 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
-            using (var document = DocX.Load(savePath))
-            {
-                StringAssert.Contains(durationByLC.AcceptanceTime.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-            }
+            using var document = DocX.Load(savePath);
+            StringAssert.Contains(durationByLC.AcceptanceTime.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
         }
 
         [Test]
@@ -58,19 +56,17 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
-            using (var document = DocX.Load(savePath))
-            {
-                StringAssert.DoesNotContain(durationByLC.AcceptanceTime.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-            }
+            using var document = DocX.Load(savePath);
+            StringAssert.DoesNotContain(durationByLC.AcceptanceTime.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
         }
 
         [Test]
@@ -83,19 +79,17 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
-            using (var document = DocX.Load(savePath))
-            {
-                StringAssert.DoesNotContain(durationByLC.AcceptanceTime.ToString(), document.Text);
-                StringAssert.DoesNotContain(durationByLC.TotalDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-            }
+            using var document = DocX.Load(savePath);
+            StringAssert.DoesNotContain(durationByLC.AcceptanceTime.ToString(), document.Text);
+            StringAssert.DoesNotContain(durationByLC.TotalDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
         }
 
         [Test]
@@ -108,19 +102,17 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
 
             _durationByLCWriter.Write(durationByLC, templatePath, savePath);
 
-            using (var document = DocX.Load(savePath))
-            {
-                StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.AcceptanceTime.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-                StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-            }
+            using var document = DocX.Load(savePath);
+            StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.AcceptanceTime.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
+            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
         }
     }
 }

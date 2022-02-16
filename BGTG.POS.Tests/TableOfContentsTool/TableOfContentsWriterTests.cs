@@ -7,7 +7,7 @@ namespace BGTG.POS.Tests.TableOfContentsTool
 {
     public class TableOfContentsWriterTests
     {
-        private TableOfContentsWriter _tableOfContentsWriter;
+        private TableOfContentsWriter _tableOfContentsWriter = null!;
 
         private const string TableOfContentsFileName = "TableOfContents.docx";
         private const string TableOfContentsTemplatesDirectory = @"..\..\..\TableOfContentsTool\TableOfContentsTemplates\ECP\Saiko";

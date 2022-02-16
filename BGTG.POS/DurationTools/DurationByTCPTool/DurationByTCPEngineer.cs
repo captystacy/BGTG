@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BGTG.POS.DurationTools.DurationByTCPTool.Interfaces;
+using BGTG.POS.DurationTools.DurationByTCPTool.Base;
 using BGTG.POS.DurationTools.DurationByTCPTool.TCP;
 
 namespace BGTG.POS.DurationTools.DurationByTCPTool
@@ -8,7 +8,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
     public class DurationByTCPEngineer : IDurationByTCPEngineer
     {
         public DurationCalculationType DurationCalculationType { get; private set; }
-        public IEnumerable<PipelineStandard> CalculationPipelineStandards { get; set; }
+        public IEnumerable<PipelineStandard> CalculationPipelineStandards { get; set; } = null!;
 
         public void DefineCalculationType(IEnumerable<PipelineStandard> pipelineStandards, decimal pipelineLength)
         {

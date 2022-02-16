@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using BGTG.Core;
-using BGTG.POS.CalendarPlanTool.Interfaces;
+using BGTG.Entities.Core;
+using BGTG.POS.CalendarPlanTool.Base;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
@@ -24,7 +24,7 @@ namespace BGTG.POS.CalendarPlanTool
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
             using var preparatoryDocument = DocX.Load(preparatoryTemplatePath);
-            var constructionMonths = calendarPlan.MainCalendarWorks.Single(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.ToArray();
+            var constructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == CalendarPlanInfo.TotalWorkName).ConstructionMonths.ToArray();
 
             var preparatoryTable = preparatoryDocument.Tables[0];
             ModifyCalendarPlanTable(preparatoryTable, calendarPlan.PreparatoryCalendarWorks, constructionMonths);

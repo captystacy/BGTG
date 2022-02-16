@@ -1,6 +1,6 @@
 ﻿using System;
-using BGTG.Core;
-using BGTG.POS.TableOfContentsTool.Interfaces;
+using BGTG.Entities.Core;
+using BGTG.POS.TableOfContentsTool.Base;
 using Xceed.Words.NET;
 
 namespace BGTG.POS.TableOfContentsTool

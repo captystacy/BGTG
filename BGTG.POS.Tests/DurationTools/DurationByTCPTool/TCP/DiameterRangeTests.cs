@@ -5,7 +5,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool.TCP
 {
     public class DiameterRangeTests
     {
-        private DiameterRange _diameterRange;
+        private DiameterRange _diameterRange = null!;
 
         [TestCase(0, true)]
         [TestCase(200, true)]

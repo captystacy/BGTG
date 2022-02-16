@@ -1,12 +1,19 @@
 ﻿using System.Linq;
-using Calabonga.Microservices.Web.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BGTG.Web.AppStart.ConfigureServices
 {
+    /// <summary>
+    /// Cors configurations
+    /// </summary>
     public class ConfigureServicesCors
     {
+        /// <summary>
+        /// ConfigureServices
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             var origins = configuration.GetSection("Cors")?.GetSection("Origins")?.Value?.Split(',');
@@ -35,8 +42,6 @@ namespace BGTG.Web.AppStart.ConfigureServices
                     }
                 });
             });
-
-            services.UseMicroserviceAuthorizationPolicy();
         }
     }
 }

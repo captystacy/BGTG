@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BGTG.POS.CalendarPlanTool.Interfaces;
+using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.EstimateTool;
 
 namespace BGTG.POS.CalendarPlanTool
@@ -59,8 +59,7 @@ namespace BGTG.POS.CalendarPlanTool
             var mainCalendarWorks = estimateWorks.Select(x => _calendarWorkCreator.Create(x, constructionStartDate))
                 .ToList();
 
-            var initialTotalMainWork =
-                mainCalendarWorks.Find(x => x.EstimateChapter == (int)totalWorkChapter);
+            var initialTotalMainWork = mainCalendarWorks.Find(x => x.EstimateChapter == (int)totalWorkChapter)!;
             mainCalendarWorks.Remove(initialTotalMainWork);
 
             var mainOverallPreparatoryWork = new CalendarWork(CalendarPlanInfo.MainOverallPreparatoryWorkName,

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using BGTG.Core;
-using BGTG.POS.DurationTools.DurationByLCTool.Interfaces;
+using BGTG.Entities.Core;
+using BGTG.POS.DurationTools.DurationByLCTool.Base;
 using Xceed.Words.NET;
 
 namespace BGTG.POS.DurationTools.DurationByLCTool

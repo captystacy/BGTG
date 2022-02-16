@@ -8,7 +8,7 @@
 
         $.post(`api/calendar-plans/write-by-id/${calendarPlanId}`, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -29,7 +29,7 @@
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -49,7 +49,7 @@
 
         $.post(`api/duration-by-lcs/write-by-id/${durationByLCId}`, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -70,7 +70,7 @@
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -90,7 +90,7 @@
 
         $.post(`api/duration-by-tcps/write-by-id/${durationByTCPId}`, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -111,7 +111,7 @@
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }
@@ -131,7 +131,7 @@
 
         $.post(`api/energy-and-waters/write-by-id/${energyAndWaterId}`, function (operation) {
             if (!operation.ok) {
-                appendAlerts(operation);
+                appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
@@ -152,7 +152,7 @@
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
-                    appendAlerts(operation);
+                    appendValidationAlert(operation);
                     spinner.removeClass(dInlineBlockClass);
                     return;
                 }

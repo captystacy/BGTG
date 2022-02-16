@@ -16,18 +16,18 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
             StandardChangePercent = standardChangePercent;
         }
 
-        public bool Equals(ExtrapolationDurationByTCP other)
+        public bool Equals(ExtrapolationDurationByTCP? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return VolumeChangePercent == other.VolumeChangePercent && StandardChangePercent == other.StandardChangePercent && base.Equals(other);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((ExtrapolationDurationByTCP)obj);
         }
 

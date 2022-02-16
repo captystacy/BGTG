@@ -1,5 +1,4 @@
-﻿
-namespace BGTG.Web.Infrastructure.Settings.Base
+﻿namespace BGTG.Web.Infrastructure.Settings.Base
 {
     /// <summary>
     /// Base service behavior

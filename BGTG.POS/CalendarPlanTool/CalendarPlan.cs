@@ -21,7 +21,7 @@ namespace BGTG.POS.CalendarPlanTool
             ConstructionDurationCeiling = constructionDurationCeiling;
         }
 
-        public bool Equals(CalendarPlan other)
+        public bool Equals(CalendarPlan? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -32,12 +32,12 @@ namespace BGTG.POS.CalendarPlanTool
                    ConstructionDurationCeiling == other.ConstructionDurationCeiling;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((CalendarPlan) obj);
+            return Equals((CalendarPlan)obj);
         }
 
         public override int GetHashCode()
@@ -45,19 +45,14 @@ namespace BGTG.POS.CalendarPlanTool
             return HashCode.Combine(PreparatoryCalendarWorks, MainCalendarWorks, ConstructionStartDate, ConstructionDuration, ConstructionDurationCeiling);
         }
 
-        public static bool operator ==(CalendarPlan left, CalendarPlan right)
+        public static bool operator ==(CalendarPlan? left, CalendarPlan? right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(CalendarPlan left, CalendarPlan right)
+        public static bool operator !=(CalendarPlan? left, CalendarPlan? right)
         {
             return !Equals(left, right);
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(PreparatoryCalendarWorks)}: {PreparatoryCalendarWorks}, {nameof(MainCalendarWorks)}: {MainCalendarWorks}, {nameof(ConstructionStartDate)}: {ConstructionStartDate}, {nameof(ConstructionDurationCeiling)}: {ConstructionDurationCeiling}";
         }
     }
 }

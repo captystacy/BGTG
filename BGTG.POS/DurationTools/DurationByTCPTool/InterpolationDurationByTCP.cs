@@ -16,18 +16,18 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
             VolumeChange = volumeChange;
         }
 
-        public bool Equals(InterpolationDurationByTCP other)
+        public bool Equals(InterpolationDurationByTCP? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return base.Equals(other) && DurationChange == other.DurationChange && VolumeChange == other.VolumeChange;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((InterpolationDurationByTCP) obj);
         }
 

@@ -7,7 +7,7 @@ namespace BGTG.POS.Tests.EstimateTool
 {
     public class EstimateConnectorTests
     {
-        private EstimateConnector _estimateConnector;
+        private EstimateConnector _estimateConnector = null!;
 
         [SetUp]
         public void SetUp()

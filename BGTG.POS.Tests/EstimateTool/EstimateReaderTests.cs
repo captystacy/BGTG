@@ -6,7 +6,7 @@ namespace BGTG.POS.Tests.EstimateTool
 {
     public class EstimateReaderTests
     {
-        private EstimateReader _estimateReader;
+        private EstimateReader _estimateReader = null!;
 
         private const string EstimateSourceFilesDirectory = @"..\..\..\EstimateTool\EstimateSourceFiles";
 

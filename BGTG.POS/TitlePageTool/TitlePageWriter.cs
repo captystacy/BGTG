@@ -1,5 +1,5 @@
 ﻿using System;
-using BGTG.POS.TitlePageTool.Interfaces;
+using BGTG.POS.TitlePageTool.Base;
 using Xceed.Words.NET;
 
 namespace BGTG.POS.TitlePageTool

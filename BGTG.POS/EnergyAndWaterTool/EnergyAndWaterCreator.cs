@@ -1,5 +1,5 @@
 ﻿using System;
-using BGTG.POS.EnergyAndWaterTool.Interfaces;
+using BGTG.POS.EnergyAndWaterTool.Base;
 
 namespace BGTG.POS.EnergyAndWaterTool
 {

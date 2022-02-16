@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using BGTG.Web.AppStart.SwaggerFilters;
+using BGTG.Web.Infrastructure.Attributes;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -10,23 +12,53 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace BGTG.Web.AppStart.ConfigureServices
 {
+    /// <summary>
+    /// Swagger configuration
+    /// </summary>
     public static class ConfigureServicesSwagger
     {
         private const string AppTitle = "Microservice API";
         private static readonly string AppVersion = $"{ThisAssembly.Git.SemVer.Major}.{ThisAssembly.Git.SemVer.Minor}.{ThisAssembly.Git.SemVer.Patch}";
         private const string SwaggerConfig = "/swagger/v1/swagger.json";
-        private const string SwaggerUrl = "api/manual";
 
+        /// <summary>
+        /// ConfigureServices Swagger services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSwaggerGen(options =>
+            services!.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = AppTitle,
                     Version = AppVersion,
-                    Description = "Microservice API module API documentation. This template based on ASP.NET Core 3.1."
+                    Description = "Microservice module API. This template based on .NET 6.0."
                 });
+
+                options.TagActionsBy(api =>
+                {
+                    string tag;
+                    if (api.ActionDescriptor is ControllerActionDescriptor descriptor)
+                    {
+                        var attribute = descriptor.EndpointMetadata.OfType<FeatureGroupNameAttribute>().FirstOrDefault();
+                        tag = attribute?.GroupName ?? descriptor.ControllerName;
+                    }
+                    else
+                    {
+                        tag = api.RelativePath!;
+                    }
+
+                    var tags = new List<string>();
+                    if (!string.IsNullOrEmpty(tag))
+                    {
+                        tags.Add(tag);
+                    }
+                    return tags;
+                });
+
+
                 options.ResolveConflictingActions(x => x.First());
 
                 var url = configuration.GetSection("IdentityServer").GetValue<string>("Url");
@@ -38,7 +70,7 @@ namespace BGTG.Web.AppStart.ConfigureServices
                     {
                         Password = new OpenApiOAuthFlow
                         {
-                            TokenUrl = new Uri($"{url}/auth/connect/token", UriKind.Absolute),
+                            TokenUrl = new Uri($"{url}/connect/token", UriKind.Absolute),
                             Scopes = new Dictionary<string, string>
                             {
                                 { "api1", "Default scope" }
@@ -70,11 +102,15 @@ namespace BGTG.Web.AppStart.ConfigureServices
             });
         }
 
+        /// <summary>
+        /// Set up some properties for swagger UI
+        /// </summary>
+        /// <param name="settings"></param>
         public static void SwaggerSettings(SwaggerUIOptions settings)
         {
             settings.SwaggerEndpoint(SwaggerConfig, $"{AppTitle} v.{AppVersion}");
-            settings.RoutePrefix = SwaggerUrl;
-            settings.DocumentTitle = "Microservice API";
+            settings.HeadContent = $"{ThisAssembly.Git.Branch.ToUpper()} {ThisAssembly.Git.Commit.ToUpper()}";
+            settings.DocumentTitle = $"{AppTitle}";
             settings.DefaultModelExpandDepth(0);
             settings.DefaultModelRendering(ModelRendering.Model);
             settings.DefaultModelsExpandDepth(0);
@@ -83,7 +119,7 @@ namespace BGTG.Web.AppStart.ConfigureServices
             settings.OAuthScopeSeparator(" ");
             settings.OAuthClientSecret("secret");
             settings.DisplayRequestDuration();
-            settings.OAuthAppName("Microservice API module API documentation");
+            settings.OAuthAppName("Microservice module API");
         }
     }
 }

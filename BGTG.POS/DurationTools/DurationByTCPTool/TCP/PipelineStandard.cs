@@ -15,18 +15,18 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
             PreparatoryPeriod = preparatoryPeriod;
         }
 
-        public bool Equals(PipelineStandard other)
+        public bool Equals(PipelineStandard? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return PipelineLength == other.PipelineLength && Duration == other.Duration && PreparatoryPeriod == other.PreparatoryPeriod;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((PipelineStandard) obj);
         }
 

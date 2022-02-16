@@ -5,7 +5,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool.TCP
 {
     public class TCP212HelperTests
     {
-        private TCP212Helper _tcp212Helper;
+        private TCP212Helper _tcp212Helper = null!;
 
         [SetUp]
         public void SetUp()

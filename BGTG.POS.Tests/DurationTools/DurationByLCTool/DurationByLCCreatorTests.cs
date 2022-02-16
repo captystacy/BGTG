@@ -1,5 +1,5 @@
-﻿using BGTG.POS.DurationTools.DurationByLCTool;
-using BGTG.POS.DurationTools.Interfaces;
+﻿using BGTG.POS.DurationTools.Base;
+using BGTG.POS.DurationTools.DurationByLCTool;
 using Moq;
 using NUnit.Framework;
 
@@ -7,8 +7,8 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
 {
     public class DurationByLCCreatorTests
     {
-        private DurationByLCCreator _durationByLCCreator;
-        private Mock<IDurationRounder> _durationRounder;
+        private DurationByLCCreator _durationByLCCreator = null!;
+        private Mock<IDurationRounder> _durationRounder = null!;
 
         [SetUp]
         public void SetUp()
@@ -148,7 +148,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByLCTool
                 acceptanceTimeIncluded, roundingIncluded);
 
             var actualDurationByLC = _durationByLCCreator.Create(estimateLaborCosts, technologicalLaborCosts, workingDayDuration, shift, numberOfWorkingDaysInMonth, numberOfEmployees, acceptanceTimeIncluded);
-            ;
+
             Assert.AreEqual(expectedDurationByLC, actualDurationByLC);
             _durationRounder.Verify(x => x.GetRoundedDuration(3.541342494714587737843551797M), Times.Once);
             _durationRounder.Verify(x => x.GetRoundedPreparatoryPeriod(totalDuration), Times.Once);

@@ -21,7 +21,7 @@ namespace BGTG.POS.CalendarPlanTool
             EstimateChapter = estimateChapter;
         }
 
-        public bool Equals(CalendarWork other)
+        public bool Equals(CalendarWork? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -30,11 +30,11 @@ namespace BGTG.POS.CalendarPlanTool
                    ConstructionMonths.SequenceEqual(other.ConstructionMonths) && EstimateChapter == other.EstimateChapter;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((CalendarWork)obj);
         }
 

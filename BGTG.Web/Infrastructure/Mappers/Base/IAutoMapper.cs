@@ -1,5 +1,4 @@
-﻿
-namespace BGTG.Web.Infrastructure.Mappers.Base
+﻿namespace BGTG.Web.Infrastructure.Mappers.Base
 {
     /// <summary>
     /// The stub for reflection helper profiles registrations

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using BGTG.POS.DurationTools.Base;
 using BGTG.POS.DurationTools.DurationByTCPTool;
-using BGTG.POS.DurationTools.DurationByTCPTool.Interfaces;
+using BGTG.POS.DurationTools.DurationByTCPTool.Base;
 using BGTG.POS.DurationTools.DurationByTCPTool.TCP;
 using BGTG.POS.DurationTools.DurationByTCPTool.TCP.Interfaces;
-using BGTG.POS.DurationTools.Interfaces;
 using Moq;
 using NUnit.Framework;
 
@@ -11,10 +11,10 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
 {
     public class DurationByTCPCreatorTests
     {
-        private DurationByTCPCreator _durationByTCPCreator;
-        private Mock<IDurationByTCPEngineer> _durationByTCPEngineerMock;
-        private Mock<ITCP212Helper> _tcp212HelperMock;
-        private Mock<IDurationRounder> _durationRounderMock;
+        private DurationByTCPCreator _durationByTCPCreator = null!;
+        private Mock<IDurationByTCPEngineer> _durationByTCPEngineerMock = null!;
+        private Mock<ITCP212Helper> _tcp212HelperMock = null!;
+        private Mock<IDurationRounder> _durationRounderMock = null!;
 
         [SetUp]
         public void SetUp()
@@ -231,7 +231,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
 
             _tcp212HelperMock.Setup(x => x.GetAppendix(appendix.Key)).Returns(appendix);
             _tcp212HelperMock
-                .Setup(x => x.GetPipelineCharacteristic(appendix, pipelineMaterial, pipelineDiameter, 
+                .Setup(x => x.GetPipelineCharacteristic(appendix, pipelineMaterial, pipelineDiameter,
                     pipelineCategoryName)).Returns(pipelineCharacteristic);
 
             _durationByTCPEngineerMock.SetupGet(x => x.CalculationPipelineStandards)
@@ -283,7 +283,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
             };
 
             var expectedStepwiseExtrapolationDuration = new StepwiseExtrapolationDurationByTCP(pipelineMaterial, pipelineDiameter, pipelineDiameterPresentation, pipelineLength,
-                calculationPipelineStandards, durationCalculationType, duration, roundedDuration, preparatoryPeriod,  volumeChangePercent, standardChangePercent, stepwiseDuration, stepwisePipelineStandard, appendix.Key, appendix.Page);
+                calculationPipelineStandards, durationCalculationType, duration, roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration, stepwisePipelineStandard, appendix.Key, appendix.Page);
 
             var pipelineCharacteristic = new PipelineCharacteristic(new DiameterRange(0, 0, pipelineDiameterPresentation),
                 new List<PipelineStandard>());

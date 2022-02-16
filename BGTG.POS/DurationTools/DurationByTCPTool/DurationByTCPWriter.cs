@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using BGTG.Core;
-using BGTG.POS.DurationTools.DurationByTCPTool.Interfaces;
+using BGTG.Entities.Core;
+using BGTG.POS.DurationTools.DurationByTCPTool.Base;
 using Xceed.Words.NET;
 
 namespace BGTG.POS.DurationTools.DurationByTCPTool
@@ -96,7 +96,7 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool
                     document.ReplaceText(VolumeChangePattern, interpolationDuration.VolumeChange.ToString(AppData.DecimalFormat));
                     break;
                 case ExtrapolationDurationByTCP extrapolationDuration:
-                    var calculationPipelineStandard = extrapolationDuration.CalculationPipelineStandards.Single();
+                    var calculationPipelineStandard = extrapolationDuration.CalculationPipelineStandards.First();
 
                     document.ReplaceText(ExtrapolationCalculationPipelineStandardPipelineLengthPattern, calculationPipelineStandard.PipelineLength.ToString(AppData.DecimalFormat));
                     document.ReplaceText(ExtrapolationCalculationPipelineStandardDurationPattern, calculationPipelineStandard.Duration.ToString(AppData.DecimalFormat));

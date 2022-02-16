@@ -16,15 +16,15 @@ namespace BGTG.POS.DurationTools.DurationByTCPTool.TCP
             };
         }
 
-        public PipelineCharacteristic GetPipelineCharacteristic(Appendix appendix, string pipelineMaterial, int pipelineDiameter, string pipelineCategoryName)
+        public PipelineCharacteristic? GetPipelineCharacteristic(Appendix appendix, string pipelineMaterial, int pipelineDiameter, string pipelineCategoryName)
         {
             return appendix
                 .PipelineCategories
-                .Single(x => x.Name == pipelineCategoryName)
+                .First(x => x.Name == pipelineCategoryName)
                 .PipelineComponents
-                .Single(x => x.PipelineMaterials.Contains(pipelineMaterial))
+                .First(x => x.PipelineMaterials.Contains(pipelineMaterial))
                 .PipelineCharacteristics
-                .SingleOrDefault(x => x.DiameterRange.IsInRange(pipelineDiameter));
+                .FirstOrDefault(x => x.DiameterRange.IsInRange(pipelineDiameter));
         }
     }
 }

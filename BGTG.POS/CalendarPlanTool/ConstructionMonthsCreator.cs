@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using BGTG.POS.CalendarPlanTool.Interfaces;
+using BGTG.POS.CalendarPlanTool.Base;
 
 namespace BGTG.POS.CalendarPlanTool
 {

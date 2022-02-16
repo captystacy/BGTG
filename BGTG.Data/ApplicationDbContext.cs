@@ -1,65 +1,69 @@
 ﻿using BGTG.Data.Base;
-using BGTG.Entities;
-using BGTG.Entities.POSEntities;
-using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
-using BGTG.Entities.POSEntities.DurationByLCToolEntities;
-using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
-using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
+using BGTG.Entities.BGTG;
+using BGTG.Entities.POS;
+using BGTG.Entities.POS.CalendarPlanToolEntities;
+using BGTG.Entities.POS.DurationByLCToolEntities;
+using BGTG.Entities.POS.DurationByTCPToolEntities;
+using BGTG.Entities.POS.EnergyAndWaterToolEntities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BGTG.Data
 {
+    /// <summary>
+    /// Database for application
+    /// </summary>
     public class ApplicationDbContext : DbContextBase<ApplicationDbContext>, IApplicationDbContext
     {
+        /// <inheritdoc />
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<ConstructionObjectEntity> ConstructionObjects { get; set; }
+        public DbSet<ConstructionObjectEntity> ConstructionObjects { get; set; } = null!;
 
-        public DbSet<POSEntity> POSes { get; set; }
+        public DbSet<POSEntity> POSes { get; set; } = null!;
 
         #region Calendar plan tool
 
-        public DbSet<CalendarPlanEntity> CalendarPlans { get; set; }
+        public DbSet<CalendarPlanEntity> CalendarPlans { get; set; } = null!;
 
-        public DbSet<PreparatoryCalendarWorkEntity> PreparatoryCalendarWorks { get; set; }
+        public DbSet<PreparatoryCalendarWorkEntity> PreparatoryCalendarWorks { get; set; } = null!;
 
-        public DbSet<MainCalendarWorkEntity> MainCalendarWorks { get; set; }
+        public DbSet<MainCalendarWorkEntity> MainCalendarWorks { get; set; } = null!;
 
-        public DbSet<PreparatoryConstructionMonthEntity> PreparatoryConstructionMonths { get; set; }
+        public DbSet<PreparatoryConstructionMonthEntity> PreparatoryConstructionMonths { get; set; } = null!;
 
-        public DbSet<MainConstructionMonthEntity> MainConstructionMonths { get; set; }
+        public DbSet<MainConstructionMonthEntity> MainConstructionMonths { get; set; } = null!;
 
         #endregion
 
         #region Duration by labor costs tool
 
-        public DbSet<DurationByLCEntity> DurationByLCs { get; set; }
+        public DbSet<DurationByLCEntity> DurationByLCs { get; set; } = null!;
 
         #endregion
 
         #region Duration by TCP tool
 
-        public DbSet<ExtrapolationDurationByTCPEntity> ExtrapolationDurationByTCPs { get; set; }
+        public DbSet<ExtrapolationDurationByTCPEntity> ExtrapolationDurationByTCPs { get; set; } = null!;
 
-        public DbSet<ExtrapolationPipelineStandardEntity> ExtrapolationPipelineStandards { get; set; }
+        public DbSet<ExtrapolationPipelineStandardEntity> ExtrapolationPipelineStandards { get; set; } = null!;
 
-        public DbSet<InterpolationDurationByTCPEntity> InterpolationDurationByTCPs { get; set; }
+        public DbSet<InterpolationDurationByTCPEntity> InterpolationDurationByTCPs { get; set; } = null!;
 
-        public DbSet<InterpolationPipelineStandardEntity> InterpolationPipelineStandards { get; set; }
+        public DbSet<InterpolationPipelineStandardEntity> InterpolationPipelineStandards { get; set; } = null!;
 
-        public DbSet<StepwiseExtrapolationDurationByTCPEntity> StepwiseExtrapolationDurationByTCPs { get; set; }
+        public DbSet<StepwiseExtrapolationDurationByTCPEntity> StepwiseExtrapolationDurationByTCPs { get; set; } = null!;
 
-        public DbSet<StepwiseExtrapolationPipelineStandardEntity> StepwiseExtrapolationPipelineStandards { get; set; }
+        public DbSet<StepwiseExtrapolationPipelineStandardEntity> StepwiseExtrapolationPipelineStandards { get; set; } = null!;
 
-        public DbSet<StepwisePipelineStandardEntity> StepwisePipelineStandards { get; set; }
+        public DbSet<StepwisePipelineStandardEntity> StepwisePipelineStandards { get; set; } = null!;
 
         #endregion
 
         #region Energy and water tool
 
-        public DbSet<EnergyAndWaterEntity> EnergyAndWaters { get; set; }
+        public DbSet<EnergyAndWaterEntity> EnergyAndWaters { get; set; } = null!;
 
         #endregion
     }

@@ -8,7 +8,7 @@ namespace BGTG.POS.Tests.DurationTools.DurationByTCPTool
 {
     public class DurationByTCPWriterTests
     {
-        private DurationByTCPWriter _durationByTCPWriter;
+        private DurationByTCPWriter _durationByTCPWriter = null!;
         private const string DurationByTCPTemplatesDirectory = @"..\..\..\DurationTools\DurationByTCPTool\DurationByTCPTemplates";
 
         [SetUp]
