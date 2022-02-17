@@ -9,6 +9,9 @@ namespace BGTG.Data.ModelConfigurations.BGTG
         protected override void AddBuilder(EntityTypeBuilder<ConstructionObjectEntity> builder)
         {
             builder.Property(x => x.Cipher).HasMaxLength(32).IsRequired();
+
+            builder.HasIndex(x => x.Cipher);
+
             builder.HasOne(x => x.POS);
         }
 
