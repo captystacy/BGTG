@@ -29,6 +29,7 @@
                                 @if (constructionObject.POSViewModel is not null)
                                 {
                                     <div class="pos-accordion">
+                                        <input type="hidden" id="pos-@id" value="@constructionObject.POSViewModel.Id" />
                                         <div class="accordion-item">
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#pos-@id">

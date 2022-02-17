@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace BGTG.Web.Controllers.API.BGTG;
 
+[Route("api/[controller]")]
 public class ConstructionObjectsController : ReadOnlyController<ConstructionObjectEntity, ConstructionObjectViewModel, DefaultPagedListQueryParams>
 {
     public ConstructionObjectsController(
