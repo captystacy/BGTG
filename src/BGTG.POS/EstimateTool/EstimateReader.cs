@@ -186,7 +186,7 @@ namespace BGTG.POS.EstimateTool
             }
 
             var monthNameLower = Regex.Match(constructionStartDateCellStr, @"[А-Я-а-я]+").Value.ToLower();
-            var month = Array.IndexOf(CultureInfo.CurrentCulture.DateTimeFormat.MonthNames, monthNameLower) + 1;
+            var month = Array.IndexOf(CultureInfo.CurrentCulture.DateTimeFormat.MonthNames.Select(x => x.ToLower()).ToArray(), monthNameLower) + 1;
 
             if (month < 1 || month > 12)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using BGTG.Entities.BGTG;
 using BGTG.Entities.Core;
 using BGTG.Entities.POS.DurationByLCToolEntities;
 using BGTG.POS.DurationTools.DurationByLCTool;
@@ -13,6 +14,7 @@ using Calabonga.OperationResults;
 using Calabonga.UnitOfWork;
 using Calabonga.UnitOfWork.Controllers.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BGTG.Web.Controllers.API.POS;
 
@@ -49,7 +51,7 @@ public class DurationByLCsController : UnitOfWorkController
 
         if (!UnitOfWork.LastSaveChangesResult.IsOk)
         {
-            return OperationResultError(viewModel, new MicroserviceDatabaseException());
+            return OperationResultError(viewModel, new MicroserviceSaveChangesException());
         }
 
         return OperationResultSuccess(viewModel);
@@ -87,20 +89,40 @@ public class DurationByLCsController : UnitOfWorkController
     public virtual async Task<ActionResult<OperationResult<Guid>>> DeleteItem(Guid id)
     {
         var repository = UnitOfWork.GetRepository<DurationByLCEntity>();
-        var durationByLCEntity = await repository.FindAsync(id);
+        var durationByLCEntity = await repository.GetFirstOrDefaultAsync(
+            predicate: x => x.Id == id,
+            include: x => x
+                .Include(x => x.POS).ThenInclude(x => x.ConstructionObject)
+                .Include(x => x.POS).ThenInclude(x => x.CalendarPlan)
+                .Include(x => x.POS).ThenInclude(x => x.InterpolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.ExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.StepwiseExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.EnergyAndWater)
+        );
 
         if (durationByLCEntity == null)
         {
             return OperationResultError(id, new MicroserviceNotFoundException());
         }
 
-        repository.Delete(durationByLCEntity);
+        if (durationByLCEntity.POS.CalendarPlan is null
+            && durationByLCEntity.POS.InterpolationDurationByTCP is null
+            && durationByLCEntity.POS.ExtrapolationDurationByTCP is null
+            && durationByLCEntity.POS.StepwiseExtrapolationDurationByTCP is null
+            && durationByLCEntity.POS.EnergyAndWater is null)
+        {
+            UnitOfWork.GetRepository<ConstructionObjectEntity>().Delete(durationByLCEntity.POS.ConstructionObject);
+        }
+        else
+        {
+            repository.Delete(durationByLCEntity);
+        }
 
         await UnitOfWork.SaveChangesAsync();
 
         if (!UnitOfWork.LastSaveChangesResult.IsOk)
         {
-            return OperationResultError(id, new MicroserviceDatabaseException());
+            return OperationResultError(id, new MicroserviceSaveChangesException());
         }
 
         return OperationResultSuccess(id);

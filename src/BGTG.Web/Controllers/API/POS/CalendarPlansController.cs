@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using AutoMapper;
+using BGTG.Entities.BGTG;
 using BGTG.Entities.Core;
 using BGTG.Entities.POS.CalendarPlanToolEntities;
 using BGTG.POS.CalendarPlanTool;
@@ -71,7 +73,7 @@ public class CalendarPlansController : UnitOfWorkController
 
         if (!UnitOfWork.LastSaveChangesResult.IsOk)
         {
-            return OperationResultError(viewModel, new MicroserviceDatabaseException());
+            return OperationResultError(viewModel, new MicroserviceSaveChangesException());
         }
 
         return OperationResultSuccess(viewModel);
@@ -104,20 +106,40 @@ public class CalendarPlansController : UnitOfWorkController
     public virtual async Task<ActionResult<OperationResult<Guid>>> DeleteItem(Guid id)
     {
         var repository = UnitOfWork.GetRepository<CalendarPlanEntity>();
-        var calendarPlanEntity = await repository.FindAsync(id);
+        var calendarPlanEntity = await repository.GetFirstOrDefaultAsync(
+            predicate: x => x.Id == id,
+            include: x => x
+                .Include(x => x.POS).ThenInclude(x => x.ConstructionObject)
+                .Include(x => x.POS).ThenInclude(x => x.DurationByLC)
+                .Include(x => x.POS).ThenInclude(x => x.InterpolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.ExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.StepwiseExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.EnergyAndWater)
+            );
 
         if (calendarPlanEntity == null)
         {
             return OperationResultError(id, new MicroserviceNotFoundException());
         }
 
-        repository.Delete(calendarPlanEntity);
+        if (calendarPlanEntity.POS.DurationByLC is null
+            && calendarPlanEntity.POS.InterpolationDurationByTCP is null
+            && calendarPlanEntity.POS.ExtrapolationDurationByTCP is null
+            && calendarPlanEntity.POS.StepwiseExtrapolationDurationByTCP is null
+            && calendarPlanEntity.POS.EnergyAndWater is null)
+        {
+            UnitOfWork.GetRepository<ConstructionObjectEntity>().Delete(calendarPlanEntity.POS.ConstructionObject);
+        }
+        else
+        {
+            repository.Delete(calendarPlanEntity);
+        }
 
         await UnitOfWork.SaveChangesAsync();
 
         if (!UnitOfWork.LastSaveChangesResult.IsOk)
         {
-            return OperationResultError(id, new MicroserviceDatabaseException());
+            return OperationResultError(id, new MicroserviceSaveChangesException());
         }
 
         return OperationResultSuccess(id);

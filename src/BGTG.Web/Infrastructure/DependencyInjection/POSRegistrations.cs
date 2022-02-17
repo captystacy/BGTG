@@ -1,4 +1,5 @@
-﻿using BGTG.POS.CalendarPlanTool;
+﻿using BGTG.Entities.POS.DurationByTCPToolEntities;
+using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.DurationTools;
 using BGTG.POS.DurationTools.Base;
@@ -28,9 +29,17 @@ public partial class DependencyContainer
 {
     public static void POS(IServiceCollection services)
     {
+        #region Estimate tool
+
         services.AddSingleton<IEstimateReader, EstimateReader>();
         services.AddSingleton<IEstimateConnector, EstimateConnector>();
         services.AddSingleton<IEstimateManager, EstimateManager>();
+
+        services.AddScoped<IEstimateService, EstimateService>();
+
+        #endregion
+
+        #region Calendar plan tool
 
         services.AddSingleton<IConstructionMonthsCreator, ConstructionMonthsCreator>();
         services.AddSingleton<ICalendarWorkCreator, CalendarWorkCreator>();
@@ -38,30 +47,62 @@ public partial class DependencyContainer
         services.AddSingleton<ICalendarPlanCreator, CalendarPlanCreator>();
         services.AddSingleton<ICalendarPlanWriter, CalendarPlanWriter>();
 
+        services.AddScoped<ICalendarPlanService, CalendarPlanService>();
+
+        #endregion
+
+        #region Energy and water tool
+
         services.AddSingleton<IEnergyAndWaterCreator, EnergyAndWaterCreator>();
         services.AddSingleton<IEnergyAndWaterWriter, EnergyAndWaterWriter>();
+
+        services.AddScoped<IEnergyAndWaterService, EnergyAndWaterService>();
+
+        #endregion
+
+        #region Duration by LC
 
         services.AddSingleton<IDurationByLCCreator, DurationByLCCreator>();
         services.AddSingleton<IDurationRounder, DurationRounder>();
         services.AddSingleton<IDurationByLCWriter, DurationByLCWriter>();
+
+        services.AddScoped<IDurationByLCService, DurationByLCService>();
+
+        #endregion
+
+        #region Duration by TCP
 
         services.AddSingleton<ITCP212Helper, TCP212Helper>();
         services.AddSingleton<IDurationByTCPEngineer, DurationByTCPEngineer>();
         services.AddSingleton<IDurationByTCPWriter, DurationByTCPWriter>();
         services.AddSingleton<IDurationByTCPCreator, DurationByTCPCreator>();
 
-        services.AddSingleton<IECPProjectWriter, ECPProjectWriter>();
-        services.AddSingleton<ITitlePageWriter, TitlePageWriter>();
-        services.AddSingleton<ITableOfContentsWriter, TableOfContentsWriter>();
-
-        services.AddScoped<IEstimateService, EstimateService>();
-        services.AddScoped<ICalendarPlanService, CalendarPlanService>();
-        services.AddScoped<IEnergyAndWaterService, EnergyAndWaterService>();
-        services.AddScoped<IDurationByLCService, DurationByLCService>();
         services.AddScoped<IDurationByTCPService, DurationByTCPService>();
 
+        #endregion
+
+        #region Project tool
+
+        services.AddSingleton<IECPProjectWriter, ECPProjectWriter>();
+
         services.AddScoped<IProjectService, ProjectService>();
+
+        #endregion
+
+        #region Title page tool
+
+        services.AddSingleton<ITitlePageWriter, TitlePageWriter>();
+
         services.AddScoped<ITitlePageService, TitlePageService>();
+
+        #endregion
+
+        #region Table of contents tool
+
+        services.AddSingleton<ITableOfContentsWriter, TableOfContentsWriter>();
+
         services.AddScoped<ITableOfContentsService, TableOfContentsService>();
+
+        #endregion
     }
 }

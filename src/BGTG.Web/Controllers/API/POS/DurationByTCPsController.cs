@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using BGTG.Entities.BGTG;
 using BGTG.Entities.Core;
 using BGTG.Entities.POS.DurationByTCPToolEntities;
 using BGTG.POS.DurationTools.DurationByTCPTool;
@@ -89,7 +90,7 @@ public class DurationByTCPsController : UnitOfWorkController
 
         if (!UnitOfWork.LastSaveChangesResult.IsOk)
         {
-            return OperationResultError(viewModel, new MicroserviceDatabaseException());
+            return OperationResultError(viewModel, new MicroserviceSaveChangesException());
         }
 
         return OperationResultSuccess(viewModel);
@@ -158,10 +159,30 @@ public class DurationByTCPsController : UnitOfWorkController
     [ProducesResponseType(200)]
     public async Task<ActionResult<OperationResult<Guid>>> DeleteItem(Guid id)
     {
-        var interpolationDurationByTCPEntity = await _interpolationDurationByTCPRepository.FindAsync(id);
+        var interpolationDurationByTCPEntity = await _interpolationDurationByTCPRepository.GetFirstOrDefaultAsync(
+            predicate: x => x.Id == id,
+            include: x => x
+                .Include(x => x.POS).ThenInclude(x => x.ConstructionObject)
+                .Include(x => x.POS).ThenInclude(x => x.CalendarPlan)
+                .Include(x => x.POS).ThenInclude(x => x.DurationByLC)
+                .Include(x => x.POS).ThenInclude(x => x.ExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.StepwiseExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.EnergyAndWater)
+        );
         if (interpolationDurationByTCPEntity != null)
         {
-            _interpolationDurationByTCPRepository.Delete(interpolationDurationByTCPEntity);
+            if (interpolationDurationByTCPEntity.POS.CalendarPlan is null
+                && interpolationDurationByTCPEntity.POS.DurationByLC is null
+                && interpolationDurationByTCPEntity.POS.ExtrapolationDurationByTCP is null
+                && interpolationDurationByTCPEntity.POS.StepwiseExtrapolationDurationByTCP is null
+                && interpolationDurationByTCPEntity.POS.EnergyAndWater is null)
+            {
+                UnitOfWork.GetRepository<ConstructionObjectEntity>().Delete(interpolationDurationByTCPEntity.POS.ConstructionObject);
+            }
+            else
+            {
+                _interpolationDurationByTCPRepository.Delete(interpolationDurationByTCPEntity);
+            }
 
             await UnitOfWork.SaveChangesAsync();
 
@@ -173,10 +194,30 @@ public class DurationByTCPsController : UnitOfWorkController
             return OperationResultSuccess(id);
         }
 
-        var extrapolationDurationByTCPEntity = await _extrapolationDurationByTCPRepository.FindAsync(id);
+        var extrapolationDurationByTCPEntity = await _extrapolationDurationByTCPRepository.GetFirstOrDefaultAsync(
+            predicate: x => x.Id == id,
+            include: x => x
+                .Include(x => x.POS).ThenInclude(x => x.ConstructionObject)
+                .Include(x => x.POS).ThenInclude(x => x.CalendarPlan)
+                .Include(x => x.POS).ThenInclude(x => x.DurationByLC)
+                .Include(x => x.POS).ThenInclude(x => x.InterpolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.StepwiseExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.EnergyAndWater)
+        );
         if (extrapolationDurationByTCPEntity != null)
         {
-            _extrapolationDurationByTCPRepository.Delete(extrapolationDurationByTCPEntity);
+            if (extrapolationDurationByTCPEntity.POS.CalendarPlan is null
+                && extrapolationDurationByTCPEntity.POS.DurationByLC is null
+                && extrapolationDurationByTCPEntity.POS.InterpolationDurationByTCP is null
+                && extrapolationDurationByTCPEntity.POS.StepwiseExtrapolationDurationByTCP is null
+                && extrapolationDurationByTCPEntity.POS.EnergyAndWater is null)
+            {
+                UnitOfWork.GetRepository<ConstructionObjectEntity>().Delete(extrapolationDurationByTCPEntity.POS.ConstructionObject);
+            }
+            else
+            {
+                _extrapolationDurationByTCPRepository.Delete(extrapolationDurationByTCPEntity);
+            }
 
             await UnitOfWork.SaveChangesAsync();
 
@@ -188,10 +229,30 @@ public class DurationByTCPsController : UnitOfWorkController
             return OperationResultSuccess(id);
         }
 
-        var stepwiseExtrapolationDurationByTCPEntity = await _stepwiseExtrapolationDurationByTCPRepository.FindAsync(id);
+        var stepwiseExtrapolationDurationByTCPEntity = await _stepwiseExtrapolationDurationByTCPRepository.GetFirstOrDefaultAsync(
+            predicate: x => x.Id == id,
+            include: x => x
+                .Include(x => x.POS).ThenInclude(x => x.ConstructionObject)
+                .Include(x => x.POS).ThenInclude(x => x.CalendarPlan)
+                .Include(x => x.POS).ThenInclude(x => x.DurationByLC)
+                .Include(x => x.POS).ThenInclude(x => x.InterpolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.ExtrapolationDurationByTCP)
+                .Include(x => x.POS).ThenInclude(x => x.EnergyAndWater)
+        );
         if (stepwiseExtrapolationDurationByTCPEntity != null)
         {
-            _stepwiseExtrapolationDurationByTCPRepository.Delete(stepwiseExtrapolationDurationByTCPEntity);
+            if (stepwiseExtrapolationDurationByTCPEntity.POS.CalendarPlan is null
+                && stepwiseExtrapolationDurationByTCPEntity.POS.DurationByLC is null
+                && stepwiseExtrapolationDurationByTCPEntity.POS.InterpolationDurationByTCP is null
+                && stepwiseExtrapolationDurationByTCPEntity.POS.ExtrapolationDurationByTCP is null
+                && stepwiseExtrapolationDurationByTCPEntity.POS.EnergyAndWater is null)
+            {
+                UnitOfWork.GetRepository<ConstructionObjectEntity>().Delete(stepwiseExtrapolationDurationByTCPEntity.POS.ConstructionObject);
+            }
+            else
+            {
+                _stepwiseExtrapolationDurationByTCPRepository.Delete(stepwiseExtrapolationDurationByTCPEntity);
+            }
 
             await UnitOfWork.SaveChangesAsync();
 

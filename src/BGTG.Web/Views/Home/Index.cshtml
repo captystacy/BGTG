@@ -7,7 +7,7 @@
 }
 
 <div id="history">
-    @if (Model.Ok && Model.Result.Items.Count > 0)
+    @if (Model.Ok)
     {
         @foreach (var constructionObject in Model.Result.Items)
         {
@@ -31,10 +31,10 @@
                                 <div id="construction-object-@id" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         @if (constructionObject.POSViewModel is not null
-                                            && constructionObject.POSViewModel.CalendarPlanViewModel is not null
-                                            || constructionObject.POSViewModel!.DurationByLCViewModel is not null
-                                            || constructionObject.POSViewModel.DurationByTCPViewModel is not null
-                                            || constructionObject.POSViewModel.EnergyAndWaterViewModel is not null)
+                                         && constructionObject.POSViewModel.CalendarPlanViewModel is not null
+                                         || constructionObject.POSViewModel!.DurationByLCViewModel is not null
+                                         || constructionObject.POSViewModel.DurationByTCPViewModel is not null
+                                         || constructionObject.POSViewModel.EnergyAndWaterViewModel is not null)
                                         {
                                             <div class="pos-accordion">
                                                 <div class="accordion-item">
@@ -367,13 +367,10 @@
             </nav>
         }
     }
-    else
+    else if (Model.Metadata.Type == MetadataType.Error)
     {
         <div>
-            @foreach (var log in Model.Logs)
-            {
-                @log
-            }
+            @Model.Metadata.Message
         </div>
     }
 </div>
