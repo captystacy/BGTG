@@ -1,6 +1,8 @@
 ﻿@using System.Text.RegularExpressions
 @using BGTG.Entities.Core
-@model OperationResult<IPagedList<BGTG.Web.ViewModels.BGTG.ConstructionObjectViewModel>>
+@using BGTG.Web.ViewModels.BGTG
+
+@model OperationResult<IPagedList<ConstructionObjectViewModel>>
 
 @section Scripts {
     <script src="~/js/history.js" asp-append-version="true"></script>
@@ -13,252 +15,240 @@
         {
             if (constructionObject is not null)
             {
-                if (constructionObject.POSViewModel is not null)
-                {
-                    if (constructionObject.POSViewModel.CalendarPlanViewModel is not null ||
-                        constructionObject.POSViewModel.DurationByLCViewModel is not null ||
-                        constructionObject.POSViewModel.DurationByTCPViewModel is not null ||
-                        constructionObject.POSViewModel.EnergyAndWaterViewModel is not null)
-                    {
-                        var id = Regex.Replace(constructionObject.Cipher, @"[\.-]", string.Empty);
-                        <div class="construction-object-accordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#construction-object-@id">
-                                        Шифр объекта:&nbsp;<b>@constructionObject.Cipher</b>&nbsp;(обновлено&nbsp;<b>@constructionObject.UpdatedAt</b>,&nbsp;<b>@constructionObject.UpdatedBy</b>)
-                                    </button>
-                                </h2>
-                                <div id="construction-object-@id" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        @if (constructionObject.POSViewModel is not null
-                                         && constructionObject.POSViewModel.CalendarPlanViewModel is not null
-                                         || constructionObject.POSViewModel!.DurationByLCViewModel is not null
-                                         || constructionObject.POSViewModel.DurationByTCPViewModel is not null
-                                         || constructionObject.POSViewModel.EnergyAndWaterViewModel is not null)
-                                        {
-                                            <div class="pos-accordion">
-                                                <div class="accordion-item">
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#pos-@id">
-                                                            ПОС
-                                                        </button>
-                                                    </h2>
-                                                    <div id="pos-@id" class="accordion-collapse collapse">
-                                                        <div class="accordion-body">
-                                                            <div class="row row-cols-1 row-cols-md-3 g-4">
-                                                                @if (constructionObject.POSViewModel.DurationByLCViewModel is not null)
-                                                                {
-                                                                    <div class="col history-item">
-                                                                        <div class="card">
-                                                                            <div class="card-body">
-                                                                                <input type="hidden" id="duration-by-lc-id" value="@constructionObject.POSViewModel.DurationByLCViewModel.Id" />
-                                                                                <h5 class="card-title fw-bold">
-                                                                                    Продолжительность по трудозатратам
-                                                                                </h5>
-                                                                                <p class="card-text">
-                                                                                    Продолжительность: <b>@constructionObject.POSViewModel.DurationByLCViewModel.TotalDuration.ToString(AppData.DecimalFormat) мес.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Подготовительный период: <b>@constructionObject.POSViewModel.DurationByLCViewModel.PreparatoryPeriod.ToString(AppData.DecimalFormat) мес.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Трудозатраты: <b>@constructionObject.POSViewModel.DurationByLCViewModel.TotalLaborCosts.ToString(AppData.DecimalFormat) чел./час</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Количество работающих в бригаде: <b>@constructionObject.POSViewModel.DurationByLCViewModel.NumberOfEmployees чел.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Дата создания: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedAt</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Проектировщик: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedBy</b>
-                                                                                </p>
-                                                                                <div class="row">
-                                                                                    @if (constructionObject.POSViewModel.DurationByLCViewModel.CreatedBy == User.Identity!.Name)
-                                                                                    {
-                                                                                        <div class="col">
-                                                                                            <button type="button" class="btn btn-danger" id="duration-by-lc-delete-btn">
-                                                                                                <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                                </span>
-                                                                                                Удалить
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    }
-                                                                                    <div class="col">
-                                                                                        <button type="button" class="btn btn-primary float-end" id="duration-by-lc-download-btn">
-                                                                                            <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                            </span>
-                                                                                            Скачать
-                                                                                            <i class="bi bi-download"></i>
-                                                                                        </button>
-                                                                                        <form asp-controller="DurationByLCs" asp-action="Download" method="get">
-                                                                                            <button type="submit" class="d-none" id="duration-by-lc-download-submit-btn"></button>
-                                                                                        </form>
-                                                                                    </div>
+                var id = Regex.Replace(constructionObject.Cipher, @"[\.-]", string.Empty);
+                <div class="construction-object-accordion">
+                    <input type="hidden" id="construction-object-id-@id" value="@constructionObject.Id" />
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#construction-object-@id">
+                                Шифр объекта:&nbsp;<b>@constructionObject.Cipher</b>&nbsp;(обновлено&nbsp;<b>@constructionObject.UpdatedAt</b>,&nbsp;<b>@constructionObject.UpdatedBy</b>)
+                            </button>
+                        </h2>
+                        <div id="construction-object-@id" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                @if (constructionObject.POSViewModel is not null)
+                                {
+                                    <div class="pos-accordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#pos-@id">
+                                                    ПОС
+                                                </button>
+                                            </h2>
+                                            <div id="pos-@id" class="accordion-collapse collapse">
+                                                <div class="accordion-body">
+                                                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                                                        @if (constructionObject.POSViewModel.DurationByLCViewModel is not null)
+                                                        {
+                                                            <div class="col history-item">
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <input type="hidden" id="duration-by-lc-id" value="@constructionObject.POSViewModel.DurationByLCViewModel.Id" />
+                                                                        <h5 class="card-title fw-bold">
+                                                                            Продолжительность по трудозатратам
+                                                                        </h5>
+                                                                        <p class="card-text">
+                                                                            Продолжительность: <b>@constructionObject.POSViewModel.DurationByLCViewModel.TotalDuration.ToString(AppData.DecimalFormat) мес.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Подготовительный период: <b>@constructionObject.POSViewModel.DurationByLCViewModel.PreparatoryPeriod.ToString(AppData.DecimalFormat) мес.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Трудозатраты: <b>@constructionObject.POSViewModel.DurationByLCViewModel.TotalLaborCosts.ToString(AppData.DecimalFormat) чел./час</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Количество работающих в бригаде: <b>@constructionObject.POSViewModel.DurationByLCViewModel.NumberOfEmployees чел.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedAt</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Проектировщик: <b>@constructionObject.POSViewModel.DurationByLCViewModel.CreatedBy</b>
+                                                                        </p>
+                                                                        <div class="row">
+                                                                            @if (constructionObject.POSViewModel.DurationByLCViewModel.CreatedBy == User.Identity!.Name)
+                                                                            {
+                                                                                <div class="col">
+                                                                                    <button type="button" class="btn btn-danger" id="duration-by-lc-delete-btn">
+                                                                                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                        </span>
+                                                                                        Удалить
+                                                                                    </button>
                                                                                 </div>
+                                                                            }
+                                                                            <div class="col">
+                                                                                <button type="button" class="btn btn-primary float-end" id="duration-by-lc-download-btn">
+                                                                                    <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                    </span>
+                                                                                    Скачать
+                                                                                    <i class="bi bi-download"></i>
+                                                                                </button>
+                                                                                <form asp-controller="DurationByLCs" asp-action="Download" method="get">
+                                                                                    <button type="submit" class="d-none" id="duration-by-lc-download-submit-btn"></button>
+                                                                                </form>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                }
-                                                                @if (constructionObject.POSViewModel.DurationByTCPViewModel is not null)
-                                                                {
-                                                                    <div class="col history-item">
-                                                                        <div class="card">
-                                                                            <div class="card-body">
-                                                                                <input type="hidden" id="duration-by-tcp-id" value="@constructionObject.POSViewModel.DurationByTCPViewModel.Id" />
-                                                                                <h5 class="card-title fw-bold">
-                                                                                    Продолжительность по ТКП
-                                                                                </h5>
-                                                                                <p class="card-text">
-                                                                                    Продолжительность: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.RoundedDuration.ToString(AppData.DecimalFormat) мес.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Подготовительный период: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PreparatoryPeriod.ToString(AppData.DecimalFormat) мес.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Сеть из <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineMaterial</b> диаметром <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineDiameter мм.</b> и длиной <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineLength.ToString(AppData.DecimalFormat) км.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Дата создания: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedAt</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Проектировщик: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedBy</b>
-                                                                                </p>
-                                                                                <div class="row">
-                                                                                    @if (constructionObject.POSViewModel.DurationByTCPViewModel.CreatedBy == User.Identity!.Name)
-                                                                                    {
-                                                                                        <div class="col">
-                                                                                            <button type="button" class="btn btn-danger" id="duration-by-tcp-delete-btn">
-                                                                                                <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                                </span>
-                                                                                                Удалить
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    }
-                                                                                    <div class="col">
-                                                                                        <button type="button" class="btn btn-primary float-end" id="duration-by-tcp-download-btn">
-                                                                                            <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                            </span>
-                                                                                            Скачать
-                                                                                            <i class="bi bi-download"></i>
-                                                                                        </button>
-                                                                                        <form asp-controller="DurationByTCPs" asp-action="Download" method="get">
-                                                                                            <button type="submit" class="d-none" id="duration-by-tcp-download-submit-btn"></button>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                }
-                                                                @if (constructionObject.POSViewModel.CalendarPlanViewModel is not null)
-                                                                {
-                                                                    <div class="col history-item">
-                                                                        <div class="card">
-                                                                            <div class="card-body">
-                                                                                <input type="hidden" id="calendar-plan-id" value="@constructionObject.POSViewModel.CalendarPlanViewModel.Id" />
-                                                                                <h5 class="card-title fw-bold">
-                                                                                    Календарный план
-                                                                                </h5>
-                                                                                <p class="card-text">
-                                                                                    Дата начала строительства: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.ConstructionStartDate.ToString(AppData.DateTimeMonthAndYearFormat)</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Продолжительность: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.ConstructionDuration.ToString(AppData.DecimalFormat) мес.</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Дата создания: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedAt</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Проектировщик: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedBy</b>
-                                                                                </p>
-                                                                                <div class="row">
-                                                                                    @if (constructionObject.POSViewModel.CalendarPlanViewModel.CreatedBy == User.Identity!.Name)
-                                                                                    {
-                                                                                        <div class="col">
-                                                                                            <button type="button" class="btn btn-danger" id="calendar-plan-delete-btn">
-                                                                                                <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                                </span>
-                                                                                                Удалить
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    }
-                                                                                    <div class="col">
-                                                                                        <button type="button" class="btn btn-primary float-end" id="calendar-plan-download-btn">
-                                                                                            <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                            </span>
-                                                                                            Скачать
-                                                                                            <i class="bi bi-download"></i>
-                                                                                        </button>
-                                                                                        <form asp-controller="CalendarPlans" asp-action="Download" method="get">
-                                                                                            <button type="submit" class="d-none" id="calendar-plan-download-submit-btn"></button>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                }
-                                                                @if (constructionObject.POSViewModel.EnergyAndWaterViewModel is not null)
-                                                                {
-                                                                    <div class="col history-item">
-                                                                        <div class="card">
-                                                                            <div class="card-body">
-                                                                                <input type="hidden" id="energy-and-water-id" value="@constructionObject.POSViewModel.EnergyAndWaterViewModel.Id" />
-                                                                                <h5 class="card-title fw-bold">
-                                                                                    Энергия и вода
-                                                                                </h5>
-                                                                                <p class="card-text">
-                                                                                    Энергия: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.Energy.ToString(AppData.DecimalFormat) кВа</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Вода: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.Water.ToString(AppData.DecimalFormat) л/с</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Дата создания: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedAt</b>
-                                                                                </p>
-                                                                                <p class="card-text">
-                                                                                    Проектировщик: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedBy</b>
-                                                                                </p>
-                                                                                <div class="row">
-                                                                                    @if (constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedBy == User.Identity!.Name)
-                                                                                    {
-                                                                                        <div class="col">
-                                                                                            <button type="button" class="btn btn-danger" id="energy-and-water-delete-btn">
-                                                                                                <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                                </span>
-                                                                                                Удалить
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    }
-                                                                                    <div class="col">
-                                                                                        <button type="button" class="btn btn-primary float-end" id="energy-and-water-download-btn">
-                                                                                            <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-                                                                                            </span>
-                                                                                            Скачать
-                                                                                            <i class="bi bi-download"></i>
-                                                                                        </button>
-                                                                                        <form asp-controller="EnergyAndWaters" asp-action="Download" method="get">
-                                                                                            <button type="submit" class="d-none" id="energy-and-water-download-submit-btn"></button>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                }
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        }
+                                                        @if (constructionObject.POSViewModel.DurationByTCPViewModel is not null)
+                                                        {
+                                                            <div class="col history-item">
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <input type="hidden" id="duration-by-tcp-id" value="@constructionObject.POSViewModel.DurationByTCPViewModel.Id" />
+                                                                        <h5 class="card-title fw-bold">
+                                                                            Продолжительность по ТКП
+                                                                        </h5>
+                                                                        <p class="card-text">
+                                                                            Продолжительность: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.RoundedDuration.ToString(AppData.DecimalFormat) мес.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Подготовительный период: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PreparatoryPeriod.ToString(AppData.DecimalFormat) мес.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Сеть из <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineMaterial</b> диаметром <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineDiameter мм.</b> и длиной <b>@constructionObject.POSViewModel.DurationByTCPViewModel.PipelineLength.ToString(AppData.DecimalFormat) км.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedAt</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Проектировщик: <b>@constructionObject.POSViewModel.DurationByTCPViewModel.CreatedBy</b>
+                                                                        </p>
+                                                                        <div class="row">
+                                                                            @if (constructionObject.POSViewModel.DurationByTCPViewModel.CreatedBy == User.Identity!.Name)
+                                                                            {
+                                                                                <div class="col">
+                                                                                    <button type="button" class="btn btn-danger" id="duration-by-tcp-delete-btn">
+                                                                                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                        </span>
+                                                                                        Удалить
+                                                                                    </button>
+                                                                                </div>
+                                                                            }
+                                                                            <div class="col">
+                                                                                <button type="button" class="btn btn-primary float-end" id="duration-by-tcp-download-btn">
+                                                                                    <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                    </span>
+                                                                                    Скачать
+                                                                                    <i class="bi bi-download"></i>
+                                                                                </button>
+                                                                                <form asp-controller="DurationByTCPs" asp-action="Download" method="get">
+                                                                                    <button type="submit" class="d-none" id="duration-by-tcp-download-submit-btn"></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        @if (constructionObject.POSViewModel.CalendarPlanViewModel is not null)
+                                                        {
+                                                            <div class="col history-item">
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <input type="hidden" id="calendar-plan-id" value="@constructionObject.POSViewModel.CalendarPlanViewModel.Id" />
+                                                                        <h5 class="card-title fw-bold">
+                                                                            Календарный план
+                                                                        </h5>
+                                                                        <p class="card-text">
+                                                                            Дата начала строительства: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.ConstructionStartDate.ToString(AppData.DateTimeMonthAndYearFormat)</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Продолжительность: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.ConstructionDuration.ToString(AppData.DecimalFormat) мес.</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedAt</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Проектировщик: <b>@constructionObject.POSViewModel.CalendarPlanViewModel.CreatedBy</b>
+                                                                        </p>
+                                                                        <div class="row">
+                                                                            @if (constructionObject.POSViewModel.CalendarPlanViewModel.CreatedBy == User.Identity!.Name)
+                                                                            {
+                                                                                <div class="col">
+                                                                                    <button type="button" class="btn btn-danger" id="calendar-plan-delete-btn">
+                                                                                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                        </span>
+                                                                                        Удалить
+                                                                                    </button>
+                                                                                </div>
+                                                                            }
+                                                                            <div class="col">
+                                                                                <button type="button" class="btn btn-primary float-end" id="calendar-plan-download-btn">
+                                                                                    <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                    </span>
+                                                                                    Скачать
+                                                                                    <i class="bi bi-download"></i>
+                                                                                </button>
+                                                                                <form asp-controller="CalendarPlans" asp-action="Download" method="get">
+                                                                                    <button type="submit" class="d-none" id="calendar-plan-download-submit-btn"></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        @if (constructionObject.POSViewModel.EnergyAndWaterViewModel is not null)
+                                                        {
+                                                            <div class="col history-item">
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <input type="hidden" id="energy-and-water-id" value="@constructionObject.POSViewModel.EnergyAndWaterViewModel.Id" />
+                                                                        <h5 class="card-title fw-bold">
+                                                                            Энергия и вода
+                                                                        </h5>
+                                                                        <p class="card-text">
+                                                                            Энергия: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.Energy.ToString(AppData.DecimalFormat) кВа</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Вода: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.Water.ToString(AppData.DecimalFormat) л/с</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Дата создания: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedAt</b>
+                                                                        </p>
+                                                                        <p class="card-text">
+                                                                            Проектировщик: <b>@constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedBy</b>
+                                                                        </p>
+                                                                        <div class="row">
+                                                                            @if (constructionObject.POSViewModel.EnergyAndWaterViewModel.CreatedBy == User.Identity!.Name)
+                                                                            {
+                                                                                <div class="col">
+                                                                                    <button type="button" class="btn btn-danger" id="energy-and-water-delete-btn">
+                                                                                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                        </span>
+                                                                                        Удалить
+                                                                                    </button>
+                                                                                </div>
+                                                                            }
+                                                                            <div class="col">
+                                                                                <button type="button" class="btn btn-primary float-end" id="energy-and-water-download-btn">
+                                                                                    <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                                                                                    </span>
+                                                                                    Скачать
+                                                                                    <i class="bi bi-download"></i>
+                                                                                </button>
+                                                                                <form asp-controller="EnergyAndWaters" asp-action="Download" method="get">
+                                                                                    <button type="submit" class="d-none" id="energy-and-water-download-submit-btn"></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
-                                        }
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
-                    }
-                }
+                    </div>
+                </div>
             }
         }
         @if (Model.Result.TotalPages > 1)
