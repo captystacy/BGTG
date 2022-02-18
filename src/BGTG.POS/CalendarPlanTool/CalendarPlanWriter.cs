@@ -71,7 +71,7 @@ namespace BGTG.POS.CalendarPlanTool
             for (int i = 0; i < constructionMonths.Length; i++)
             {
                 var monthName = monthNames[constructionMonths[i].Date.Month - 1];
-                calendarPlanPatternTable.Rows[1].ReplaceText($"%D{i}%", monthName + " " + constructionMonths[i].Date.Year);
+                calendarPlanPatternTable.Rows[1].ReplaceText($"%D{i}%", char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + constructionMonths[i].Date.Year);
             }
 
             if (constructionMonths.Length > 1)
