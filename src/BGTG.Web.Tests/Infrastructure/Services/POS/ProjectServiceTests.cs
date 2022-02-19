@@ -14,10 +14,10 @@ using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.POS.ProjectTool;
 using BGTG.POS.ProjectTool.Base;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.Infrastructure.Services.POS.Base;
-using BGTG.Web.ViewModels.POS;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.Infrastructure.Services.POSServices.Base;
+using BGTG.Web.ViewModels.POSViewModels;
 using Calabonga.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -68,8 +68,8 @@ public class ProjectServiceTests
             HouseholdTownIncluded = true,
         };
 
-        var templatePath = @"wwwroot\AppData\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\ProjectFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\ProjectFiles\BGTGkss.docx";
 
         var constructionObject = new ConstructionObjectEntity
         {
@@ -81,7 +81,7 @@ public class ProjectServiceTests
             }
         };
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var repositoryMock = new Mock<IRepository<ConstructionObjectEntity>>();
@@ -104,11 +104,11 @@ public class ProjectServiceTests
         var energyAndWater = new EnergyAndWater(default, default, default, default, default, default);
         _mapperMock.Setup(x => x.Map<EnergyAndWater>(constructionObject.POS.EnergyAndWater)).Returns(energyAndWater);
 
-        var durationByLCPath = @"wwwroot\AppData\UserFiles\DurationByLCFiles\DurationByLCBGTGkss.docx";
+        var durationByLCPath = @"root\AppData\UserFiles\POSFiles\DurationByLCFiles\DurationByLCBGTGkss.docx";
         _durationByLCServiceMock.Setup(x => x.GetSavePath()).Returns(durationByLCPath);
-        var calendarPlanPath = @"wwwroot\AppData\UserFiles\CalendarPlanFiles\CalendarPlanBGTGkss.docx";
+        var calendarPlanPath = @"root\AppData\UserFiles\POSFiles\CalendarPlanFiles\CalendarPlanBGTGkss.docx";
         _calendarPlanServiceMock.Setup(x => x.GetSavePath()).Returns(calendarPlanPath);
-        var energyAndWaterPath = @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\EnergyAndWaterBGTGkss.docx";
+        var energyAndWaterPath = @"root\AppData\UserFiles\POSFiles\EnergyAndWaterFiles\EnergyAndWaterBGTGkss.docx";
         _energyAndWaterServiceMock.Setup(x => x.GetSavePath()).Returns(energyAndWaterPath);
 
         await _projectService.Write(viewModel);
@@ -143,12 +143,12 @@ public class ProjectServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _projectService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\ProjectFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\ProjectFiles\BGTGkss.docx", savePath);
     }
 }

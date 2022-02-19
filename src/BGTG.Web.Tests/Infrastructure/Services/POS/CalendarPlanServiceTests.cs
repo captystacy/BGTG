@@ -5,10 +5,10 @@ using AutoMapper;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.EstimateTool;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.Infrastructure.Services.POS.Base;
-using BGTG.Web.ViewModels.POS.CalendarPlanViewModels;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.Infrastructure.Services.POSServices.Base;
+using BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -123,9 +123,9 @@ public class CalendarPlanServiceTests
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
-        var preparatoryTemplatePath = @"root\AppData\Templates\CalendarPlanTemplates\Preparatory.docx";
-        var mainTemplatePath = @"root\AppData\Templates\CalendarPlanTemplates\Main1.docx";
-        var savePath = @"root\AppData\UserFiles\CalendarPlanFiles\BGTGkss.docx";
+        var preparatoryTemplatePath = @"root\AppData\Templates\POSTemplates\CalendarPlanTemplates\Preparatory.docx";
+        var mainTemplatePath = @"root\AppData\Templates\POSTemplates\CalendarPlanTemplates\Main1.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\CalendarPlanFiles\BGTGkss.docx";
 
         var mainEstimateWorks = new List<EstimateWork>
         {
@@ -169,9 +169,9 @@ public class CalendarPlanServiceTests
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
-        var preparatoryTemplatePath = @"root\AppData\Templates\CalendarPlanTemplates\Preparatory.docx";
-        var mainTemplatePath = @"root\AppData\Templates\CalendarPlanTemplates\Main1.docx";
-        var savePath = @"root\AppData\UserFiles\CalendarPlanFiles\BGTGkss.docx";
+        var preparatoryTemplatePath = @"root\AppData\Templates\POSTemplates\CalendarPlanTemplates\Preparatory.docx";
+        var mainTemplatePath = @"root\AppData\Templates\POSTemplates\CalendarPlanTemplates\Main1.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\CalendarPlanFiles\BGTGkss.docx";
 
         var mainEstimateWorks = new List<EstimateWork>
         {
@@ -194,12 +194,12 @@ public class CalendarPlanServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _calendarPlanService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\CalendarPlanFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\CalendarPlanFiles\BGTGkss.docx", savePath);
     }
 }

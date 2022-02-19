@@ -2,9 +2,9 @@
 @using BGTG.POS.ProjectTool
 @using BGTG.POS
 @section Scripts {
-    <script src="~/js/pos/estimate-calculations.js" asp-append-version="true"></script>
-    <script src="~/js/pos/duration-by-tcp.js" asp-append-version="true"></script>
-    <script src="~/js/pos/project.js" asp-append-version="true"></script>
+<script src="~/js/pos/estimate-calculations.js" asp-append-version="true"></script>
+<script src="~/js/pos/duration-by-tcp.js" asp-append-version="true"></script>
+<script src="~/js/pos/project.js" asp-append-version="true"></script>
 }
 
 <div id="pos">
@@ -251,7 +251,7 @@
                         Скачать титульник
                         <i class="bi bi-download"></i>
                     </button>
-                    <form asp-controller="TitlePages" asp-action="Download" method="get">
+                    <form asp-controller="POS" asp-action="DownloadTitlePage" method="get">
                         <button type="submit" class="d-none" id="title-page-download-submit-btn"></button>
                     </form>
                 </div>
@@ -262,7 +262,7 @@
                         Скачать содержание
                         <i class="bi bi-download"></i>
                     </button>
-                    <form asp-controller="TableOfContents" asp-action="Download" method="get">
+                    <form asp-controller="POS" asp-action="DownloadTableOfContents" method="get">
                         <button type="submit" class="d-none" id="table-of-contents-download-submit-btn"></button>
                     </form>
                 </div>
@@ -274,7 +274,7 @@
                             Скачать проект
                             <i class="bi bi-download"></i>
                         </button>
-                        <form asp-controller="Projects" asp-action="Download" method="get">
+                        <form asp-controller="POS" asp-action="DownloadProject" method="get">
                             <button type="submit" class="d-none" id="project-download-submit-btn"></button>
                         </form>
                     </div>

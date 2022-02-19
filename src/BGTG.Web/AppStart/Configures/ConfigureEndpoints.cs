@@ -14,14 +14,21 @@ namespace BGTG.Web.AppStart.Configures
         public static void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
-            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    "index",
+                    "{controller=ConstructionObjects}/{action=Index}/{objectCipher:regex([\\d\\.-])}/{pageIndex:int?}");
+
+                endpoints.MapControllerRoute(
+                    "index",
+                    "{controller=ConstructionObjects}/{action=Index}/{pageIndex:int?}");
+
+                endpoints.MapControllerRoute(
+                    "default",
+                    "{controller=ConstructionObjects}/{action=Index}/{id?}");
             });
         }
     }

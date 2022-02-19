@@ -2,7 +2,6 @@
 using BGTG.Web.AppStart.Configures;
 using BGTG.Web.AppStart.ConfigureServices;
 using BGTG.Web.Infrastructure.DependencyInjection;
-using Calabonga.UnitOfWork.Controllers.DependencyContainer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,14 +24,11 @@ public class Startup
     {
         ConfigureServicesBase.ConfigureServices(services, Configuration);
         ConfigureServicesAuthentication.ConfigureServices(services, Configuration);
-        ConfigureServicesSwagger.ConfigureServices(services, Configuration);
-        ConfigureServicesCors.ConfigureServices(services, Configuration);
         ConfigureServicesControllers.ConfigureServices(services, Environment);
+        ConfigureServicesMediator.ConfigureServices(services);
 
-        DependencyContainer.Common(services);
         DependencyContainer.BGTG(services);
         DependencyContainer.POS(services);
-        NimbleDependencyContainer.ConfigureServices(services);
     }
 
     public void Configure(IApplicationBuilder app, AutoMapper.IConfigurationProvider mapper)

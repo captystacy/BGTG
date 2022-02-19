@@ -1,10 +1,10 @@
 ﻿using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.POS.DurationTools.DurationByLCTool.Base;
 using BGTG.POS.EstimateTool;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.Infrastructure.Services.POS.Base;
-using BGTG.Web.ViewModels.POS.DurationByLCViewModels;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.Infrastructure.Services.POSServices.Base;
+using BGTG.Web.ViewModels.POSViewModels.DurationByLCViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -56,8 +56,8 @@ public class DurationByLCServiceTests
             durationByLCCreateViewModel.TechnologicalLaborCosts, default, default, default, default, default, default,
             default, default, true, true);
 
-        var templatePath = @"wwwroot\AppData\Templates\DurationByLCTemplates\Rounding+Acceptance+.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\DurationByLCFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\DurationByLCTemplates\Rounding+Acceptance+.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\DurationByLCFiles\BGTGkss.docx";
 
         _durationByLCCreatorMock.Setup(x => x.Create(estimate.LaborCosts,
                 durationByLCCreateViewModel.TechnologicalLaborCosts,
@@ -66,7 +66,7 @@ public class DurationByLCServiceTests
                 durationByLCCreateViewModel.NumberOfEmployees, durationByLCCreateViewModel.AcceptanceTimeIncluded))
             .Returns(expectedDurationByLC);
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var actualDurationByLC = _durationByLCService.Write(durationByLCCreateViewModel);
@@ -90,10 +90,10 @@ public class DurationByLCServiceTests
             default, default, default, default, default, default, default,
             default, default, true, true);
 
-        var templatePath = @"wwwroot\AppData\Templates\DurationByLCTemplates\Rounding+Acceptance+.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\DurationByLCFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\DurationByLCTemplates\Rounding+Acceptance+.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\DurationByLCFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var result = _durationByLCService.Write(durationByLC);
@@ -106,12 +106,12 @@ public class DurationByLCServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _durationByLCService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByLCFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\DurationByLCFiles\BGTGkss.docx", savePath);
     }
 }

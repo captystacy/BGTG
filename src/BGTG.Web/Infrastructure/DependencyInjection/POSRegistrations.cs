@@ -1,5 +1,4 @@
-﻿using BGTG.Entities.POS.DurationByTCPToolEntities;
-using BGTG.POS.CalendarPlanTool;
+﻿using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.DurationTools;
 using BGTG.POS.DurationTools.Base;
@@ -19,8 +18,8 @@ using BGTG.POS.TableOfContentsTool;
 using BGTG.POS.TableOfContentsTool.Base;
 using BGTG.POS.TitlePageTool;
 using BGTG.POS.TitlePageTool.Base;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.Infrastructure.Services.POS.Base;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BGTG.Web.Infrastructure.DependencyInjection;

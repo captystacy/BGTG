@@ -18,7 +18,7 @@
             ChiefProjectEngineer: chiefProjectEngineer.val()
         };
 
-        $.post('api/title-pages/write', titlePageViewModel, function (operation) {
+        $.post('pos/writetitlepage', titlePageViewModel, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 titlePageSpinner.removeClass(dInlineBlockClass);
@@ -37,7 +37,7 @@
             ChiefProjectEngineer: chiefProjectEngineer.val()
         };
 
-        $.post('api/table-of-contents/write', tableOfContentsViewModel, function (operation) {
+        $.post('pos/writetableofcontents', tableOfContentsViewModel, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 tableOfContentsSpinner.removeClass(dInlineBlockClass);
@@ -59,7 +59,7 @@
             HouseholdTownIncluded: householdTownIncluded.prop('checked')
         };
 
-        $.post('api/projects/write', projectViewModel, function (operation) {
+        $.post('pos/writeproject', projectViewModel, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 projectSpinner.removeClass(dInlineBlockClass);

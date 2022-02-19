@@ -1,4 +1,4 @@
-﻿using BGTG.Web.Controllers.API.BGTG;
+﻿using Calabonga.AspNetCore.Controllers.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,8 +23,6 @@ namespace BGTG.Web.AppStart.ConfigureServices
             {
                 builder.AddRazorRuntimeCompilation();
             }
-
-            services.AddScoped<ConstructionObjectsController, ConstructionObjectsController>();
         }
     }
 }
