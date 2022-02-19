@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.POS.DurationByTCPToolEntities;
+using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
 using BGTG.POS.DurationTools.DurationByTCPTool;
 using BGTG.Web.Infrastructure.Helpers;
 using BGTG.Web.Infrastructure.Services.Base;

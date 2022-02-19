@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.POS.CalendarPlanToolEntities;
+using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using Calabonga.AspNetCore.Controllers;

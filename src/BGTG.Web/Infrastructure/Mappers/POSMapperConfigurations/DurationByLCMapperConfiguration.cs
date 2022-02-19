@@ -1,4 +1,4 @@
-﻿using BGTG.Entities.POS.DurationByLCToolEntities;
+﻿using BGTG.Entities.POSEntities.DurationByLCToolEntities;
 using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.Web.Infrastructure.Mappers.Base;
 using BGTG.Web.ViewModels.POSViewModels.DurationByLCViewModels;

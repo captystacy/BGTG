@@ -29,8 +29,14 @@ public class DurationByTCPsController : Controller
     public async Task<OperationResult<Guid>> WriteById(Guid id)
         => await _mediator.Send(new DurationByTCPWriteByIdRequest(id), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> Delete(Guid id)
-        => await _mediator.Send(new DurationByTCPDelete(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> DeleteInterpolation(Guid id)
+        => await _mediator.Send(new InterpolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
+
+    public async Task<OperationResult<Guid>> DeleteExtrapolation(Guid id)
+        => await _mediator.Send(new ExtrapolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
+
+    public async Task<OperationResult<Guid>> DeleteStepwiseExtrapolation(Guid id)
+        => await _mediator.Send(new StepwiseExtrapolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
 
     public IActionResult Download()
     {

@@ -1,5 +1,5 @@
-﻿using BGTG.Entities.POS;
-using BGTG.Entities.POS.DurationByTCPToolEntities;
+﻿using BGTG.Entities.POSEntities;
+using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
 using BGTG.Web.Infrastructure.Mappers.Base;
 using BGTG.Web.ViewModels.POSViewModels;
 

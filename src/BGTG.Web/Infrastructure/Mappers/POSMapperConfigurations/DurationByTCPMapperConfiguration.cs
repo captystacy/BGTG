@@ -1,4 +1,4 @@
-﻿using BGTG.Entities.POS.DurationByTCPToolEntities;
+﻿using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
 using BGTG.POS.DurationTools.DurationByTCPTool;
 using BGTG.POS.DurationTools.DurationByTCPTool.TCP;
 using BGTG.Web.Infrastructure.Mappers.Base;

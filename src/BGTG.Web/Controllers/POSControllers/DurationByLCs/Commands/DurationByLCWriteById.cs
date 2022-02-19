@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.POS.DurationByLCToolEntities;
+using BGTG.Entities.POSEntities.DurationByLCToolEntities;
 using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using Calabonga.AspNetCore.Controllers;

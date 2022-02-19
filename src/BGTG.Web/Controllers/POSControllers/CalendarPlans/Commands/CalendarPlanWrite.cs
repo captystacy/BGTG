@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.POS.CalendarPlanToolEntities;
+using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using BGTG.Web.Infrastructure.Helpers;
 using BGTG.Web.Infrastructure.Services.Base;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;

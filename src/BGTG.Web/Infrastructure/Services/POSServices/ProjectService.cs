@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.BGTG;
+using BGTG.Entities;
 using BGTG.Entities.Core;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.DurationTools.DurationByLCTool;

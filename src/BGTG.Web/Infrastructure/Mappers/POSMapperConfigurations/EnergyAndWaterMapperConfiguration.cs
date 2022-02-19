@@ -1,4 +1,4 @@
-﻿using BGTG.Entities.POS.EnergyAndWaterToolEntities;
+﻿using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.Web.Infrastructure.Mappers.Base;
 using BGTG.Web.ViewModels.POSViewModels.EnergyAndWaterViewModels;

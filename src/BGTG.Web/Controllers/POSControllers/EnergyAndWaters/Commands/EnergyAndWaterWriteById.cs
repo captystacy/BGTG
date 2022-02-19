@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.POS.EnergyAndWaterToolEntities;
+using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using Calabonga.AspNetCore.Controllers;

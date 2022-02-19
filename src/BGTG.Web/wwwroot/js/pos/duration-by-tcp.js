@@ -117,7 +117,7 @@
             PipelineLength: $('#duration-by-tcp #pipeline-length').val(),
         };
 
-        $.post('durationbytcps/write',
+        $.post('DurationByTCPs/Write',
             durationByTCP,
             function (operation) {
                 if (!operation.ok) {

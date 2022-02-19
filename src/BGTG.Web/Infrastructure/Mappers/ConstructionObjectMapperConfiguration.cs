@@ -1,4 +1,4 @@
-﻿using BGTG.Entities.BGTG;
+﻿using BGTG.Entities;
 using BGTG.Web.Infrastructure.Mappers.Base;
 using BGTG.Web.ViewModels;
 using Calabonga.UnitOfWork;

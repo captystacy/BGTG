@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using BGTG.Entities.POS.CalendarPlanToolEntities;
+using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using BGTG.POS.CalendarPlanTool;
 using BGTG.POS.EstimateTool;
 using BGTG.Web.Infrastructure.Mappers.Base;

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using BGTG.Entities.POS.CalendarPlanToolEntities;
-using BGTG.Entities.POS.DurationByLCToolEntities;
-using BGTG.Entities.POS.DurationByTCPToolEntities;
-using BGTG.Entities.POS.EnergyAndWaterToolEntities;
+using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
+using BGTG.Entities.POSEntities.DurationByLCToolEntities;
+using BGTG.Entities.POSEntities.DurationByTCPToolEntities;
+using BGTG.Entities.POSEntities.EnergyAndWaterToolEntities;
 
 namespace BGTG.Web.Infrastructure.Services.Base;
 

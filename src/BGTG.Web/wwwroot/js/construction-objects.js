@@ -1,31 +1,31 @@
 ﻿$(document).ready(function () {
-    $('#history #calendar-plan-download-btn').click(function () {
+    $('#construction-objects #calendar-plan-download-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let calendarPlanId = historyItem.find('#calendar-plan-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let calendarPlanId = posItem.find('#calendar-plan-id').val();
 
-        $.post(`calendarplans/writebyid?id=${calendarPlanId}`, function (operation) {
+        $.post(`calendarplans/WriteById?id=${calendarPlanId}`, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
 
-            historyItem.find('#calendar-plan-download-submit-btn').click();
+            posItem.find('#calendar-plan-download-submit-btn').click();
             spinner.removeClass(dInlineBlockClass);
         });
     });
 
-    $('#history #calendar-plan-delete-btn').click(function () {
+    $('#construction-objects #calendar-plan-delete-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let calendarPlanId = historyItem.find('#calendar-plan-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let calendarPlanId = posItem.find('#calendar-plan-id').val();
         $.ajax({
-            url: `calendarplans/delete/?id=${calendarPlanId}`,
+            url: `calendarplans/Delete/?id=${calendarPlanId}`,
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
@@ -35,38 +35,38 @@
                 }
 
                 spinner.removeClass(dInlineBlockClass);
-                historyItem.remove();
+                posItem.remove();
             }
         });
     });
 
-    $('#history #duration-by-lc-download-btn').click(function () {
+    $('#construction-objects #duration-by-lc-download-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let durationByLCId = historyItem.find('#duration-by-lc-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let durationByLCId = posItem.find('#duration-by-lc-id').val();
 
-        $.post(`durationbylcs/writebyid?id=${durationByLCId}`, function (operation) {
+        $.post(`DurationByLCs/WriteById?id=${durationByLCId}`, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
 
-            historyItem.find('#duration-by-lc-download-submit-btn').click();
+            posItem.find('#duration-by-lc-download-submit-btn').click();
             spinner.removeClass(dInlineBlockClass);
         });
     });
 
-    $('#history #duration-by-lc-delete-btn').click(function () {
+    $('#construction-objects #duration-by-lc-delete-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let durationByLCId = historyItem.find('#duration-by-lc-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let durationByLCId = posItem.find('#duration-by-lc-id').val();
         $.ajax({
-            url: `durationbylcs/delete?id=${durationByLCId}`,
+            url: `DurationByLCs/Delete?id=${durationByLCId}`,
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
@@ -76,38 +76,54 @@
                 }
 
                 spinner.removeClass(dInlineBlockClass);
-                historyItem.remove();
+                posItem.remove();
             }
         });
     });
 
-    $('#history #duration-by-tcp-download-btn').click(function () {
+    $('#construction-objects #duration-by-tcp-download-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let durationByTCPId = historyItem.find('#duration-by-tcp-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let durationByTCPId = posItem.find('#duration-by-tcp-id').val();
 
-        $.post(`durationbytcps/writebyid?id=${durationByTCPId}`, function (operation) {
+        $.post(`DurationByTCPs/WriteById?id=${durationByTCPId}`, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
 
-            historyItem.find('#duration-by-tcp-download-submit-btn').click();
+            posItem.find('#duration-by-tcp-download-submit-btn').click();
             spinner.removeClass(dInlineBlockClass);
         });
     });
 
-    $('#history #duration-by-tcp-delete-btn').click(function () {
+    $('#construction-objects #duration-by-tcp-delete-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let durationByTCPId = historyItem.find('#duration-by-tcp-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let durationByTCPId = posItem.find('#duration-by-tcp-id').val();
+        let calculationType = posItem.find('#duration-by-tcp-calculation-type').val();
+
+        let action;
+        if (calculationType.includes("Interpolation")) {
+            action = "DeleteInterpolation";
+        } else if (calculationType.includes("StepwiseExtrapolation")) {
+            action = "DeleteStepwiseExtrapolation";
+
+        } else if (calculationType.includes("Extrapolation")) {
+            action = "DeleteExtrapolation";
+        } else if (calculationType.includes("StepwiseExtrapolation")) {
+            action = "DeleteStepwiseExtrapolation";
+        } else {
+            return;
+        }
+
         $.ajax({
-            url: `durationbytcps/delete?id=${durationByTCPId}`,
+            url: `DurationByTCPs/${action}?id=${durationByTCPId}`,
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
@@ -117,38 +133,38 @@
                 }
 
                 spinner.removeClass(dInlineBlockClass);
-                historyItem.remove();
+                posItem.remove();
             }
         });
     });
 
-    $('#history #energy-and-water-download-btn').click(function () {
+    $('#construction-objects #energy-and-water-download-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let energyAndWaterId = historyItem.find('#energy-and-water-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let energyAndWaterId = posItem.find('#energy-and-water-id').val();
 
-        $.post(`energyandwaters/writebyid?id=${energyAndWaterId}`, function (operation) {
+        $.post(`energyandwaters/WriteById?id=${energyAndWaterId}`, function (operation) {
             if (!operation.ok) {
                 appendValidationAlert(operation);
                 spinner.removeClass(dInlineBlockClass);
                 return;
             }
 
-            historyItem.find('#energy-and-water-download-submit-btn').click();
+            posItem.find('#energy-and-water-download-submit-btn').click();
             spinner.removeClass(dInlineBlockClass);
         });
     });
 
-    $('#history #energy-and-water-delete-btn').click(function () {
+    $('#construction-objects #energy-and-water-delete-btn').click(function () {
         let spinner = $(this).find('#spinner');
         spinner.addClass(dInlineBlockClass);
 
-        let historyItem = $(this).parents('.history-item');
-        let energyAndWaterId = historyItem.find('#energy-and-water-id').val();
+        let posItem = $(this).parents('.pos-item');
+        let energyAndWaterId = posItem.find('#energy-and-water-id').val();
         $.ajax({
-            url: `energyandwaters/delete?id=${energyAndWaterId}`,
+            url: `energyandwaters/Delete?id=${energyAndWaterId}`,
             type: 'DELETE',
             success: function (operation) {
                 if (!operation.ok) {
@@ -158,7 +174,7 @@
                 }
 
                 spinner.removeClass(dInlineBlockClass);
-                historyItem.remove();
+                posItem.remove();
             }
         });
     });

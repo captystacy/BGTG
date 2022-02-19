@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BGTG.Entities.BGTG;
+using BGTG.Entities;
 using Calabonga.AspNetCore.Controllers;
 using Calabonga.AspNetCore.Controllers.Records;
 using Calabonga.Microservices.Core.Exceptions;

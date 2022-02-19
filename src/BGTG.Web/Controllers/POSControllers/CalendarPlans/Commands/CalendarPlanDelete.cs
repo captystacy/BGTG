@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BGTG.Entities.BGTG;
-using BGTG.Entities.POS.CalendarPlanToolEntities;
+using BGTG.Entities;
+using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using Calabonga.AspNetCore.Controllers;
 using Calabonga.AspNetCore.Controllers.Records;
 using Calabonga.Microservices.Core.Exceptions;

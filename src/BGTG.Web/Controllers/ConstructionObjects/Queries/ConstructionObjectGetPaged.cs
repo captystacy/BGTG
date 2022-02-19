@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using BGTG.Entities.BGTG;
+using BGTG.Entities;
 using BGTG.Web.ViewModels;
 using Calabonga.AspNetCore.Controllers;
 using Calabonga.AspNetCore.Controllers.Base;

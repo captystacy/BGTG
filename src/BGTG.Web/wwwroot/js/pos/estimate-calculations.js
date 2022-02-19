@@ -47,7 +47,7 @@
         appendTotalWorkChapter(formData);
         $.ajax(
             {
-                url: 'calendarplans/getcalendarplancreateviewmodel',
+                url: 'CalendarPlans/GetCalendarPlanCreateViewModel',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -238,7 +238,7 @@
         appendTotalWorkChapter(formData);
         appendObjectCipher(formData);
         $.ajax({
-            url: 'calendarplans/gettotalpercentages',
+            url: 'CalendarPlans/GetTotalPercentages',
             data: formData,
             processData: false,
             contentType: false,
@@ -296,7 +296,7 @@
 
     function ajaxWriteCalendarPlan(formData) {
         $.ajax({
-            url: '/calendarplans/write',
+            url: '/CalendarPlans/Write',
             data: formData,
             processData: false,
             contentType: false,
@@ -372,7 +372,7 @@
         appendObjectCipher(formData);
 
         $.ajax({
-            url: 'durationbylcs/write',
+            url: 'DurationByLCs/Write',
             data: formData,
             processData: false,
             contentType: false,
@@ -398,7 +398,7 @@
         appendObjectCipher(formData);
 
         $.ajax({
-            url: 'energyandwaters/write',
+            url: 'EnergyAndWaters/Write',
             data: formData,
             processData: false,
             contentType: false,
