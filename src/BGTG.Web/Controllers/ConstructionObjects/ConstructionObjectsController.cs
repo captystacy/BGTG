@@ -19,7 +19,7 @@ public class ConstructionObjectsController : Controller
     }
 
     public async Task<IActionResult> Index(int? pageIndex, string objectCipher) =>
-        View(await _mediator.Send(new ConstructionObjectGetPagedRequest(pageIndex ?? 0, objectCipher),
+        View(await _mediator.Send(new ConstructionObjectGetPagedRequest(pageIndex - 1 ?? 0, objectCipher),
             HttpContext.RequestAborted));
 
     public async Task<OperationResult<Guid>> Delete(Guid id) =>

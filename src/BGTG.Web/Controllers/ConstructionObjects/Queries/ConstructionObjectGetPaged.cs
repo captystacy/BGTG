@@ -7,7 +7,7 @@ using AutoMapper;
 using BGTG.Entities;
 using BGTG.Web.ViewModels;
 using Calabonga.AspNetCore.Controllers;
-using Calabonga.AspNetCore.Controllers.Base;
+using Calabonga.AspNetCore.Controllers.Records;
 using Calabonga.OperationResults;
 using Calabonga.PredicatesBuilder;
 using Calabonga.UnitOfWork;
@@ -15,20 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BGTG.Web.Controllers.ConstructionObjects.Queries;
 
-public class ConstructionObjectGetPagedRequest : OperationResultRequestBase<IPagedList<ConstructionObjectViewModel>>
-{
-    public ConstructionObjectGetPagedRequest(int pageIndex,  string? objectCipher)
-    {
-        PageIndex = pageIndex;
-        ObjectCipher = objectCipher;
-    }
-
-    public int PageIndex { get; }
-
-    public int PageSize => 20;
-
-    public string? ObjectCipher { get; }
-}
+public record ConstructionObjectGetPagedRequest (int PageIndex, string? ObjectCipher) : OperationResultRequestBase<IPagedList<ConstructionObjectViewModel>>;
 
 public class ConstructionObjectGetPagedRequestHandler : OperationResultRequestHandlerBase<ConstructionObjectGetPagedRequest, IPagedList<ConstructionObjectViewModel>>
 {
@@ -58,7 +45,7 @@ public class ConstructionObjectGetPagedRequestHandler : OperationResultRequestHa
                     .Include(x => x.POS).ThenInclude(x => x!.EnergyAndWater),
                 orderBy: o => o.OrderByDescending(x => x.UpdatedAt),
                 pageIndex: request.PageIndex,
-                pageSize: request.PageSize,
+                pageSize: 20,
                 cancellationToken: cancellationToken);
 
         operation.Result = _mapper.Map<IPagedList<ConstructionObjectViewModel>>(items);

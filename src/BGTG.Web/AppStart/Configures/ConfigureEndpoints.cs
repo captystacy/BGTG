@@ -20,10 +20,6 @@ namespace BGTG.Web.AppStart.Configures
             {
                 endpoints.MapControllerRoute(
                     "index",
-                    "{controller=ConstructionObjects}/{action=Index}/{objectCipher:regex([\\d\\.-])}/{pageIndex:int?}");
-
-                endpoints.MapControllerRoute(
-                    "index",
                     "{controller=ConstructionObjects}/{action=Index}/{pageIndex:int?}");
 
                 endpoints.MapControllerRoute(

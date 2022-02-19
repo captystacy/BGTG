@@ -1,4 +1,5 @@
 ﻿using System;
+using BGTG.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
