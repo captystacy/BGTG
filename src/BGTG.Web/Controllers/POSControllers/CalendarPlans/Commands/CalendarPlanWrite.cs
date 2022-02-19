@@ -2,9 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using BGTG.Entities;
+using BGTG.Entities.POSEntities;
 using BGTG.Entities.POSEntities.CalendarPlanToolEntities;
 using BGTG.Web.Infrastructure.Helpers;
-using BGTG.Web.Infrastructure.Services.Base;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels;
 using Calabonga.AspNetCore.Controllers;
@@ -12,6 +13,7 @@ using Calabonga.AspNetCore.Controllers.Records;
 using Calabonga.Microservices.Core.Exceptions;
 using Calabonga.OperationResults;
 using Calabonga.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace BGTG.Web.Controllers.POSControllers.CalendarPlans.Commands;
 
@@ -20,16 +22,14 @@ public record CalendarPlanWriteRequest(CalendarPlanCreateViewModel ViewModel) : 
 public class CalendarPlanWriteRequestHandler : OperationResultRequestHandlerBase<CalendarPlanWriteRequest, CalendarPlanCreateViewModel>
 {
     private readonly ICalendarPlanService _calendarPlanService;
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IConstructionObjectService _constructionObjectService;
+    private readonly IMapper _mapper;
 
-    public CalendarPlanWriteRequestHandler(ICalendarPlanService calendarPlanService, IMapper mapper, IUnitOfWork unitOfWork, IConstructionObjectService constructionObjectService)
+    public CalendarPlanWriteRequestHandler(ICalendarPlanService calendarPlanService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _calendarPlanService = calendarPlanService;
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
-        _constructionObjectService = constructionObjectService;
+        _mapper = mapper;
     }
 
     public override async Task<OperationResult<CalendarPlanCreateViewModel>> Handle(CalendarPlanWriteRequest request, CancellationToken cancellationToken)
@@ -42,7 +42,9 @@ public class CalendarPlanWriteRequestHandler : OperationResultRequestHandlerBase
         calendarPlanEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
         calendarPlanEntity.CreatedAt = DateTime.UtcNow;
 
-        await _constructionObjectService.Update(request.ViewModel.ObjectCipher, calendarPlanEntity);
+        await UpdateConstructionObject(request.ViewModel.ObjectCipher, calendarPlanEntity);
+
+        await _unitOfWork.SaveChangesAsync();
 
         if (!_unitOfWork.LastSaveChangesResult.IsOk)
         {
@@ -51,5 +53,54 @@ public class CalendarPlanWriteRequestHandler : OperationResultRequestHandlerBase
         }
 
         return operation;
+    }
+
+    public async Task UpdateConstructionObject(string objectCipher, CalendarPlanEntity calendarPlanEntity)
+    {
+        var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
+        var constructionObject = await repository
+            .GetFirstOrDefaultAsync(
+                predicate: x => x.Cipher == objectCipher,
+                include: x => x.Include(x => x.POS).ThenInclude(x => x!.CalendarPlan));
+
+        if (constructionObject == null)
+        {
+            constructionObject = new ConstructionObjectEntity
+            {
+                CreatedBy = calendarPlanEntity.CreatedBy,
+                CreatedAt = calendarPlanEntity.CreatedAt,
+                Cipher = objectCipher,
+                POS = new POSEntity
+                {
+                    CalendarPlan = calendarPlanEntity
+                }
+            };
+
+            await repository.InsertAsync(constructionObject);
+        }
+        else if (constructionObject.POS == null)
+        {
+            constructionObject.UpdatedAt = calendarPlanEntity.CreatedAt;
+            constructionObject.UpdatedBy = calendarPlanEntity.CreatedBy;
+            constructionObject.POS = new POSEntity
+            {
+                CalendarPlan = calendarPlanEntity
+            };
+
+            repository.Update(constructionObject);
+        }
+        else
+        {
+            if (constructionObject.POS.CalendarPlan != null)
+            {
+                _unitOfWork.GetRepository<CalendarPlanEntity>().Delete(constructionObject.POS.CalendarPlan);
+            }
+
+            constructionObject.UpdatedAt = calendarPlanEntity.CreatedAt;
+            constructionObject.UpdatedBy = calendarPlanEntity.CreatedBy;
+            constructionObject.POS.CalendarPlan = calendarPlanEntity;
+
+            repository.Update(constructionObject);
+        }
     }
 }

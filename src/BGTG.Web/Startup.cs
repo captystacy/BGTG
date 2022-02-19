@@ -2,6 +2,8 @@
 using BGTG.Web.AppStart.Configures;
 using BGTG.Web.AppStart.ConfigureServices;
 using BGTG.Web.Infrastructure.DependencyInjection;
+using BGTG.Web.Infrastructure.TagHelpers.PagedListTagHelper;
+using BGTG.Web.Infrastructure.TagHelpers.PagedListTagHelper.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +29,7 @@ public class Startup
         ConfigureServicesControllers.ConfigureServices(services, Environment);
         ConfigureServicesMediator.ConfigureServices(services);
 
-        DependencyContainer.BGTG(services);
+        services.AddScoped<IPagerTagHelperService, PagerTagHelperService>();
         DependencyContainer.POS(services);
     }
 

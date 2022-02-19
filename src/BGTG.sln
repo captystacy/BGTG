@@ -3,17 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.Web.Tests", "BGTG.Web.Tests\BGTG.Web.Tests.csproj", "{AB1CBC0C-88FB-4778-B2F8-9AE95E8B07C4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.POS", "BGTG.POS\BGTG.POS.csproj", "{FB269FC7-CA16-4DD4-88FF-9FF50D7F2F1E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.POS.Tests", "BGTG.POS.Tests\BGTG.POS.Tests.csproj", "{2CC659F3-28DE-4F7A-BDAC-041AC7519247}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGTG.Web", "BGTG.Web\BGTG.Web.csproj", "{55256EBD-EF56-4AD8-86D2-DA7E65B24363}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.Web", "BGTG.Web\BGTG.Web.csproj", "{55256EBD-EF56-4AD8-86D2-DA7E65B24363}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGTG.Data", "BGTG.Data\BGTG.Data.csproj", "{ECBEAA2E-3C72-4A47-99DE-6007B955B582}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.Data", "BGTG.Data\BGTG.Data.csproj", "{ECBEAA2E-3C72-4A47-99DE-6007B955B582}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGTG.Entities", "BGTG.Entities\BGTG.Entities.csproj", "{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.Entities", "BGTG.Entities\BGTG.Entities.csproj", "{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AB1CBC0C-88FB-4778-B2F8-9AE95E8B07C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB1CBC0C-88FB-4778-B2F8-9AE95E8B07C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB1CBC0C-88FB-4778-B2F8-9AE95E8B07C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB1CBC0C-88FB-4778-B2F8-9AE95E8B07C4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB269FC7-CA16-4DD4-88FF-9FF50D7F2F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB269FC7-CA16-4DD4-88FF-9FF50D7F2F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB269FC7-CA16-4DD4-88FF-9FF50D7F2F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,11 +42,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{55256EBD-EF56-4AD8-86D2-DA7E65B24363} = {1D8CC7E8-B7DC-4479-BDA3-A573BEB30A9E}
-		{ECBEAA2E-3C72-4A47-99DE-6007B955B582} = {1D8CC7E8-B7DC-4479-BDA3-A573BEB30A9E}
-		{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76} = {1D8CC7E8-B7DC-4479-BDA3-A573BEB30A9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {18BD39B3-37E8-410B-B8CB-DF0FE461809C}

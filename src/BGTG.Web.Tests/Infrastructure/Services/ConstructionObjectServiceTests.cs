@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using NUnit.Framework;
 
-namespace BGTG.Web.Tests.Infrastructure.Services.BGTG;
+namespace BGTG.Web.Tests.Infrastructure.Services;
 
 public class ConstructionObjectServiceTests
 {
@@ -41,8 +41,10 @@ public class ConstructionObjectServiceTests
 
         var repositoryMock = new Mock<IRepository<ConstructionObjectEntity>>();
         _unitOfWork.Setup(x => x.GetRepository<ConstructionObjectEntity>(false)).Returns(repositoryMock.Object);
+        var lastSaveChangesResult = new SaveChangesResult();
+        _unitOfWork.Setup(x => x.LastSaveChangesResult).Returns(lastSaveChangesResult);
 
-        await _constructionObjectService.Update(objectCipher, calendarPlan);
+        var operation = await _constructionObjectService.Update(objectCipher, calendarPlan);
 
         _unitOfWork.Verify(x => x.GetRepository<ConstructionObjectEntity>(false), Times.Once);
         repositoryMock.Verify(x => x.GetFirstOrDefaultAsync(
@@ -59,6 +61,9 @@ public class ConstructionObjectServiceTests
                 && x.POS!.CalendarPlan == calendarPlan
             ), default(CancellationToken)), Times.Once);
         _unitOfWork.Verify(x => x.SaveChangesAsync(false), Times.Once);
+
+        Assert.IsTrue(operation.Ok);
+        Assert.AreEqual(operation.Result, calendarPlan);
     }
 
     [Test]

@@ -2,9 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using BGTG.Entities;
+using BGTG.Entities.POSEntities;
 using BGTG.Entities.POSEntities.DurationByLCToolEntities;
 using BGTG.Web.Infrastructure.Helpers;
-using BGTG.Web.Infrastructure.Services.Base;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using BGTG.Web.ViewModels.POSViewModels.DurationByLCViewModels;
 using Calabonga.AspNetCore.Controllers;
@@ -12,6 +13,7 @@ using Calabonga.AspNetCore.Controllers.Records;
 using Calabonga.Microservices.Core.Exceptions;
 using Calabonga.OperationResults;
 using Calabonga.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace BGTG.Web.Controllers.POSControllers.DurationByLCs.Commands;
 
@@ -20,16 +22,12 @@ public record DurationByLCWriteRequest(DurationByLCCreateViewModel ViewModel) : 
 public class DurationByLCWriteRequestHandler : OperationResultRequestHandlerBase<DurationByLCWriteRequest, DurationByLCCreateViewModel>
 {
     private readonly IDurationByLCService _durationByLCService;
-    private readonly IConstructionObjectService _constructionObjectService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public DurationByLCWriteRequestHandler(IDurationByLCService durationByLCService, IConstructionObjectService constructionObjectService, IUnitOfWork unitOfWork, IMapper mapper)
+    public DurationByLCWriteRequestHandler(IDurationByLCService durationByLCService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _durationByLCService = durationByLCService;
-        _constructionObjectService = constructionObjectService;
-        _durationByLCService = durationByLCService;
-        _constructionObjectService = constructionObjectService;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
@@ -44,7 +42,9 @@ public class DurationByLCWriteRequestHandler : OperationResultRequestHandlerBase
         durationByLCEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
         durationByLCEntity.CreatedAt = DateTime.UtcNow;
 
-        await _constructionObjectService.Update(request.ViewModel.ObjectCipher, durationByLCEntity);
+        await UpdateConstructionObject(request.ViewModel.ObjectCipher, durationByLCEntity);
+
+        await _unitOfWork.SaveChangesAsync();
 
         if (!_unitOfWork.LastSaveChangesResult.IsOk)
         {
@@ -53,5 +53,53 @@ public class DurationByLCWriteRequestHandler : OperationResultRequestHandlerBase
         }
 
         return operation;
+    }
+
+    private async Task UpdateConstructionObject(string objectCipher, DurationByLCEntity durationByLCEntity)
+    {
+        var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
+        var constructionObject = await repository
+            .GetFirstOrDefaultAsync(
+                predicate: x => x.Cipher == objectCipher,
+                include: x => x.Include(x => x.POS).ThenInclude(x => x!.DurationByLC));
+
+        if (constructionObject == null)
+        {
+            constructionObject = new ConstructionObjectEntity
+            {
+                CreatedBy = durationByLCEntity.CreatedBy,
+                CreatedAt = durationByLCEntity.CreatedAt,
+                Cipher = objectCipher,
+                POS = new POSEntity
+                {
+                    DurationByLC = durationByLCEntity
+                }
+            };
+            await repository.InsertAsync(constructionObject);
+        }
+        else if (constructionObject.POS == null)
+        {
+            constructionObject.UpdatedAt = durationByLCEntity.CreatedAt;
+            constructionObject.UpdatedBy = durationByLCEntity.CreatedBy;
+            constructionObject.POS = new POSEntity
+            {
+                DurationByLC = durationByLCEntity
+            };
+
+            repository.Update(constructionObject);
+        }
+        else
+        {
+            if (constructionObject.POS.DurationByLC != null)
+            {
+                _unitOfWork.GetRepository<DurationByLCEntity>().Delete(constructionObject.POS.DurationByLC);
+            }
+
+            constructionObject.UpdatedAt = durationByLCEntity.CreatedAt;
+            constructionObject.UpdatedBy = durationByLCEntity.CreatedBy;
+            constructionObject.POS.DurationByLC = durationByLCEntity;
+
+            repository.Update(constructionObject);
+        }
     }
 }
