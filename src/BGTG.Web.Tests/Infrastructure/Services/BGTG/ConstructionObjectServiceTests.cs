@@ -9,7 +9,7 @@ using BGTG.Entities.POS.CalendarPlanToolEntities;
 using BGTG.Entities.POS.DurationByLCToolEntities;
 using BGTG.Entities.POS.DurationByTCPToolEntities;
 using BGTG.Entities.POS.EnergyAndWaterToolEntities;
-using BGTG.Web.Infrastructure.Services.BGTG;
+using BGTG.Web.Infrastructure.Services;
 using Calabonga.UnitOfWork;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;

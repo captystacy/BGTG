@@ -1,8 +1,8 @@
 ﻿using BGTG.POS;
 using BGTG.POS.TitlePageTool.Base;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.ViewModels.POS;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.ViewModels.POSViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -39,10 +39,10 @@ public class TitlePageServiceTests
 
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
-        var templatePath = @"wwwroot\AppData\Templates\TitlePageTemplates\Saiko.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\TitlePageFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\TitlePageTemplates\Saiko.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\TitlePageFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
         _titlePageService.Write(viewModel);
 
@@ -54,12 +54,12 @@ public class TitlePageServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _titlePageService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\TitlePageFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\TitlePageFiles\BGTGkss.docx", savePath);
     }
 }

@@ -5,10 +5,10 @@ using BGTG.POS.CalendarPlanTool.Base;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.POS.EnergyAndWaterTool.Base;
 using BGTG.POS.EstimateTool;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.Infrastructure.Services.POS.Base;
-using BGTG.Web.ViewModels.POS.EnergyAndWaterViewModels;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.Infrastructure.Services.POSServices.Base;
+using BGTG.Web.ViewModels.POSViewModels.EnergyAndWaterViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -49,8 +49,8 @@ public class EnergyAndWaterServiceTests
         var totalEstimateWork = new EstimateWork(default!, default, default, default, 12);
         var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork> { totalEstimateWork }, constructionStartDate, default, default, default);
 
-        var templatePath = @"wwwroot\AppData\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\EnergyAndWaterTemplates\EnergyAndWater.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\EnergyAndWaterFiles\BGTGkss.docx";
 
         var energyAndWaterCreateViewModel = new EnergyAndWaterCreateViewModel
         {
@@ -59,7 +59,7 @@ public class EnergyAndWaterServiceTests
         var totalCalendarWork = new CalendarWork(default!, default, default, default!, default);
         _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
         _calendarWorkCreatorMock.Setup(x => x.Create(totalEstimateWork, constructionStartDate)).Returns(totalCalendarWork);
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
         var actualEnergyAndWater = new EnergyAndWater(default, default, default, default, default, default);
         _energyAndWaterCreatorMock.Setup(x => x.Create(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year)).Returns(actualEnergyAndWater);
@@ -78,10 +78,10 @@ public class EnergyAndWaterServiceTests
     [Test]
     public void Write_EnergyAndWater()
     {
-        var templatePath = @"wwwroot\AppData\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\EnergyAndWaterTemplates\EnergyAndWater.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\EnergyAndWaterFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
         var actualEnergyAndWater = new EnergyAndWater(default, default, default, default, default, default);
 
@@ -95,12 +95,12 @@ public class EnergyAndWaterServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _energyAndWaterService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\EnergyAndWaterFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\EnergyAndWaterFiles\BGTGkss.docx", savePath);
     }
 }

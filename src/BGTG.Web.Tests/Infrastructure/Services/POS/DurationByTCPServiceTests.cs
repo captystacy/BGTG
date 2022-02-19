@@ -1,8 +1,8 @@
 ﻿using BGTG.POS.DurationTools.DurationByTCPTool;
 using BGTG.POS.DurationTools.DurationByTCPTool.Base;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.ViewModels.POS.DurationByTCPViewModels;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.ViewModels.POSViewModels.DurationByTCPViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -37,10 +37,10 @@ public class DurationByTCPServiceTests
 
         var durationByTCPCreateViewModel = new DurationByTCPCreateViewModel();
 
-        var templatePath = @"wwwroot\AppData\Templates\DurationByTCPTemplates\Interpolation.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\DurationByTCPTemplates\Interpolation.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\DurationByTCPFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         _durationByTCPCreatorMock.Setup(x => x.Create(durationByTCPCreateViewModel.PipelineMaterial,
@@ -65,10 +65,10 @@ public class DurationByTCPServiceTests
 
         var durationByTCPCreateViewModel = new DurationByTCPCreateViewModel();
 
-        var templatePath = @"wwwroot\AppData\Templates\DurationByTCPTemplates\Interpolation.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\DurationByTCPTemplates\Interpolation.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\DurationByTCPFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var actualDurationByTCP = _durationByTCPService.Write(durationByTCPCreateViewModel);
@@ -87,10 +87,10 @@ public class DurationByTCPServiceTests
         var durationByTCP = new InterpolationDurationByTCP(default!, default, default!, default, default!,
             DurationCalculationType.Interpolation, default, default, default, default, default, default, default);
 
-        var templatePath = @"wwwroot\AppData\Templates\DurationByTCPTemplates\Interpolation.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\DurationByTCPTemplates\Interpolation.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\DurationByTCPFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var result = _durationByTCPService.Write(durationByTCP);
@@ -103,12 +103,12 @@ public class DurationByTCPServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _durationByTCPService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\DurationByTCPFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\DurationByTCPFiles\BGTGkss.docx", savePath);
     }
 }

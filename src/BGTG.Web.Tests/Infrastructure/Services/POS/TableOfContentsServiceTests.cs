@@ -1,9 +1,9 @@
 ﻿using BGTG.POS;
 using BGTG.POS.ProjectTool;
 using BGTG.POS.TableOfContentsTool.Base;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Infrastructure.Services.POS;
-using BGTG.Web.ViewModels.POS;
+using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Services.POSServices;
+using BGTG.Web.ViewModels.POSViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -38,10 +38,10 @@ public class TableOfContentsServiceTests
             ChiefProjectEngineer = ChiefProjectEngineer.Saiko
         };
 
-        var templatePath = @"wwwroot\AppData\Templates\TableOfContentsTemplates\ECP\Saiko\Unknown.docx";
-        var savePath = @"wwwroot\AppData\UserFiles\TableOfContentsFiles\BGTGkss.docx";
+        var templatePath = @"root\AppData\Templates\POSTemplates\TableOfContentsTemplates\ECP\Saiko\Unknown.docx";
+        var savePath = @"root\AppData\UserFiles\POSFiles\TableOfContentsFiles\BGTGkss.docx";
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         _tableOfContentsService.Write(viewModel);
@@ -54,12 +54,12 @@ public class TableOfContentsServiceTests
     [Test]
     public void GetSavePath()
     {
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("wwwroot");
+        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         IdentityFake.Setup(_httpContextAccessorMock, "BGTG\\kss");
 
         var savePath = _tableOfContentsService.GetSavePath();
 
         _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        Assert.AreEqual(@"wwwroot\AppData\UserFiles\TableOfContentsFiles\BGTGkss.docx", savePath);
+        Assert.AreEqual(@"root\AppData\UserFiles\POSFiles\TableOfContentsFiles\BGTGkss.docx", savePath);
     }
 }

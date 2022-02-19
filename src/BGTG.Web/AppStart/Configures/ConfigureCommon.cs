@@ -1,6 +1,4 @@
-﻿using BGTG.Web.AppStart.ConfigureServices;
-using BGTG.Web.Infrastructure.Auth;
-using BGTG.Web.Middlewares;
+﻿using BGTG.Web.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,21 +33,7 @@ namespace BGTG.Web.AppStart.Configures
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseDefaultFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = ctx =>
-                {
-                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=600");
-                }
-            });
-
-            app.UseResponseCaching();
-            app.UseETagger();
-            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-            app.UseSwagger();
-            app.UseSwaggerUI(ConfigureServicesSwagger.SwaggerSettings);
+            app.UseStaticFiles();
 
             // Singleton setup for User Identity
             IdentityHelper.Instance.Configure(app.ApplicationServices.GetService<IHttpContextAccessor>()!);

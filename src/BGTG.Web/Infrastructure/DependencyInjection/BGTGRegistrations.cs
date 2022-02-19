@@ -1,6 +1,5 @@
 ﻿using BGTG.Web.Infrastructure.Services;
-using BGTG.Web.Infrastructure.Services.BGTG;
-using BGTG.Web.Infrastructure.Services.BGTG.Base;
+using BGTG.Web.Infrastructure.Services.Base;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BGTG.Web.Infrastructure.DependencyInjection;

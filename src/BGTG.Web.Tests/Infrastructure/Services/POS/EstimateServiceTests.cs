@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BGTG.POS.EstimateTool;
 using BGTG.POS.EstimateTool.Base;
-using BGTG.Web.Infrastructure.Services.POS;
+using BGTG.Web.Infrastructure.Services.POSServices;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
