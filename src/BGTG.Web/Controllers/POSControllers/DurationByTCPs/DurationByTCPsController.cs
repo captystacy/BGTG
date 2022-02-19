@@ -23,20 +23,20 @@ public class DurationByTCPsController : Controller
     }
 
     [ValidateModelState]
-    public async Task<OperationResult<DurationByTCPCreateViewModel>> Write(DurationByTCPCreateViewModel viewModel)
-        => await _mediator.Send(new DurationByTCPWriteRequest(viewModel), HttpContext.RequestAborted);
+    public async Task<OperationResult<DurationByTCPCreateViewModel>> Write(DurationByTCPCreateViewModel viewModel) => 
+        await _mediator.Send(new DurationByTCPWriteRequest(viewModel), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> WriteById(Guid id)
-        => await _mediator.Send(new DurationByTCPWriteByIdRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> WriteById(Guid id) => 
+        await _mediator.Send(new DurationByTCPWriteByIdRequest(id), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> DeleteInterpolation(Guid id)
-        => await _mediator.Send(new InterpolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> DeleteInterpolation(Guid id) => 
+        await _mediator.Send(new InterpolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> DeleteExtrapolation(Guid id)
-        => await _mediator.Send(new ExtrapolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> DeleteExtrapolation(Guid id) => 
+        await _mediator.Send(new ExtrapolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> DeleteStepwiseExtrapolation(Guid id)
-        => await _mediator.Send(new StepwiseExtrapolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> DeleteStepwiseExtrapolation(Guid id) => 
+        await _mediator.Send(new StepwiseExtrapolationDurationByTCPDeleteRequest(id), HttpContext.RequestAborted);
 
     public IActionResult Download()
     {

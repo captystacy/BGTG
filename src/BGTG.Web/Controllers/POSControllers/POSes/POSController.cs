@@ -31,12 +31,12 @@ public class POSController : Controller
         return View();
     }
 
-    public async Task<OperationResult<Guid>> Delete(Guid id)
-        => await _mediator.Send(new POSDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> Delete(Guid id) => 
+        await _mediator.Send(new POSDeleteRequest(id), HttpContext.RequestAborted);
 
     [ValidateModelState]
-    public async Task<OperationResult<ProjectViewModel>> WriteProject(ProjectViewModel viewModel)
-        => await _projectService.Write(viewModel);
+    public async Task<OperationResult<ProjectViewModel>> WriteProject(ProjectViewModel viewModel) => 
+        await _projectService.Write(viewModel);
 
     public IActionResult DownloadProject()
     {

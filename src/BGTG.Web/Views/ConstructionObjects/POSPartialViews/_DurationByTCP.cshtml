@@ -1,0 +1,53 @@
+﻿@using BGTG.Entities.Core
+@using BGTG.Entities.POSEntities.DurationByTCPToolEntities
+@using Calabonga.Microservices.Core
+
+@model BGTG.Web.ViewModels.POSViewModels.DurationByTCPViewModels.DurationByTCPViewModel
+
+<div class="card">
+    <div class="card-body">
+        <input type="hidden" id="duration-by-tcp-id" value="@Model.Id" />
+        <h5 class="card-title fw-bold">
+            Продолжительность по ТКП
+        </h5>
+        <p class="card-text">
+            Продолжительность: <b>@Model.RoundedDuration.ToString(AppData.DecimalFormat) мес.</b>
+        </p>
+        <p class="card-text">
+            Подготовительный период: <b>@Model.PreparatoryPeriod.ToString(AppData.DecimalFormat) мес.</b>
+        </p>
+        <p class="card-text">
+            Сеть из <b>@Model.PipelineMaterial</b> диаметром <b>@Model.PipelineDiameter мм.</b> и длиной <b>@Model.PipelineLength.ToString(AppData.DecimalFormat) км.</b> рассчитана методом <b>@(EnumHelper<DurationCalculationType>.GetDisplayValue(Model.DurationCalculationType))</b>.
+        </p>
+        <p class="card-text">
+            Дата создания: <b>@Model.CreatedAt</b>
+        </p>
+        <p class="card-text">
+            Проектировщик: <b>@Model.CreatedBy</b>
+        </p>
+        <div class="row">
+            @if (Model.CreatedBy == User.Identity!.Name)
+            {
+                <input type="hidden" id="duration-by-tcp-calculation-type" value="@Model.DurationCalculationType" />
+                <div class="col">
+                    <button type="button" class="btn btn-danger" id="duration-by-tcp-delete-btn">
+                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                        </span>
+                        Удалить
+                    </button>
+                </div>
+            }
+            <div class="col">
+                <button type="button" class="btn btn-primary float-end" id="duration-by-tcp-download-btn">
+                    <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                    </span>
+                    Скачать
+                    <i class="bi bi-download"></i>
+                </button>
+                <form asp-controller="DurationByTCPs" asp-action="Download" method="get">
+                    <button type="submit" class="d-none" id="duration-by-tcp-download-submit-btn"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

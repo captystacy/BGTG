@@ -1,0 +1,36 @@
+﻿<select class="form-select mb-3" id="appendix-key">
+    <option selected disabled>Выберите нормы</option>
+    <option value="A">Нормы продолжительности строительства городских инженерных сетей и сооружений</option>
+    <option value="B">Нормы продолжительности строительства объектов коммунального хозяйства</option>
+</select>
+<select class="form-select mb-3" id="appendix-category" disabled>
+    <option selected disabled>Выберите объект</option>
+</select>
+<select class="form-select mb-3" id="pipeline-material" disabled>
+    <option selected disabled>Выберите материал</option>
+</select>
+<div class="row">
+    <div class="col">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Диаметр турбопровода, мм</span>
+            <input type="number" id="pipeline-diameter" min="0" class="form-control" disabled>
+        </div>
+    </div>
+    <div class="col">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Длина трубопровода, км</span>
+            <input type="number" id="pipeline-length" min="0" step="any" class="form-control" disabled>
+        </div>
+    </div>
+</div>
+<div class="float-end">
+    <button type="button" id="duration-by-tcp-download-btn" class="btn btn-primary" disabled>
+        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+        </span>
+        Скачать
+        <i class="bi bi-download"></i>
+    </button>
+    <form asp-controller="DurationByTCPs" asp-action="Download" method="get">
+        <button type="submit" class="d-none" id="duration-by-tcp-download-submit-btn"></button>
+    </form>
+</div>

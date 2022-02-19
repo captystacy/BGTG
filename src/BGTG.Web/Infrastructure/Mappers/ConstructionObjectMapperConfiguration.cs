@@ -13,7 +13,6 @@ namespace BGTG.Web.Infrastructure.Mappers
                 .ForMember(x => x.POSViewModel, o => o.MapFrom(x => x.POS))
                 .ForMember(x => x.UpdatedAt, o => o.MapFrom(x => x.UpdatedAt!.Value.ToLocalTime()));
 
-
             CreateMap<IPagedList<ConstructionObjectEntity>, IPagedList<ConstructionObjectViewModel>>()
                 .ConvertUsing<PagedListConverter<ConstructionObjectEntity, ConstructionObjectViewModel>>();
         }

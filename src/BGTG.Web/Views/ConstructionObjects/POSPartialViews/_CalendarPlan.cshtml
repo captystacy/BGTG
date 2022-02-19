@@ -1,0 +1,47 @@
+﻿@using BGTG.Entities.Core
+
+@model BGTG.Web.ViewModels.POSViewModels.CalendarPlanViewModels.CalendarPlanViewModel
+
+<div class="card">
+    <div class="card-body">
+        <input type="hidden" id="calendar-plan-id" value="@Model.Id" />
+        <h5 class="card-title fw-bold">
+            Календарный план
+        </h5>
+        <p class="card-text">
+            Дата начала строительства: <b>@Model.ConstructionStartDate.ToString(AppData.DateTimeMonthAndYearFormat)</b>
+        </p>
+        <p class="card-text">
+            Продолжительность: <b>@Model.ConstructionDuration.ToString(AppData.DecimalFormat) мес.</b>
+        </p>
+        <p class="card-text">
+            Дата создания: <b>@Model.CreatedAt</b>
+        </p>
+        <p class="card-text">
+            Проектировщик: <b>@Model.CreatedBy</b>
+        </p>
+        <div class="row">
+            @if (Model.CreatedBy == User.Identity!.Name)
+            {
+                <div class="col">
+                    <button type="button" class="btn btn-danger" id="calendar-plan-delete-btn">
+                        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                        </span>
+                        Удалить
+                    </button>
+                </div>
+            }
+            <div class="col">
+                <button type="button" class="btn btn-primary float-end" id="calendar-plan-download-btn">
+                    <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
+                    </span>
+                    Скачать
+                    <i class="bi bi-download"></i>
+                </button>
+                <form asp-controller="CalendarPlans" asp-action="Download" method="get">
+                    <button type="submit" class="d-none" id="calendar-plan-download-submit-btn"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

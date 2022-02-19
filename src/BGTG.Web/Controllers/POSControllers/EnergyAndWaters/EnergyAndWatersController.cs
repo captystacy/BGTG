@@ -23,14 +23,14 @@ public class EnergyAndWatersController : Controller
     }
 
     [ValidateModelState]
-    public async Task<OperationResult<EnergyAndWaterCreateViewModel>> Write(EnergyAndWaterCreateViewModel viewModel)
-        => await _mediator.Send(new EnergyAndWaterWriteRequest(viewModel), HttpContext.RequestAborted);
+    public async Task<OperationResult<EnergyAndWaterCreateViewModel>> Write(EnergyAndWaterCreateViewModel viewModel) => 
+        await _mediator.Send(new EnergyAndWaterWriteRequest(viewModel), HttpContext.RequestAborted);
 
-    public async Task<ActionResult<OperationResult<Guid>>> WriteById(Guid id)
-        => await _mediator.Send(new EnergyAndWaterWriteByIdRequest(id), HttpContext.RequestAborted);
+    public async Task<ActionResult<OperationResult<Guid>>> WriteById(Guid id) => 
+        await _mediator.Send(new EnergyAndWaterWriteByIdRequest(id), HttpContext.RequestAborted);
 
-    public async Task<ActionResult<OperationResult<Guid>>> Delete(Guid id)
-        => await _mediator.Send(new EnergyAndWaterDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<ActionResult<OperationResult<Guid>>> Delete(Guid id) => 
+        await _mediator.Send(new EnergyAndWaterDeleteRequest(id), HttpContext.RequestAborted);
 
     public IActionResult Download()
     {

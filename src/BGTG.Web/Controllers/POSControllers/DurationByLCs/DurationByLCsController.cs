@@ -23,14 +23,14 @@ public class DurationByLCsController : Controller
     }
 
     [ValidateModelState]
-    public async Task<OperationResult<DurationByLCCreateViewModel>> Write(DurationByLCCreateViewModel viewModel)
-        => await _mediator.Send(new DurationByLCWriteRequest(viewModel), HttpContext.RequestAborted);
+    public async Task<OperationResult<DurationByLCCreateViewModel>> Write(DurationByLCCreateViewModel viewModel) => 
+        await _mediator.Send(new DurationByLCWriteRequest(viewModel), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> WriteById(Guid id)
-        => await _mediator.Send(new DurationByLCWriteByIdRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> WriteById(Guid id) => 
+        await _mediator.Send(new DurationByLCWriteByIdRequest(id), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> Delete(Guid id)
-        => await _mediator.Send(new DurationByLCDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> Delete(Guid id) => 
+        await _mediator.Send(new DurationByLCDeleteRequest(id), HttpContext.RequestAborted);
 
     public IActionResult Download()
     {

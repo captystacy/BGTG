@@ -1,0 +1,27 @@
+﻿@using System.Text.RegularExpressions
+
+@model BGTG.Web.ViewModels.ConstructionObjectViewModel
+
+@{
+    var cipher = Regex.Replace(Model.Cipher, @"[\.-]", string.Empty);
+    ViewData["ConstructionObjectCipherForAttribute"] = cipher;
+}
+
+<div class="construction-object-accordion">
+    <input type="hidden" id="construction-object-id-@cipher" value="@Model.Id" />
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#construction-object-@cipher">
+                Шифр объекта:&nbsp;<b>@Model.Cipher</b>&nbsp;(обновлено&nbsp;<b>@Model.UpdatedAt</b>,&nbsp;<b>@Model.UpdatedBy</b>)
+            </button>
+        </h2>
+        <div id="construction-object-@cipher" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                @if (Model.POSViewModel is not null)
+                {
+                    <partial name="POSPartialViews\_POS" model="Model.POSViewModel" />
+                }
+            </div>
+        </div>
+    </div>
+</div>

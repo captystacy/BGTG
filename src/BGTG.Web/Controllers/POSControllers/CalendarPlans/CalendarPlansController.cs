@@ -25,22 +25,22 @@ public class CalendarPlansController : Controller
     }
 
     [ValidateModelState]
-    public async Task<OperationResult<CalendarPlanCreateViewModel>> GetCalendarPlanCreateViewmodel(CalendarPlanPreCreateViewModel viewModel)
-        => await _mediator.Send(new GetCalendarPlanCreateViewModelRequest(viewModel), HttpContext.RequestAborted);
+    public async Task<OperationResult<CalendarPlanCreateViewModel>> GetCalendarPlanCreateViewmodel(CalendarPlanPreCreateViewModel viewModel) => 
+        await _mediator.Send(new GetCalendarPlanCreateViewModelRequest(viewModel), HttpContext.RequestAborted);
 
     [ValidateModelState]
-    public async Task<OperationResult<IEnumerable<decimal>>> GetTotalPercentages(CalendarPlanCreateViewModel viewModel)
-        => await _mediator.Send(new GetTotalPercentagesRequest(viewModel), HttpContext.RequestAborted);
+    public async Task<OperationResult<IEnumerable<decimal>>> GetTotalPercentages(CalendarPlanCreateViewModel viewModel) => 
+        await _mediator.Send(new GetTotalPercentagesRequest(viewModel), HttpContext.RequestAborted);
 
     [ValidateModelState]
-    public async Task<OperationResult<CalendarPlanCreateViewModel>> Write(CalendarPlanCreateViewModel viewModel)
-        => await _mediator.Send(new CalendarPlanWriteRequest(viewModel), HttpContext.RequestAborted);
+    public async Task<OperationResult<CalendarPlanCreateViewModel>> Write(CalendarPlanCreateViewModel viewModel) => 
+        await _mediator.Send(new CalendarPlanWriteRequest(viewModel), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> WriteById(Guid id)
-        => await _mediator.Send(new CalendarPlanWriteByIdRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> WriteById(Guid id) => 
+        await _mediator.Send(new CalendarPlanWriteByIdRequest(id), HttpContext.RequestAborted);
 
-    public async Task<OperationResult<Guid>> Delete(Guid id)
-        => await _mediator.Send(new CalendarPlanDeleteRequest(id), HttpContext.RequestAborted);
+    public async Task<OperationResult<Guid>> Delete(Guid id) => 
+        await _mediator.Send(new CalendarPlanDeleteRequest(id), HttpContext.RequestAborted);
 
     public IActionResult Download()
     {
