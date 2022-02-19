@@ -29,6 +29,7 @@ namespace BGTG.Web.AppStart.Configures
             {
                 mapper.CompileMappings();
 
+                app.UseWebOptimizer();
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }

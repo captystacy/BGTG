@@ -18,6 +18,8 @@ using BGTG.POS.TableOfContentsTool;
 using BGTG.POS.TableOfContentsTool.Base;
 using BGTG.POS.TitlePageTool;
 using BGTG.POS.TitlePageTool.Base;
+using BGTG.Web.Infrastructure.Providers.POSProviders;
+using BGTG.Web.Infrastructure.Providers.POSProviders.Base;
 using BGTG.Web.Infrastructure.Services.POSServices;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,7 +86,7 @@ public partial class DependencyContainer
 
         services.AddSingleton<IECPProjectWriter, ECPProjectWriter>();
 
-        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IProjectProvider, ProjectProvider>();
 
         #endregion
 

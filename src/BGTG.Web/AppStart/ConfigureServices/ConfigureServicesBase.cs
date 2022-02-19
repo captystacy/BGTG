@@ -16,11 +16,17 @@ public static class ConfigureServicesBase
         });
         services.AddAutoMapper(typeof(Startup));
         services.AddUnitOfWork<ApplicationDbContext>();
-        services.AddRouting(x=>
+        services.AddRouting(x =>
         {
             x.LowercaseQueryStrings = true;
             x.LowercaseUrls = true;
         });
         services.AddHttpContextAccessor();
+
+        services.AddWebOptimizer(x =>
+        {
+            x.AddCssBundle("/css/bundle.css", "css/**/*.css");
+            x.AddJavaScriptBundle("/js/bundle.js", "js/**/*.js");
+        });
     }
 }

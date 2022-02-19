@@ -166,23 +166,13 @@
         let formatter = new Intl.DateTimeFormat('ru', { month: 'long', year: 'numeric' });
         for (let i = 0; i < constructionDurationCeiling + 1; i++) {
             var monthYearStr = formatter.format(currentDate);
-            let monthCell = `<th class="align-middle text-center">
-                                ${monthYearStr[0].charAt(0).toUpperCase() + monthYearStr.slice(1)}
-                            </th>`;
+            let monthCell = `<th class="align-middle text-center">${monthYearStr[0].charAt(0).toUpperCase() + monthYearStr.slice(1)}</th>`;
             monthRow.append(monthCell);
 
             currentDate.setMonth(currentDate.getMonth() + 1);
 
             if (i < constructionDurationCeiling) {
-                columnPercentsRow.append(`
-                    <td>
-                        <div class="input-group mb-1 mt-1" style="min-width: 6rem;">
-                            <input class="form-control" id="column-percent-input" value="0" type="number" min="0" max="100" step="1" />
-                            <div class="input-group-append">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </td>`);
+                columnPercentsRow.append(`<td><div class="input-group mb-1 mt-1" style="min-width: 6rem;"><input class="form-control" id="column-percent-input" value="0" type="number" min="0" max="100" step="1" /><div class="input-group-append"><span class="input-group-text">%</span></div></div></td>`);
             }
 
             if (i == constructionDurationCeiling) {
@@ -195,36 +185,17 @@
         for (let i = 0; i < calendarPlanCreateViewModel.calendarWorkViewModels.length; i++) {
             let inputRow = '';
             for (let j = 0; j < calendarPlanCreateViewModel.constructionDurationCeiling; j++) {
-                inputRow += `
-                        <td>
-                            <div class="input-group mb-1 mt-1" style="min-width: 6rem;">
-                                <input name="CalendarWorkViewModels[${i}].Percentages[${j}]" class="form-control" id="percent-input" value="0" type="number" min="0" max="100" step="1" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                        </td>`;
+                inputRow += `<td><div class="input-group mb-1 mt-1" style="min-width: 6rem;"><input name="CalendarWorkViewModels[${i}].Percentages[${j}]" class="form-control" id="percent-input" value="0" type="number" min="0" max="100" step="1" /><div class="input-group-append"><span class="input-group-text">%</span></div></div></td>`;
             }
 
-            let userRow = `
-                    <tr>
-                        <th scope="row">
-                            ${calendarPlanCreateViewModel.calendarWorkViewModels[i].workName}
-                            <input name="CalendarWorkViewModels[${i}].WorkName" type="hidden" value="${calendarPlanCreateViewModel.calendarWorkViewModels[i].workName}"/>
-                        </th>
-                        ${inputRow}
-                    </tr>`;
+            let userRow = `<tr><th scope="row">${calendarPlanCreateViewModel.calendarWorkViewModels[i].workName}<input name="CalendarWorkViewModels[${i}].WorkName" type="hidden" value="${calendarPlanCreateViewModel.calendarWorkViewModels[i].workName}"/></th>${inputRow}</tr>`;
 
             percentagesTableBody.append(userRow);
         }
     }
 
     function appendAcceptanceTimeCell(rowspan) {
-        let acceptanceTimeCell = `
-                <td class="align-middle text-center" rowspan="${rowspan + 1}" style="writing-mode: vertical-rl; transform: rotate( -180deg);">
-                    Приемка объекта в эксплуатацию
-                </td>
-            `;
+        let acceptanceTimeCell = `<td class="align-middle text-center" rowspan="${rowspan + 1}" style="writing-mode: vertical-rl; transform: rotate( -180deg);">Приемка объекта в эксплуатацию</td>`;
 
         percentagesTableBody.find('tr:first-child').append(acceptanceTimeCell);
     }
@@ -265,19 +236,10 @@
     function generateMainTotalWorkRow(totalPercentages) {
         let mainTotalPercentagesCells = '';
         for (var i = 0; i < totalPercentages.length; i++) {
-            mainTotalPercentagesCells += `
-                            <td>
-                                ${(totalPercentages[i] * 100).toFixed(2)} %
-                            </td>`;
+            mainTotalPercentagesCells += `<td>${(totalPercentages[i] * 100).toFixed(2)} %</td>`;
         }
 
-        let mainTotalWorkRow = `
-                        <tr id="main-total-work">
-                            <th scope="row">
-                                Итого:
-                            </th>
-                            ${mainTotalPercentagesCells}
-                        </tr>`;
+        let mainTotalWorkRow = `<tr id="main-total-work"><th scope="row">Итого:</th>${mainTotalPercentagesCells}</tr>`;
         return mainTotalWorkRow;
     }
 

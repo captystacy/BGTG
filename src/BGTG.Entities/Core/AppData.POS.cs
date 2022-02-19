@@ -36,18 +36,6 @@
 
         public const string ChapterValidationMessage = "Глава сметной работы не может быть меньше 0.";
 
-        public const string DurationByTCPBadParametersValidationMessage = "Не найдены подходящие нормы по запрашиваемым параметрам.";
-
-        public const string DurationByTCPUnknown = "Неизвестный тип продолжительности по ТКП.";
-
-        public const string BadCalendarPlanId = "Календарный план не найден по данному ID.";
-
-        public const string BadDurationByLCId = "Продолжительность по трудозатратам не найдена по данному ID.";
-
-        public const string BadDurationByTCPId = "Продолжительность по ТКП не найдена по данному ID.";
-
-        public const string BadEnergyAndWaterId = "Энергия и вода не найдена по данному ID.";
-
         public const string ConstructionObjectIsNull = "Объекта по данному шифру ещё нет в базе.";
 
         public const string POSIsNull = "Раздела ПОС по данному шифру ещё нет в базе.";

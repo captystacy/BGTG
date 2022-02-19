@@ -8,6 +8,7 @@ using BGTG.POS.DurationTools.DurationByLCTool;
 using BGTG.POS.EnergyAndWaterTool;
 using BGTG.POS.ProjectTool.Base;
 using BGTG.Web.Infrastructure.Helpers;
+using BGTG.Web.Infrastructure.Providers.POSProviders.Base;
 using BGTG.Web.Infrastructure.Services.POSServices.Base;
 using BGTG.Web.ViewModels.POSViewModels;
 using Calabonga.OperationResults;
@@ -15,9 +16,9 @@ using Calabonga.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
-namespace BGTG.Web.Infrastructure.Services.POSServices;
+namespace BGTG.Web.Infrastructure.Providers.POSProviders;
 
-public class ProjectService : IProjectService
+public class ProjectProvider : IProjectProvider
 {
     private readonly IECPProjectWriter _ecpProjectWriter;
     private readonly IDurationByLCService _durationByLCService;
@@ -30,7 +31,7 @@ public class ProjectService : IProjectService
     private const string TemplatesPath = @"AppData\Templates\POSTemplates\ProjectTemplates";
     private const string UserFilesPath = @"AppData\UserFiles\POSFiles\ProjectFiles";
 
-    public ProjectService(IECPProjectWriter ecpProjectWriter, IDurationByLCService durationByLCService, ICalendarPlanService calendarPlanService, IEnergyAndWaterService energyAndWaterService, IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+    public ProjectProvider(IECPProjectWriter ecpProjectWriter, IDurationByLCService durationByLCService, ICalendarPlanService calendarPlanService, IEnergyAndWaterService energyAndWaterService, IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
     {
         _ecpProjectWriter = ecpProjectWriter;
         _durationByLCService = durationByLCService;
