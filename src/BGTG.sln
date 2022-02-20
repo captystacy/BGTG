@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.Data", "BGTG.Data\BGTG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGTG.Entities", "BGTG.Entities\BGTG.Entities.csproj", "{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGTG.Web.Tests", "BGTG.Web.Tests\BGTG.Web.Tests.csproj", "{DCF9561B-DCAC-4D4A-A6E0-62541F3D5E6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ADF6124-3EBE-4CCE-810B-B6B865FA7C76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF9561B-DCAC-4D4A-A6E0-62541F3D5E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF9561B-DCAC-4D4A-A6E0-62541F3D5E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF9561B-DCAC-4D4A-A6E0-62541F3D5E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF9561B-DCAC-4D4A-A6E0-62541F3D5E6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
