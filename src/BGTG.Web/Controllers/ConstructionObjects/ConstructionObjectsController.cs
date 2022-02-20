@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Threading.Tasks;
 using BGTG.Web.Controllers.ConstructionObjects.Commands;
 using BGTG.Web.Controllers.ConstructionObjects.Queries;
@@ -22,6 +21,6 @@ public class ConstructionObjectsController : Controller
         View(await _mediator.Send(new ConstructionObjectGetPagedRequest(pageIndex - 1 ?? 0, objectCipher),
             HttpContext.RequestAborted));
 
-    public async Task<OperationResult<Guid>> Delete(Guid id) =>
+    public async Task<OperationResult<Guid>> Delete(Guid id) => 
         await _mediator.Send(new ConstructionObjectDeleteRequest(id), HttpContext.RequestAborted);
 }

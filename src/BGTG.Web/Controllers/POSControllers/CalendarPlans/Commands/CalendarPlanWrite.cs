@@ -42,7 +42,7 @@ public class CalendarPlanWriteRequestHandler : OperationResultRequestHandlerBase
         calendarPlanEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
         calendarPlanEntity.CreatedAt = DateTime.UtcNow;
 
-        await UpdateConstructionObject(request.ViewModel.ObjectCipher, calendarPlanEntity);
+        await UpdateConstructionObjectAsync(request.ViewModel.ObjectCipher, calendarPlanEntity);
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -55,7 +55,7 @@ public class CalendarPlanWriteRequestHandler : OperationResultRequestHandlerBase
         return operation;
     }
 
-    public async Task UpdateConstructionObject(string objectCipher, CalendarPlanEntity calendarPlanEntity)
+    public async Task UpdateConstructionObjectAsync(string objectCipher, CalendarPlanEntity calendarPlanEntity)
     {
         var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
         var constructionObject = await repository

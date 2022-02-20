@@ -54,7 +54,7 @@ public class DurationByTCPWriteRequestHandler : OperationResultRequestHandlerBas
                 interpolationDurationByTCPEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
                 interpolationDurationByTCPEntity.CreatedAt = now;
 
-                await UpdateConstructionObject(request.ViewModel.ObjectCipher, interpolationDurationByTCPEntity);
+                await UpdateConstructionObjectAsync(request.ViewModel.ObjectCipher, interpolationDurationByTCPEntity);
                 break;
             case ExtrapolationDurationByTCP extrapolationDurationByTCP:
                 if (extrapolationDurationByTCP is StepwiseExtrapolationDurationByTCP stepwiseExtrapolationDuration)
@@ -63,7 +63,7 @@ public class DurationByTCPWriteRequestHandler : OperationResultRequestHandlerBas
                     stepwiseExtrapolationDurationByTCPEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
                     stepwiseExtrapolationDurationByTCPEntity.CreatedAt = now;
 
-                    await UpdateConstructionObject(request.ViewModel.ObjectCipher, stepwiseExtrapolationDurationByTCPEntity);
+                    await UpdateConstructionObjectAsync(request.ViewModel.ObjectCipher, stepwiseExtrapolationDurationByTCPEntity);
                     break;
                 }
                 else
@@ -72,7 +72,7 @@ public class DurationByTCPWriteRequestHandler : OperationResultRequestHandlerBas
                     extrapolationDurationByTCPEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
                     extrapolationDurationByTCPEntity.CreatedAt = now;
 
-                    await UpdateConstructionObject(request.ViewModel.ObjectCipher, extrapolationDurationByTCPEntity);
+                    await UpdateConstructionObjectAsync(request.ViewModel.ObjectCipher, extrapolationDurationByTCPEntity);
                     break;
                 }
             default:
@@ -91,7 +91,7 @@ public class DurationByTCPWriteRequestHandler : OperationResultRequestHandlerBas
         return operation;
     }
 
-    private async Task UpdateConstructionObject(string objectCipher, InterpolationDurationByTCPEntity interpolationDurationByTCPEntity)
+    private async Task UpdateConstructionObjectAsync(string objectCipher, InterpolationDurationByTCPEntity interpolationDurationByTCPEntity)
     {
         var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
         var constructionObject = await repository
@@ -139,7 +139,7 @@ public class DurationByTCPWriteRequestHandler : OperationResultRequestHandlerBas
         }
     }
 
-    private async Task UpdateConstructionObject(string objectCipher, ExtrapolationDurationByTCPEntity extrapolationDurationByTCPEntity)
+    private async Task UpdateConstructionObjectAsync(string objectCipher, ExtrapolationDurationByTCPEntity extrapolationDurationByTCPEntity)
     {
         var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
         var constructionObject = await repository
@@ -187,7 +187,7 @@ public class DurationByTCPWriteRequestHandler : OperationResultRequestHandlerBas
         }
     }
 
-    private async Task UpdateConstructionObject(string objectCipher, StepwiseExtrapolationDurationByTCPEntity stepwiseExtrapolationDurationByTCPEntity)
+    private async Task UpdateConstructionObjectAsync(string objectCipher, StepwiseExtrapolationDurationByTCPEntity stepwiseExtrapolationDurationByTCPEntity)
     {
         var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
         var constructionObject = await repository

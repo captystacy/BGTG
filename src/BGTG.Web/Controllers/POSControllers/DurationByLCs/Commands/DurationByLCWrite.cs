@@ -42,7 +42,7 @@ public class DurationByLCWriteRequestHandler : OperationResultRequestHandlerBase
         durationByLCEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
         durationByLCEntity.CreatedAt = DateTime.UtcNow;
 
-        await UpdateConstructionObject(request.ViewModel.ObjectCipher, durationByLCEntity);
+        await UpdateConstructionObjectAsync(request.ViewModel.ObjectCipher, durationByLCEntity);
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -55,7 +55,7 @@ public class DurationByLCWriteRequestHandler : OperationResultRequestHandlerBase
         return operation;
     }
 
-    private async Task UpdateConstructionObject(string objectCipher, DurationByLCEntity durationByLCEntity)
+    private async Task UpdateConstructionObjectAsync(string objectCipher, DurationByLCEntity durationByLCEntity)
     {
         var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
         var constructionObject = await repository

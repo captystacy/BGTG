@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BGTG.Web.Controllers.ConstructionObjects.Queries;
 
-public record ConstructionObjectGetPagedRequest (int PageIndex, string? ObjectCipher) : OperationResultRequestBase<IPagedList<ConstructionObjectViewModel>>;
+public record ConstructionObjectGetPagedRequest(int PageIndex, string? ObjectCipher) : OperationResultRequestBase<IPagedList<ConstructionObjectViewModel>>;
 
 public class ConstructionObjectGetPagedRequestHandler : OperationResultRequestHandlerBase<ConstructionObjectGetPagedRequest, IPagedList<ConstructionObjectViewModel>>
 {
@@ -47,7 +47,7 @@ public class ConstructionObjectGetPagedRequestHandler : OperationResultRequestHa
                 pageIndex: request.PageIndex,
                 pageSize: 20,
                 cancellationToken: cancellationToken);
-
+        
         operation.Result = _mapper.Map<IPagedList<ConstructionObjectViewModel>>(items);
         return operation;
     }

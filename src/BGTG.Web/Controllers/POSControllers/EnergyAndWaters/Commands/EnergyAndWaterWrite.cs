@@ -42,7 +42,7 @@ public class EnergyAndWaterWriteRequestHandler : OperationResultRequestHandlerBa
         energyAndWaterEntity.CreatedBy = IdentityHelper.Instance.User!.Name;
         energyAndWaterEntity.CreatedAt = DateTime.UtcNow;
 
-        await UpdateConstructionObject(request.ViewModel.ObjectCipher, energyAndWaterEntity);
+        await UpdateConstructionObjectAsync(request.ViewModel.ObjectCipher, energyAndWaterEntity);
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -55,7 +55,7 @@ public class EnergyAndWaterWriteRequestHandler : OperationResultRequestHandlerBa
         return operation;
     }
 
-    private async Task UpdateConstructionObject(string objectCipher, EnergyAndWaterEntity energyAndWaterEntity)
+    private async Task UpdateConstructionObjectAsync(string objectCipher, EnergyAndWaterEntity energyAndWaterEntity)
     {
         var repository = _unitOfWork.GetRepository<ConstructionObjectEntity>();
         var constructionObject = await repository
