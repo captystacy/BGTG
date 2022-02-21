@@ -10,6 +10,7 @@
 * Windows Authentication
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper)
 * [Calabonga.AspNetCore.Controllers (Mediatr with OperationResult)](https://github.com/Calabonga/Calabonga.AspNetCore.Controllers)
+* [Calabonga.UnitOfWork](https://github.com/Calabonga/UnitOfWork)
 * Calabonga.PredicatesBuilder
 * [Serilog.AspNetCore](https://github.com/serilog/serilog-aspnetcore)
 * [Entity Framework Core](https://github.com/dotnet/efcore)
