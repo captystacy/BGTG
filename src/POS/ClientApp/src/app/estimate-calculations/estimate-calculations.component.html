@@ -10,37 +10,7 @@
       <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
         <span class="visually-hidden"></span>
       </button>
-      <div class="dropdown-menu" id="labor-costs-duration-dropdown" style="width: 25rem;">
-        <div class="d-flex align-items-center px-1">
-          <input class="form-control me-2" style="width: 5rem;" id="number-of-working-days" type="number" value="21.5" />
-          <label for="number-of-working-days">Количество рабочих дней в месяце</label>
-        </div>
-        <hr class="dropdown-divider">
-        <div class="d-flex align-items-center px-1">
-          <input class="form-control me-2" style="width: 5rem;" id="working-day-duration" type="number" value="8" />
-          <label for="working-day-duration">Продолжительность рабочего дня, часов</label>
-        </div>
-        <hr class="dropdown-divider">
-        <div class="d-flex align-items-center px-1">
-          <input class="form-control me-2" style="width: 5rem;" id="shift" type="number" value="1.5" />
-          <label for="shift">Сменность</label>
-        </div>
-        <hr class="dropdown-divider">
-        <div class="d-flex align-items-center px-1">
-          <input class="form-control me-2" style="width: 5rem;" id="number-of-employees" type="number" value="4" />
-          <label for="number-of-employees">Количество работающих в бригаде</label>
-        </div>
-        <hr class="dropdown-divider">
-        <div class="d-flex align-items-center px-1">
-          <input class="form-control me-2" style="width: 5rem;" id="technological-labor-costs" type="number" value="0" />
-          <label for="technological-labor-costs">Трудозатраты по технологической карте, человеко/часов</label>
-        </div>
-        <hr class="dropdown-divider">
-        <div class="d-flex align-items-center px-1 form-check form-switch" style="padding-left: 3.3rem !important;">
-          <input class="form-check-input me-3" style="transform: scale(1.5);" type="checkbox" id="acceptance-time-included" checked>
-          <label class="form-check-label" for="acceptance-time-included">Включать время на приемку</label>
-        </div>
-      </div>
+
     </div>
     <form asp-controller="DurationByLCs" asp-action="Download" method="get">
       <button type="submit" class="d-none" id="duration-by-lc-download-submit-btn"></button>
@@ -146,3 +116,42 @@
     </div>
   </div>
 </div>
+<mat-tab-group mat-align-tabs="center">
+  <mat-tab label="Продолжительность по трудозатратам">
+    <div class="d-flex align-items-center px-1">
+      <input class="form-control me-2" style="width: 5rem;" id="number-of-working-days" type="number" value="21.5" />
+      <label for="number-of-working-days">Количество рабочих дней в месяце</label>
+    </div>
+    <div class="d-flex align-items-center px-1">
+      <input class="form-control me-2" style="width: 5rem;" id="working-day-duration" type="number" value="8" />
+      <label for="working-day-duration">Продолжительность рабочего дня, часов</label>
+    </div>
+    <div class="d-flex align-items-center px-1">
+      <input class="form-control me-2" style="width: 5rem;" id="shift" type="number" value="1.5" />
+      <label for="shift">Сменность</label>
+    </div>
+    <div class="d-flex align-items-center px-1">
+      <input class="form-control me-2" style="width: 5rem;" id="number-of-employees" type="number" value="4" />
+      <label for="number-of-employees">Количество работающих в бригаде</label>
+    </div>
+    <div class="d-flex align-items-center px-1">
+      <input class="form-control me-2" style="width: 5rem;" id="technological-labor-costs" type="number" value="0" />
+      <label for="technological-labor-costs">Трудозатраты по технологической карте, человеко/часов</label>
+    </div>
+    <div class="d-flex align-items-center px-1 form-check form-switch" style="padding-left: 3.3rem !important;">
+      <input class="form-check-input me-3" style="transform: scale(1.5);" type="checkbox" id="acceptance-time-included" checked>
+      <label class="form-check-label" for="acceptance-time-included">Включать время на приемку</label>
+    </div>
+
+    <div class="example-container">
+      <mat-form-field appearance="fill">
+        <mat-label>Enter your email</mat-label>
+        <input matInput placeholder="pat@example.com"  required>
+        <mat-error >arstrast</mat-error>
+      </mat-form-field>
+    </div>
+
+  </mat-tab>
+  <mat-tab label="Календарный план">Календарный план</mat-tab>
+  <mat-tab label="Энергия и вода">Энергия и вода</mat-tab>
+</mat-tab-group>

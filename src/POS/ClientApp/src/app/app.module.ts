@@ -12,6 +12,14 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { EstimateCalculationsComponent } from './estimate-calculations/estimate-calculations.component';
 import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
 import { ProjectComponent } from './project/project.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @NgModule({
   declarations: [
@@ -35,7 +43,13 @@ import { ProjectComponent } from './project/project.component';
       { path: 'project', component: ProjectComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-    ])
+    ]),
+    BrowserAnimationsModule,
+    MatTabsModule,
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]
