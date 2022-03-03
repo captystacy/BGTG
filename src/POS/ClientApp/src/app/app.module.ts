@@ -11,6 +11,7 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { EstimateCalculationsComponent } from './estimate-calculations/estimate-calculations.component';
 import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
+import { ProjectComponent } from './project/project.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.compon
     CounterComponent,
     FetchDataComponent,
     EstimateCalculationsComponent,
-    DurationByTcpComponent
+    DurationByTcpComponent,
+    ProjectComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -30,6 +32,7 @@ import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.compon
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'estimate-calculations', component: EstimateCalculationsComponent },
       { path: 'duration-by-tcp', component: DurationByTcpComponent },
+      { path: 'project', component: ProjectComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
