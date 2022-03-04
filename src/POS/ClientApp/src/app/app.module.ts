@@ -12,8 +12,9 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { EstimateCalculationsComponent } from './estimate-calculations/estimate-calculations.component';
 import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
 import { ProjectComponent } from './project/project.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CalendarPlanComponent } from './calendar-plan/calendar-plan.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -23,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { MatTableModule } from '@angular/material/table';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 @NgModule({
@@ -34,7 +36,8 @@ import { MatTableModule } from '@angular/material/table';
     FetchDataComponent,
     EstimateCalculationsComponent,
     DurationByTcpComponent,
-    ProjectComponent
+    ProjectComponent,
+    CalendarPlanComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -58,7 +61,8 @@ import { MatTableModule } from '@angular/material/table';
     MatButtonModule,
     MatCheckboxModule,
     MaterialFileInputModule,
-    MatTableModule
+    MatTableModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

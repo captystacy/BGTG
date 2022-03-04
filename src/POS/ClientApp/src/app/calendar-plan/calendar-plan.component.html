@@ -1,0 +1,11 @@
+<div class="d-flex flex-column align-items-center mt-3">
+  <mat-radio-group class="mb-3" [formControl]="totalWorkChapter">
+    <mat-radio-button class="me-3" value="9">Итого по главам 1-9</mat-radio-button>
+    <mat-radio-button class="me-3" value="11">Итого по главам 1-11</mat-radio-button>
+    <mat-radio-button value="12" [checked]="true">Итого по последней строчке</mat-radio-button>
+  </mat-radio-group>
+  <button mat-raised-button color="primary" (click)="download()">
+    Скачать
+    <mat-icon>file_download</mat-icon>
+  </button>
+</div>

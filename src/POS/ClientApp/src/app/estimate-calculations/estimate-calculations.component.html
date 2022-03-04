@@ -1,6 +1,6 @@
 <mat-form-field appearance="fill" [style.width.%]=100>
   <mat-label>Сметы в формате (.xlsx)</mat-label>
-  <ngx-mat-file-input [accept]="'.xlsx'" required multiple></ngx-mat-file-input>
+  <ngx-mat-file-input [accept]="'.xlsx'" required multiple (change)="estimateFilesSelected($event)"></ngx-mat-file-input>
   <mat-icon matSuffix>folder</mat-icon>
 </mat-form-field>
 <mat-tab-group dynamicHeight mat-align-tabs="center">
@@ -47,12 +47,7 @@
       Календарный план&nbsp;
       <mat-icon>calendar_view_month</mat-icon>
     </ng-template>
-    <div class="d-flex justify-content-center mt-3">
-      <button mat-raised-button color="primary">
-        Скачать
-        <mat-icon>file_download</mat-icon>
-      </button>
-    </div>
+    <app-calendar-plan [formControl]="estimateFiles"></app-calendar-plan>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
