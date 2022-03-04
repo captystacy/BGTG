@@ -1,61 +1,33 @@
-<div class="input-group mb-3">
-  <span class="input-group-text">Полное наименование объекта</span>
-  <input type="text" id="object-name" class="form-control">
-</div>
-<div class="d-flex">
-  <i class="bi bi-info-circle text-primary" style="font-size: 1.6rem; margin-right: 0.3rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="В шаблоне отсутсвуют краткие сведения о стр-ве, подготовка, таблица с машинами и механизмами (Разделы 3, 6, 14)."></i>
-  <select class="form-select mb-3" id="project-template">
-    <option selected disabled>Выберите шаблон</option>
-    <option value="@projectTemplate.Key">@projectTemplate.Value</option>
-  </select>
-</div>
-<select class="form-select mb-3" id="chief-project-engineer">
-  <option selected disabled>Выберите ГИПа</option>
-  <option value="@chiefProjectEngineer.Key">@chiefProjectEngineer.Value</option>
-</select>
-<div class="d-flex align-items-center mb-3">
-  <i class="bi bi-info-circle text-primary" style="font-size: 1.6rem; margin-right: 0.3rem;" data-bs-toggle="tooltip" data-bs-placement="top" title="Если отключен, то в записке будет указано, что бытовой городок будет находится на территории Заказчика (Разделы 3 (посл. абзац), 13)."></i>
-  <div class="form-check">
-    <input class="form-check-input" type="checkbox" value="true" id="household-town-included" checked>
-    <label class="form-check-label user-select-none" for="household-town-included">
-      Бытовой городок
-    </label>
-  </div>
-</div>
-<div class="row mb-3">
-  <div class="col">
-    <button type="button" id="title-page-download-btn" class="btn btn-primary">
-      <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-      </span>
+<div class="d-flex flex-column align-items-center mt-3">
+  <mat-form-field appearance="fill" style="width: 710px;">
+    <mat-label>Шаблон</mat-label>
+    <mat-select required disabled>
+      <mat-option>--</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill" style="width: 710px;">
+    <mat-label>ГИП</mat-label>
+    <mat-select required disabled>
+      <mat-option>--</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill" style="width: 710px;">
+    <mat-label>Полное наименование объекта</mat-label>
+    <textarea matInput placeholder="Электроснабжение станции..."></textarea>
+  </mat-form-field>
+  <mat-checkbox [checked]="true" class="mb-3">Бытовой городок</mat-checkbox>
+  <div class="d-flex justify-content-between" style="width: 710px;">
+    <button mat-raised-button color="primary">
       Скачать титульник
-      <i class="bi bi-download"></i>
+      <mat-icon>file_download</mat-icon>
     </button>
-    <form asp-controller="POS" asp-action="DownloadTitlePage" method="get">
-      <button type="submit" class="d-none" id="title-page-download-submit-btn"></button>
-    </form>
-  </div>
-  <div class="col d-flex justify-content-center align-items-center">
-    <button type="button" id="table-of-contents-download-btn" class="btn btn-primary">
-      <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-      </span>
+    <button mat-raised-button color="primary">
       Скачать содержание
-      <i class="bi bi-download"></i>
+      <mat-icon>file_download</mat-icon>
     </button>
-    <form asp-controller="POS" asp-action="DownloadTableOfContents" method="get">
-      <button type="submit" class="d-none" id="table-of-contents-download-submit-btn"></button>
-    </form>
-  </div>
-  <div class="col">
-    <div class="float-end">
-      <button type="button" id="project-download-btn" class="btn btn-primary">
-        <span class="spinner-border spinner-border-sm" id="spinner" style="display: none;">
-        </span>
-        Скачать проект
-        <i class="bi bi-download"></i>
-      </button>
-      <form asp-controller="POS" asp-action="DownloadProject" method="get">
-        <button type="submit" class="d-none" id="project-download-submit-btn"></button>
-      </form>
-    </div>
+    <button mat-raised-button color="primary">
+      Скачать проект
+      <mat-icon>file_download</mat-icon>
+    </button>
   </div>
 </div>
