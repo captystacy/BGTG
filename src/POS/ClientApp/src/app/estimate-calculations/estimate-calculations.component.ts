@@ -6,13 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./estimate-calculations.component.css']
 })
 export class EstimateCalculationsComponent {
-  estimateFiles?: File[];
+  estimateFiles: File[] = [];
 
   estimateFilesSelected(event: any) {
-    if (!event.target.files) {
-      return;
-    }
-
     this.estimateFiles = event.target.files;
   }
 }

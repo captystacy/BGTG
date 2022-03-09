@@ -4,5 +4,5 @@ namespace POS.Infrastructure.Tools.CalendarPlanTool.Base;
 
 public interface ICalendarPlanWriter
 {
-    FileStream Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath);
+    MemoryStream Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath);
 }

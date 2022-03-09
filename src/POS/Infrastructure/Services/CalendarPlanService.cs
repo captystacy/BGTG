@@ -3,7 +3,6 @@ using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.CalendarPlanTool.Base;
 using POS.Infrastructure.Tools.CalendarPlanTool.Models;
 using POS.ViewModels;
-using Xceed.Words.NET;
 
 namespace POS.Infrastructure.Services;
 
@@ -17,7 +16,7 @@ public class CalendarPlanService : ICalendarPlanService
 
     private const string PreparatoryCalendarPlanTemplateFileName = "Preparatory.docx";
 
-    private const string TemplatesPath = @"AppData\Templates\POSTemplates\CalendarPlanTemplates";
+    private const string TemplatesPath = @"Templates\CalendarPlanTemplates";
 
     public CalendarPlanService(IEstimateService estimateService, ICalendarPlanCreator calendarPlanCreator,
         ICalendarPlanWriter calendarPlanWriter, IWebHostEnvironment webHostEnvironment, IMapper mapper)
@@ -33,17 +32,17 @@ public class CalendarPlanService : ICalendarPlanService
     {
         _estimateService.Read(viewModel.EstimateFiles, viewModel.TotalWorkChapter);
 
-        var calendarPlanCreateViewModel = _mapper.Map<CalendarPlanViewModel>(_estimateService.Estimate);
+        var calendarPlanViewModel = _mapper.Map<CalendarPlanViewModel>(_estimateService.Estimate);
+        calendarPlanViewModel.CalendarWorks.RemoveAll(x => x.Chapter == (int)viewModel.TotalWorkChapter);
 
-        calendarPlanCreateViewModel.CalendarWorkViewModels.RemoveAll(x => x.Chapter == (int)viewModel.TotalWorkChapter);
-        calendarPlanCreateViewModel.CalendarWorkViewModels.Add(new CalendarWorkViewModel
+        calendarPlanViewModel.CalendarWorks.Add(new CalendarWorkViewModel
         {
             WorkName = AppData.MainOtherExpensesWorkName,
             Chapter = AppData.MainOtherExpensesWorkChapter,
-            Percentages = new List<decimal>(),
+            Percentages = new List<decimal>()
         });
 
-        return calendarPlanCreateViewModel;
+        return calendarPlanViewModel;
     }
 
     public IEnumerable<decimal> GetTotalPercentages(CalendarPlanViewModel viewModel)
@@ -52,7 +51,7 @@ public class CalendarPlanService : ICalendarPlanService
         return calendarPlan.MainCalendarWorks.First(x => x.EstimateChapter == (int)viewModel.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
     }
 
-    public FileStream Write(CalendarPlanViewModel viewModel)
+    public MemoryStream Write(CalendarPlanViewModel viewModel)
     {
         var calendarPlan = CalculateCalendarPlan(viewModel);
         var preparatoryTemplatePath = GetPreparatoryTemplatePath();
@@ -72,7 +71,7 @@ public class CalendarPlanService : ICalendarPlanService
 
         if (_estimateService.Estimate.ConstructionDurationCeiling == 0)
         {
-            _estimateService.Estimate.ConstructionDurationCeiling = viewModel.ConstructionDurationCeiling;
+            _estimateService.Estimate.ConstructionDurationCeiling = (int)decimal.Ceiling(viewModel.ConstructionDuration);
         }
 
         if (_estimateService.Estimate.ConstructionDuration == 0)
@@ -80,10 +79,10 @@ public class CalendarPlanService : ICalendarPlanService
             _estimateService.Estimate.ConstructionDuration = viewModel.ConstructionDuration;
         }
 
-        var otherExpensesWork = viewModel.CalendarWorkViewModels.Find(x => x.WorkName == AppData.MainOtherExpensesWorkName)!;
-        viewModel.CalendarWorkViewModels.Remove(otherExpensesWork);
+        var otherExpensesWork = viewModel.CalendarWorks.Find(x => x.WorkName == AppData.MainOtherExpensesWorkName)!;
+        viewModel.CalendarWorks.Remove(otherExpensesWork);
 
-        SetEstimatePercentages(viewModel.CalendarWorkViewModels);
+        SetEstimatePercentages(viewModel.CalendarWorks);
 
         var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, viewModel.TotalWorkChapter);
 

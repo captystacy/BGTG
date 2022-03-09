@@ -1,18 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
-import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { EstimateCalculationsComponent } from './estimate-calculations/estimate-calculations.component';
-import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
-import { ProjectComponent } from './project/project.component';
-import { CalendarPlanComponent } from './calendar-plan/calendar-plan.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,9 +13,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
-import { MatTableModule } from '@angular/material/table';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
+import { AlertModule } from './_alert';
+
+import { AppComponent } from './app.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { HomeComponent } from './home/home.component';
+import { CounterComponent } from './counter/counter.component';
+import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { EstimateCalculationsComponent } from './estimate-calculations/estimate-calculations.component';
+import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
+import { ProjectComponent } from './project/project.component';
+import { CalendarPlanComponent } from './calendar-plan/calendar-plan.component';
+import { NetworkInterceptor } from './network.interceptor';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,7 @@ import { MatRadioModule } from '@angular/material/radio';
     EstimateCalculationsComponent,
     DurationByTcpComponent,
     ProjectComponent,
-    CalendarPlanComponent
+    CalendarPlanComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -61,10 +63,17 @@ import { MatRadioModule } from '@angular/material/radio';
     MatButtonModule,
     MatCheckboxModule,
     MaterialFileInputModule,
-    MatTableModule,
-    MatRadioModule
+    MatRadioModule,
+    AlertModule,
+    MatProgressBarModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NetworkInterceptor,
+      multi: true,
+    }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

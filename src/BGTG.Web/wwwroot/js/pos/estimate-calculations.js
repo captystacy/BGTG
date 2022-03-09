@@ -127,7 +127,7 @@
             formData.append('EstimateFiles', files[i]);
         }
     }
-
+    
     function appendConstructionStartDateAndDurationAndDurationCeiling(formData) {
         formData.append('ConstructionStartDate', calendarPlanCreateViewModel.constructionStartDate);
         formData.append('ConstructionDurationCeiling', calendarPlanCreateViewModel.constructionDurationCeiling);
@@ -201,36 +201,6 @@
     }
 
     $('#estimate-calculations #calculate-percentages-btn').click(function () {
-        calculatePercentagesSpinner.addClass(dInlineBlockClass);
-        let formData = new FormData();
-        appendEstimateFiles(formData);
-        appendConstructionStartDateAndDurationAndDurationCeiling(formData);
-        appendCalendarWorkViewModelsForSeveralMonths(formData);
-        appendTotalWorkChapter(formData);
-        appendObjectCipher(formData);
-        $.ajax({
-            url: 'CalendarPlans/GetTotalPercentages',
-            data: formData,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            success: function (operation) {
-                if (!operation.ok) {
-                    appendValidationAlert(operation);
-                    calculatePercentagesSpinner.removeClass(dInlineBlockClass);
-                    return;
-                }
-
-                let mainTotalWorkRowAlreadyOnPage = $('#percentages-table #main-total-work');
-                if (mainTotalWorkRowAlreadyOnPage.length) {
-                    mainTotalWorkRowAlreadyOnPage.remove();
-                }
-                let mainTotalWorkRow = generateMainTotalWorkRow(operation.result);
-
-                calculatePercentagesSpinner.removeClass(dInlineBlockClass);
-                percentagesTableBody.append(mainTotalWorkRow);
-            }
-        });
     });
 
     function generateMainTotalWorkRow(totalPercentages) {

@@ -18,11 +18,12 @@ public class CalendarPlanWriter : ICalendarPlanWriter
 
     private const string AcceptanceTimeCellStr = "Приемка объекта в эксплуатацию";
 
-    public FileStream Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath)
+    public MemoryStream Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
-        var fileStream = new FileStream(preparatoryTemplatePath, FileMode.Open);
-        using var preparatoryDocument = DocX.Load(fileStream);
+
+        using var preparatoryDocument = DocX.Load(preparatoryTemplatePath);
+
         var constructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == AppData.TotalWorkName).ConstructionMonths.ToArray();
 
         var preparatoryTable = preparatoryDocument.Tables[0];
@@ -42,7 +43,11 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         }
 
         preparatoryDocument.InsertDocument(mainDocument);
-        return fileStream;
+
+        var memoryStream = new MemoryStream();
+        preparatoryDocument.SaveAs(memoryStream);
+
+        return memoryStream;
     }
 
     private void ModifyCalendarPlanTable(Table table, IEnumerable<CalendarWork> calendarWorks, ConstructionMonth[] constructionMonths)

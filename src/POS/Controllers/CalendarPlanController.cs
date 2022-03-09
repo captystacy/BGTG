@@ -17,7 +17,7 @@ public class CalendarPlanController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    //[ValidateModelState]
+    [ValidateModelState]
     public OperationResult<CalendarPlanViewModel> GetViewModelForCreation([FromForm] CalendarPlanCreateViewModel viewModel)
     {
         var operation = OperationResult.CreateResult<CalendarPlanViewModel>();
@@ -39,14 +39,12 @@ public class CalendarPlanController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    [ValidateModelState]
     public IActionResult GetFile(CalendarPlanViewModel viewModel)
     {
-        var operation = OperationResult.CreateResult<CalendarPlanViewModel>();
-        operation.Result = viewModel;
+        var memoryStream = _calendarPlanService.Write(viewModel);
 
-        var fileStream = _calendarPlanService.Write(viewModel);
+        memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return File(fileStream, AppData.DocxMimeType);
+        return File(memoryStream, AppData.DocxMimeType);
     }
 }
