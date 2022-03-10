@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { Subject } from 'rxjs'
 
 import { AlertService } from '../_alert/alert.service';
 import { IOperationResult } from '../operation-result.model';
@@ -23,7 +22,7 @@ export class CalendarPlanService {
   }
 
   public set estimateFiles(value: File[]) {
-    this.calendarPlan = undefined as any;
+    this._calendarPlan = undefined as any;
     this._months = [];
     this._estimateFiles = value;
     this._columnPercentages = [];
@@ -41,7 +40,11 @@ export class CalendarPlanService {
     this._totalWorkChapter = value;
   }
 
-  public calendarPlan: Subject<ICalendarPlan> = new Subject<ICalendarPlan>();
+  private _calendarPlan!: ICalendarPlan;
+
+  public get calendarPlan(): ICalendarPlan {
+    return this._calendarPlan;
+  }
 
   private _columnPercentages: number[] = [];
 
@@ -87,7 +90,7 @@ export class CalendarPlanService {
   public fetchCalendarPlan(): void {
     if (this.constructionStartDateIsCorrupted
       || this.constructionDurationIsCorrupted) {
-      this.setCalendarPlan();
+      this.configureCalendarPlan();
       return;
     }
 
@@ -106,15 +109,17 @@ export class CalendarPlanService {
         return;
       }
 
-      this.setCalendarPlan(operation.result as ICalendarPlan);
+      this._calendarPlan = operation.result;
+
+      this.configureCalendarPlan();
     }, error => console.error(error));
   }
 
-  private setCalendarPlan(calendarPlan: ICalendarPlan): void {
-    this._constructionStartDateIsCorrupted = new Date(Date.parse(calendarPlan.constructionStartDate)).getFullYear() <= 1900;
-    this._constructionDurationIsCorrupted = calendarPlan.constructionDuration === 0;
+  private configureCalendarPlan(): void {
+    this._constructionStartDateIsCorrupted = new Date(Date.parse(this._calendarPlan.constructionStartDate)).getFullYear() <= 1900;
+    this._constructionDurationIsCorrupted = this._calendarPlan.constructionDuration === 0;
 
-    if (calendarPlan.constructionDuration <= 1) {
+    if (this._calendarPlan.constructionDuration <= 1) {
       this._initialPercentageValue = ONE_MONTH_PERCENT;
     } else {
       this._initialPercentageValue = 0;
@@ -125,8 +130,6 @@ export class CalendarPlanService {
     this.setMonths();
 
     this._calendarPlanIsFetched = true;
-
-    this.calendarPlan.next(calendarPlan);
   }
 
   public downloadCalendarPlan(): void {

@@ -8,7 +8,7 @@ import { LoadingService } from './loading.service';
 export class AppComponent {
   title = 'app';
 
-  loading$ = this.loadingService.loading$;
+  loading$ = this._loadingService.loading$;
 
-  constructor(public loadingService: LoadingService) { }
+  constructor(private _loadingService: LoadingService) { }
 }

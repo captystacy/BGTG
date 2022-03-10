@@ -1,3 +1,4 @@
+using System.Globalization;
 using POS.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,10 @@ DependencyContainer.Estimate(builder.Services);
 builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
 
 var app = builder.Build();
+
+var ruCulture = new CultureInfo("ru-RU") { NumberFormat = { NumberDecimalSeparator = "." } };
+CultureInfo.DefaultThreadCurrentCulture = ruCulture;
+CultureInfo.DefaultThreadCurrentUICulture = ruCulture;
 
 var mapper = app.Services.GetRequiredService<AutoMapper.IConfigurationProvider>();
 
