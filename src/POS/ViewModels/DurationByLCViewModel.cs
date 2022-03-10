@@ -2,10 +2,9 @@
 
 namespace POS.ViewModels;
 
-public class DurationByLCCreateViewModel : IValidatableObject
+public class DurationByLCViewModel : IValidatableObject
 {
     public IFormFileCollection EstimateFiles { get; set; } = null!;
-    public string ObjectCipher { get; set; } = null!;
     public decimal NumberOfWorkingDays { get; set; }
     public decimal WorkingDayDuration { get; set; }
     public decimal Shift { get; set; }
@@ -18,11 +17,6 @@ public class DurationByLCCreateViewModel : IValidatableObject
         if (EstimateFiles.Count == 0)
         {
             yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
-        }
-
-        if (string.IsNullOrEmpty(ObjectCipher) || !(AppData.ObjectCipherExpression1.IsMatch(ObjectCipher) || AppData.ObjectCipherExpression2.IsMatch(ObjectCipher)))
-        {
-            yield return new ValidationResult(AppData.ObjectCipherValidationMessage);
         }
 
         if (NumberOfWorkingDays <= 0)

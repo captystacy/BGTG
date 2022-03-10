@@ -17,11 +17,11 @@ export class CalendarPlanService {
 
   private _estimateFiles!: File[];
 
-  public get estimateFiles(): File[] {
+  get estimateFiles(): File[] {
     return this._estimateFiles;
   }
 
-  public set estimateFiles(value: File[]) {
+  set estimateFiles(value: File[]) {
     this._calendarPlan = undefined as any;
     this._months = [];
     this._estimateFiles = value;
@@ -32,53 +32,53 @@ export class CalendarPlanService {
     this._constructionDurationIsCorrupted = false;
   }
 
-  public get totalWorkChapter() {
+  get totalWorkChapter() {
     return this._totalWorkChapter;
   }
 
-  public set totalWorkChapter(value: string) {
+  set totalWorkChapter(value: string) {
     this._totalWorkChapter = value;
   }
 
   private _calendarPlan!: ICalendarPlan;
 
-  public get calendarPlan(): ICalendarPlan {
+  get calendarPlan(): ICalendarPlan {
     return this._calendarPlan;
   }
 
   private _columnPercentages: number[] = [];
 
-  public get columnPercentages(): number[] {
+  get columnPercentages(): number[] {
     return this._columnPercentages;
   }
 
   private _months: string[] = [];
 
-  public get months() {
+  get months() {
     return this._months;
   }
 
   private _totalPercentages: number[] = [];
 
-  public get totalPercentages(): number[] {
+  get totalPercentages(): number[] {
     return this._totalPercentages;
   }
 
   private _calendarPlanIsFetched: boolean = false;
 
-  public get calendarPlanIsFetched(): boolean {
+  get calendarPlanIsFetched(): boolean {
     return this._calendarPlanIsFetched;
   }
 
   private _constructionStartDateIsCorrupted: boolean = false;
 
-  public get constructionStartDateIsCorrupted(): boolean {
+  get constructionStartDateIsCorrupted(): boolean {
     return this._constructionStartDateIsCorrupted;
   }
 
   private _constructionDurationIsCorrupted: boolean = false;
 
-  public get constructionDurationIsCorrupted(): boolean {
+  get constructionDurationIsCorrupted(): boolean {
     return this._constructionDurationIsCorrupted;
   }
 
@@ -87,7 +87,7 @@ export class CalendarPlanService {
     private _alertService: AlertService) {
   }
 
-  public fetchCalendarPlan(): void {
+  fetchCalendarPlan(): void {
     if (this.constructionStartDateIsCorrupted
       || this.constructionDurationIsCorrupted) {
       this.configureCalendarPlan();
@@ -132,15 +132,14 @@ export class CalendarPlanService {
     this._calendarPlanIsFetched = true;
   }
 
-  public downloadCalendarPlan(): void {
+  downloadCalendarPlan(): void {
     let formData = this.generateFormDataForRequest();
     this._http.post('api/CalendarPlan/GetFile', formData, { responseType: 'blob' }).subscribe(data => {
       saveAs(data, "Календарный план");
-    },
-      error => console.error(error));
+    }, error => console.error(error));
   }
 
-  public fetchTotalPercentages() {
+  fetchTotalPercentages() {
     let formData = this.generateFormDataForRequest();
     this._http.post<IOperationResult>('api/CalendarPlan/GetTotalPercentages', formData).subscribe(operation => {
       if (!operation.ok) {

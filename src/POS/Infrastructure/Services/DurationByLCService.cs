@@ -1,6 +1,5 @@
 ﻿using POS.Infrastructure.Helpers;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByLCTool;
 using POS.Infrastructure.Tools.DurationTools.DurationByLCTool.Base;
 using POS.Infrastructure.Tools.EstimateTool.Models;
 using POS.ViewModels;
@@ -14,7 +13,7 @@ public class DurationByLCService : IDurationByLCService
     private readonly IDurationByLCWriter _durationByLCWriter;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    private const string TemplatesPath = @"AppData\Templates\POSTemplates\DurationByLCTemplates";
+    private const string TemplatesPath = @"Templates\DurationByLCTemplates";
 
     public DurationByLCService(IEstimateService estimateService, IDurationByLCCreator durationByLCCreator, IDurationByLCWriter durationByLCWriter, IWebHostEnvironment webHostEnvironment)
     {
@@ -24,23 +23,16 @@ public class DurationByLCService : IDurationByLCService
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public DurationByLC Write(DurationByLCCreateViewModel viewModel)
+    public MemoryStream Write(DurationByLCViewModel viewModel)
     {
         _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
         var durationByLC = _durationByLCCreator.Create(_estimateService.Estimate.LaborCosts, viewModel.TechnologicalLaborCosts, viewModel.WorkingDayDuration, viewModel.Shift,
             viewModel.NumberOfWorkingDays, viewModel.NumberOfEmployees, viewModel.AcceptanceTimeIncluded);
 
-        return Write(durationByLC);
-    }
-
-    public DurationByLC Write(DurationByLC durationByLC)
-    {
         var templatePath = GetTemplatePath(durationByLC.RoundingIncluded, durationByLC.AcceptanceTimeIncluded);
 
-        _durationByLCWriter.Write(durationByLC, templatePath);
-
-        return durationByLC;
+        return _durationByLCWriter.Write(durationByLC, templatePath);
     }
 
     private string GetTemplatePath(bool roundingIncluded, bool acceptanceTimeIncluded)

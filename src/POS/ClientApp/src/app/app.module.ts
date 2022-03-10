@@ -28,6 +28,7 @@ import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.compon
 import { ProjectComponent } from './project/project.component';
 import { CalendarPlanComponent } from './calendar-plan/calendar-plan.component';
 import { NetworkInterceptor } from './network.interceptor';
+import { DurationByLCComponent } from './duration-by-lc/duration-by-lc.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { NetworkInterceptor } from './network.interceptor';
     DurationByTcpComponent,
     ProjectComponent,
     CalendarPlanComponent,
+    DurationByLCComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

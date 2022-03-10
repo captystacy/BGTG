@@ -41,6 +41,11 @@ public class CalendarPlanController : ControllerBase
     [HttpPost("[action]")]
     public IActionResult GetFile(CalendarPlanViewModel viewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+
         var memoryStream = _calendarPlanService.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);

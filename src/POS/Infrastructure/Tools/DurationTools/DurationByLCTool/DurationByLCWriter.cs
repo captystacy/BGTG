@@ -21,11 +21,14 @@ public class DurationByLCWriter : IDurationByLCWriter
     private const string TechnologicalLaborCostsText =
         " (трудозатраты по сметам и трудозатраты по технологической карте)";
 
-    public void Write(DurationByLC durationByLC, string templatePath)
+    public MemoryStream Write(DurationByLC durationByLC, string templatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
         using var document = DocX.Load(templatePath);
         ReplacePatternsWithActualValues(document, durationByLC);
+        var memoryStream = new MemoryStream();
+        document.SaveAs(memoryStream);
+        return memoryStream;
     }
 
     private void ReplacePatternsWithActualValues(DocX document, DurationByLC durationByLC)

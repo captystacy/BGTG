@@ -2,5 +2,5 @@
 
 public interface IDurationByLCWriter
 {
-    void Write(DurationByLC durationByLC, string templatePath);
+    MemoryStream Write(DurationByLC durationByLC, string templatePath);
 }
