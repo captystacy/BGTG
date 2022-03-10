@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IDurationByLC } from "./duration-by-lc.model";
 import { DurationByLCService } from "./duration-by-lc.service";
@@ -11,18 +11,22 @@ import { DurationByLCService } from "./duration-by-lc.service";
 })
 export class DurationByLCComponent {
   @Input() estimateFiles!: File[];
-  durationByLC: IDurationByLC = {
-    numberOfWorkingDays: 21.5,
-    workingDayDuration: 8,
-    shift: 1.5,
-    numberOfEmployees: 4,
-    technologicalLaborCosts: 0,
-    acceptanceTimeIncluded: true
-  };
+
+  durationByLCForm = new FormGroup({
+    numberOfWorkingDays: new FormControl(21.5, [Validators.required]),
+    workingDayDuration: new FormControl(8, [Validators.required]),
+    shift: new FormControl(1.5, [Validators.required]),
+    numberOfEmployees: new FormControl(4, [Validators.required]),
+    technologicalLaborCosts: new FormControl(),
+    acceptanceTimeIncluded: new FormControl(true, [Validators.required]),
+  });
 
   constructor(private _durationByLCService: DurationByLCService) { }
 
   downloadDurationByLC(): void {
-    this._durationByLCService.downloadDurationByLc(this.durationByLC, this.estimateFiles);
+    let a = this.durationByLCForm.value;
+
+    let b = 0;
+    //this._durationByLCService.downloadDurationByLc(undefined as any, this.estimateFiles);
   }
 }

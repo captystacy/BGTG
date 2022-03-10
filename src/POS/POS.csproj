@@ -60,4 +60,6 @@
 			</ResolvedFileToPublish>
 		</ItemGroup>
 	</Target>
+
+	<ProjectExtensions><VisualStudio><UserProperties clientapp_4tsconfig_1json__JsonSchema="https://json.schemastore.org/tsdrc.json" /></VisualStudio></ProjectExtensions>
 </Project>
