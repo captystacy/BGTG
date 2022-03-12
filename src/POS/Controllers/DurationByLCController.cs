@@ -2,31 +2,30 @@
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
-namespace POS.Controllers
+namespace POS.Controllers;
+
+[Route("api/[controller]")]
+public class DurationByLCController : ControllerBase
 {
-    [Route("api/[controller]")]
-    public class DurationByLCController : ControllerBase
+    private readonly IDurationByLCService _durationByLCService;
+
+    public DurationByLCController(IDurationByLCService durationByLCService)
     {
-        private readonly IDurationByLCService _durationByLCService;
+        _durationByLCService = durationByLCService;
+    }
 
-        public DurationByLCController(IDurationByLCService durationByLCService)
+    [HttpPost("[action]")]
+    public IActionResult GetFile(DurationByLCViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
         {
-            _durationByLCService = durationByLCService;
+            return BadRequest();
         }
 
-        [HttpPost("[action]")]
-        public IActionResult GetFile(DurationByLCViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+        var memoryStream = _durationByLCService.Write(viewModel);
 
-            var memoryStream = _durationByLCService.Write(viewModel);
+        memoryStream.Seek(0, SeekOrigin.Begin);
 
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            return File(memoryStream, AppData.DocxMimeType);
-        }
+        return File(memoryStream, AppData.DocxMimeType);
     }
 }

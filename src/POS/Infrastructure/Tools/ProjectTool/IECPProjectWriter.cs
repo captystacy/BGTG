@@ -2,5 +2,6 @@
 
 public interface IECPProjectWriter
 {
-    void Write(string objectCipher, string templatePath);
+    MemoryStream Write(Stream durationByLCStream, Stream calendarPlanStream, Stream energyAndWaterStream, string objectCipher, string templatePath);
+    int GetNumberOfEmployees(Stream durationByLCStream);
 }

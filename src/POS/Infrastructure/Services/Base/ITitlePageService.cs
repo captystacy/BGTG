@@ -4,5 +4,5 @@ namespace POS.Infrastructure.Services.Base;
 
 public interface ITitlePageService
 {
-    void Write(TitlePageViewModel viewModel);
+    MemoryStream Write(TitlePageViewModel viewModel);
 }

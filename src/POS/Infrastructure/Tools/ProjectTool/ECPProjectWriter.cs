@@ -1,4 +1,4 @@
-﻿using POS.Infrastructure.Tools.DurationTools.DurationByLCTool;
+﻿using System.Text.RegularExpressions;
 using Xceed.Words.NET;
 
 namespace POS.Infrastructure.Tools.ProjectTool;
@@ -27,63 +27,99 @@ public class ECPProjectWriter : IECPProjectWriter
     private const string AcceptanceTimePattern = "%AT%";
     private const string TotalLaborCostsPattern = "%TLC%";
 
-    public void Write(string objectCipher, string templatePath)
+    public MemoryStream Write(Stream durationByLCStream, Stream calendarPlanStream, Stream energyAndWaterStream, string objectCipher, string templatePath)
     {
-        using var document = DocX.Load(templatePath);
+        using var ecpDocX = DocX.Load(templatePath);
 
-        document.ReplaceText(CipherPattern, objectCipher);
-        document.ReplaceText(DatePattern, DateTime.Now.ToString(AppData.DateTimeMonthAndYearShortFormat));
-        //document.ReplaceText(ConstructionStartDatePattern, constructionStartDate.ToString(AppData.DateTimeMonthAndYearFormat).ToLower());
-        //document.ReplaceText(ConstructionYearPattern, constructionStartDate.Year.ToString());
+        ecpDocX.ReplaceText(CipherPattern, objectCipher);
+        ecpDocX.ReplaceText(DatePattern, DateTime.Now.ToString(AppData.DateTimeMonthAndYearShortFormat));
 
-        //ReplacePatternsWithDurationByLC(durationByLCPath, document);
-        //ReplacePatternsWithCalendarPlan(calendarPlanPath, document);
-        //ReplacePatternsWithEnergyAndWater(energyAndWaterPath, document);
+        ReplaceConstructionStartDateAndConstructionYear(calendarPlanStream, ecpDocX);
 
-        //ReplacePatternsWithTechnicalAndEconomicIndicators(document, durationByLC);
+        ReplacePatternsWithDurationByLC(durationByLCStream, ecpDocX);
+        ReplacePatternsWithCalendarPlan(calendarPlanStream, ecpDocX);
+        ReplacePatternsWithEnergyAndWater(energyAndWaterStream, ecpDocX);
 
-        //document.SaveAs(savePath);
+        var memoryStream = new MemoryStream();
+        ecpDocX.SaveAs(memoryStream);
+
+        durationByLCStream.Close();
+        calendarPlanStream.Close();
+        energyAndWaterStream.Close();
+        return memoryStream;
     }
 
-    private void ReplacePatternsWithTechnicalAndEconomicIndicators(DocX document, DurationByLC durationByLC)
+    public int GetNumberOfEmployees(Stream durationByLCStream)
     {
-        document.ReplaceText(TotalDurationPattern, durationByLC.TotalDuration.ToString(AppData.DecimalFormat));
-        document.ReplaceText(PreparatoryPeriodPattern, durationByLC.PreparatoryPeriod.ToString(AppData.DecimalFormat));
-        document.ReplaceText(AcceptanceTimePattern, durationByLC.AcceptanceTime.ToString(AppData.DecimalFormat));
-        document.ReplaceText(TotalLaborCostsPattern, durationByLC.TotalLaborCosts.ToString(AppData.DecimalFormat));
+        using var durationByLCDocX = DocX.Load(durationByLCStream);
+        return int.Parse(durationByLCDocX.Tables[1].Rows[4].Cells[1].Paragraphs[0].Text);
     }
 
-    private void ReplacePatternsWithEnergyAndWater(string energyAndWaterPath, DocX document)
+    private void ReplaceConstructionStartDateAndConstructionYear(Stream calendarPlan, DocX ecpDocX)
     {
-        using var energyAndWaterDocument = DocX.Load(energyAndWaterPath);
-        var energyAndWaterTable = energyAndWaterDocument.Tables[0];
+        using var calendarPlanDocX = DocX.Load(calendarPlan);
 
-        document.ReplaceTextWithObject(EnergyAndWaterTablePattern, energyAndWaterTable);
+        var constructionStartDateStr = calendarPlanDocX.Tables[0].Rows[1].Cells[3].Paragraphs[0].Text.ToLower();
+
+        var constructionYearStr = Regex.Match(constructionStartDateStr, @"\d+").Value;
+
+        ecpDocX.ReplaceText(ConstructionStartDatePattern, constructionStartDateStr);
+
+        ecpDocX.ReplaceText(ConstructionYearPattern, constructionYearStr);
     }
 
-    private void ReplacePatternsWithCalendarPlan(string calendarPlanPath, DocX document)
+    private void ReplacePatternsWithEnergyAndWater(Stream energyAndWaterStream, DocX ecpDocX)
     {
-        using var calendarPlanDocument = DocX.Load(calendarPlanPath);
-        var preparatoryTable = calendarPlanDocument.Tables[0];
-        var mainTable = calendarPlanDocument.Tables[1];
+        using var energyAndWaterDocX = DocX.Load(energyAndWaterStream);
+        var energyAndWaterTable = energyAndWaterDocX.Tables[0];
 
-        document.ReplaceTextWithObject(CalendarPlanPreparatoryTablePattern, preparatoryTable);
-        document.ReplaceTextWithObject(CalendarPlanMainTablePattern, mainTable);
+        ecpDocX.ReplaceTextWithObject(EnergyAndWaterTablePattern, energyAndWaterTable);
     }
 
-    private void ReplacePatternsWithDurationByLC(string durationByLCPath, DocX document)
+    private void ReplacePatternsWithCalendarPlan(Stream calendarPlanStream, DocX ecpDocX)
     {
-        using var durationByLCDocument = DocX.Load(durationByLCPath);
-        var durationByLCFirstParagraph = durationByLCDocument.Paragraphs[0].Text;
-        var durationByLCTable = durationByLCDocument.Tables[0];
-        var durationByLCDescriptionTable = durationByLCDocument.Tables[1];
-        var durationByLCPenultimateParagraph = durationByLCDocument.Paragraphs.Count == 35 ? durationByLCDocument.Paragraphs[^2].Text : string.Empty;
-        var durationByLCLastParagraph = durationByLCDocument.Paragraphs[^1].Text;
+        using var calendarPlanDocX = DocX.Load(calendarPlanStream);
+        var preparatoryTable = calendarPlanDocX.Tables[0];
+        var mainTable = calendarPlanDocX.Tables[1];
 
-        document.ReplaceText(DurationByLCFirstParagraphPattern, durationByLCFirstParagraph);
-        document.ReplaceTextWithObject(DurationByLCTablePattern, durationByLCTable);
-        document.ReplaceTextWithObject(DurationByLCDescriptionTablePattern, durationByLCDescriptionTable);
-        document.ReplaceText(DurationByLCPenultimateParagraphPattern, durationByLCPenultimateParagraph);
-        document.ReplaceText(DurationByLCLastParagraphPattern, durationByLCLastParagraph);
+        ecpDocX.ReplaceTextWithObject(CalendarPlanPreparatoryTablePattern, preparatoryTable);
+        ecpDocX.ReplaceTextWithObject(CalendarPlanMainTablePattern, mainTable);
+    }
+
+    private void ReplacePatternsWithDurationByLC(Stream durationByLCStream, DocX ecpDocX)
+    {
+        using var durationByLCDocX = DocX.Load(durationByLCStream);
+        var durationByLCFirstParagraph = durationByLCDocX.Paragraphs[0].Text;
+        var durationByLCTable = durationByLCDocX.Tables[0];
+        var durationByLCDescriptionTable = durationByLCDocX.Tables[1];
+        var durationByLCPenultimateParagraph = durationByLCDocX.Paragraphs.Count == 35 ? durationByLCDocX.Paragraphs[^2].Text : string.Empty;
+        var durationByLCLastParagraph = durationByLCDocX.Paragraphs[^1].Text;
+
+        ecpDocX.ReplaceText(DurationByLCFirstParagraphPattern, durationByLCFirstParagraph);
+        ecpDocX.ReplaceTextWithObject(DurationByLCTablePattern, durationByLCTable);
+        ecpDocX.ReplaceTextWithObject(DurationByLCDescriptionTablePattern, durationByLCDescriptionTable);
+        ecpDocX.ReplaceText(DurationByLCPenultimateParagraphPattern, durationByLCPenultimateParagraph);
+        ecpDocX.ReplaceText(DurationByLCLastParagraphPattern, durationByLCLastParagraph);
+
+        ReplacePatternsWithTechnicalAndEconomicIndicators(durationByLCDocX, ecpDocX);
+    }
+
+    private void ReplacePatternsWithTechnicalAndEconomicIndicators(DocX durationByLCDocX, DocX ecpDocX)
+    {
+        var lastParagraphParts = durationByLCDocX.Paragraphs[^1].Text.Split("мес,");
+
+        var totalDurationStr = Regex.Match(lastParagraphParts[0], @"[\d,]+").Value;
+        var preparatoryPeriodStr = Regex.Match(lastParagraphParts[1], @"[\d,]+").Value;
+        var acceptanceTimeStr = string.Empty;
+        if (lastParagraphParts.Length == 3)
+        {
+            acceptanceTimeStr = Regex.Match(lastParagraphParts[2], @"[\d,]+").Value;
+        }
+        var totalLaborCostsStr = durationByLCDocX.Tables[1].Rows[0].Cells[1].Paragraphs[0].Text;
+
+        ecpDocX.ReplaceText(TotalDurationPattern, totalDurationStr);
+        ecpDocX.ReplaceText(PreparatoryPeriodPattern, preparatoryPeriodStr);
+        ecpDocX.ReplaceText(AcceptanceTimePattern, acceptanceTimeStr);
+        ecpDocX.ReplaceText(TotalLaborCostsPattern, totalLaborCostsStr);
     }
 }

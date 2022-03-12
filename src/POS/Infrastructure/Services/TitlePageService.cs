@@ -10,7 +10,7 @@ public class TitlePageService : ITitlePageService
     private readonly ITitlePageWriter _titlePageWriter;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    private const string TemplatesPath = @"AppData\Templates\POSTemplates\TitlePageTemplates";
+    private const string TemplatesPath = @"Templates\TitlePageTemplates";
 
     public TitlePageService(ITitlePageWriter titlePageWriter, IWebHostEnvironment webHostEnvironment)
     {
@@ -18,11 +18,11 @@ public class TitlePageService : ITitlePageService
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public void Write(TitlePageViewModel viewModel)
+    public MemoryStream Write(TitlePageViewModel viewModel)
     {
         var templatePath = GetTemplatePath(viewModel.ChiefProjectEngineer);
 
-        _titlePageWriter.Write(viewModel.ObjectCipher, viewModel.ObjectName, templatePath);
+        return _titlePageWriter.Write(viewModel.ObjectCipher, viewModel.ObjectName, templatePath);
     }
 
     private string GetTemplatePath(ChiefProjectEngineer chiefProjectEngineer)

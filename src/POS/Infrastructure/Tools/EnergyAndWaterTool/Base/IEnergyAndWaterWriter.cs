@@ -2,5 +2,5 @@
 
 public interface IEnergyAndWaterWriter
 {
-    void Write(EnergyAndWater energyAndWater, string templatePath);
+    MemoryStream Write(EnergyAndWater energyAndWater, string templatePath);
 }

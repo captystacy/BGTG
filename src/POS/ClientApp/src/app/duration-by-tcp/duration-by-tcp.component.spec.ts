@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DurationByTcpComponent } from './duration-by-tcp.component';
+import { DurationByTCPComponent } from './duration-by-tcp.component';
 
-describe('DurationByTcpComponent', () => {
-  let component: DurationByTcpComponent;
-  let fixture: ComponentFixture<DurationByTcpComponent>;
+describe('DurationByTCPComponent', () => {
+  let component: DurationByTCPComponent;
+  let fixture: ComponentFixture<DurationByTCPComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DurationByTcpComponent ]
+      declarations: [ DurationByTCPComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DurationByTcpComponent);
+    fixture = TestBed.createComponent(DurationByTCPComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

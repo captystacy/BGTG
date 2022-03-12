@@ -54,12 +54,17 @@ public class DurationByTCPWriter : IDurationByTCPWriter
     #endregion
     #endregion
 
-    public void Write(DurationByTCP durationByTCP, string templatePath)
+    public MemoryStream Write(DurationByTCP durationByTCP, string templatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
         using var document = DocX.Load(templatePath);
         ReplacePatternsWithActualValues(document, durationByTCP);
+
+        var memoryStream = new MemoryStream();
+        document.SaveAs(memoryStream);
+
+        return memoryStream;
     }
 
     private void ReplacePatternsWithActualValues(DocX document, DurationByTCP durationByTCP)

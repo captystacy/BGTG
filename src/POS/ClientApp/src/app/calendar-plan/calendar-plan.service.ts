@@ -15,13 +15,13 @@ export class CalendarPlanService {
   private _initialPercentageValue!: number;
   private _totalWorkChapter!: string;
 
-  private _estimateFiles!: File[];
+  private _estimateFiles?: FileList;
 
-  get estimateFiles(): File[] {
+  get estimateFiles(): FileList | undefined {
     return this._estimateFiles;
   }
 
-  set estimateFiles(value: File[]) {
+  set estimateFiles(value: FileList | undefined) {
     this._calendarPlan = undefined as any;
     this._months = [];
     this._estimateFiles = value;
@@ -208,8 +208,8 @@ export class CalendarPlanService {
   }
 
   private appendEstimateFiles(formData: FormData): void {
-    for (let i = 0; i < this._estimateFiles.length; i++) {
-      formData.append('EstimateFiles', this._estimateFiles[i]);
+    for (let i = 0; i < this._estimateFiles!.length; i++) {
+      formData.append('EstimateFiles', this._estimateFiles![i]);
     }
   }
 }

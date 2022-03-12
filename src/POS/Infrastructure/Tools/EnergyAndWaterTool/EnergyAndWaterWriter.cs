@@ -14,13 +14,18 @@ public class EnergyAndWaterWriter : IEnergyAndWaterWriter
     private const string CompressedAirPattern = "%CA%";
     private const string OxygenPattern = "%O%";
 
-    public void Write(EnergyAndWater energyAndWater, string templatePath)
+    public MemoryStream Write(EnergyAndWater energyAndWater, string templatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
         using var document = DocX.Load(templatePath);
         var energyAndWaterTable = document.Tables[0];
         ModifyEnergyAndWaterTable(energyAndWaterTable.Rows[2], energyAndWater);
+
+        var memoryStream = new MemoryStream();
+        document.SaveAs(memoryStream);
+
+        return memoryStream;
     }
 
     private void ModifyEnergyAndWaterTable(Row row, EnergyAndWater energyAndWater)

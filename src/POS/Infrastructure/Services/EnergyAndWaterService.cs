@@ -1,6 +1,5 @@
 ﻿using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.CalendarPlanTool.Base;
-using POS.Infrastructure.Tools.EnergyAndWaterTool;
 using POS.Infrastructure.Tools.EnergyAndWaterTool.Base;
 using POS.Infrastructure.Tools.EstimateTool.Models;
 using POS.ViewModels;
@@ -16,7 +15,7 @@ public class EnergyAndWaterService : IEnergyAndWaterService
     private readonly ICalendarWorkCreator _calendarWorkCreator;
 
     private const string EnergyAndWaterTemplateFileName = "EnergyAndWater.docx";
-    private const string TemplatesPath = @"AppData\Templates\POSTemplates\EnergyAndWaterTemplates";
+    private const string TemplatesPath = @"Templates\EnergyAndWaterTemplates";
 
     public EnergyAndWaterService(IEstimateService estimateService, IEnergyAndWaterCreator energyAndWaterCreator,
         IEnergyAndWaterWriter energyAndWaterWriter, IWebHostEnvironment webHostEnvironment, ICalendarWorkCreator calendarWorkCreator)
@@ -28,7 +27,7 @@ public class EnergyAndWaterService : IEnergyAndWaterService
         _calendarWorkCreator = calendarWorkCreator;
     }
 
-    public EnergyAndWater Write(EnergyAndWaterCreateViewModel viewModel)
+    public MemoryStream Write(EnergyAndWaterViewModel viewModel)
     {
         _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
@@ -36,16 +35,9 @@ public class EnergyAndWaterService : IEnergyAndWaterService
 
         var energyAndWater = _energyAndWaterCreator.Create(mainTotalCostIncludingCAIW, _estimateService.Estimate.ConstructionStartDate.Year);
 
-        return Write(energyAndWater);
-    }
-
-    public EnergyAndWater Write(EnergyAndWater energyAndWater)
-    {
         var templatePath = GetTemplatePath();
 
-        _energyAndWaterWriter.Write(energyAndWater, templatePath);
-
-        return energyAndWater;
+        return _energyAndWaterWriter.Write(energyAndWater, templatePath);
     }
 
     private decimal GetMainTotalCostIncludingCAIW()
