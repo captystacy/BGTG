@@ -1,0 +1,8 @@
+<body style="background: url(assets/svgs/bg-logo-uncolored.svg) no-repeat center;background-size: contain;">
+  <app-nav-menu></app-nav-menu>
+  <div class="container pb-3">
+    <alert></alert>
+    <router-outlet></router-outlet>
+  </div>
+  <mat-progress-bar mode="indeterminate" *ngIf="loading$ | async" class="position-fixed bottom-0"></mat-progress-bar>
+</body>

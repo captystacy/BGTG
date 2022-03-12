@@ -1,0 +1,59 @@
+<form [formGroup]="durationByTCPForm" (submit)="downloadDurationByTCP()">
+  <div class="d-flex flex-column align-items-center mt-3">
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Нормы</mat-label>
+      <mat-select formControlName="appendixKey">
+        <mat-option *ngFor="let appendix of appendixes" [value]="appendix.value">{{appendix.title}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="appendixKey.errors?.['required']">
+        Нужно выбрать норму.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Объект</mat-label>
+      <mat-select formControlName="pipelineCategoryName">
+        <mat-option *ngFor="let pipelineCategory of pipelineCategories" [value]="pipelineCategory">{{pipelineCategory}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="pipelineCategoryName.errors?.['required']">
+        Нужно выбрать объект.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Материал</mat-label>
+      <mat-select formControlName="pipelineMaterial">
+        <mat-option *ngFor="let pipelineMaterial of pipelineMaterials" [value]="pipelineMaterial">{{pipelineMaterial}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="pipelineMaterial.errors?.['required']">
+        Нужно выбрать материал.
+      </mat-error>
+    </mat-form-field>
+    <div class="d-flex" style="width: 710px;">
+      <mat-form-field appearance="fill" class="me-3 w-100" floatLabel="always">
+        <mat-label>Диаметр трубопровода</mat-label>
+        <input formControlName="pipelineDiameter" matInput type="number" placeholder="0" step="0.01">
+        <span matSuffix>мм</span>
+        <mat-error *ngIf="pipelineDiameter.errors?.['required']">
+          Диаметр трубопровода не может быть пустым.
+        </mat-error>
+        <mat-error *ngIf="pipelineDiameter.errors?.['min']">
+          Где вы видели такой трубопровод?
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="w-100" floatLabel="always">
+        <mat-label>Длина трубопровода</mat-label>
+        <input formControlName="pipelineLength" matInput type="number" placeholder="0" step="0.01">
+        <span matSuffix>км</span>
+        <mat-error *ngIf="pipelineLength.errors?.['required']">
+          Длина трубопровода не может быть пустой.
+        </mat-error>
+        <mat-error *ngIf="pipelineLength.errors?.['min']">
+          Где вы видели такой трубопровод?
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <button type="submit" mat-raised-button color="primary" [disabled]="durationByTCPForm.invalid">
+      Скачать
+      <mat-icon>file_download</mat-icon>
+    </button>
+  </div>
+</form>

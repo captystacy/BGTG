@@ -1,0 +1,58 @@
+<form [formGroup]="durationByLCForm" (submit)="downloadDurationByLC()">
+  <div class="d-flex flex-column align-items-center mt-3">
+    <mat-form-field appearance="fill" style="width: 330px" floatLabel="always">
+      <mat-label>Количество рабочих дней в месяце</mat-label>
+      <input formControlName="numberOfWorkingDays" matInput type="number" placeholder="0" step="0.5">
+      <span matSuffix>дн.</span>
+      <mat-error *ngIf="numberOfWorkingDays.errors?.['required']">
+        Два через два, или как?
+      </mat-error>
+      <mat-error *ngIf="numberOfWorkingDays.errors?.['min']">
+        Отдыхаем получается?
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 330px" floatLabel="always">
+      <mat-label>Продолжительность рабочего дня</mat-label>
+      <input formControlName="workingDayDuration" matInput type="number" placeholder="0" step="0.5">
+      <span matSuffix>час.</span>
+      <mat-error *ngIf="workingDayDuration.errors?.['required']">
+        Сколько в день работаем?
+      </mat-error>
+      <mat-error *ngIf="workingDayDuration.errors?.['min']">
+        Отдыхаем получается?
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 330px" floatLabel="always">
+      <mat-label>Сменность</mat-label>
+      <input formControlName="shift" matInput type="number" placeholder="0" step="0.5">
+      <span matSuffix>см.</span>
+      <mat-error *ngIf="shift.errors?.['required']">
+        В какую смену работаем?
+      </mat-error>
+      <mat-error *ngIf="shift.errors?.['min']">
+        Отдыхаем получается?
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 330px" floatLabel="always">
+      <mat-label>Количество работающих в бригаде</mat-label>
+      <input formControlName="numberOfEmployees" matInput type="number" placeholder="0" min="1">
+      <span matSuffix>чел.</span>
+      <mat-error *ngIf="numberOfEmployees.errors?.['required']">
+        Кто-то же должен работать.
+      </mat-error>
+      <mat-error *ngIf="numberOfEmployees.errors?.['min']">
+        Это уже не человек...
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 330px" floatLabel="always">
+      <mat-label>Трудозатраты по технологической карте</mat-label>
+      <input formControlName="technologicalLaborCosts" matInput type="number" placeholder="0" min="0">
+      <span matSuffix>чел./час.</span>
+    </mat-form-field>
+    <mat-checkbox formControlName="acceptanceTimeIncluded" class="mb-3">Включать время на приемку</mat-checkbox>
+    <button type="submit" mat-raised-button color="primary" [disabled]="!estimateFiles || durationByLCForm.invalid">
+      Скачать
+      <mat-icon>file_download</mat-icon>
+    </button>
+  </div>
+</form>

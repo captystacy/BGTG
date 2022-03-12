@@ -1,0 +1,67 @@
+<div class="d-flex flex-column align-items-center">
+  <mat-form-field appearance="fill" style="width: 710px;">
+    <mat-label>Расчёты в формате (.docx)</mat-label>
+    <ngx-mat-file-input [(ngModel)]="calculationFilesInput" [accept]="'.docx'" multiple required></ngx-mat-file-input>
+    <mat-icon matSuffix>folder</mat-icon>
+  </mat-form-field>
+</div>
+<form [formGroup]="posForm">
+  <div class="d-flex flex-column align-items-center">
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Шифр объекта в формате: Ц.Ц-Ч.Ч или Ц.Ц-Ч.Ч-Ч, где Ц - цифра, Ч - число.</mat-label>
+      <input formControlName="objectCipher" matInput>
+      <mat-error *ngIf="objectCipher.errors?.['required']">
+        Шифр объекта не может быть пустым.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Шаблон</mat-label>
+      <mat-select formControlName="projectTemplate">
+        <mat-option *ngFor="let projectTemplate of projectTemplates" [value]="projectTemplate.value">{{projectTemplate.title}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="projectTemplate.errors?.['required']">
+        Нужно выбрать шаблон.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Проектировщик</mat-label>
+      <mat-select formControlName="projectEngineer">
+        <mat-option *ngFor="let projectEngineer of projectEngineers" [value]="projectEngineer.value">{{projectEngineer.title}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="projectEngineer.errors?.['required']">
+        Нужно выбрать проектировщика.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>ГИП</mat-label>
+      <mat-select formControlName="chiefProjectEngineer">
+        <mat-option *ngFor="let chiefProjectEngineer of chiefProjectEngineers" [value]="chiefProjectEngineer.value">{{chiefProjectEngineer.title}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="chiefProjectEngineer.errors?.['required']">
+        Нужно выбрать ГИПа.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Полное наименование объекта</mat-label>
+      <textarea formControlName="objectName" matInput placeholder="Электроснабжение станции..."></textarea>
+      <mat-error *ngIf="objectName.errors?.['required']">
+        Наименование объекта не может быть пустым.
+      </mat-error>
+    </mat-form-field>
+    <mat-checkbox formControlName="householdTownIncluded" class="mb-3">Бытовой городок</mat-checkbox>
+    <div class="d-flex justify-content-between" style="width: 710px;">
+      <button (click)="downloadTitlePage()" mat-raised-button color="primary" [disabled]="posForm.invalid">
+        Скачать титульник
+        <mat-icon>file_download</mat-icon>
+      </button>
+      <button (click)="downloadTableOfContents()" mat-raised-button color="primary" [disabled]="posForm.invalid">
+        Скачать содержание
+        <mat-icon>file_download</mat-icon>
+      </button>
+      <button (click)="downloadProject()" mat-raised-button color="primary" [disabled]="posForm.invalid">
+        Скачать проект
+        <mat-icon>file_download</mat-icon>
+      </button>
+    </div>
+  </div>
+</form>

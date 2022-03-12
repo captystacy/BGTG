@@ -1,0 +1,29 @@
+<mat-form-field appearance="fill" class="w-100">
+  <mat-label>Сметы в формате (.xlsx)</mat-label>
+  <ngx-mat-file-input [(ngModel)]="estimateFilesInput" [accept]="'.xlsx'" required multiple></ngx-mat-file-input>
+  <mat-icon matSuffix>folder</mat-icon>
+</mat-form-field>
+<mat-tab-group dynamicHeight mat-align-tabs="center">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Продолжительность по трудозатратам&nbsp;
+      <mat-icon>schedule</mat-icon>
+    </ng-template>
+    <app-duration-by-lc [estimateFiles]="estimateFilesInput?.files"></app-duration-by-lc>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Календарный план&nbsp;
+      <mat-icon>calendar_view_month</mat-icon>
+    </ng-template>
+    <app-calendar-plan [estimateFiles]="estimateFilesInput?.files"></app-calendar-plan>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Энергия и вода&nbsp;
+      <mat-icon>electric_bolt</mat-icon>
+      <mat-icon>water_drop</mat-icon>
+    </ng-template>
+    <app-energy-and-water [estimateFiles]="estimateFilesInput?.files"></app-energy-and-water>
+  </mat-tab>i
+</mat-tab-group>
