@@ -1,10 +1,8 @@
-﻿using POS.Infrastructure.Tools.EnergyAndWaterTool;
-using POS.ViewModels;
+﻿using POS.ViewModels;
 
 namespace POS.Infrastructure.Services.Base;
 
 public interface IEnergyAndWaterService
 {
-    EnergyAndWater Write(EnergyAndWaterCreateViewModel viewModel);
-    EnergyAndWater Write(EnergyAndWater energyAndWater);
+    MemoryStream Write(EnergyAndWaterViewModel viewModel);
 }

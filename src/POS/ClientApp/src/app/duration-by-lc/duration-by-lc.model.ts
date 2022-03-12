@@ -3,6 +3,6 @@ export interface IDurationByLC {
   workingDayDuration: number;
   shift: number;
   numberOfEmployees: number;
-  technologicalLaborCosts: number;
+  technologicalLaborCosts?: number;
   acceptanceTimeIncluded: boolean;
 }

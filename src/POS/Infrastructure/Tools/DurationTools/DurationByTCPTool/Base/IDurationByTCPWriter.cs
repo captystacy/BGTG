@@ -4,5 +4,5 @@ namespace POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Base;
 
 public interface IDurationByTCPWriter
 {
-    void Write(DurationByTCP durationByTCP, string templatePath);
+    MemoryStream Write(DurationByTCP durationByTCP, string templatePath);
 }

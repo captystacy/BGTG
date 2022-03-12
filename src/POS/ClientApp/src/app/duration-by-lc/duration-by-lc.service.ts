@@ -10,7 +10,7 @@ import { IDurationByLC } from "./duration-by-lc.model";
 export class DurationByLCService {
   constructor(private _http: HttpClient) { }
 
-  downloadDurationByLc(durationByLC: IDurationByLC, estimateFiles: File[]): void {
+  downloadDurationByLC(durationByLC: IDurationByLC, estimateFiles: FileList): void {
     let formData = new FormData();
 
     for (let i = 0; i < estimateFiles.length; i++) {
@@ -20,7 +20,7 @@ export class DurationByLCService {
     formData.append('WorkingDayDuration', durationByLC.workingDayDuration.toString());
     formData.append('Shift', durationByLC.shift.toString());
     formData.append('NumberOfEmployees', durationByLC.numberOfEmployees.toString());
-    formData.append('TechnologicalLaborCosts', durationByLC.technologicalLaborCosts.toString());
+    formData.append('TechnologicalLaborCosts', durationByLC.technologicalLaborCosts?.toString() ?? '0');
     formData.append('AcceptanceTimeIncluded', durationByLC.acceptanceTimeIncluded.toString());
 
     this._http.post('api/DurationByLC/GetFile', formData, { responseType: 'blob' }).subscribe(data => {

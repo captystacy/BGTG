@@ -1,7 +1,7 @@
 <header>
-  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">POS</a>
+      <a class="navbar-brand" [routerLink]="['/']" style="white-space: normal;text-align: center;word-break: break-all;width: 25px;height: 40px;background: url(assets/svgs/bg-logo-colored.svg) center no-repeat;background-size: contain;"></a>
       <button class="navbar-toggler"
               type="button"
               data-toggle="collapse"
@@ -14,11 +14,6 @@
       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end"
            [ngClass]="{ show: isExpanded }">
         <ul class="navbar-nav flex-grow">
-          <li class="nav-item"
-              [routerLinkActive]="['link-active']"
-              [routerLinkActiveOptions]="{ exact: true }">
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-          </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/estimate-calculations']">Сметные расчеты</a>
           </li>
@@ -26,15 +21,7 @@
             <a class="nav-link text-dark" [routerLink]="['/duration-by-tcp']">Продолжительность по ТКП</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/project']">Записка</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/counter']">Counter</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/fetch-data']">
-              Fetch data
-            </a>
+            <a class="nav-link text-dark" [routerLink]="['/pos']">Записка</a>
           </li>
         </ul>
       </div>

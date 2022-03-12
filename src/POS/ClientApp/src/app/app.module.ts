@@ -20,28 +20,24 @@ import { AlertModule } from './_alert';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { EstimateCalculationsComponent } from './estimate-calculations/estimate-calculations.component';
-import { DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
-import { ProjectComponent } from './project/project.component';
+import { DurationByTCPComponent as DurationByTcpComponent } from './duration-by-tcp/duration-by-tcp.component';
+import { POSComponent } from './pos/pos.component';
 import { CalendarPlanComponent } from './calendar-plan/calendar-plan.component';
 import { NetworkInterceptor } from './network.interceptor';
 import { DurationByLCComponent } from './duration-by-lc/duration-by-lc.component';
+import { EnergyAndWaterComponent } from './energy-and-water/energy-and-water.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
     EstimateCalculationsComponent,
     DurationByTcpComponent,
-    ProjectComponent,
+    POSComponent,
     CalendarPlanComponent,
     DurationByLCComponent,
+    EnergyAndWaterComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -49,12 +45,10 @@ import { DurationByLCComponent } from './duration-by-lc/duration-by-lc.component
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: '', redirectTo: 'estimate-calculations', pathMatch: 'full' },
       { path: 'estimate-calculations', component: EstimateCalculationsComponent },
       { path: 'duration-by-tcp', component: DurationByTcpComponent },
-      { path: 'project', component: ProjectComponent },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'pos', component: POSComponent }
     ]),
     BrowserAnimationsModule,
     MatTabsModule,

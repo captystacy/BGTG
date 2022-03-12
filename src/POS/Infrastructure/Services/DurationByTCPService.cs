@@ -11,7 +11,7 @@ public class DurationByTCPService : IDurationByTCPService
     private readonly IDurationByTCPWriter _durationByTCPWriter;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    private const string TemplatesPath = @"AppData\Templates\POSTemplates\DurationByTCPTemplates";
+    private const string TemplatesPath = @"Templates\DurationByTCPTemplates";
 
     private const string InterpolationTemplateFileName = "Interpolation.docx";
     private const string ExtrapolationAscendingTemplateFileName = "ExtrapolationAscending.docx";
@@ -26,7 +26,7 @@ public class DurationByTCPService : IDurationByTCPService
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public DurationByTCP? Write(DurationByTCPCreateViewModel viewModel)
+    public MemoryStream? Write(DurationByTCPViewModel viewModel)
     {
         var durationByTCP = _durationByTCPCreator.Create(viewModel.PipelineMaterial, viewModel.PipelineDiameter,
             viewModel.PipelineLength, viewModel.AppendixKey, viewModel.PipelineCategoryName);
@@ -36,16 +36,9 @@ public class DurationByTCPService : IDurationByTCPService
             return null;
         }
 
-        return Write(durationByTCP);
-    }
-
-    public DurationByTCP Write(DurationByTCP durationByTCP)
-    {
         var templatePath = GetTemplatePath(durationByTCP.DurationCalculationType);
 
-        _durationByTCPWriter.Write(durationByTCP, templatePath);
-
-        return durationByTCP;
+        return _durationByTCPWriter.Write(durationByTCP, templatePath);
     }
 
     private string GetTemplatePath(DurationCalculationType durationCalculationType)

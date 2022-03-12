@@ -18,7 +18,7 @@ public class CalendarPlanController : ControllerBase
 
     [HttpPost("[action]")]
     [ValidateModelState]
-    public OperationResult<CalendarPlanViewModel> GetViewModelForCreation([FromForm] CalendarPlanCreateViewModel viewModel)
+    public OperationResult<CalendarPlanViewModel> GetViewModelForCreation(CalendarPlanCreateViewModel viewModel)
     {
         var operation = OperationResult.CreateResult<CalendarPlanViewModel>();
 

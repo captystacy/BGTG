@@ -2,5 +2,5 @@
 
 public interface ITableOfContentsWriter
 {
-    void Write(string objectCipher, string templatePath);
+    MemoryStream Write(string objectCipher, string templatePath);
 }

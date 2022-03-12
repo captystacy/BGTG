@@ -9,7 +9,7 @@ import { CalendarPlanService } from './calendar-plan.service';
 })
 
 export class CalendarPlanComponent {
-  @Input() set estimateFiles(value: File[]) {
+  @Input() set estimateFiles(value: FileList) {
     this.calendarPlanService.estimateFiles = value;
   }
 
