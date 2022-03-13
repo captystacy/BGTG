@@ -1,5 +1,7 @@
 using System.Globalization;
 using POS.Infrastructure.DependencyInjection;
+using POS.Infrastructure.Services;
+using POS.Infrastructure.Services.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ DependencyContainer.CalendarPlan(builder.Services);
 DependencyContainer.EnergyAndWater(builder.Services);
 DependencyContainer.DurationByTCP(builder.Services);
 DependencyContainer.POS(builder.Services);
+builder.Services.AddSingleton<IDocumentService, DocumentService>();
 
 builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
 
