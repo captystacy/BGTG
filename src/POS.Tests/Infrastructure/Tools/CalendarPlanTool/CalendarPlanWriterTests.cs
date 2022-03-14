@@ -1,119 +1,78 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.IO;
+using Moq;
 using NUnit.Framework;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.CalendarPlanTool;
-using POS.Infrastructure.Tools.CalendarPlanTool.Models;
-using Xceed.Document.NET;
-using Xceed.Words.NET;
 
-namespace POS.Tests.Infrastructure.Tools.CalendarPlanTool
+namespace POS.Tests.Infrastructure.Tools.CalendarPlanTool;
+
+public class CalendarPlanWriterTests
 {
-    public class CalendarPlanWriterTests
+    private CalendarPlanWriter _calendarPlanWriter = null!;
+    private Mock<IDocumentService> _documentServiceMock = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        private CalendarPlanWriter _calendarPlanWriter = null!;
+        _documentServiceMock = new Mock<IDocumentService>();
+        _calendarPlanWriter = new CalendarPlanWriter(_documentServiceMock.Object);
+    }
 
-        private const string CalendarPlanTemplatesDirectory = @"..\..\..\Infrastructure\Tools\CalendarPlanTool\CalendarPlanTemplates";
+    [Test]
+    public void Write_CalendarPlan548VAT_SaveCorrectCalendarPlan()
+    {
+        var preparatoryTemplatePath = "Preparatory.docx";
+        var mainTemplatePath = "Main1.docx";
 
-        [SetUp]
-        public void SetUp()
-        {
-            _calendarPlanWriter = new CalendarPlanWriter();
-        }
+        _documentServiceMock.Setup(x => x.GetRowCount()).Returns(5);
 
-        [Test]
-        public void Write_CalendarPlan548VAT_SaveCorrectCalendarPlan()
-        {
-            var expectedCalendarPlan = new CalendarPlan(CalendarPlanSource.CalendarPlan548.PreparatoryCalendarWorks.Select(x =>
-                    new CalendarWork(x.WorkName, x.TotalCost, x.TotalCostIncludingCAIW, x.ConstructionMonths, 0)),
-                CalendarPlanSource.CalendarPlan548.MainCalendarWorks.Select(x =>
-                    new CalendarWork(x.WorkName, x.TotalCost, x.TotalCostIncludingCAIW, x.ConstructionMonths, 0)),
-                CalendarPlanSource.CalendarPlan548.ConstructionStartDate, 0.7M, 1);
+        _documentServiceMock.Setup(x => x.GetParagraphsCount(4)).Returns(2);
 
-            var preparatoryTemplatePath = Path.Combine(CalendarPlanTemplatesDirectory, "Preparatory.docx");
-            var mainTemplatePath = Path.Combine(CalendarPlanTemplatesDirectory, "Main1.docx");
+        var memoryStream = _calendarPlanWriter.Write(CalendarPlanSource.CalendarPlan548, preparatoryTemplatePath, mainTemplatePath);
 
-            var memoryStream = _calendarPlanWriter.Write(expectedCalendarPlan, preparatoryTemplatePath, mainTemplatePath);
+        _documentServiceMock.Verify(x => x.Load(preparatoryTemplatePath), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(1, "%D0%", "Август 2022"), Times.Exactly(2));
 
-            using var document = DocX.Load(memoryStream);
-            var preparatoryCalendarPlanTable = document.Tables[0];
-            var mainCalendarPlanTable = document.Tables[1];
+        _documentServiceMock.Verify(x => x.InsertTemplateRow(2, 4), Times.Exactly(7));
 
-            var actualCalendarPlan = ParseCalendarPlan(preparatoryCalendarPlanTable, mainCalendarPlanTable);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%WN%", "Временные здания и сооружения"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%WN%", "Итого:"), Times.Exactly(2));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%WN%", "Работы, выполняемые в подготовительный период"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%WN%", "Электрохимическая защита"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%WN%", "Благоустройство территории"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%WN%", "Прочие работы и затраты"), Times.Once);
 
-            Assert.That(actualCalendarPlan.PreparatoryCalendarWorks, Is.EquivalentTo(expectedCalendarPlan.PreparatoryCalendarWorks));
-            Assert.That(actualCalendarPlan.MainCalendarWorks, Is.EquivalentTo(expectedCalendarPlan.MainCalendarWorks));
-            Assert.AreEqual(expectedCalendarPlan, actualCalendarPlan);
-        }
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TC%", "0,017"), Times.Exactly(3));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TC%", "0,632"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TC%", "0,020"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TC%", "2,557"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TC%", "3,226"), Times.Once);
 
-        private CalendarPlan ParseCalendarPlan(Table preparatoryCalendarPlanTable, Table mainCalendarPlanTable)
-        {
-            var preparatoryDates = ParseDates(preparatoryCalendarPlanTable.Rows[1]).ToList();
-            var mainDates = ParseDates(mainCalendarPlanTable.Rows[1]).ToList();
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TIC%", "0,017"), Times.Exactly(3));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TIC%", "0,592"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TIC%", "0,020"), Times.Exactly(2));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%TIC%", "0,649"), Times.Once);
 
-            var constructionStartDate = preparatoryDates[0] == mainDates[0]
-                ? preparatoryDates[0]
-                : default;
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IV0%", "0,017"), Times.Exactly(3));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IV0%", "0,632"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IV0%", "0,020"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IV0%", "2,557"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IV0%", "3,226"), Times.Once);
 
-            var preparatoryCalendarWorks =
-                ParseCalendarWorks(preparatoryCalendarPlanTable, constructionStartDate);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IW0%", "0,017"), Times.Exactly(3));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IW0%", "0,592"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IW0%", "0,020"), Times.Exactly(2));
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%IW0%", "0,649"), Times.Once);
 
-            var mainCalendarWorks = ParseCalendarWorks(mainCalendarPlanTable, constructionStartDate).ToList();
+        _documentServiceMock.Verify(x => x.RemoveRow(3), Times.Exactly(2));
+        _documentServiceMock.Verify(x => x.RemoveRow(2), Times.Exactly(2));
 
-            var constructionDurationCeiling = mainCalendarWorks.First(x => x.WorkName == AppData.TotalWorkName).ConstructionMonths.Count();
+        _documentServiceMock.Verify(x => x.ReplaceText(4, "%P0%", "100,00 %"), Times.Exactly(2));
 
-            return new CalendarPlan(preparatoryCalendarWorks,
-                mainCalendarWorks, constructionStartDate, CalendarPlanSource.CalendarPlan548.ConstructionDuration, constructionDurationCeiling);
-        }
+        _documentServiceMock.Verify(x => x.InsertDocument(0, 1), Times.Once);
 
-        private IEnumerable<DateTime> ParseDates(Row dateRow)
-        {
-            var dates = new List<DateTime>();
-
-            for (int i = 3; i < dateRow.ColumnCount; i++)
-            {
-                var dateStr = dateRow.Paragraphs[i].Text;
-                var monthName = Regex.Match(dateStr, @"[А-Я-а-я]+").Value.ToLower();
-                var dateYear = int.Parse(Regex.Match(dateStr, @"\d+").Value);
-                var month = Array.IndexOf(CultureInfo.CurrentCulture.DateTimeFormat.MonthNames, monthName) + 1;
-
-                dates.Add(new DateTime(dateYear, month, 1));
-            }
-
-            return dates;
-        }
-
-        private IEnumerable<CalendarWork> ParseCalendarWorks(Table calendarPlanTable, DateTime constructionStartDate)
-        {
-            var calendarWorks = new List<CalendarWork>();
-
-            for (int row = 2; row < calendarPlanTable.RowCount - 1; row += 2)
-            {
-                var workName = calendarPlanTable.Rows[row].Paragraphs[0].Text;
-                var totalCost = decimal.Parse(calendarPlanTable.Rows[row].Paragraphs[1].Text);
-                var totalCostIncludingCAIW = decimal.Parse(calendarPlanTable.Rows[row].Paragraphs[2].Text);
-
-                var constructionMonths = new List<ConstructionMonth>();
-                for (int column = 3; column < calendarPlanTable.ColumnCount; column++)
-                {
-                    decimal.TryParse(calendarPlanTable.Rows[row].Paragraphs[column].Text, out var investmentVolume);
-                    decimal.TryParse(calendarPlanTable.Rows[row + 1].Paragraphs[column].Text, out var volumeCAIW);
-
-                    var percent = workName == AppData.TotalWorkName && calendarWorks.Exists(x => x.WorkName == AppData.MainOverallPreparatoryWorkName)
-                        ? decimal.Parse(calendarPlanTable.Rows[row + 2].Paragraphs[column - 1].Text.Replace("%", string.Empty)) / 100
-                        : investmentVolume / totalCost;
-
-                    var constructionMonth = new ConstructionMonth(constructionStartDate.AddMonths(column - 3), investmentVolume, volumeCAIW, percent, column - 3);
-                    constructionMonths.Add(constructionMonth);
-                }
-
-                calendarWorks.Add(new CalendarWork(workName, totalCost, totalCostIncludingCAIW, constructionMonths, 0));
-            }
-
-            return calendarWorks;
-        }
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 }

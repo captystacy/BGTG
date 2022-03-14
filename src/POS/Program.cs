@@ -15,7 +15,7 @@ DependencyContainer.CalendarPlan(builder.Services);
 DependencyContainer.EnergyAndWater(builder.Services);
 DependencyContainer.DurationByTCP(builder.Services);
 DependencyContainer.POS(builder.Services);
-builder.Services.AddSingleton<IDocumentService, DocumentService>();
+builder.Services.AddTransient<IDocumentService, DocumentService>();
 
 builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
 

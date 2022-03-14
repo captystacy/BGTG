@@ -1,8 +1,7 @@
-﻿using POS.Infrastructure.Services;
+﻿using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.CalendarPlanTool.Base;
 using POS.Infrastructure.Tools.CalendarPlanTool.Models;
 using System.Globalization;
-using POS.Infrastructure.Services.Base;
 
 namespace POS.Infrastructure.Tools.CalendarPlanTool;
 
@@ -32,26 +31,23 @@ public class CalendarPlanWriter : ICalendarPlanWriter
 
         _documentService.Load(preparatoryTemplatePath);
 
-        var constructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == AppData.TotalWorkName).ConstructionMonths.ToArray();
-
-        ModifyCalendarPlanTable(calendarPlan.PreparatoryCalendarWorks, constructionMonths);
+        var preparatoryConstructionMonths = calendarPlan.PreparatoryCalendarWorks.First(x => x.WorkName == AppData.TotalWorkName).ConstructionMonths.ToArray();
+        ModifyCalendarPlanTable(calendarPlan.PreparatoryCalendarWorks, preparatoryConstructionMonths);
 
         _documentService.Load(mainTemplatePath);
         _documentService.DocumentIndex = 1;
 
-        ModifyCalendarPlanTable(calendarPlan.MainCalendarWorks, constructionMonths);
+        var mainConstructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == AppData.TotalWorkName).ConstructionMonths.ToArray();
+        ModifyCalendarPlanTable(calendarPlan.MainCalendarWorks, mainConstructionMonths);
 
         if (calendarPlan.ConstructionDurationCeiling > 1)
         {
             var columnIndex = _documentService.GetColumnCount() - 1;
             var endRowIndex = _documentService.GetRowCount() - 2;
             _documentService.MergeCellsInColumn(columnIndex, AcceptanceTimeRowIndex, endRowIndex);
-            _documentService.Append(AcceptanceTimeCellStr, AcceptanceTimeRowIndex, 0);
-
-            //mainTable.Rows[TopPatternRowIndex].Cells[mainTable.ColumnCount - 1].Paragraphs[0]
-            //    .Append(AcceptanceTimeCellStr).FontSize(12);
+            _documentService.Append(AcceptanceTimeCellStr, AcceptanceTimeRowIndex, columnIndex, 0);
         }
-        
+
         _documentService.InsertDocument(0, 1);
 
         var memoryStream = new MemoryStream();
@@ -70,8 +66,8 @@ public class CalendarPlanWriter : ICalendarPlanWriter
             AddRowToTable(calendarWork);
         }
 
-        _documentService.RemoveRow(TopPatternRowIndex);
         _documentService.RemoveRow(BottomPatternRowIndex);
+        _documentService.RemoveRow(TopPatternRowIndex);
 
         ReplacePercentPartsWithActualPercentages(constructionMonths);
 
@@ -86,25 +82,28 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         for (int i = 0; i < constructionMonths.Length; i++)
         {
             var monthName = monthNames[constructionMonths[i].Date.Month - 1];
-            _documentService.ReplaceText(rowIndex, $"%D{i}%", char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + constructionMonths[i].Date.Year);
+            _documentService.ReplaceText(rowIndex, $"%D{i}%", FormatMonth(monthName, constructionMonths[i].Date.Year));
         }
 
         if (constructionMonths.Length > 1)
         {
             var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
             var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
-            _documentService.ReplaceText(rowIndex, DateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
+            _documentService.ReplaceText(rowIndex, DateAcceptancePattern, FormatMonth(acceptanceMonthName, acceptanceDate.Year));
         }
+    }
+
+    private string FormatMonth(string monthName, int year)
+    {
+        return char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + year;
     }
 
     private void AddRowToTable(CalendarWork calendarWork)
     {
-        var rowCount = _documentService.GetRowCount();
-        _documentService.InsertTemplateRow(TopPatternRowIndex, rowCount - 2);
-        _documentService.InsertTemplateRow(BottomPatternRowIndex, rowCount - 2);
-
-        var newTopRowIndex = rowCount - 3;
-        var newBottomRowIndex = rowCount - 2;
+        var newTopRowIndex = _documentService.GetRowCount() - 1;
+        _documentService.InsertTemplateRow(TopPatternRowIndex, newTopRowIndex);
+        var newBottomRowIndex = _documentService.GetRowCount() - 1;
+        _documentService.InsertTemplateRow(BottomPatternRowIndex, newBottomRowIndex);
 
         _documentService.ReplaceText(newTopRowIndex, WorkNamePattern, calendarWork.WorkName);
         _documentService.ReplaceText(newTopRowIndex, TotalCostPattern, calendarWork.TotalCost.ToString(AppData.DecimalThreePlacesFormat));
@@ -144,7 +143,7 @@ public class CalendarPlanWriter : ICalendarPlanWriter
                     _documentService.RemoveText(rowIndex, columnIndex);
                     _documentService.RemoveText(rowIndex + 1, columnIndex);
                     _documentService.MergeCellsInColumn(columnIndex, rowIndex, rowIndex + 1);
-                    _documentService.Append("-", rowIndex, columnIndex);
+                    _documentService.Append("-", rowIndex, columnIndex, 0);
                 }
             }
         }

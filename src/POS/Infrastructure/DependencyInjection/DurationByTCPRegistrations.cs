@@ -11,11 +11,11 @@ public partial class DependencyContainer
 {
     public static void DurationByTCP(IServiceCollection services)
     {
-        services.AddSingleton<ITCP212Helper, TCP212Helper>();
-        services.AddSingleton<IDurationByTCPEngineer, DurationByTCPEngineer>();
-        services.AddSingleton<IDurationByTCPWriter, DurationByTCPWriter>();
-        services.AddSingleton<IDurationByTCPCreator, DurationByTCPCreator>();
+        services.AddTransient<ITCP212Helper, TCP212Helper>();
+        services.AddTransient<IDurationByTCPEngineer, DurationByTCPEngineer>();
+        services.AddTransient<IDurationByTCPWriter, DurationByTCPWriter>();
+        services.AddTransient<IDurationByTCPCreator, DurationByTCPCreator>();
 
-        services.AddScoped<IDurationByTCPService, DurationByTCPService>();
+        services.AddTransient<IDurationByTCPService, DurationByTCPService>();
     }
 }

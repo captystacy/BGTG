@@ -9,9 +9,9 @@ public partial class DependencyContainer
 {
     public static void EnergyAndWater(IServiceCollection services)
     {
-        services.AddSingleton<IEnergyAndWaterCreator, EnergyAndWaterCreator>();
-        services.AddSingleton<IEnergyAndWaterWriter, EnergyAndWaterWriter>();
+        services.AddTransient<IEnergyAndWaterCreator, EnergyAndWaterCreator>();
+        services.AddTransient<IEnergyAndWaterWriter, EnergyAndWaterWriter>();
 
-        services.AddScoped<IEnergyAndWaterService, EnergyAndWaterService>();
+        services.AddTransient<IEnergyAndWaterService, EnergyAndWaterService>();
     }
 }

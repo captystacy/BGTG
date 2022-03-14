@@ -13,10 +13,10 @@ public interface IDocumentService
     string GetParagraphText(int rowIndex, int paragraphIndex);
     void RemoveText(int rowIndex, int paragraphIndex);
     void MergeCellsInColumn(int columnIndex, int startRowIndex, int endRowIndex);
-    void Append(string text, int rowIndex, int paragraphIndex, int fontSize = 12);
     void Dispose();
-    void InsertDocument(int baseDocumentIndex,int insertedDocumentIndex);
+    void InsertDocument(int toDocumentIndex,int fromDocumentIndex);
     void SaveAs(Stream stream, int documentIndex);
     void InsertTemplateRow(int templateRowIndex, int insertionIndex);
     void RemoveRow(int rowIndex);
+    void Append(string text, int rowIndex, int cellIndex, int paragraphIndex, int fontSize = 12);
 }

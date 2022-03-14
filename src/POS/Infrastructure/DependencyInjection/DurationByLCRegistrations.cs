@@ -11,10 +11,10 @@ public partial class DependencyContainer
 {
     public static void DurationByLC(IServiceCollection services)
     {
-        services.AddSingleton<IDurationByLCCreator, DurationByLCCreator>();
-        services.AddSingleton<IDurationRounder, DurationRounder>();
-        services.AddSingleton<IDurationByLCWriter, DurationByLCWriter>();
+        services.AddTransient<IDurationByLCCreator, DurationByLCCreator>();
+        services.AddTransient<IDurationRounder, DurationRounder>();
+        services.AddTransient<IDurationByLCWriter, DurationByLCWriter>();
 
-        services.AddScoped<IDurationByLCService, DurationByLCService>();
+        services.AddTransient<IDurationByLCService, DurationByLCService>();
     }
 }
