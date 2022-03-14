@@ -1,7 +1,5 @@
-using System.Globalization;
 using POS.Infrastructure.DependencyInjection;
-using POS.Infrastructure.Services;
-using POS.Infrastructure.Services.Base;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +7,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+DependencyContainer.Common(builder.Services);
 DependencyContainer.Estimate(builder.Services);
 DependencyContainer.DurationByLC(builder.Services);
 DependencyContainer.CalendarPlan(builder.Services);
 DependencyContainer.EnergyAndWater(builder.Services);
 DependencyContainer.DurationByTCP(builder.Services);
 DependencyContainer.POS(builder.Services);
-builder.Services.AddTransient<IDocumentService, DocumentService>();
 
 builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
 
