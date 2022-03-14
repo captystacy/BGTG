@@ -51,7 +51,7 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         _documentService.InsertDocument(0, 1);
 
         var memoryStream = new MemoryStream();
-        _documentService.SaveAs(memoryStream, 0);
+        _documentService.SaveAs(memoryStream);
 
         _documentService.Dispose();
         return memoryStream;

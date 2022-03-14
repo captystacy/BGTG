@@ -20,6 +20,11 @@ public class DocumentService : IDocumentService
         _documents[DocumentIndex].Tables[TableIndex].Rows[rowIndex].ReplaceText(searchValue, newValue);
     }
 
+    public void ReplaceText(string searchValue, string newValue)
+    {
+        _documents[DocumentIndex].ReplaceText(searchValue, newValue);
+    }
+
     public void InsertTemplateRow(int templateRowIndex, int insertionIndex)
     {
         var templateRow = _documents[DocumentIndex].Tables[TableIndex].Rows[templateRowIndex];
@@ -72,7 +77,7 @@ public class DocumentService : IDocumentService
         _documents[toDocumentIndex].InsertDocument(_documents[fromDocumentIndex]);
     }
 
-    public void SaveAs(Stream stream, int documentIndex)
+    public void SaveAs(Stream stream, int documentIndex = 0)
     {
         _documents[documentIndex].SaveAs(stream);
     }

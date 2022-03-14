@@ -1,11 +1,13 @@
-﻿using System.Globalization;
+﻿using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.DurationTools.DurationByLCTool.Base;
-using Xceed.Words.NET;
+using System.Globalization;
 
 namespace POS.Infrastructure.Tools.DurationTools.DurationByLCTool;
 
 public class DurationByLCWriter : IDurationByLCWriter
 {
+    private readonly IDocumentService _documentService;
+
     private const string DurationPattern = "%D%";
     private const string TotalLaborCostsPattern = "%LC%";
     private const string WorkingDayDurationPattern = "%WDD%";
@@ -21,31 +23,37 @@ public class DurationByLCWriter : IDurationByLCWriter
     private const string TechnologicalLaborCostsText =
         " (трудозатраты по сметам и трудозатраты по технологической карте)";
 
+    public DurationByLCWriter(IDocumentService documentService)
+    {
+        _documentService = documentService;
+    }
+
     public MemoryStream Write(DurationByLC durationByLC, string templatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
-        using var document = DocX.Load(templatePath);
-        ReplacePatternsWithActualValues(document, durationByLC);
+        _documentService.Load(templatePath);
+        ReplacePatternsWithActualValues(durationByLC);
         var memoryStream = new MemoryStream();
-        document.SaveAs(memoryStream);
+        _documentService.SaveAs(memoryStream);
+        _documentService.Dispose();
         return memoryStream;
     }
 
-    private void ReplacePatternsWithActualValues(DocX document, DurationByLC durationByLC)
+    private void ReplacePatternsWithActualValues(DurationByLC durationByLC)
     {
-        document.ReplaceText(TechnologicalLaborCostsPattern,
-            durationByLC.TechnologicalLaborCosts > 0 
-                ? TechnologicalLaborCostsText 
+        _documentService.ReplaceText(TechnologicalLaborCostsPattern,
+            durationByLC.TechnologicalLaborCosts > 0
+                ? TechnologicalLaborCostsText
                 : string.Empty);
-        document.ReplaceText(NumberOfWorkingDaysInMonthPattern, durationByLC.NumberOfWorkingDays.ToString(AppData.DecimalFormat));
-        document.ReplaceText(NumberOfEmployeesPattern, durationByLC.NumberOfEmployees.ToString());
-        document.ReplaceText(WorkingDayDurationPattern, durationByLC.WorkingDayDuration.ToString(AppData.DecimalFormat));
-        document.ReplaceText(RoundedDurationPattern, durationByLC.RoundedDuration.ToString(AppData.DecimalFormat));
-        document.ReplaceText(TotalDurationPattern, durationByLC.TotalDuration.ToString(AppData.DecimalFormat));
-        document.ReplaceText(AcceptanceTimePattern, durationByLC.AcceptanceTime.ToString(AppData.DecimalFormat));
-        document.ReplaceText(PreparatoryPeriodPattern, durationByLC.PreparatoryPeriod.ToString(AppData.DecimalFormat));
-        document.ReplaceText(ShiftPattern, durationByLC.Shift.ToString(AppData.DecimalFormat));
-        document.ReplaceText(DurationPattern, durationByLC.Duration.ToString(AppData.DecimalFormat));
-        document.ReplaceText(TotalLaborCostsPattern, durationByLC.TotalLaborCosts.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(NumberOfWorkingDaysInMonthPattern, durationByLC.NumberOfWorkingDays.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(NumberOfEmployeesPattern, durationByLC.NumberOfEmployees.ToString());
+        _documentService.ReplaceText(WorkingDayDurationPattern, durationByLC.WorkingDayDuration.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(RoundedDurationPattern, durationByLC.RoundedDuration.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(TotalDurationPattern, durationByLC.TotalDuration.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(AcceptanceTimePattern, durationByLC.AcceptanceTime.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(PreparatoryPeriodPattern, durationByLC.PreparatoryPeriod.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(ShiftPattern, durationByLC.Shift.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(DurationPattern, durationByLC.Duration.ToString(AppData.DecimalFormat));
+        _documentService.ReplaceText(TotalLaborCostsPattern, durationByLC.TotalLaborCosts.ToString(AppData.DecimalFormat));
     }
 }

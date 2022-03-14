@@ -4,30 +4,30 @@ using NUnit.Framework;
 using POS.Infrastructure.Tools.EstimateTool;
 using POS.Infrastructure.Tools.EstimateTool.Models;
 
-namespace POS.Tests.Infrastructure.Tools.EstimateTool
+namespace POS.Tests.Infrastructure.Tools.EstimateTool;
+
+public class EstimateConnectorTests
 {
-    public class EstimateConnectorTests
+    private EstimateConnector _estimateConnector = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        private EstimateConnector _estimateConnector = null!;
+        _estimateConnector = new EstimateConnector();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _estimateConnector = new EstimateConnector();
-        }
+    [Test]
+    public void Connect_OneEstimate548_SameEstimate()
+    {
+        var estimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate548VAT });
 
-        [Test]
-        public void Connect_OneEstimate548_SameEstimate()
-        {
-            var estimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate548VAT });
+        Assert.AreEqual(EstimateSource.Estimate548VAT, estimate);
+    }
 
-            Assert.AreEqual(EstimateSource.Estimate548VAT, estimate);
-        }
-
-        [Test]
-        public void Connect_TwoEstimates158_CorrectOneEstimate()
-        {
-            var expectedEstimate = new Estimate(new List<EstimateWork>
+    [Test]
+    public void Connect_TwoEstimates158_CorrectOneEstimate()
+    {
+        var expectedEstimate = new Estimate(new List<EstimateWork>
             {
                 new("Демонтажные работы", 0, 11.659M, 109.474M, 1),
                 new("Подготовительные работы", 0, 0, 4.094M, 1),
@@ -62,9 +62,8 @@ namespace POS.Tests.Infrastructure.Tools.EstimateTool
 
             }, new DateTime(2019, 7, 1), 6, 6, 80110);
 
-            var actualEstimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate158VAT, EstimateSource.Estimate158VATFree });
+        var actualEstimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate158VAT, EstimateSource.Estimate158VATFree });
 
-            Assert.AreEqual(expectedEstimate, actualEstimate);
-        }
+        Assert.AreEqual(expectedEstimate, actualEstimate);
     }
 }

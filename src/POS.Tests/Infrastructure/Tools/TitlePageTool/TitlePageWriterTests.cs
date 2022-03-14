@@ -3,31 +3,30 @@ using NUnit.Framework;
 using POS.Infrastructure.Tools.TitlePageTool;
 using Xceed.Words.NET;
 
-namespace POS.Tests.Infrastructure.Tools.TitlePageTool
+namespace POS.Tests.Infrastructure.Tools.TitlePageTool;
+
+public class TitlePageWriterTests
 {
-    public class TitlePageWriterTests
+    private TitlePageWriter _titlePageWriter = null!;
+
+    private const string TitlePageTemplatesDirectory = @"..\..\..\Infrastructure\Tools\TitlePageTool\TitlePageTemplates";
+
+    [SetUp]
+    public void SetUp()
     {
-        private TitlePageWriter _titlePageWriter = null!;
+        _titlePageWriter = new TitlePageWriter();
+    }
 
-        private const string TitlePageTemplatesDirectory = @"..\..\..\Infrastructure\Tools\TitlePageTool\TitlePageTemplates";
+    [Test]
+    public void Write_ConstructionObject548()
+    {
+        var templateFileName = "Saiko.docx";
+        var templatePath = Path.Combine(TitlePageTemplatesDirectory, templateFileName);
+        var objectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района";
+        var objectCipher = "5.5-20.548";
 
-        [SetUp]
-        public void SetUp()
-        {
-            _titlePageWriter = new TitlePageWriter();
-        }
+        var memoryStream = _titlePageWriter.Write(objectCipher, objectName, templatePath);
 
-        [Test]
-        public void Write_ConstructionObject548()
-        {
-            var templateFileName = "Saiko.docx";
-            var templatePath = Path.Combine(TitlePageTemplatesDirectory, templateFileName);
-            var objectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района";
-            var objectCipher = "5.5-20.548";
-
-            var memoryStream = _titlePageWriter.Write(objectCipher, objectName, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-        }
+        using var document = DocX.Load(memoryStream);
     }
 }

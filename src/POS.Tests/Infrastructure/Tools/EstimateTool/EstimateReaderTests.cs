@@ -3,50 +3,49 @@ using NUnit.Framework;
 using POS.Infrastructure.Tools.EstimateTool;
 using POS.Infrastructure.Tools.EstimateTool.Models;
 
-namespace POS.Tests.Infrastructure.Tools.EstimateTool
+namespace POS.Tests.Infrastructure.Tools.EstimateTool;
+
+public class EstimateReaderTests
 {
-    public class EstimateReaderTests
+    private EstimateReader _estimateReader = null!;
+
+    private const string EstimateSourceFilesDirectory = @"..\..\..\Infrastructure\Tools\EstimateTool\EstimateSourceFiles";
+
+    [SetUp]
+    public void SetUp()
     {
-        private EstimateReader _estimateReader = null!;
+        _estimateReader = new EstimateReader();
+    }
 
-        private const string EstimateSourceFilesDirectory = @"..\..\..\Infrastructure\Tools\EstimateTool\EstimateSourceFiles";
+    [Test]
+    public void Read_EstimateSourceFile548_CorrectEstimate()
+    {
+        var expectedEstimate = EstimateSource.Estimate548VAT;
 
-        [SetUp]
-        public void SetUp()
+        var estimatePath = Path.Combine(EstimateSourceFilesDirectory, "5.5-20.548VAT.xlsx");
+
+        Estimate actualEstimate;
+        using (var fileStream = new FileStream(estimatePath, FileMode.Open))
         {
-            _estimateReader = new EstimateReader();
+            actualEstimate = _estimateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
         }
 
-        [Test]
-        public void Read_EstimateSourceFile548_CorrectEstimate()
+        Assert.AreEqual(expectedEstimate, actualEstimate);
+    }
+
+    [Test]
+    public void Read_EstimateSourceFile158VAT_CorrectEstimate()
+    {
+        var expectedEstimate = EstimateSource.Estimate158VAT;
+
+        var estimatePath = Path.Combine(EstimateSourceFilesDirectory, "5.4-18.158VAT.xlsx");
+
+        Estimate actualEstimate;
+        using (var fileStream = new FileStream(estimatePath, FileMode.Open))
         {
-            var expectedEstimate = EstimateSource.Estimate548VAT;
-
-            var estimatePath = Path.Combine(EstimateSourceFilesDirectory, "5.5-20.548VAT.xlsx");
-
-            Estimate actualEstimate;
-            using (var fileStream = new FileStream(estimatePath, FileMode.Open))
-            {
-                actualEstimate = _estimateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
-            }
-
-            Assert.AreEqual(expectedEstimate, actualEstimate);
+            actualEstimate = _estimateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
         }
 
-        [Test]
-        public void Read_EstimateSourceFile158VAT_CorrectEstimate()
-        {
-            var expectedEstimate = EstimateSource.Estimate158VAT;
-
-            var estimatePath = Path.Combine(EstimateSourceFilesDirectory, "5.4-18.158VAT.xlsx");
-
-            Estimate actualEstimate;
-            using (var fileStream = new FileStream(estimatePath, FileMode.Open))
-            {
-                actualEstimate = _estimateReader.Read(fileStream, TotalWorkChapter.TotalWork1To12Chapter);
-            }
-
-            Assert.AreEqual(expectedEstimate, actualEstimate);
-        }
+        Assert.AreEqual(expectedEstimate, actualEstimate);
     }
 }

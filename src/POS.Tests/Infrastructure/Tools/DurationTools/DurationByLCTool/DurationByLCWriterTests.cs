@@ -1,113 +1,46 @@
-﻿using System.IO;
+﻿using Moq;
 using NUnit.Framework;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.DurationTools.DurationByLCTool;
-using Xceed.Words.NET;
+using System.IO;
 
-namespace POS.Tests.Infrastructure.Tools.DurationTools.DurationByLCTool
+namespace POS.Tests.Infrastructure.Tools.DurationTools.DurationByLCTool;
+
+public class DurationByLCWriterTests
 {
-    public class DurationByLCWriterTests
+    private DurationByLCWriter _durationByLCWriter = null!;
+    private Mock<IDocumentService> _documentServiceMock = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        private DurationByLCWriter _durationByLCWriter = null!;
+        _documentServiceMock = new Mock<IDocumentService>();
+        _durationByLCWriter = new DurationByLCWriter(_documentServiceMock.Object);
+    }
 
-        private const string DurationByLCTemplatesDirectory = @"..\..\..\Infrastructure\Tools\DurationTools\DurationByLCTool\DurationByLCTemplates";
+    [Test]
+    public void Write_RoundingPlusAcceptancePlus_SaveCorrectDurationByLC()
+    {
+        var durationByLC = new DurationByLC(1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 11111, 22222, 33333, true, true);
+        var templatePath = "Rounding+Acceptance+.docx";
 
-        private DurationByLC CreateDefaultDurationByLC()
-        {
-            return new DurationByLC(1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 11111, 22222, 33333, true, true);
-        }
+        var memoryStream = _durationByLCWriter.Write(durationByLC, templatePath);
 
-        [SetUp]
-        public void SetUp()
-        {
-            _durationByLCWriter = new DurationByLCWriter();
-        }
+        _documentServiceMock.Verify(x => x.Load(templatePath), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%TLC%", " (трудозатраты по сметам и трудозатраты по технологической карте)"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%NOWDIM%", "7000"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%NOE%", "8000"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%WDD%", "5000"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%RD%", "22222"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%TD%", "9000"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AT%", "33333"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PP%", "11111"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%S%", "6000"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%D%", "1000"), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%LC%", "2000"), Times.Once);
 
-        [Test]
-        public void Write_RoundingPlusAcceptancePlus_SaveCorrectDurationByLC()
-        {
-            var durationByLC = CreateDefaultDurationByLC();
-
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding+Acceptance+.docx");
-
-            var memoryStream = _durationByLCWriter.Write(durationByLC, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-            StringAssert.Contains(durationByLC.AcceptanceTime.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-        }
-
-        [Test]
-        public void Write_RoundingPlusAcceptanceMinus_SaveCorrectDurationByLC()
-        {
-            var durationByLC = CreateDefaultDurationByLC();
-
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding+Acceptance-.docx");
-
-            var memoryStream = _durationByLCWriter.Write(durationByLC, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-            StringAssert.DoesNotContain(durationByLC.AcceptanceTime.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-        }
-
-        [Test]
-        public void Write_RoundingMinusAcceptanceMinus_SaveCorrectDurationByLC()
-        {
-            var durationByLC = CreateDefaultDurationByLC();
-
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding-Acceptance-.docx");
-
-            var memoryStream = _durationByLCWriter.Write(durationByLC, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-            StringAssert.DoesNotContain(durationByLC.AcceptanceTime.ToString(), document.Text);
-            StringAssert.DoesNotContain(durationByLC.TotalDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-        }
-
-        [Test]
-        public void Write_RoundingMinusAcceptancePlus_SaveCorrectDurationByLC()
-        {
-            var durationByLC = CreateDefaultDurationByLC();
-
-            var templatePath = Path.Combine(DurationByLCTemplatesDirectory, "Rounding-Acceptance+.docx");
-
-            var memoryStream = _durationByLCWriter.Write(durationByLC, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-            StringAssert.Contains(durationByLC.TotalDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.AcceptanceTime.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.RoundedDuration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Duration.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.TotalLaborCosts.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfEmployees.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.NumberOfWorkingDays.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.PreparatoryPeriod.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.Shift.ToString(), document.Text);
-            StringAssert.Contains(durationByLC.WorkingDayDuration.ToString(), document.Text);
-        }
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 }

@@ -3,29 +3,28 @@ using NUnit.Framework;
 using POS.Infrastructure.Tools.TableOfContentsTool;
 using Xceed.Words.NET;
 
-namespace POS.Tests.Infrastructure.Tools.TableOfContentsTool
+namespace POS.Tests.Infrastructure.Tools.TableOfContentsTool;
+
+public class TableOfContentsWriterTests
 {
-    public class TableOfContentsWriterTests
+    private TableOfContentsWriter _tableOfContentsWriter = null!;
+
+    private const string TableOfContentsTemplatesDirectory = @"..\..\..\Infrastructure\Tools\TableOfContentsTool\TableOfContentsTemplates\ECP\Saiko";
+
+    [SetUp]
+    public void SetUp()
     {
-        private TableOfContentsWriter _tableOfContentsWriter = null!;
+        _tableOfContentsWriter = new TableOfContentsWriter();
+    }
 
-        private const string TableOfContentsTemplatesDirectory = @"..\..\..\Infrastructure\Tools\TableOfContentsTool\TableOfContentsTemplates\ECP\Saiko";
+    [Test]
+    public void Write_ConstructionObject548()
+    {
+        var templatePath = Path.Combine(TableOfContentsTemplatesDirectory, "Kapitan.docx");
+        var objectCipher = "5.5-20.548";
 
-        [SetUp]
-        public void SetUp()
-        {
-            _tableOfContentsWriter = new TableOfContentsWriter();
-        }
+        var memoryStream = _tableOfContentsWriter.Write(objectCipher, templatePath);
 
-        [Test]
-        public void Write_ConstructionObject548()
-        {
-            var templatePath = Path.Combine(TableOfContentsTemplatesDirectory, "Kapitan.docx");
-            var objectCipher = "5.5-20.548";
-
-            var memoryStream = _tableOfContentsWriter.Write(objectCipher, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-        }
+        using var document = DocX.Load(memoryStream);
     }
 }
