@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using Moq;
 using NUnit.Framework;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool;
 using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Models;
 using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.TCP;
@@ -11,16 +13,17 @@ namespace POS.Tests.Infrastructure.Tools.DurationTools.DurationByTCPTool;
 public class DurationByTCPWriterTests
 {
     private DurationByTCPWriter _durationByTCPWriter = null!;
-    private const string DurationByTCPTemplatesDirectory = @"..\..\..\Infrastructure\Tools\DurationTools\DurationByTCPTool\DurationByTCPTemplates";
+    private Mock<IDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _durationByTCPWriter = new DurationByTCPWriter();
+        _documentServiceMock = new Mock<IDocumentService>();
+        _durationByTCPWriter = new DurationByTCPWriter(_documentServiceMock.Object);
     }
 
     [Test]
-    public void Write_InterpolationDuration_SaveCorrectDuration()
+    public void Write_InterpolationDuration()
     {
         var pipelineMaterial = "стальных";
         var pipelineDiameter = 0;
@@ -41,34 +44,44 @@ public class DurationByTCPWriterTests
         };
 
         var interpolationDuration = new InterpolationDurationByTCP(pipelineMaterial, pipelineDiameter,
-            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
+            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType,
+            duration,
             roundedDuration, preparatoryPeriod, durationChange, volumeChange, appendix.Key, appendix.Page);
 
-        var templateFileName = "Interpolation.docx";
-        var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
+        var templatePath = "Interpolation.docx";
 
         var memoryStream = _durationByTCPWriter.Write(interpolationDuration, templatePath);
 
-        using var document = DocX.Load(memoryStream);
-        StringAssert.Contains(interpolationDuration.PipelineMaterial, document.Text);
-        StringAssert.Contains(interpolationDuration.VolumeChange.ToString(), document.Text);
-        StringAssert.Contains(interpolationDuration.DurationChange.ToString(), document.Text);
-        StringAssert.Contains(interpolationDuration.Duration.ToString(), document.Text);
-        StringAssert.Contains(interpolationDuration.AppendixKey.ToString(), document.Text);
-        StringAssert.Contains(interpolationDuration.AppendixPage.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].Duration.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[1].PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[1].Duration.ToString(), document.Text);
-        StringAssert.Contains("интерполяции", document.Text);
-        StringAssert.Contains(interpolationDuration.PipelineDiameterPresentation, document.Text);
-        StringAssert.Contains(interpolationDuration.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(interpolationDuration.RoundedDuration.ToString(), document.Text);
-        StringAssert.Contains(interpolationDuration.PreparatoryPeriod.ToString(), document.Text);
+        _documentServiceMock.Verify(x => x.Load(templatePath));
+        _documentServiceMock.Verify(x => x.ReplaceText("%PM%", pipelineMaterial), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PDP%", pipelineDiameterPresentation), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PL%", pipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%D%", duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%RD%", roundedDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AK%", appendix.Key.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AP%", appendix.Page.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCT%", "интерполяции"));
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCTP%", "А"));
+
+        _documentServiceMock.Verify(x =>
+            x.ReplaceText("%ICPSPL0%", calculationPipelineStandards[0].PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x =>
+            x.ReplaceText("%ICPSPL1%", calculationPipelineStandards[1].PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x =>
+            x.ReplaceText("%ICPSD0%", calculationPipelineStandards[0].Duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x =>
+            x.ReplaceText("%ICPSD1%", calculationPipelineStandards[1].Duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%DC%", durationChange.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%VC%", volumeChange.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 
     [Test]
-    public void Write_ExtrapolationAscendingDuration_SaveCorrectDuration()
+    public void Write_ExtrapolationAscendingDuration()
     {
         var pipelineMaterial = "стальных";
         var pipelineDiameter = 0;
@@ -88,32 +101,39 @@ public class DurationByTCPWriterTests
         };
 
         var extrapolationAscendingDuration = new ExtrapolationDurationByTCP(pipelineMaterial, pipelineDiameter,
-            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
-            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, appendix.Key, appendix.Page);
+            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType,
+            duration,
+            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, appendix.Key,
+            appendix.Page);
 
-        var templateFileName = "ExtrapolationAscending.docx";
-        var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
+        var templatePath = "ExtrapolationAscending.docx";
 
         var memoryStream = _durationByTCPWriter.Write(extrapolationAscendingDuration, templatePath);
 
-        using var document = DocX.Load(memoryStream);
-        StringAssert.Contains(extrapolationAscendingDuration.PipelineMaterial, document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.VolumeChangePercent.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.StandardChangePercent.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.Duration.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.AppendixKey.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.AppendixPage.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].Duration.ToString(), document.Text);
-        StringAssert.Contains("экстраполяции", document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.PipelineDiameterPresentation, document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.RoundedDuration.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.PreparatoryPeriod.ToString(), document.Text);
+        _documentServiceMock.Verify(x => x.Load(templatePath));
+        _documentServiceMock.Verify(x => x.ReplaceText("%PM%", pipelineMaterial), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PDP%", pipelineDiameterPresentation), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PL%", pipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%D%", duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%RD%", roundedDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AK%", appendix.Key.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AP%", appendix.Page.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCT%", "экстраполяции"));
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCTP%", "Б.2"));
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSPL%", calculationPipelineStandards[0].PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSD%", calculationPipelineStandards[0].Duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%VCP%", volumeChangePercent.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SCP%", standardChangePercent.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 
     [Test]
-    public void Write_ExtrapolationDescendingDuration_SaveCorrectDuration()
+    public void Write_ExtrapolationDescendingDuration()
     {
         var pipelineMaterial = "стальных";
         var pipelineDiameter = 0;
@@ -133,32 +153,39 @@ public class DurationByTCPWriterTests
         };
 
         var extrapolationAscendingDuration = new ExtrapolationDurationByTCP(pipelineMaterial, pipelineDiameter,
-            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
-            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, appendix.Key, appendix.Page);
+            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType,
+            duration,
+            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, appendix.Key,
+            appendix.Page);
 
-        var templateFileName = "ExtrapolationDescending.docx";
-        var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
+        var templatePath = "ExtrapolationDescending.docx";
 
         var memoryStream = _durationByTCPWriter.Write(extrapolationAscendingDuration, templatePath);
 
-        using var document = DocX.Load(memoryStream);
-        StringAssert.Contains(extrapolationAscendingDuration.PipelineMaterial, document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.VolumeChangePercent.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.StandardChangePercent.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.Duration.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.AppendixKey.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.AppendixPage.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].Duration.ToString(), document.Text);
-        StringAssert.Contains("экстраполяции", document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.PipelineDiameterPresentation, document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.RoundedDuration.ToString(), document.Text);
-        StringAssert.Contains(extrapolationAscendingDuration.PreparatoryPeriod.ToString(), document.Text);
+        _documentServiceMock.Verify(x => x.Load(templatePath));
+        _documentServiceMock.Verify(x => x.ReplaceText("%PM%", pipelineMaterial), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PDP%", pipelineDiameterPresentation), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PL%", pipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%D%", duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%RD%", roundedDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AK%", appendix.Key.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AP%", appendix.Page.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCT%", "экстраполяции"));
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCTP%", "Б.1"));
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSPL%", calculationPipelineStandards[0].PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSD%", calculationPipelineStandards[0].Duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%VCP%", volumeChangePercent.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SCP%", standardChangePercent.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 
     [Test]
-    public void Write_StepwiseExtrapolationAscendingDuration_SaveCorrectDuration()
+    public void Write_StepwiseExtrapolationAscendingDuration()
     {
         var pipelineMaterial = "стальных";
         var pipelineDiameter = 0;
@@ -180,43 +207,53 @@ public class DurationByTCPWriterTests
 
         var stepwisePipelineStandard = new PipelineStandard(10000M, stepwiseDuration, 0);
 
-        var stepwiseExtrapolationDurationByTCP = new StepwiseExtrapolationDurationByTCP(pipelineMaterial, pipelineDiameter,
-            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
-            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration, stepwisePipelineStandard, appendix.Key, appendix.Page);
+        var stepwiseExtrapolationDurationByTCP = new StepwiseExtrapolationDurationByTCP(pipelineMaterial,
+            pipelineDiameter,
+            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType,
+            duration,
+            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration,
+            stepwisePipelineStandard, appendix.Key, appendix.Page);
 
-        var templateFileName = "StepwiseExtrapolationAscending.docx";
-        var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
+        var templatePath = "StepwiseExtrapolationAscending.docx";
 
         var memoryStream = _durationByTCPWriter.Write(stepwiseExtrapolationDurationByTCP, templatePath);
 
-        using var document = DocX.Load(memoryStream);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PipelineMaterial, document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.VolumeChangePercent.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.StandardChangePercent.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.Duration.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.AppendixKey.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.AppendixPage.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].Duration.ToString(), document.Text);
-        StringAssert.Contains(stepwisePipelineStandard.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(stepwisePipelineStandard.Duration.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.StepwiseDuration.ToString(), document.Text);
-        StringAssert.Contains("ступенчатой экстраполяции", document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PipelineDiameterPresentation, document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.RoundedDuration.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PreparatoryPeriod.ToString(), document.Text);
+        _documentServiceMock.Verify(x => x.Load(templatePath));
+        _documentServiceMock.Verify(x => x.ReplaceText("%PM%", pipelineMaterial), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PDP%", pipelineDiameterPresentation), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PL%", pipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%D%", duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%RD%", roundedDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AK%", appendix.Key.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AP%", appendix.Page.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCT%", "ступенчатой экстраполяции"));
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCTP%", "В.2"));
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSPL%", calculationPipelineStandards[0].PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSD%", calculationPipelineStandards[0].Duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%VCP%", volumeChangePercent.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SCP%", standardChangePercent.ToString()), Times.Once);
+
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%SD%", stepwiseDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SPSPL%", stepwisePipelineStandard.PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SPSD%", stepwisePipelineStandard.Duration.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 
     [Test]
-    public void Write_StepwiseExtrapolationDescendingDuration_SaveCorrectDuration()
+    public void Write_StepwiseExtrapolationDescendingDuration()
     {
         var pipelineMaterial = "стальных";
         var pipelineDiameter = 0;
         var pipelineDiameterPresentation = "до 500";
         var pipelineLength = 22000M;
         var appendix = TCP212.AppendixA;
-        var durationCalculationType = DurationCalculationType.StepwiseExtrapolationAscending;
+        var durationCalculationType = DurationCalculationType.StepwiseExtrapolationDescending;
         var duration = 29.5M;
         var roundedDuration = 29.5M;
         var preparatoryPeriod = 2.9M;
@@ -231,31 +268,41 @@ public class DurationByTCPWriterTests
 
         var stepwisePipelineStandard = new PipelineStandard(20000M, stepwiseDuration, 0);
 
-        var stepwiseExtrapolationDurationByTCP = new StepwiseExtrapolationDurationByTCP(pipelineMaterial, pipelineDiameter,
-            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType, duration,
-            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration, stepwisePipelineStandard, appendix.Key, appendix.Page);
+        var stepwiseExtrapolationDurationByTCP = new StepwiseExtrapolationDurationByTCP(pipelineMaterial,
+            pipelineDiameter,
+            pipelineDiameterPresentation, pipelineLength, calculationPipelineStandards, durationCalculationType,
+            duration,
+            roundedDuration, preparatoryPeriod, volumeChangePercent, standardChangePercent, stepwiseDuration,
+            stepwisePipelineStandard, appendix.Key, appendix.Page);
 
-        var templateFileName = "StepwiseExtrapolationDescending.docx";
-        var templatePath = Path.Combine(DurationByTCPTemplatesDirectory, templateFileName);
+        var templatePath = "StepwiseExtrapolationDescending.docx";
 
         var memoryStream = _durationByTCPWriter.Write(stepwiseExtrapolationDurationByTCP, templatePath);
 
-        using var document = DocX.Load(memoryStream);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PipelineMaterial, document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.VolumeChangePercent.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.StandardChangePercent.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.Duration.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.AppendixKey.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.AppendixPage.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(calculationPipelineStandards[0].Duration.ToString(), document.Text);
-        StringAssert.Contains(stepwisePipelineStandard.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(stepwisePipelineStandard.Duration.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.StepwiseDuration.ToString(), document.Text);
-        StringAssert.Contains("ступенчатой экстраполяции", document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PipelineDiameterPresentation, document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PipelineLength.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.RoundedDuration.ToString(), document.Text);
-        StringAssert.Contains(stepwiseExtrapolationDurationByTCP.PreparatoryPeriod.ToString(), document.Text);
+        _documentServiceMock.Verify(x => x.Load(templatePath));
+        _documentServiceMock.Verify(x => x.ReplaceText("%PM%", pipelineMaterial), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PDP%", pipelineDiameterPresentation), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%PL%", pipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%D%", duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%RD%", roundedDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AK%", appendix.Key.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%AP%", appendix.Page.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCT%", "ступенчатой экстраполяции"));
+        _documentServiceMock.Verify(x => x.ReplaceText("%DCTP%", "В.1"));
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSPL%", calculationPipelineStandards[0].PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%ECPSD%", calculationPipelineStandards[0].Duration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%VCP%", volumeChangePercent.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SCP%", standardChangePercent.ToString()), Times.Once);
+
+
+        _documentServiceMock.Verify(x => x.ReplaceText("%SD%", stepwiseDuration.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SPSPL%", stepwisePipelineStandard.PipelineLength.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceText("%SPSD%", stepwisePipelineStandard.Duration.ToString()), Times.Once);
+
+        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.Dispose(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 }
