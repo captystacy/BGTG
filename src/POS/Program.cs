@@ -7,7 +7,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-DependencyContainer.Common(builder.Services);
 DependencyContainer.Estimate(builder.Services);
 DependencyContainer.DurationByLC(builder.Services);
 DependencyContainer.CalendarPlan(builder.Services);

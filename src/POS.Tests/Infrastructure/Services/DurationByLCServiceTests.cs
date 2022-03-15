@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
+using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByLCTool;
-using POS.Infrastructure.Tools.DurationTools.DurationByLCTool.Base;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;

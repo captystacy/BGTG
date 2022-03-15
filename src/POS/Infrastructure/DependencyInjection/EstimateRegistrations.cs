@@ -1,7 +1,8 @@
-﻿using POS.Infrastructure.Services;
+﻿using POS.Infrastructure.Connectors;
+using POS.Infrastructure.Managers;
+using POS.Infrastructure.Readers;
+using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.EstimateTool;
-using POS.Infrastructure.Tools.EstimateTool.Base;
 
 namespace POS.Infrastructure.DependencyInjection;
 

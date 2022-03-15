@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels.DurationByTCPDomainModels;
+using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Models;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;

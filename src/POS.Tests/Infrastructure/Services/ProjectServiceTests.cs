@@ -2,11 +2,11 @@
 using Moq;
 using NUnit.Framework;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools;
-using POS.Infrastructure.Tools.ProjectTool;
 using POS.ViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using POS.DomainModels;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Tests.Infrastructure.Services;
 

@@ -1,4 +1,4 @@
-﻿using POS.Infrastructure.Tools.EstimateTool.Models;
+﻿using POS.DomainModels.EstimateDomainModels;
 
 namespace POS.Infrastructure.Services.Base;
 

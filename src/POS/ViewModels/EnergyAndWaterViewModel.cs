@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -10,7 +11,7 @@ public class EnergyAndWaterViewModel : IValidatableObject
     {
         if (EstimateFiles.Count == 0)
         {
-            yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
+            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
         }
     }
 }

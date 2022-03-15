@@ -1,7 +1,9 @@
-﻿using POS.Infrastructure.Services;
+﻿using POS.Infrastructure.Creators;
+using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.CalendarPlanTool;
-using POS.Infrastructure.Tools.CalendarPlanTool.Base;
+using POS.Infrastructure.Writers;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.DependencyInjection;
 
@@ -11,7 +13,7 @@ public partial class DependencyContainer
     {
         services.AddTransient<IConstructionMonthsCreator, ConstructionMonthsCreator>();
         services.AddTransient<ICalendarWorkCreator, CalendarWorkCreator>();
-        services.AddTransient<ICalendarWorksProvider, CalendarWorksProvider>();
+        services.AddTransient<ICalendarWorksCreator, CalendarWorksCreator>();
         services.AddTransient<ICalendarPlanCreator, CalendarPlanCreator>();
         services.AddTransient<ICalendarPlanWriter, CalendarPlanWriter>();
 

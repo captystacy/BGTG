@@ -1,7 +1,9 @@
-﻿using POS.Infrastructure.Services;
+﻿using POS.Infrastructure.Creators;
+using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.EnergyAndWaterTool;
-using POS.Infrastructure.Tools.EnergyAndWaterTool.Base;
+using POS.Infrastructure.Writers;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.DependencyInjection;
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -12,12 +13,12 @@ public class CalendarWorkViewModel : IValidatableObject, IEquatable<CalendarWork
     {
         if (string.IsNullOrEmpty(WorkName))
         {
-            yield return new ValidationResult(AppData.WorkNameValidationMessage);
+            yield return new ValidationResult(AppConstants.WorkNameValidationMessage);
         }
 
         if (Chapter < 0)
         {
-            yield return new ValidationResult(AppData.ChapterValidationMessage);
+            yield return new ValidationResult(AppConstants.ChapterValidationMessage);
         }
     }
 

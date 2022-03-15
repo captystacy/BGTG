@@ -1,7 +1,8 @@
-﻿using POS.Infrastructure.Helpers;
+﻿using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Helpers;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByLCTool.Base;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Infrastructure.Services;
@@ -13,7 +14,7 @@ public class DurationByLCService : IDurationByLCService
     private readonly IDurationByLCWriter _durationByLCWriter;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    private const string TemplatesPath = @"Templates\DurationByLCTemplates";
+    private const string TemplatesPath = @"Infrastructure\Templates\DurationByLCTemplates";
 
     public DurationByLCService(IEstimateService estimateService, IDurationByLCCreator durationByLCCreator, IDurationByLCWriter durationByLCWriter, IWebHostEnvironment webHostEnvironment)
     {

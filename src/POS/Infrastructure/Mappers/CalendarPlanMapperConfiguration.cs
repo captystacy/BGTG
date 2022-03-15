@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using POS.Infrastructure.Tools.CalendarPlanTool.Models;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+using POS.DomainModels.CalendarPlanDomainModels;
+using POS.DomainModels.EstimateDomainModels;
 using POS.ViewModels;
 
 namespace POS.Infrastructure.Mappers;

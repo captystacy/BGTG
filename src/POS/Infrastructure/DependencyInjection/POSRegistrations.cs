@@ -1,8 +1,7 @@
 ﻿using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.ProjectTool;
-using POS.Infrastructure.Tools.TableOfContentsTool;
-using POS.Infrastructure.Tools.TitlePageTool;
+using POS.Infrastructure.Writers;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.DependencyInjection;
 

@@ -4,9 +4,9 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Managers;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools.EstimateTool.Base;
-using POS.Infrastructure.Tools.EstimateTool.Models;
 
 namespace POS.Tests.Infrastructure.Services;
 

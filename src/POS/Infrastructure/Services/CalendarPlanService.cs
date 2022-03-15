@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using POS.DomainModels.CalendarPlanDomainModels;
+using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.CalendarPlanTool.Base;
-using POS.Infrastructure.Tools.CalendarPlanTool.Models;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Infrastructure.Services;
@@ -16,7 +17,7 @@ public class CalendarPlanService : ICalendarPlanService
 
     private const string PreparatoryCalendarPlanTemplateFileName = "Preparatory.docx";
 
-    private const string TemplatesPath = @"Templates\CalendarPlanTemplates";
+    private const string TemplatesPath = @"Infrastructure\Templates\CalendarPlanTemplates";
 
     public CalendarPlanService(IEstimateService estimateService, ICalendarPlanCreator calendarPlanCreator,
         ICalendarPlanWriter calendarPlanWriter, IWebHostEnvironment webHostEnvironment, IMapper mapper)
@@ -28,63 +29,63 @@ public class CalendarPlanService : ICalendarPlanService
         _mapper = mapper;
     }
 
-    public CalendarPlanViewModel GetCalendarPlanViewModel(CalendarPlanCreateViewModel viewModel)
+    public CalendarPlanViewModel GetCalendarPlanViewModel(CalendarPlanCreateViewModel dto)
     {
-        _estimateService.Read(viewModel.EstimateFiles, viewModel.TotalWorkChapter);
+        _estimateService.Read(dto.EstimateFiles, dto.TotalWorkChapter);
 
         var calendarPlanViewModel = _mapper.Map<CalendarPlanViewModel>(_estimateService.Estimate);
-        calendarPlanViewModel.CalendarWorks.RemoveAll(x => x.Chapter == (int)viewModel.TotalWorkChapter);
+        calendarPlanViewModel.CalendarWorks.RemoveAll(x => x.Chapter == (int)dto.TotalWorkChapter);
 
         calendarPlanViewModel.CalendarWorks.Add(new CalendarWorkViewModel
         {
-            WorkName = AppData.MainOtherExpensesWorkName,
-            Chapter = AppData.MainOtherExpensesWorkChapter,
+            WorkName = Constants.AppConstants.MainOtherExpensesWorkName,
+            Chapter = Constants.AppConstants.MainOtherExpensesWorkChapter,
             Percentages = new List<decimal>()
         });
 
         return calendarPlanViewModel;
     }
 
-    public IEnumerable<decimal> GetTotalPercentages(CalendarPlanViewModel viewModel)
+    public IEnumerable<decimal> GetTotalPercentages(CalendarPlanViewModel dto)
     {
-        var calendarPlan = CalculateCalendarPlan(viewModel);
-        return calendarPlan.MainCalendarWorks.First(x => x.EstimateChapter == (int)viewModel.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
+        var calendarPlan = CalculateCalendarPlan(dto);
+        return calendarPlan.MainCalendarWorks.First(x => x.EstimateChapter == (int)dto.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
     }
 
-    public MemoryStream Write(CalendarPlanViewModel viewModel)
+    public MemoryStream Write(CalendarPlanViewModel dto)
     {
-        var calendarPlan = CalculateCalendarPlan(viewModel);
+        var calendarPlan = CalculateCalendarPlan(dto);
         var preparatoryTemplatePath = GetPreparatoryTemplatePath();
         var mainTemplatePath = GetMainTemplatePath(calendarPlan.ConstructionDurationCeiling);
 
         return _calendarPlanWriter.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath);
     }
 
-    private CalendarPlan CalculateCalendarPlan(CalendarPlanViewModel viewModel)
+    private CalendarPlan CalculateCalendarPlan(CalendarPlanViewModel dto)
     {
-        _estimateService.Read(viewModel.EstimateFiles, viewModel.TotalWorkChapter);
+        _estimateService.Read(dto.EstimateFiles, dto.TotalWorkChapter);
 
         if (_estimateService.Estimate.ConstructionStartDate == default)
         {
-            _estimateService.Estimate.ConstructionStartDate = viewModel.ConstructionStartDate;
+            _estimateService.Estimate.ConstructionStartDate = dto.ConstructionStartDate;
         }
 
         if (_estimateService.Estimate.ConstructionDurationCeiling == 0)
         {
-            _estimateService.Estimate.ConstructionDurationCeiling = (int)decimal.Ceiling(viewModel.ConstructionDuration);
+            _estimateService.Estimate.ConstructionDurationCeiling = (int)decimal.Ceiling(dto.ConstructionDuration);
         }
 
         if (_estimateService.Estimate.ConstructionDuration == 0)
         {
-            _estimateService.Estimate.ConstructionDuration = viewModel.ConstructionDuration;
+            _estimateService.Estimate.ConstructionDuration = dto.ConstructionDuration;
         }
 
-        var otherExpensesWork = viewModel.CalendarWorks.Find(x => x.WorkName == AppData.MainOtherExpensesWorkName)!;
-        viewModel.CalendarWorks.Remove(otherExpensesWork);
+        var otherExpensesWork = dto.CalendarWorks.Find(x => x.WorkName == Constants.AppConstants.MainOtherExpensesWorkName)!;
+        dto.CalendarWorks.Remove(otherExpensesWork);
 
-        SetEstimatePercentages(viewModel.CalendarWorks);
+        SetEstimatePercentages(dto.CalendarWorks);
 
-        var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, viewModel.TotalWorkChapter);
+        var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, dto.TotalWorkChapter);
 
         return calendarPlan;
     }

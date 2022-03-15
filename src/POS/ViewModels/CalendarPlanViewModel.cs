@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -21,12 +22,12 @@ public class CalendarPlanViewModel : IValidatableObject, IEquatable<CalendarPlan
     {
         if (EstimateFiles.Count == 0)
         {
-            yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
+            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
         }
 
         if (ConstructionStartDate.Year <= 1900)
         {
-            yield return new ValidationResult(AppData.ConstructionStartDateValidationMessage);
+            yield return new ValidationResult(AppConstants.ConstructionStartDateValidationMessage);
         }
     }
 

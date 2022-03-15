@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -12,13 +13,13 @@ public class CalendarPlanCreateViewModel : IValidatableObject
     {
         if (EstimateFiles.Count == 0)
         {
-            yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
+            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
         }
 
         var totalWorkChapterInt = (int)TotalWorkChapter;
         if (totalWorkChapterInt != 9 && totalWorkChapterInt != 11 && totalWorkChapterInt != 12)
         {
-            yield return new ValidationResult(AppData.TotalWorkChapterValidationMessage);
+            yield return new ValidationResult(AppConstants.TotalWorkChapterValidationMessage);
         }
     }
 }

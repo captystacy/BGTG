@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools;
-using POS.Infrastructure.Tools.TitlePageTool;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;
