@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -14,13 +15,13 @@ public class DurationByTCPViewModel : IValidatableObject
     {
         if (PipelineDiameter <= 0)
         {
-            yield return new ValidationResult(AppData.PipelineDiameterValidationMessage);
+            yield return new ValidationResult(AppConstants.PipelineDiameterValidationMessage);
 
         }
 
         if (PipelineLength <= 0)
         {
-            yield return new ValidationResult(AppData.PipelineLengthValidationMessage);
+            yield return new ValidationResult(AppConstants.PipelineLengthValidationMessage);
         }
     }
 }

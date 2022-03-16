@@ -1,9 +1,11 @@
-﻿using POS.Infrastructure.Services;
+﻿using POS.Infrastructure.Creators;
+using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Engineers;
+using POS.Infrastructure.Helpers;
+using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.TCP;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.TCP.Interfaces;
+using POS.Infrastructure.Writers;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.DependencyInjection;
 
@@ -11,11 +13,11 @@ public partial class DependencyContainer
 {
     public static void DurationByTCP(IServiceCollection services)
     {
-        services.AddSingleton<ITCP212Helper, TCP212Helper>();
-        services.AddSingleton<IDurationByTCPEngineer, DurationByTCPEngineer>();
-        services.AddSingleton<IDurationByTCPWriter, DurationByTCPWriter>();
-        services.AddSingleton<IDurationByTCPCreator, DurationByTCPCreator>();
+        services.AddTransient<ITCP212Helper, TCP212Helper>();
+        services.AddTransient<IDurationByTCPEngineer, DurationByTCPEngineer>();
+        services.AddTransient<IDurationByTCPWriter, DurationByTCPWriter>();
+        services.AddTransient<IDurationByTCPCreator, DurationByTCPCreator>();
 
-        services.AddScoped<IDurationByTCPService, DurationByTCPService>();
+        services.AddTransient<IDurationByTCPService, DurationByTCPService>();
     }
 }

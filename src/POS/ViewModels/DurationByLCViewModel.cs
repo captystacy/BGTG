@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -16,32 +17,32 @@ public class DurationByLCViewModel : IValidatableObject
     {
         if (EstimateFiles.Count == 0)
         {
-            yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
+            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
         }
 
         if (NumberOfWorkingDays <= 0)
         {
-            yield return new ValidationResult(AppData.NumberOfWorkingDaysValidationMessage);
+            yield return new ValidationResult(AppConstants.NumberOfWorkingDaysValidationMessage);
         }
 
         if (WorkingDayDuration <= 0)
         {
-            yield return new ValidationResult(AppData.WorkingDayDurationValidationMessage);
+            yield return new ValidationResult(AppConstants.WorkingDayDurationValidationMessage);
         }
 
         if (Shift <= 0)
         {
-            yield return new ValidationResult(AppData.ShiftValidationMessage);
+            yield return new ValidationResult(AppConstants.ShiftValidationMessage);
         }
 
         if (NumberOfEmployees <= 0)
         {
-            yield return new ValidationResult(AppData.NumberOfEmployeesValidationMessage);
+            yield return new ValidationResult(AppConstants.NumberOfEmployeesValidationMessage);
         }
 
         if (TechnologicalLaborCosts < 0)
         {
-            yield return new ValidationResult(AppData.TechnologicalLaborCostsValidationMessage);
+            yield return new ValidationResult(AppConstants.TechnologicalLaborCostsValidationMessage);
         }
     }
 }

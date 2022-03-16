@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels.CalendarPlanDomainModels;
+using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Constants;
+using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.CalendarPlanTool.Base;
-using POS.Infrastructure.Tools.CalendarPlanTool.Models;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;
@@ -56,7 +58,7 @@ public class CalendarPlanServiceTests
             {
                 new()
                 {
-                    WorkName = AppData.TotalWorkName,
+                    WorkName = AppConstants.TotalWorkName,
                     Chapter = (int)TotalWorkChapter.TotalWork1To12Chapter
                 },
             }
@@ -70,8 +72,8 @@ public class CalendarPlanServiceTests
             {
                 new()
                 {
-                    WorkName = AppData.MainOtherExpensesWorkName,
-                    Chapter = AppData.MainOtherExpensesWorkChapter,
+                    WorkName = AppConstants.MainOtherExpensesWorkName,
+                    Chapter = AppConstants.MainOtherExpensesWorkChapter,
                     Percentages = new List<decimal>()
                 }
             }
@@ -110,7 +112,7 @@ public class CalendarPlanServiceTests
                 },
                 new()
                 {
-                    WorkName = AppData.MainOtherExpensesWorkName,
+                    WorkName = AppConstants.MainOtherExpensesWorkName,
                     Percentages = otherExpensesPercentages
                 },
             }
@@ -118,8 +120,8 @@ public class CalendarPlanServiceTests
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
-        var preparatoryTemplatePath = @"root\Templates\CalendarPlanTemplates\Preparatory.docx";
-        var mainTemplatePath = @"root\Templates\CalendarPlanTemplates\Main1.docx";
+        var preparatoryTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Preparatory.docx";
+        var mainTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Main1.docx";
 
         var mainEstimateWorks = new List<EstimateWork>
         {

@@ -1,5 +1,5 @@
-using System.Globalization;
 using POS.Infrastructure.DependencyInjection;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +7,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+DependencyContainer.Common(builder.Services);
 DependencyContainer.Estimate(builder.Services);
 DependencyContainer.DurationByLC(builder.Services);
 DependencyContainer.CalendarPlan(builder.Services);

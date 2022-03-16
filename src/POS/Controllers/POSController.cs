@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
@@ -19,14 +20,14 @@ public class POSController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult DownloadProject(ProjectViewModel viewModel)
+    public IActionResult DownloadProject(ProjectViewModel dto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _projectService.Write(viewModel);
+        var memoryStream = _projectService.Write(dto);
 
         if (memoryStream is null)
         {
@@ -35,36 +36,36 @@ public class POSController : ControllerBase
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return File(memoryStream, AppData.DocxMimeType);
+        return File(memoryStream, AppConstants.DocxMimeType);
     }
 
     [HttpPost("[action]")]
-    public IActionResult DownloadTableOfContents([FromBody] TableOfContentsViewModel viewModel)
+    public IActionResult DownloadTableOfContents([FromBody] TableOfContentsViewModel dto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _tableOfContentsService.Write(viewModel);
+        var memoryStream = _tableOfContentsService.Write(dto);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return File(memoryStream, AppData.DocxMimeType);
+        return File(memoryStream, AppConstants.DocxMimeType);
     }
 
     [HttpPost("[action]")]
-    public IActionResult DownloadTitlePage([FromBody] TitlePageViewModel viewModel)
+    public IActionResult DownloadTitlePage([FromBody] TitlePageViewModel dto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _titlePageService.Write(viewModel);
+        var memoryStream = _titlePageService.Write(dto);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return File(memoryStream, AppData.DocxMimeType);
+        return File(memoryStream, AppConstants.DocxMimeType);
     }
 }

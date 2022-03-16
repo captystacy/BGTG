@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -11,12 +12,12 @@ public class EnergyAndWaterCreateViewModel : IValidatableObject
     {
         if (EstimateFiles.Count == 0)
         {
-            yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
+            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
         }
 
-        if (string.IsNullOrEmpty(ObjectCipher) || !(AppData.ObjectCipherExpression1.IsMatch(ObjectCipher) || AppData.ObjectCipherExpression2.IsMatch(ObjectCipher)))
+        if (string.IsNullOrEmpty(ObjectCipher) || !(AppConstants.ObjectCipherExpression1.IsMatch(ObjectCipher) || AppConstants.ObjectCipherExpression2.IsMatch(ObjectCipher)))
         {
-            yield return new ValidationResult(AppData.ObjectCipherValidationMessage);
+            yield return new ValidationResult(AppConstants.ObjectCipherValidationMessage);
         }
     }
 }

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools;
-using POS.Infrastructure.Tools.TitlePageTool;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;
@@ -33,7 +33,7 @@ public class TitlePageServiceTests
             ObjectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района"
         };
 
-        var templatePath = @"root\Templates\TitlePageTemplates\Saiko.docx";
+        var templatePath = @"root\Infrastructure\Templates\TitlePageTemplates\Saiko.docx";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 

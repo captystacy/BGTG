@@ -2,11 +2,11 @@
 using Moq;
 using NUnit.Framework;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools;
-using POS.Infrastructure.Tools.ProjectTool;
 using POS.ViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using POS.DomainModels;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Tests.Infrastructure.Services;
 
@@ -41,7 +41,7 @@ public class ProjectServiceTests
             HouseholdTownIncluded = true,
         };
 
-        var templatePath = @"root\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
+        var templatePath = @"root\Infrastructure\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         _ecpProjectWriterMock

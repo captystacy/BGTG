@@ -1,7 +1,7 @@
-﻿using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.CalendarPlanTool.Base;
-using POS.Infrastructure.Tools.EnergyAndWaterTool.Base;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+﻿using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Services.Base;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Infrastructure.Services;
@@ -15,7 +15,7 @@ public class EnergyAndWaterService : IEnergyAndWaterService
     private readonly ICalendarWorkCreator _calendarWorkCreator;
 
     private const string EnergyAndWaterTemplateFileName = "EnergyAndWater.docx";
-    private const string TemplatesPath = @"Templates\EnergyAndWaterTemplates";
+    private const string TemplatesPath = @"Infrastructure\Templates\EnergyAndWaterTemplates";
 
     public EnergyAndWaterService(IEstimateService estimateService, IEnergyAndWaterCreator energyAndWaterCreator,
         IEnergyAndWaterWriter energyAndWaterWriter, IWebHostEnvironment webHostEnvironment, ICalendarWorkCreator calendarWorkCreator)
@@ -27,9 +27,9 @@ public class EnergyAndWaterService : IEnergyAndWaterService
         _calendarWorkCreator = calendarWorkCreator;
     }
 
-    public MemoryStream Write(EnergyAndWaterViewModel viewModel)
+    public MemoryStream Write(EnergyAndWaterViewModel dto)
     {
-        _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+        _estimateService.Read(dto.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
         var mainTotalCostIncludingCAIW = GetMainTotalCostIncludingCAIW();
 

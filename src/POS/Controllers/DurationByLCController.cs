@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
@@ -26,6 +27,6 @@ public class DurationByLCController : ControllerBase
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return File(memoryStream, AppData.DocxMimeType);
+        return File(memoryStream, AppConstants.DocxMimeType);
     }
 }

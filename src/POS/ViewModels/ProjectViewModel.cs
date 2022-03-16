@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.Infrastructure.Tools;
-using POS.Infrastructure.Tools.ProjectTool;
+using POS.DomainModels;
+using POS.Infrastructure.Constants;
 
 namespace POS.ViewModels;
 
@@ -15,14 +15,14 @@ public class ProjectViewModel : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (string.IsNullOrEmpty(ObjectCipher) || !(AppData.ObjectCipherExpression1.IsMatch(ObjectCipher) || AppData.ObjectCipherExpression2.IsMatch(ObjectCipher)))
+        if (string.IsNullOrEmpty(ObjectCipher) || !(AppConstants.ObjectCipherExpression1.IsMatch(ObjectCipher) || AppConstants.ObjectCipherExpression2.IsMatch(ObjectCipher)))
         {
-            yield return new ValidationResult(AppData.ObjectCipherValidationMessage);
+            yield return new ValidationResult(AppConstants.ObjectCipherValidationMessage);
         }
 
         if (CalculationFiles.Count == 0)
         {
-            yield return new ValidationResult(AppData.EstimateFilesValidationMessage);
+            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
         }
     }
 }

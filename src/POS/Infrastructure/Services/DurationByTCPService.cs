@@ -1,6 +1,7 @@
-﻿using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Models;
+﻿using POS.DomainModels.DurationByTCPDomainModels;
+using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Services.Base;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Infrastructure.Services;
@@ -11,7 +12,7 @@ public class DurationByTCPService : IDurationByTCPService
     private readonly IDurationByTCPWriter _durationByTCPWriter;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    private const string TemplatesPath = @"Templates\DurationByTCPTemplates";
+    private const string TemplatesPath = @"Infrastructure\Templates\DurationByTCPTemplates";
 
     private const string InterpolationTemplateFileName = "Interpolation.docx";
     private const string ExtrapolationAscendingTemplateFileName = "ExtrapolationAscending.docx";

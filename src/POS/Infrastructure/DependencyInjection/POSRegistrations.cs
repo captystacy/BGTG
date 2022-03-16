@@ -1,8 +1,7 @@
 ﻿using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.ProjectTool;
-using POS.Infrastructure.Tools.TableOfContentsTool;
-using POS.Infrastructure.Tools.TitlePageTool;
+using POS.Infrastructure.Writers;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.DependencyInjection;
 
@@ -12,25 +11,25 @@ public partial class DependencyContainer
     {
         #region Project tool
 
-        services.AddSingleton<IECPProjectWriter, ECPProjectWriter>();
+        services.AddTransient<IECPProjectWriter, ECPProjectWriter>();
 
-        services.AddScoped<IProjectService, ProjectService>();
+        services.AddTransient<IProjectService, ProjectService>();
 
         #endregion
 
         #region Title page tool
 
-        services.AddSingleton<ITitlePageWriter, TitlePageWriter>();
+        services.AddTransient<ITitlePageWriter, TitlePageWriter>();
 
-        services.AddScoped<ITitlePageService, TitlePageService>();
+        services.AddTransient<ITitlePageService, TitlePageService>();
 
         #endregion
 
         #region Table of contents tool
 
-        services.AddSingleton<ITableOfContentsWriter, TableOfContentsWriter>();
+        services.AddTransient<ITableOfContentsWriter, TableOfContentsWriter>();
 
-        services.AddScoped<ITableOfContentsService, TableOfContentsService>();
+        services.AddTransient<ITableOfContentsService, TableOfContentsService>();
 
         #endregion
     }

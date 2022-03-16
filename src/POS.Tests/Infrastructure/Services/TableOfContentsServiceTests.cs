@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools;
-using POS.Infrastructure.Tools.ProjectTool;
-using POS.Infrastructure.Tools.TableOfContentsTool;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;
@@ -31,10 +30,11 @@ public class TableOfContentsServiceTests
         {
             ObjectCipher = "5.5-20.548",
             ProjectTemplate = ProjectTemplate.ECP,
-            ChiefProjectEngineer = ChiefProjectEngineer.Saiko
+            ChiefProjectEngineer = ChiefProjectEngineer.Saiko,
+            ProjectEngineer = ProjectEngineer.Kapitan
         };
 
-        var templatePath = @"root\Templates\TableOfContentsTemplates\ECP\Saiko\Unknown.docx";
+        var templatePath = @"root\Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Kapitan.docx";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
@@ -44,7 +44,7 @@ public class TableOfContentsServiceTests
         var actualMemoryStream = _tableOfContentsService.Write(viewModel);
 
         Assert.AreSame(expectedMemoryStream, actualMemoryStream);
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
+        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
 
         _tableOfContentsWriterMock.Verify(x => x.Write(viewModel.ObjectCipher, templatePath), Times.Once);
     }

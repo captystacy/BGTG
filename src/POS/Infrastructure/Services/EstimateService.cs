@@ -1,6 +1,6 @@
-﻿using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Tools.EstimateTool.Base;
-using POS.Infrastructure.Tools.EstimateTool.Models;
+﻿using POS.DomainModels.EstimateDomainModels;
+using POS.Infrastructure.Managers;
+using POS.Infrastructure.Services.Base;
 
 namespace POS.Infrastructure.Services;
 

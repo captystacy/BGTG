@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels.DurationByTCPDomainModels;
+using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Base;
-using POS.Infrastructure.Tools.DurationTools.DurationByTCPTool.Models;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Tests.Infrastructure.Services;
@@ -33,7 +34,7 @@ public class DurationByTCPServiceTests
 
         var durationByTCPCreateViewModel = new DurationByTCPViewModel();
 
-        var templatePath = @"root\Templates\DurationByTCPTemplates\Interpolation.docx";
+        var templatePath = @"root\Infrastructure\Templates\DurationByTCPTemplates\Interpolation.docx";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 

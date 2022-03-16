@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
@@ -15,17 +16,17 @@ public class EnergyAndWaterController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult GetFile(EnergyAndWaterViewModel viewModel)
+    public IActionResult GetFile(EnergyAndWaterViewModel dto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _energyAndWaterService.Write(viewModel);
+        var memoryStream = _energyAndWaterService.Write(dto);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return File(memoryStream, AppData.DocxMimeType);
+        return File(memoryStream, AppConstants.DocxMimeType);
     }
 }
