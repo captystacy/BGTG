@@ -34,7 +34,7 @@ public class DurationByTCPServiceTests
 
         var durationByTCPCreateViewModel = new DurationByTCPViewModel();
 
-        var templatePath = @"root\Templates\DurationByTCPTemplates\Interpolation.docx";
+        var templatePath = @"root\Infrastructure\Templates\DurationByTCPTemplates\Interpolation.docx";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 

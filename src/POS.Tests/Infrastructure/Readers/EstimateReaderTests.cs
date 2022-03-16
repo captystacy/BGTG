@@ -9,7 +9,7 @@ public class EstimateReaderTests
 {
     private EstimateReader _estimateReader = null!;
 
-    private const string EstimateSourceFilesDirectory = @"..\..\..\Infrastructure\Tools\EstimateTool\EstimateSourceFiles";
+    private const string EstimateSourceFilesDirectory = @"..\..\..\Infrastructure\SourceFiles\EstimateSourceFiles";
 
     [SetUp]
     public void SetUp()

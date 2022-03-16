@@ -1,5 +1,4 @@
-﻿using POS.Infrastructure.Constants;
-using POS.Infrastructure.Services.Base;
+﻿using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
@@ -18,25 +17,16 @@ public class TableOfContentsService : ITableOfContentsService
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public MemoryStream Write(TableOfContentsViewModel dto)
+    public MemoryStream Write(TableOfContentsViewModel viewModel)
     {
-        var templatePath = GetTemplatePath(dto);
+        var templatePath = GetTemplatePath(viewModel);
 
-        return _tableOfContentsWriter.Write(dto.ObjectCipher, templatePath);
+        return _tableOfContentsWriter.Write(viewModel.ObjectCipher, templatePath);
     }
 
-    private string GetTemplatePath(TableOfContentsViewModel dto)
+    private string GetTemplatePath(TableOfContentsViewModel viewModel)
     {
-        var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
-            dto.ProjectTemplate.ToString(), dto.ChiefProjectEngineer.ToString(), ".docx");
-
-        if (!File.Exists(templatePath))
-        {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
-                dto.ProjectTemplate.ToString(), dto.ChiefProjectEngineer.ToString(),
-                $"{AppConstants.Unknown}.docx");
-        }
-
-        return templatePath;
+        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, viewModel.ProjectTemplate.ToString(),
+            viewModel.ChiefProjectEngineer.ToString(), viewModel.ProjectEngineer + ".docx");
     }
 }

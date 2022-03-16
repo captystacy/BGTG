@@ -1,14 +1,15 @@
-﻿using POS.DomainModels.CalendarPlanDomainModels;
-using POS.DomainModels.DocumentDomainModels;
-using POS.Infrastructure.Writers.Base;
-using System.Globalization;
+﻿using System.Globalization;
+using POS.DomainModels.CalendarPlanDomainModels;
 using POS.Infrastructure.Constants;
-using POS.Infrastructure.Services;
+using POS.Infrastructure.Services.Base;
+using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.Writers;
 
 public class CalendarPlanWriter : ICalendarPlanWriter
 {
+    private readonly IDocumentService _documentService;
+
     private const string WorkNamePattern = "%WN%";
     private const string TotalCostPattern = "%TC%";
     private const string TotalCostIncludingCAIWPattern = "%TIC%";
@@ -16,134 +17,148 @@ public class CalendarPlanWriter : ICalendarPlanWriter
 
     private const int TopPatternRowIndex = 2;
     private const int BottomPatternRowIndex = 3;
+    private const int AcceptanceTimeRowIndex = 2;
 
     private const string AcceptanceTimeCellStr = "Приемка объекта в эксплуатацию";
+
+    public CalendarPlanWriter(IDocumentService documentService)
+    {
+        _documentService = documentService;
+    }
 
     public MemoryStream Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-        using var preparatoryDocument = DocumentService.Load(preparatoryTemplatePath);
+        _documentService.Load(preparatoryTemplatePath);
 
-        var constructionMonths = calendarPlan.MainCalendarWorks
-            .First(x => x.WorkName == AppConstants.TotalWorkName).ConstructionMonths.ToArray();
+        var preparatoryConstructionMonths = calendarPlan.PreparatoryCalendarWorks.First(x => x.WorkName == AppConstants.TotalWorkName).ConstructionMonths.ToArray();
+        ModifyCalendarPlanTable(calendarPlan.PreparatoryCalendarWorks, preparatoryConstructionMonths);
 
-        var preparatoryTable = preparatoryDocument.Tables[0];
-        ModifyCalendarPlanTable(preparatoryTable, calendarPlan.PreparatoryCalendarWorks, constructionMonths);
+        _documentService.Load(mainTemplatePath);
+        _documentService.CurrentDocumentIndex = 1;
 
-        using var mainDocument = DocumentService.Load(mainTemplatePath);
-        var mainTable = mainDocument.Tables[0];
-
-        ModifyCalendarPlanTable(mainTable, calendarPlan.MainCalendarWorks, constructionMonths);
+        var mainConstructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == AppConstants.TotalWorkName).ConstructionMonths.ToArray();
+        ModifyCalendarPlanTable(calendarPlan.MainCalendarWorks, mainConstructionMonths);
 
         if (calendarPlan.ConstructionDurationCeiling > 1)
         {
-            mainTable.MergeCellsInColumn(mainTable.ColumnCount - 1, TopPatternRowIndex,
-                mainTable.RowCount - 2);
-            mainTable.Rows[TopPatternRowIndex].Cells[mainTable.ColumnCount - 1].Paragraphs[0]
-                .Append(AcceptanceTimeCellStr);
+            var columnIndex = _documentService.ColumnCountInTable - 1;
+            var endRowIndex = _documentService.RowCount - 2;
+            _documentService.MergeCellsInColumn(columnIndex, AcceptanceTimeRowIndex, endRowIndex);
+            _documentService.RowIndex = AcceptanceTimeRowIndex;
+            _documentService.CellIndex = columnIndex;
+            _documentService.AppendInRow(AcceptanceTimeCellStr);
         }
 
-        preparatoryDocument.InsertDocument(mainDocument);
+        _documentService.InsertDocument(0, 1);
 
         var memoryStream = new MemoryStream();
-        preparatoryDocument.SaveAs(memoryStream);
+        _documentService.SaveAs(memoryStream);
 
+        _documentService.DisposeAllDocuments();
         return memoryStream;
     }
 
-    private void ModifyCalendarPlanTable(MyTable table, IEnumerable<CalendarWork> calendarWorks,
-        ConstructionMonth[] constructionMonths)
+    private void ModifyCalendarPlanTable(IEnumerable<CalendarWork> calendarWorks, ConstructionMonth[] constructionMonths)
     {
-        ReplaceDatePatternWithActualDate(table, constructionMonths);
+        ReplaceDatePatternWithActualDate(constructionMonths);
 
-        var topPatternRow = table.Rows[TopPatternRowIndex];
-        var bottomPatternRow = table.Rows[BottomPatternRowIndex];
         foreach (var calendarWork in calendarWorks)
         {
-            AddRowToTable(table, topPatternRow, bottomPatternRow, calendarWork);
+            AddRowToTable(calendarWork);
         }
 
-        topPatternRow.Remove();
-        bottomPatternRow.Remove();
+        _documentService.RowIndex = BottomPatternRowIndex;
+        _documentService.RemoveRow();
+        _documentService.RowIndex = TopPatternRowIndex;
+        _documentService.RemoveRow();
 
-        ReplacePercentPartsWithActualPercentages(table, constructionMonths);
+        ReplacePercentPartsWithActualPercentages(constructionMonths);
 
-        MergeExtraConstructionMonthIntoDash(table);
+        MergeExtraConstructionMonthIntoDash();
     }
 
-    private void ReplaceDatePatternWithActualDate(MyTable calendarPlanPatternTable,
-        ConstructionMonth[] constructionMonths)
+    private void ReplaceDatePatternWithActualDate(ConstructionMonth[] constructionMonths)
     {
         var monthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
 
+        var rowIndex = 1;
         for (int i = 0; i < constructionMonths.Length; i++)
         {
             var monthName = monthNames[constructionMonths[i].Date.Month - 1];
-            calendarPlanPatternTable.Rows[1].ReplaceText($"%D{i}%",
-                char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + constructionMonths[i].Date.Year);
+            _documentService.RowIndex = rowIndex;
+            _documentService.ReplaceTextInRow($"%D{i}%", FormatMonth(monthName, constructionMonths[i].Date.Year));
         }
 
         if (constructionMonths.Length > 1)
         {
             var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
             var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
-            calendarPlanPatternTable.Rows[1]
-                .ReplaceText(DateAcceptancePattern, acceptanceMonthName + " " + acceptanceDate.Year);
+            _documentService.RowIndex = rowIndex;
+            _documentService.ReplaceTextInRow(DateAcceptancePattern, FormatMonth(acceptanceMonthName, acceptanceDate.Year));
         }
     }
 
-    private void AddRowToTable(MyTable table, MyRow topPatternRow, MyRow bottomPatternRow, CalendarWork calendarWork)
+    private string FormatMonth(string monthName, int year)
     {
-        var newTopRow = table.InsertRow(topPatternRow, table.RowCount - 2);
-        var newBottomRow = table.InsertRow(bottomPatternRow, table.RowCount - 2);
+        return char.ToUpper(monthName[0]) + monthName.Substring(1) + " " + year;
+    }
 
-        newTopRow.ReplaceText(WorkNamePattern, calendarWork.WorkName);
-        newTopRow.ReplaceText(TotalCostPattern,
-            calendarWork.TotalCost.ToString(AppConstants.DecimalThreePlacesFormat));
-        newTopRow.ReplaceText(TotalCostIncludingCAIWPattern,
-            calendarWork.TotalCostIncludingCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
+    private void AddRowToTable(CalendarWork calendarWork)
+    {
+        var newTopRowIndex = _documentService.RowCount - 1;
+        _documentService.InsertTemplateRow(TopPatternRowIndex, newTopRowIndex);
+        var newBottomRowIndex = _documentService.RowCount - 1;
+        _documentService.InsertTemplateRow(BottomPatternRowIndex, newBottomRowIndex);
+
+        _documentService.RowIndex = newTopRowIndex;
+        _documentService.ReplaceTextInRow(WorkNamePattern, calendarWork.WorkName);
+        _documentService.ReplaceTextInRow(TotalCostPattern, calendarWork.TotalCost.ToString(AppConstants.DecimalThreePlacesFormat));
+        _documentService.ReplaceTextInRow(TotalCostIncludingCAIWPattern, calendarWork.TotalCostIncludingCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
+
         var constructionMonths = calendarWork.ConstructionMonths.ToArray();
         foreach (var constructionMonth in constructionMonths)
         {
             var creationIndex = constructionMonth.CreationIndex;
-            newTopRow.ReplaceText($"%IV{creationIndex}%",
-                constructionMonth.InvestmentVolume.ToString(AppConstants.DecimalThreePlacesFormat));
-            newBottomRow.ReplaceText($"%IW{creationIndex}%",
-                constructionMonth.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
+            _documentService.RowIndex = newTopRowIndex;
+            _documentService.ReplaceTextInRow($"%IV{creationIndex}%", constructionMonth.InvestmentVolume.ToString(AppConstants.DecimalThreePlacesFormat));
+            _documentService.RowIndex = newBottomRowIndex;
+            _documentService.ReplaceTextInRow($"%IW{creationIndex}%", constructionMonth.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
         }
     }
 
-    private void ReplacePercentPartsWithActualPercentages(MyTable calendarPlanPatternTable,
-        ConstructionMonth[] constructionMonths)
+    private void ReplacePercentPartsWithActualPercentages(ConstructionMonth[] constructionMonths)
     {
-        var lastRow = calendarPlanPatternTable.Rows[^1];
-        if (lastRow.Paragraphs.Count > 1)
+        _documentService.RowIndex = _documentService.RowCount - 1;
+        if (_documentService.ParagraphsCountInRow > 1)
         {
             for (int i = 0; i < constructionMonths.Length; i++)
             {
-                lastRow.ReplaceText($"%P{i}%",
-                    constructionMonths[i].PercentPart.ToString(AppConstants.PercentFormat));
+                _documentService.ReplaceTextInRow($"%P{i}%", constructionMonths[i].PercentPart.ToString(AppConstants.PercentFormat));
             }
         }
     }
 
-    private void MergeExtraConstructionMonthIntoDash(MyTable calendarPlanPatternTable)
+    private void MergeExtraConstructionMonthIntoDash()
     {
-        for (int rowIndex = 2; rowIndex < calendarPlanPatternTable.RowCount - 1; rowIndex++)
+        for (int rowIndex = 2; rowIndex < _documentService.RowCount - 1; rowIndex++)
         {
-            for (int columnIndex = 3;
-                 columnIndex < calendarPlanPatternTable.Rows[rowIndex].Paragraphs.Count;
-                 columnIndex++)
+            _documentService.RowIndex = rowIndex;
+            var paragraphsCountInRow = _documentService.ParagraphsCountInRow;
+            for (int paragraphIndex = 3; paragraphIndex < paragraphsCountInRow; paragraphIndex++)
             {
-                var paragraph = calendarPlanPatternTable.Rows[rowIndex].Paragraphs[columnIndex];
-                if (paragraph.Text.StartsWith("%IV"))
+                _documentService.ParagraphIndex = paragraphIndex;
+                _documentService.RowIndex = rowIndex;
+                if (_documentService.ParagraphTextInRow.StartsWith("%IV"))
                 {
-                    var nextRowParagraph = calendarPlanPatternTable.Rows[rowIndex + 1].Paragraphs[columnIndex];
-                    paragraph.Empty();
-                    nextRowParagraph.Empty();
-                    calendarPlanPatternTable.MergeCellsInColumn(columnIndex, rowIndex, rowIndex + 1);
-                    paragraph.Append("-");
+                    _documentService.EmptyParagraphInRow();
+                    _documentService.AppendInRow("-");
+
+                    _documentService.RowIndex = rowIndex + 1;
+                    _documentService.EmptyParagraphInRow();
+
+                    _documentService.MergeCellsInColumn(paragraphIndex, rowIndex, rowIndex + 1);
                 }
             }
         }

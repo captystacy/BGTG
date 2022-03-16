@@ -53,7 +53,7 @@ public class DurationByLCServiceTests
             durationByLCCreateViewModel.TechnologicalLaborCosts, default, default, default, default, default, default,
             default, default, true, true);
 
-        var templatePath = @"root\Templates\DurationByLCTemplates\Rounding+Acceptance+.docx";
+        var templatePath = @"root\Infrastructure\Templates\DurationByLCTemplates\Rounding+Acceptance+.docx";
 
         _durationByLCCreatorMock.Setup(x => x.Create(estimate.LaborCosts,
                 durationByLCCreateViewModel.TechnologicalLaborCosts,

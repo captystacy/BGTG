@@ -1,54 +1,41 @@
 ﻿using System.IO;
+using Moq;
 using NUnit.Framework;
 using POS.DomainModels;
+using POS.Infrastructure.Constants;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
-using Xceed.Document.NET;
-using Xceed.Words.NET;
 
-namespace POS.Tests.Infrastructure.Writers
+namespace POS.Tests.Infrastructure.Writers;
+
+public class EnergyAndWaterWriterTests
 {
-    public class EnergyAndWaterWriterTests
+    private EnergyAndWaterWriter _energyAndWaterWriter = null!;
+    private Mock<IDocumentService> _documentServiceMock = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        private const string EnergyAndWaterTemplateFileName = "EnergyAndWater.docx";
-        private const string EnergyAndWaterTemplatesDirectory = @"..\..\..\Infrastructure\Templates\EnergyAndWaterTemplates";
+        _documentServiceMock = new Mock<IDocumentService>();
+        _energyAndWaterWriter = new EnergyAndWaterWriter(_documentServiceMock.Object);
+    }
 
-        private EnergyAndWaterWriter _energyAndWaterWriter = null!;
+    [Test]
+    public void Write_EnergyAndWater_SaveCorrectEnergyAndWater()
+    {
+        var energyAndWater = new EnergyAndWater(2021, 1.293M, 2.65M, 0.004M, 0.05M, 56.882M);
+        var templatePath = "EnergyAndWater.docx";
 
-        [SetUp]
-        public void SetUp()
-        {
-            _energyAndWaterWriter = new EnergyAndWaterWriter();
-        }
-
-        private EnergyAndWater CreateDefaultEnergyAndWater()
-        {
-            return new EnergyAndWater(2021, 1.293M, 2.65M, 0.004M, 0.05M, 56.882M);
-        }
-
-        [Test]
-        public void Write_EnergyAndWater_SaveCorrectEnergyAndWater()
-        {
-            var expectedEnergyAndWater = CreateDefaultEnergyAndWater();
-            var templatePath = Path.Combine(EnergyAndWaterTemplatesDirectory, EnergyAndWaterTemplateFileName);
-
-            var memoryStream = _energyAndWaterWriter.Write(expectedEnergyAndWater, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-            var energyAndWaterRow = document.Tables[0].Rows[2];
-            var actualEnergyAndWater = ParseEnergyAndWater(energyAndWaterRow);
-
-            Assert.AreEqual(expectedEnergyAndWater, actualEnergyAndWater);
-        }
-
-        private EnergyAndWater ParseEnergyAndWater(Row energyAndWaterRow)
-        {
-            var constructionYear = int.Parse(energyAndWaterRow.Paragraphs[0].Text);
-            var volumeCAIW = decimal.Parse(energyAndWaterRow.Paragraphs[1].Text);
-            var energy = decimal.Parse(energyAndWaterRow.Paragraphs[2].Text);
-            var water = decimal.Parse(energyAndWaterRow.Paragraphs[3].Text);
-            var compressedAir = decimal.Parse(energyAndWaterRow.Paragraphs[4].Text);
-            var oxygen = decimal.Parse(energyAndWaterRow.Paragraphs[5].Text);
-            return new EnergyAndWater(constructionYear, volumeCAIW, energy, water, compressedAir, oxygen);
-        }
+        var memoryStream = _energyAndWaterWriter.Write(energyAndWater, templatePath);
+        _documentServiceMock.Verify(x => x.Load(templatePath));
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CY%", energyAndWater.ConstructionYear.ToString()));
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CAIWV%", energyAndWater.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat)));
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%E%", energyAndWater.Energy.ToString(AppConstants.DecimalThreePlacesFormat)));
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%W%", energyAndWater.Water.ToString(AppConstants.DecimalThreePlacesFormat)));
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CA%", energyAndWater.CompressedAir.ToString(AppConstants.DecimalThreePlacesFormat)));
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%O%", energyAndWater.Oxygen.ToString(AppConstants.DecimalThreePlacesFormat)));
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 }

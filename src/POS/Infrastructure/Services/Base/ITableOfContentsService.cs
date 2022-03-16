@@ -4,5 +4,5 @@ namespace POS.Infrastructure.Services.Base;
 
 public interface ITableOfContentsService
 {
-    MemoryStream Write(TableOfContentsViewModel dto);
+    MemoryStream Write(TableOfContentsViewModel viewModel);
 }

@@ -120,8 +120,8 @@ public class CalendarPlanServiceTests
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
-        var preparatoryTemplatePath = @"root\Templates\CalendarPlanTemplates\Preparatory.docx";
-        var mainTemplatePath = @"root\Templates\CalendarPlanTemplates\Main1.docx";
+        var preparatoryTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Preparatory.docx";
+        var mainTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Main1.docx";
 
         var mainEstimateWorks = new List<EstimateWork>
         {

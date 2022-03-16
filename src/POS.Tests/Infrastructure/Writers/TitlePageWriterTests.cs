@@ -1,33 +1,38 @@
-﻿using System.IO;
+﻿using System;
+using Moq;
 using NUnit.Framework;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
-using Xceed.Words.NET;
 
-namespace POS.Tests.Infrastructure.Writers
+namespace POS.Tests.Infrastructure.Writers;
+
+public class TitlePageWriterTests
 {
-    public class TitlePageWriterTests
+    private TitlePageWriter _titlePageWriter = null!;
+    private Mock<IDocumentService> _documentServiceMock = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        private TitlePageWriter _titlePageWriter = null!;
+        _documentServiceMock = new Mock<IDocumentService>();
+        _titlePageWriter = new TitlePageWriter(_documentServiceMock.Object);
+    }
 
-        private const string TitlePageTemplatesDirectory = @"..\..\..\Infrastructure\Templates\TitlePageTemplates";
+    [Test]
+    public void Write_ConstructionObject548()
+    {
+        var templatePath = "Saiko.docx";
+        var objectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района";
+        var objectCipher = "5.5-20.548";
 
-        [SetUp]
-        public void SetUp()
-        {
-            _titlePageWriter = new TitlePageWriter();
-        }
+        var memoryStream = _titlePageWriter.Write(objectCipher, objectName, templatePath);
 
-        [Test]
-        public void Write_ConstructionObject548()
-        {
-            var templateFileName = "Saiko.docx";
-            var templatePath = Path.Combine(TitlePageTemplatesDirectory, templateFileName);
-            var objectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района";
-            var objectCipher = "5.5-20.548";
-
-            var memoryStream = _titlePageWriter.Write(objectCipher, objectName, templatePath);
-
-            using var document = DocX.Load(memoryStream);
-        }
+        _documentServiceMock.Verify(x => x.Load(templatePath), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%NAME%", objectName), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CIPHER%", objectCipher), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%YEAR%", DateTime.Now.Year.ToString()), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
+        Assert.NotNull(memoryStream);
     }
 }

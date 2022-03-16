@@ -41,7 +41,7 @@ public class ProjectServiceTests
             HouseholdTownIncluded = true,
         };
 
-        var templatePath = @"root\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
+        var templatePath = @"root\Infrastructure\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         _ecpProjectWriterMock

@@ -1,24 +1,31 @@
 ﻿using POS.Infrastructure.Constants;
-using POS.Infrastructure.Services;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.Writers;
 
 public class TableOfContentsWriter : ITableOfContentsWriter
 {
+    private readonly IDocumentService _documentService;
+
     private const string CipherPattern = "%CIPHER%";
     private const string DatePattern = "%DATE%";
 
+    public TableOfContentsWriter(IDocumentService documentService)
+    {
+        _documentService = documentService;
+    }
+
     public MemoryStream Write(string objectCipher, string templatePath)
     {
-        using var document = DocumentService.Load(templatePath);
+        _documentService.Load(templatePath);
 
-        document.ReplaceText(CipherPattern, objectCipher);
-        document.ReplaceText(DatePattern,
-            DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
+        _documentService.ReplaceTextInDocument(CipherPattern, objectCipher);
+        _documentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
 
         var memoryStream = new MemoryStream();
-        document.SaveAs(memoryStream);
+        _documentService.SaveAs(memoryStream);
+        _documentService.DisposeLastDocument();
 
         return memoryStream;
     }

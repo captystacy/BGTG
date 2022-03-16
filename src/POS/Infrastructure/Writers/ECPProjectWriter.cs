@@ -1,6 +1,5 @@
-﻿using POS.DomainModels.DocumentDomainModels;
-using POS.Infrastructure.Constants;
-using POS.Infrastructure.Services;
+﻿using POS.Infrastructure.Constants;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers.Base;
 using System.Text.RegularExpressions;
 
@@ -8,6 +7,7 @@ namespace POS.Infrastructure.Writers;
 
 public class ECPProjectWriter : IECPProjectWriter
 {
+    private readonly IDocumentService _documentService;
     private const string DurationByLCFirstParagraphPattern = "%DURATION_BY_LC_FIRST_PARAGRAPH%";
     private const string DurationByLCTablePattern = "%DURATION_BY_LC_TABLE%";
     private const string DurationByLCDescriptionTablePattern = "%DURATION_BY_LC_DESCRIPTION_TABLE%";
@@ -30,90 +30,105 @@ public class ECPProjectWriter : IECPProjectWriter
     private const string AcceptanceTimePattern = "%AT%";
     private const string TotalLaborCostsPattern = "%TLC%";
 
-    public MemoryStream Write(Stream durationByLCStream, Stream calendarPlanStream, Stream energyAndWaterStream,
-        string objectCipher, string templatePath)
+    public ECPProjectWriter(IDocumentService documentService)
     {
-        using var ecpDocument = DocumentService.Load(templatePath);
+        _documentService = documentService;
+    }
 
-        ecpDocument.ReplaceText(CipherPattern, objectCipher);
-        ecpDocument.ReplaceText(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
+    public MemoryStream Write(Stream durationByLCStream, Stream calendarPlanStream, Stream energyAndWaterStream, string objectCipher, string templatePath)
+    {
+        _documentService.Load(templatePath);
+        _documentService.ReplaceInBaseDocumentMode = true;
 
-        ReplaceConstructionStartDateAndConstructionYear(calendarPlanStream, ecpDocument);
+        _documentService.ReplaceTextInDocument(CipherPattern, objectCipher);
+        _documentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
 
-        ReplacePatternsWithDurationByLC(durationByLCStream, ecpDocument);
-        ReplacePatternsWithCalendarPlan(calendarPlanStream, ecpDocument);
-        ReplacePatternsWithEnergyAndWater(energyAndWaterStream, ecpDocument);
+        ReplacePatternsWithDurationByLC(durationByLCStream);
+        ReplacePatternsWithCalendarPlan(calendarPlanStream);
+        ReplacePatternsWithEnergyAndWater(energyAndWaterStream);
 
         var memoryStream = new MemoryStream();
-        ecpDocument.SaveAs(memoryStream);
-
-        durationByLCStream.Close();
-        calendarPlanStream.Close();
-        energyAndWaterStream.Close();
+        _documentService.SaveAs(memoryStream);
+        _documentService.DisposeLastDocument();
         return memoryStream;
     }
 
     public int GetNumberOfEmployees(Stream durationByLCStream)
     {
-        using var durationByLCDocument = DocumentService.Load(durationByLCStream);
-        return int.Parse(durationByLCDocument.Tables[1].Rows[4].Cells[1].Paragraphs[0].Text);
+        _documentService.Load(durationByLCStream);
+        _documentService.TableIndex = 1;
+        _documentService.RowIndex = 4;
+        _documentService.ParagraphIndex = 1;
+        var numberOfEmployees = int.Parse(_documentService.ParagraphTextInRow);
+        _documentService.DisposeLastDocument();
+        return numberOfEmployees;
     }
 
-    private void ReplaceConstructionStartDateAndConstructionYear(Stream calendarPlan, MyDocument ecpDocument)
+    private void ReplaceConstructionStartDateAndConstructionYear()
     {
-        using var calendarPlanDocument = DocumentService.Load(calendarPlan);
-
-        var constructionStartDateStr = calendarPlanDocument.Tables[0].Rows[1].Cells[3].Paragraphs[0].Text.ToLower();
+        _documentService.RowIndex = 1;
+        _documentService.ParagraphIndex = 3;
+        var constructionStartDateStr = _documentService.ParagraphTextInRow.ToLower();
 
         var constructionYearStr = Regex.Match(constructionStartDateStr, @"\d+").Value;
 
-        ecpDocument.ReplaceText(ConstructionStartDatePattern, constructionStartDateStr);
-
-        ecpDocument.ReplaceText(ConstructionYearPattern, constructionYearStr);
+        _documentService.ReplaceTextInDocument(ConstructionStartDatePattern, constructionStartDateStr);
+        _documentService.ReplaceTextInDocument(ConstructionYearPattern, constructionYearStr);
     }
 
-    private void ReplacePatternsWithEnergyAndWater(Stream energyAndWaterStream, MyDocument ecpDocument)
+    private void ReplacePatternsWithEnergyAndWater(Stream energyAndWaterStream)
     {
-        using var energyAndWaterDocument = DocumentService.Load(energyAndWaterStream);
-        var energyAndWaterTable = energyAndWaterDocument.Tables[0];
+        _documentService.Load(energyAndWaterStream);
+        energyAndWaterStream.Close();
 
-        ecpDocument.ReplaceTextWithTable(EnergyAndWaterTablePattern, energyAndWaterTable);
+        _documentService.ReplaceTextWithTable(EnergyAndWaterTablePattern);
+
+        _documentService.DisposeLastDocument();
     }
 
-    private void ReplacePatternsWithCalendarPlan(Stream calendarPlanStream, MyDocument ecpDocument)
+    private void ReplacePatternsWithCalendarPlan(Stream calendarPlanStream)
     {
-        using var calendarPlanDocument = DocumentService.Load(calendarPlanStream);
-        var preparatoryTable = calendarPlanDocument.Tables[0];
-        var mainTable = calendarPlanDocument.Tables[1];
+        _documentService.Load(calendarPlanStream);
+        calendarPlanStream.Close();
 
-        ecpDocument.ReplaceTextWithTable(CalendarPlanPreparatoryTablePattern, preparatoryTable);
-        ecpDocument.ReplaceTextWithTable(CalendarPlanMainTablePattern, mainTable);
+        _documentService.ReplaceTextWithTable(CalendarPlanPreparatoryTablePattern);
+        _documentService.TableIndex = 1;
+        _documentService.ReplaceTextWithTable(CalendarPlanMainTablePattern);
+
+        ReplaceConstructionStartDateAndConstructionYear();
+        _documentService.DisposeLastDocument();
     }
 
-    private void ReplacePatternsWithDurationByLC(Stream durationByLCStream, MyDocument ecpDocument)
+    private void ReplacePatternsWithDurationByLC(Stream durationByLCStream)
     {
-        using var durationByLCDocument = DocumentService.Load(durationByLCStream);
-        var durationByLCFirstParagraph = durationByLCDocument.Paragraphs[0].Text;
-        var durationByLCTable = durationByLCDocument.Tables[0];
-        var durationByLCDescriptionTable = durationByLCDocument.Tables[1];
-        var durationByLCPenultimateParagraph = durationByLCDocument.Paragraphs.Count == 35
-            ? durationByLCDocument.Paragraphs[^2].Text
+        _documentService.Load(durationByLCStream);
+        durationByLCStream.Close();
+
+        var durationByLCFirstParagraph = _documentService.ParagraphTextInDocument;
+        _documentService.ParagraphIndex = _documentService.ParagraphsCountInDocument - 2;
+        var durationByLCPenultimateParagraph = _documentService.ParagraphsCountInDocument == 35 
+            ? _documentService.ParagraphTextInDocument
             : string.Empty;
-        var durationByLCLastParagraph = durationByLCDocument.Paragraphs[^1].Text;
+        _documentService.ParagraphIndex = _documentService.ParagraphsCountInDocument - 1;
+        var durationByLCLastParagraph = _documentService.ParagraphTextInDocument;
 
-        ecpDocument.ReplaceText(DurationByLCFirstParagraphPattern, durationByLCFirstParagraph);
-        ecpDocument.ReplaceTextWithTable(DurationByLCTablePattern, durationByLCTable);
-        ecpDocument.ReplaceTextWithTable(DurationByLCDescriptionTablePattern, durationByLCDescriptionTable);
-        ecpDocument.ReplaceText(DurationByLCPenultimateParagraphPattern, durationByLCPenultimateParagraph);
-        ecpDocument.ReplaceText(DurationByLCLastParagraphPattern, durationByLCLastParagraph);
+        _documentService.ReplaceTextInDocument(DurationByLCFirstParagraphPattern, durationByLCFirstParagraph);
+        _documentService.TableIndex = 0;
+        _documentService.ReplaceTextWithTable(DurationByLCTablePattern);
+        _documentService.TableIndex = 1;
+        _documentService.ReplaceTextWithTable(DurationByLCDescriptionTablePattern);
+        _documentService.ReplaceTextInDocument(DurationByLCPenultimateParagraphPattern, durationByLCPenultimateParagraph);
+        _documentService.ReplaceTextInDocument(DurationByLCLastParagraphPattern, durationByLCLastParagraph);
 
-        ReplacePatternsWithTechnicalAndEconomicIndicators(durationByLCDocument, ecpDocument);
+        ReplacePatternsWithTechnicalAndEconomicIndicators();
+
+        _documentService.DisposeLastDocument();
     }
 
-    private void ReplacePatternsWithTechnicalAndEconomicIndicators(MyDocument durationByLCDocument,
-        MyDocument ecpDocument)
+    private void ReplacePatternsWithTechnicalAndEconomicIndicators()
     {
-        var lastParagraphParts = durationByLCDocument.Paragraphs[^1].Text.Split("мес,");
+        _documentService.ParagraphIndex = _documentService.ParagraphsCountInDocument - 1;
+        var lastParagraphParts = _documentService.ParagraphTextInDocument.Split("мес,");
 
         var totalDurationStr = Regex.Match(lastParagraphParts[0], @"[\d,]+").Value;
         var preparatoryPeriodStr = Regex.Match(lastParagraphParts[1], @"[\d,]+").Value;
@@ -123,11 +138,13 @@ public class ECPProjectWriter : IECPProjectWriter
             acceptanceTimeStr = Regex.Match(lastParagraphParts[2], @"[\d,]+").Value;
         }
 
-        var totalLaborCostsStr = durationByLCDocument.Tables[1].Rows[0].Cells[1].Paragraphs[0].Text;
+        _documentService.TableIndex = 1;
+        _documentService.ParagraphIndex = 1;
+        var totalLaborCostsStr = _documentService.ParagraphTextInRow;
 
-        ecpDocument.ReplaceText(TotalDurationPattern, totalDurationStr);
-        ecpDocument.ReplaceText(PreparatoryPeriodPattern, preparatoryPeriodStr);
-        ecpDocument.ReplaceText(AcceptanceTimePattern, acceptanceTimeStr);
-        ecpDocument.ReplaceText(TotalLaborCostsPattern, totalLaborCostsStr);
+        _documentService.ReplaceTextInDocument(TotalDurationPattern, totalDurationStr);
+        _documentService.ReplaceTextInDocument(PreparatoryPeriodPattern, preparatoryPeriodStr);
+        _documentService.ReplaceTextInDocument(AcceptanceTimePattern, acceptanceTimeStr);
+        _documentService.ReplaceTextInDocument(TotalLaborCostsPattern, totalLaborCostsStr);
     }
 }

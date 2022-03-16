@@ -1,31 +1,39 @@
-﻿using System.IO;
+﻿using Moq;
 using NUnit.Framework;
+using POS.Infrastructure.Constants;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
-using Xceed.Words.NET;
+using System;
 
-namespace POS.Tests.Infrastructure.Writers
+namespace POS.Tests.Infrastructure.Writers;
+
+public class TableOfContentsWriterTests
 {
-    public class TableOfContentsWriterTests
+    private TableOfContentsWriter _tableOfContentsWriter = null!;
+    private Mock<IDocumentService> _documentServiceMock = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        private TableOfContentsWriter _tableOfContentsWriter = null!;
+        _documentServiceMock = new Mock<IDocumentService>();
+        _tableOfContentsWriter = new TableOfContentsWriter(_documentServiceMock.Object);
+    }
 
-        private const string TableOfContentsTemplatesDirectory = @"..\..\..\Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko";
+    [Test]
+    public void Write_ConstructionObject548()
+    {
+        var templatePath = "Kapitan.docx";
+        var objectCipher = "5.5-20.548";
 
-        [SetUp]
-        public void SetUp()
-        {
-            _tableOfContentsWriter = new TableOfContentsWriter();
-        }
+        var memoryStream = _tableOfContentsWriter.Write(objectCipher, templatePath);
 
-        [Test]
-        public void Write_ConstructionObject548()
-        {
-            var templatePath = Path.Combine(TableOfContentsTemplatesDirectory, "Kapitan.docx");
-            var objectCipher = "5.5-20.548";
+        _documentServiceMock.Verify(x => x.Load(templatePath), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CIPHER%", objectCipher), Times.Once);
+        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%DATE%", DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat)), Times.Once);
 
-            var memoryStream = _tableOfContentsWriter.Write(objectCipher, templatePath);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
 
-            using var document = DocX.Load(memoryStream);
-        }
+        Assert.NotNull(memoryStream);
     }
 }

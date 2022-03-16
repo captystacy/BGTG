@@ -46,7 +46,7 @@ public class EnergyAndWaterServiceTests
         var totalEstimateWork = new EstimateWork(default!, default, default, default, 12);
         var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork> { totalEstimateWork }, constructionStartDate, default, default, default);
 
-        var templatePath = @"root\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
+        var templatePath = @"root\Infrastructure\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
 
         var energyAndWaterCreateViewModel = new EnergyAndWaterViewModel
         {
