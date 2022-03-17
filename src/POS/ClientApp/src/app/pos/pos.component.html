@@ -8,7 +8,7 @@
 <form [formGroup]="posForm">
   <div class="d-flex flex-column align-items-center">
     <mat-form-field appearance="fill" style="width: 710px;">
-      <mat-label>Шифр объекта в формате: Ц.Ц-Ч.Ч или Ц.Ц-Ч.Ч-Ч, где Ц - цифра, Ч - число.</mat-label>
+      <mat-label>Шифр объекта</mat-label>
       <input formControlName="objectCipher" matInput>
       <mat-error *ngIf="objectCipher.errors?.['required']">
         Шифр объекта не может быть пустым.

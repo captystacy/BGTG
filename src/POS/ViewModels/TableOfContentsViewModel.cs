@@ -13,7 +13,7 @@ public class TableOfContentsViewModel : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (string.IsNullOrEmpty(ObjectCipher) || !(AppConstants.ObjectCipherExpression1.IsMatch(ObjectCipher) || AppConstants.ObjectCipherExpression2.IsMatch(ObjectCipher)))
+        if (string.IsNullOrEmpty(ObjectCipher))
         {
             yield return new ValidationResult(AppConstants.ObjectCipherValidationMessage);
         }

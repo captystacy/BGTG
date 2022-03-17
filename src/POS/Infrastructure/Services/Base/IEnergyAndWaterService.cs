@@ -4,5 +4,5 @@ namespace POS.Infrastructure.Services.Base;
 
 public interface IEnergyAndWaterService
 {
-    MemoryStream Write(EnergyAndWaterViewModel dto);
+    MemoryStream Write(EnergyAndWaterViewModel viewModel);
 }

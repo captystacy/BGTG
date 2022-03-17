@@ -20,14 +20,14 @@ public class POSController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult DownloadProject(ProjectViewModel dto)
+    public IActionResult DownloadProject(ProjectViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _projectService.Write(dto);
+        var memoryStream = _projectService.Write(viewModel);
 
         if (memoryStream is null)
         {
@@ -40,14 +40,14 @@ public class POSController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult DownloadTableOfContents([FromBody] TableOfContentsViewModel dto)
+    public IActionResult DownloadTableOfContents([FromBody] TableOfContentsViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _tableOfContentsService.Write(dto);
+        var memoryStream = _tableOfContentsService.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
@@ -55,14 +55,14 @@ public class POSController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult DownloadTitlePage([FromBody] TitlePageViewModel dto)
+    public IActionResult DownloadTitlePage([FromBody] TitlePageViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _titlePageService.Write(dto);
+        var memoryStream = _titlePageService.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 

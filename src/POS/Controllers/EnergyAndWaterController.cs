@@ -16,14 +16,14 @@ public class EnergyAndWaterController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult GetFile(EnergyAndWaterViewModel dto)
+    public IActionResult Download(EnergyAndWaterViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _energyAndWaterService.Write(dto);
+        var memoryStream = _energyAndWaterService.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 

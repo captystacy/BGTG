@@ -134,7 +134,7 @@ export class CalendarPlanService {
 
   downloadCalendarPlan(): void {
     let formData = this.generateFormDataForRequest();
-    this._http.post('api/CalendarPlan/GetFile', formData, { responseType: 'blob' }).subscribe(data => {
+    this._http.post('api/CalendarPlan/Download', formData, { responseType: 'blob' }).subscribe(data => {
       saveAs(data, "Календарный план");
     }, error => console.error(error));
   }

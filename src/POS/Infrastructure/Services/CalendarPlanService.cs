@@ -29,12 +29,12 @@ public class CalendarPlanService : ICalendarPlanService
         _mapper = mapper;
     }
 
-    public CalendarPlanViewModel GetCalendarPlanViewModel(CalendarPlanCreateViewModel dto)
+    public CalendarPlanViewModel GetCalendarPlanViewModel(CalendarPlanCreateViewModel viewModel)
     {
-        _estimateService.Read(dto.EstimateFiles, dto.TotalWorkChapter);
+        _estimateService.Read(viewModel.EstimateFiles, viewModel.TotalWorkChapter);
 
         var calendarPlanViewModel = _mapper.Map<CalendarPlanViewModel>(_estimateService.Estimate);
-        calendarPlanViewModel.CalendarWorks.RemoveAll(x => x.Chapter == (int)dto.TotalWorkChapter);
+        calendarPlanViewModel.CalendarWorks.RemoveAll(x => x.Chapter == (int)viewModel.TotalWorkChapter);
 
         calendarPlanViewModel.CalendarWorks.Add(new CalendarWorkViewModel
         {
@@ -46,46 +46,46 @@ public class CalendarPlanService : ICalendarPlanService
         return calendarPlanViewModel;
     }
 
-    public IEnumerable<decimal> GetTotalPercentages(CalendarPlanViewModel dto)
+    public IEnumerable<decimal> GetTotalPercentages(CalendarPlanViewModel viewModel)
     {
-        var calendarPlan = CalculateCalendarPlan(dto);
-        return calendarPlan.MainCalendarWorks.First(x => x.EstimateChapter == (int)dto.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
+        var calendarPlan = CalculateCalendarPlan(viewModel);
+        return calendarPlan.MainCalendarWorks.First(x => x.EstimateChapter == (int)viewModel.TotalWorkChapter).ConstructionMonths.Select(x => x.PercentPart);
     }
 
-    public MemoryStream Write(CalendarPlanViewModel dto)
+    public MemoryStream Write(CalendarPlanViewModel viewModel)
     {
-        var calendarPlan = CalculateCalendarPlan(dto);
+        var calendarPlan = CalculateCalendarPlan(viewModel);
         var preparatoryTemplatePath = GetPreparatoryTemplatePath();
         var mainTemplatePath = GetMainTemplatePath(calendarPlan.ConstructionDurationCeiling);
 
         return _calendarPlanWriter.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath);
     }
 
-    private CalendarPlan CalculateCalendarPlan(CalendarPlanViewModel dto)
+    private CalendarPlan CalculateCalendarPlan(CalendarPlanViewModel viewModel)
     {
-        _estimateService.Read(dto.EstimateFiles, dto.TotalWorkChapter);
+        _estimateService.Read(viewModel.EstimateFiles, viewModel.TotalWorkChapter);
 
         if (_estimateService.Estimate.ConstructionStartDate == default)
         {
-            _estimateService.Estimate.ConstructionStartDate = dto.ConstructionStartDate;
+            _estimateService.Estimate.ConstructionStartDate = viewModel.ConstructionStartDate;
         }
 
         if (_estimateService.Estimate.ConstructionDurationCeiling == 0)
         {
-            _estimateService.Estimate.ConstructionDurationCeiling = (int)decimal.Ceiling(dto.ConstructionDuration);
+            _estimateService.Estimate.ConstructionDurationCeiling = (int)decimal.Ceiling(viewModel.ConstructionDuration);
         }
 
         if (_estimateService.Estimate.ConstructionDuration == 0)
         {
-            _estimateService.Estimate.ConstructionDuration = dto.ConstructionDuration;
+            _estimateService.Estimate.ConstructionDuration = viewModel.ConstructionDuration;
         }
 
-        var otherExpensesWork = dto.CalendarWorks.Find(x => x.WorkName == Constants.AppConstants.MainOtherExpensesWorkName)!;
-        dto.CalendarWorks.Remove(otherExpensesWork);
+        var otherExpensesWork = viewModel.CalendarWorks.Find(x => x.WorkName == Constants.AppConstants.MainOtherExpensesWorkName)!;
+        viewModel.CalendarWorks.Remove(otherExpensesWork);
 
-        SetEstimatePercentages(dto.CalendarWorks);
+        SetEstimatePercentages(viewModel.CalendarWorks);
 
-        var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, dto.TotalWorkChapter);
+        var calendarPlan = _calendarPlanCreator.Create(_estimateService.Estimate, otherExpensesWork.Percentages, viewModel.TotalWorkChapter);
 
         return calendarPlan;
     }

@@ -15,7 +15,7 @@ export class EnergyAndWaterService {
       formData.append('EstimateFiles', estimateFiles[i]);
     }
 
-    this._http.post('api/EnergyAndWater/GetFile', formData, { responseType: 'blob' }).subscribe(data => {
+    this._http.post('api/EnergyAndWater/Download', formData, { responseType: 'blob' }).subscribe(data => {
       saveAs(data, "Энергия и вода");
     }, error => console.error(error));
   }

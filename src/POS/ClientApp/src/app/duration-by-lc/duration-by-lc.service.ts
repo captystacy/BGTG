@@ -23,7 +23,7 @@ export class DurationByLCService {
     formData.append('TechnologicalLaborCosts', durationByLC.technologicalLaborCosts?.toString() ?? '0');
     formData.append('AcceptanceTimeIncluded', durationByLC.acceptanceTimeIncluded.toString());
 
-    this._http.post('api/DurationByLC/GetFile', formData, { responseType: 'blob' }).subscribe(data => {
+    this._http.post('api/DurationByLC/Download', formData, { responseType: 'blob' }).subscribe(data => {
       saveAs(data, "Продолжительность по трудозатратам");
     }, error => console.error(error));
   }

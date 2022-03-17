@@ -27,9 +27,9 @@ public class EnergyAndWaterService : IEnergyAndWaterService
         _calendarWorkCreator = calendarWorkCreator;
     }
 
-    public MemoryStream Write(EnergyAndWaterViewModel dto)
+    public MemoryStream Write(EnergyAndWaterViewModel viewModel)
     {
-        _estimateService.Read(dto.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+        _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
 
         var mainTotalCostIncludingCAIW = GetMainTotalCostIncludingCAIW();
 

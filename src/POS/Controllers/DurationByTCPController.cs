@@ -16,7 +16,7 @@ public class DurationByTCPController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult GetFile([FromBody] DurationByTCPViewModel viewModel)
+    public IActionResult Download([FromBody] DurationByTCPViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {

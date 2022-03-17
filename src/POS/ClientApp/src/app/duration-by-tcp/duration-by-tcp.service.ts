@@ -11,8 +11,8 @@ export class DurationByTCPService {
   constructor(private _http: HttpClient) { }
 
   downloadDurationByTCP(durationByTCP: IDurationByTCP): void {
-    this._http.post('api/DurationByTCP/GetFile', durationByTCP, { responseType: 'blob' }).subscribe(data => {
-        saveAs(data, "Продолжительность по трудозатратам");
+    this._http.post('api/DurationByTCP/Download', durationByTCP, { responseType: 'blob' }).subscribe(data => {
+        saveAs(data, "Продолжительность по ТКП");
       },
       error => console.error(error));
   }

@@ -19,35 +19,35 @@ public class CalendarPlanController : ControllerBase
 
     [HttpPost("[action]")]
     [ValidateModelState]
-    public OperationResult<CalendarPlanViewModel> GetViewModelForCreation(CalendarPlanCreateViewModel dto)
+    public OperationResult<CalendarPlanViewModel> GetViewModelForCreation(CalendarPlanCreateViewModel viewModel)
     {
         var operation = OperationResult.CreateResult<CalendarPlanViewModel>();
 
-        operation.Result = _calendarPlanService.GetCalendarPlanViewModel(dto);
+        operation.Result = _calendarPlanService.GetCalendarPlanViewModel(viewModel);
 
         return operation;
     }
 
     [HttpPost("[action]")]
     [ValidateModelState]
-    public OperationResult<IEnumerable<decimal>> GetTotalPercentages(CalendarPlanViewModel dto)
+    public OperationResult<IEnumerable<decimal>> GetTotalPercentages(CalendarPlanViewModel viewModel)
     {
         var operation = OperationResult.CreateResult<IEnumerable<decimal>>();
 
-        operation.Result = _calendarPlanService.GetTotalPercentages(dto);
+        operation.Result = _calendarPlanService.GetTotalPercentages(viewModel);
 
         return operation;
     }
 
     [HttpPost("[action]")]
-    public IActionResult GetFile(CalendarPlanViewModel dto)
+    public IActionResult Download(CalendarPlanViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var memoryStream = _calendarPlanService.Write(dto);
+        var memoryStream = _calendarPlanService.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 

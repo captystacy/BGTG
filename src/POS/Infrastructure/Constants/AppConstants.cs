@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace POS.Infrastructure.Constants;
+﻿namespace POS.Infrastructure.Constants;
 
 public static class AppConstants
 {
@@ -15,9 +13,6 @@ public static class AppConstants
     public const string PercentFormat = "P2";
 
     public const string DateTimeMonthAndYearShortFormat = "MM.yy";
-
-    public static readonly Regex ObjectCipherExpression1 = new(@"^\d\.\d-\d+\.\d+$");
-    public static readonly Regex ObjectCipherExpression2 = new(@"^\d\.\d-\d+\.\d+-\d+$");
 
     public const string ObjectCipherValidationMessage = "Шифр объекта указан в неправильном формате. Правильный формат: Ц.Ц-Ч.Ч или Ц.Ц-Ч.Ч-Ч, где Ц - цифра, Ч - число.";
 

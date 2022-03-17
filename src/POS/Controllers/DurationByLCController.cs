@@ -16,7 +16,7 @@ public class DurationByLCController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult GetFile(DurationByLCViewModel viewModel)
+    public IActionResult Download(DurationByLCViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
