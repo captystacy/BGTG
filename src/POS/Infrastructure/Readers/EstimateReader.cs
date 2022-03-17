@@ -32,6 +32,7 @@ public class EstimateReader : IEstimateReader
     private const string ReferencePattern = "СПРАВКА";
     private const string TaxPattern = "НАЛОГ";
     private const string SubItemPattern = "ПОДПУНКТ";
+    private const string SubItemShortPattern = "П.";
     private const string EstimatePattern = "СМЕТА";
     private const string EstimateLowerPattern = "смета";
     private const string ReportPattern = "ОТЧЕТ";
@@ -98,6 +99,7 @@ public class EstimateReader : IEstimateReader
                     && !estimateCalculationCellStr.StartsWith(ReferencePattern)
                     && !estimateCalculationCellStr.StartsWith(TaxPattern)
                     && !estimateCalculationCellStr.StartsWith(SubItemPattern)
+                    && !estimateCalculationCellStr.StartsWith(SubItemShortPattern)
                     && !estimateCalculationCellStr.StartsWith(EstimatePattern)
                     && !estimateCalculationCellStr.StartsWith(EstimateLowerPattern)
                     && !estimateCalculationCellStr.StartsWith(ReportPattern)
