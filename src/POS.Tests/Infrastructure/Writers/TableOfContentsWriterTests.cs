@@ -10,12 +10,12 @@ namespace POS.Tests.Infrastructure.Writers;
 public class TableOfContentsWriterTests
 {
     private TableOfContentsWriter _tableOfContentsWriter = null!;
-    private Mock<IDocumentService> _documentServiceMock = null!;
+    private Mock<IWordDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _documentServiceMock = new Mock<IDocumentService>();
+        _documentServiceMock = new Mock<IWordDocumentService>();
         _tableOfContentsWriter = new TableOfContentsWriter(_documentServiceMock.Object);
     }
 

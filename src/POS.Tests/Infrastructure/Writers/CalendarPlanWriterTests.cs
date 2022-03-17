@@ -9,12 +9,12 @@ namespace POS.Tests.Infrastructure.Writers;
 public class CalendarPlanWriterTests
 {
     private CalendarPlanWriter _calendarPlanWriter = null!;
-    private Mock<IDocumentService> _documentServiceMock = null!;
+    private Mock<IWordDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _documentServiceMock = new Mock<IDocumentService>();
+        _documentServiceMock = new Mock<IWordDocumentService>();
         _calendarPlanWriter = new CalendarPlanWriter(_documentServiceMock.Object);
     }
 
