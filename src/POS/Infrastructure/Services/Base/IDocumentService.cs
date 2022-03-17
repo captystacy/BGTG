@@ -1,6 +1,6 @@
 ﻿namespace POS.Infrastructure.Services.Base;
 
-public interface IDocumentService
+public interface IWordDocumentService
 {
     int BaseDocumentIndex { get; set; }
     bool ReplaceInBaseDocumentMode { get; set; }

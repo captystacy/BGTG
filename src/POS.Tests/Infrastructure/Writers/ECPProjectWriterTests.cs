@@ -11,12 +11,12 @@ namespace POS.Tests.Infrastructure.Writers;
 public class ECPProjectWriterTests
 {
     private ECPProjectWriter _ecpProjectWriter = null!;
-    private Mock<IDocumentService> _documentServiceMock = null!;
+    private Mock<IWordDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _documentServiceMock = new Mock<IDocumentService>();
+        _documentServiceMock = new Mock<IWordDocumentService>();
         _ecpProjectWriter = new ECPProjectWriter(_documentServiceMock.Object);
     }
 

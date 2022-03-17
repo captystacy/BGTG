@@ -6,26 +6,26 @@ namespace POS.Infrastructure.Writers;
 
 public class TableOfContentsWriter : ITableOfContentsWriter
 {
-    private readonly IDocumentService _documentService;
+    private readonly IWordDocumentService _wordDocumentService;
 
     private const string CipherPattern = "%CIPHER%";
     private const string DatePattern = "%DATE%";
 
-    public TableOfContentsWriter(IDocumentService documentService)
+    public TableOfContentsWriter(IWordDocumentService wordDocumentService)
     {
-        _documentService = documentService;
+        _wordDocumentService = wordDocumentService;
     }
 
     public MemoryStream Write(string objectCipher, string templatePath)
     {
-        _documentService.Load(templatePath);
+        _wordDocumentService.Load(templatePath);
 
-        _documentService.ReplaceTextInDocument(CipherPattern, objectCipher);
-        _documentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
+        _wordDocumentService.ReplaceTextInDocument(CipherPattern, objectCipher);
+        _wordDocumentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
 
         var memoryStream = new MemoryStream();
-        _documentService.SaveAs(memoryStream);
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.DisposeLastDocument();
 
         return memoryStream;
     }

@@ -10,12 +10,12 @@ namespace POS.Tests.Infrastructure.Writers;
 public class DurationByLCWriterTests
 {
     private DurationByLCWriter _durationByLCWriter = null!;
-    private Mock<IDocumentService> _documentServiceMock = null!;
+    private Mock<IWordDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _documentServiceMock = new Mock<IDocumentService>();
+        _documentServiceMock = new Mock<IWordDocumentService>();
         _durationByLCWriter = new DurationByLCWriter(_documentServiceMock.Object);
     }
 

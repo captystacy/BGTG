@@ -3,7 +3,7 @@ using Xceed.Words.NET;
 
 namespace POS.Infrastructure.Services;
 
-public class DocumentService : IDocumentService
+public class WordDocumentService : IWordDocumentService
 {
     public int BaseDocumentIndex { get; set; }
     public bool ReplaceInBaseDocumentMode { get; set; }

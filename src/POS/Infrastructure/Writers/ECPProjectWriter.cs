@@ -7,7 +7,7 @@ namespace POS.Infrastructure.Writers;
 
 public class ECPProjectWriter : IECPProjectWriter
 {
-    private readonly IDocumentService _documentService;
+    private readonly IWordDocumentService _wordDocumentService;
     private const string DurationByLCFirstParagraphPattern = "%DURATION_BY_LC_FIRST_PARAGRAPH%";
     private const string DurationByLCTablePattern = "%DURATION_BY_LC_TABLE%";
     private const string DurationByLCDescriptionTablePattern = "%DURATION_BY_LC_DESCRIPTION_TABLE%";
@@ -30,105 +30,105 @@ public class ECPProjectWriter : IECPProjectWriter
     private const string AcceptanceTimePattern = "%AT%";
     private const string TotalLaborCostsPattern = "%TLC%";
 
-    public ECPProjectWriter(IDocumentService documentService)
+    public ECPProjectWriter(IWordDocumentService wordDocumentService)
     {
-        _documentService = documentService;
+        _wordDocumentService = wordDocumentService;
     }
 
     public MemoryStream Write(Stream durationByLCStream, Stream calendarPlanStream, Stream energyAndWaterStream, string objectCipher, string templatePath)
     {
-        _documentService.Load(templatePath);
-        _documentService.ReplaceInBaseDocumentMode = true;
+        _wordDocumentService.Load(templatePath);
+        _wordDocumentService.ReplaceInBaseDocumentMode = true;
 
-        _documentService.ReplaceTextInDocument(CipherPattern, objectCipher);
-        _documentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
+        _wordDocumentService.ReplaceTextInDocument(CipherPattern, objectCipher);
+        _wordDocumentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
 
         ReplacePatternsWithDurationByLC(durationByLCStream);
         ReplacePatternsWithCalendarPlan(calendarPlanStream);
         ReplacePatternsWithEnergyAndWater(energyAndWaterStream);
 
         var memoryStream = new MemoryStream();
-        _documentService.SaveAs(memoryStream);
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.DisposeLastDocument();
         return memoryStream;
     }
 
     public int GetNumberOfEmployees(Stream durationByLCStream)
     {
-        _documentService.Load(durationByLCStream);
-        _documentService.TableIndex = 1;
-        _documentService.RowIndex = 4;
-        _documentService.ParagraphIndex = 1;
-        var numberOfEmployees = int.Parse(_documentService.ParagraphTextInRow);
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.Load(durationByLCStream);
+        _wordDocumentService.TableIndex = 1;
+        _wordDocumentService.RowIndex = 4;
+        _wordDocumentService.ParagraphIndex = 1;
+        var numberOfEmployees = int.Parse(_wordDocumentService.ParagraphTextInRow);
+        _wordDocumentService.DisposeLastDocument();
         return numberOfEmployees;
     }
 
     private void ReplaceConstructionStartDateAndConstructionYear()
     {
-        _documentService.RowIndex = 1;
-        _documentService.ParagraphIndex = 3;
-        var constructionStartDateStr = _documentService.ParagraphTextInRow.ToLower();
+        _wordDocumentService.RowIndex = 1;
+        _wordDocumentService.ParagraphIndex = 3;
+        var constructionStartDateStr = _wordDocumentService.ParagraphTextInRow.ToLower();
 
         var constructionYearStr = Regex.Match(constructionStartDateStr, @"\d+").Value;
 
-        _documentService.ReplaceTextInDocument(ConstructionStartDatePattern, constructionStartDateStr);
-        _documentService.ReplaceTextInDocument(ConstructionYearPattern, constructionYearStr);
+        _wordDocumentService.ReplaceTextInDocument(ConstructionStartDatePattern, constructionStartDateStr);
+        _wordDocumentService.ReplaceTextInDocument(ConstructionYearPattern, constructionYearStr);
     }
 
     private void ReplacePatternsWithEnergyAndWater(Stream energyAndWaterStream)
     {
-        _documentService.Load(energyAndWaterStream);
+        _wordDocumentService.Load(energyAndWaterStream);
         energyAndWaterStream.Close();
 
-        _documentService.ReplaceTextWithTable(EnergyAndWaterTablePattern);
+        _wordDocumentService.ReplaceTextWithTable(EnergyAndWaterTablePattern);
 
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.DisposeLastDocument();
     }
 
     private void ReplacePatternsWithCalendarPlan(Stream calendarPlanStream)
     {
-        _documentService.Load(calendarPlanStream);
+        _wordDocumentService.Load(calendarPlanStream);
         calendarPlanStream.Close();
 
-        _documentService.ReplaceTextWithTable(CalendarPlanPreparatoryTablePattern);
-        _documentService.TableIndex = 1;
-        _documentService.ReplaceTextWithTable(CalendarPlanMainTablePattern);
+        _wordDocumentService.ReplaceTextWithTable(CalendarPlanPreparatoryTablePattern);
+        _wordDocumentService.TableIndex = 1;
+        _wordDocumentService.ReplaceTextWithTable(CalendarPlanMainTablePattern);
 
         ReplaceConstructionStartDateAndConstructionYear();
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.DisposeLastDocument();
     }
 
     private void ReplacePatternsWithDurationByLC(Stream durationByLCStream)
     {
-        _documentService.Load(durationByLCStream);
+        _wordDocumentService.Load(durationByLCStream);
         durationByLCStream.Close();
 
-        var durationByLCFirstParagraph = _documentService.ParagraphTextInDocument;
-        _documentService.ParagraphIndex = _documentService.ParagraphsCountInDocument - 2;
-        var durationByLCPenultimateParagraph = _documentService.ParagraphsCountInDocument == 35 
-            ? _documentService.ParagraphTextInDocument
+        var durationByLCFirstParagraph = _wordDocumentService.ParagraphTextInDocument;
+        _wordDocumentService.ParagraphIndex = _wordDocumentService.ParagraphsCountInDocument - 2;
+        var durationByLCPenultimateParagraph = _wordDocumentService.ParagraphsCountInDocument == 35 
+            ? _wordDocumentService.ParagraphTextInDocument
             : string.Empty;
-        _documentService.ParagraphIndex = _documentService.ParagraphsCountInDocument - 1;
-        var durationByLCLastParagraph = _documentService.ParagraphTextInDocument;
+        _wordDocumentService.ParagraphIndex = _wordDocumentService.ParagraphsCountInDocument - 1;
+        var durationByLCLastParagraph = _wordDocumentService.ParagraphTextInDocument;
 
-        _documentService.ReplaceTextInDocument(DurationByLCFirstParagraphPattern, durationByLCFirstParagraph);
-        _documentService.TableIndex = 0;
-        _documentService.ReplaceTextWithTable(DurationByLCTablePattern);
-        _documentService.TableIndex = 1;
-        _documentService.ReplaceTextWithTable(DurationByLCDescriptionTablePattern);
-        _documentService.ReplaceTextInDocument(DurationByLCPenultimateParagraphPattern, durationByLCPenultimateParagraph);
-        _documentService.ReplaceTextInDocument(DurationByLCLastParagraphPattern, durationByLCLastParagraph);
+        _wordDocumentService.ReplaceTextInDocument(DurationByLCFirstParagraphPattern, durationByLCFirstParagraph);
+        _wordDocumentService.TableIndex = 0;
+        _wordDocumentService.ReplaceTextWithTable(DurationByLCTablePattern);
+        _wordDocumentService.TableIndex = 1;
+        _wordDocumentService.ReplaceTextWithTable(DurationByLCDescriptionTablePattern);
+        _wordDocumentService.ReplaceTextInDocument(DurationByLCPenultimateParagraphPattern, durationByLCPenultimateParagraph);
+        _wordDocumentService.ReplaceTextInDocument(DurationByLCLastParagraphPattern, durationByLCLastParagraph);
 
         ReplacePatternsWithTechnicalAndEconomicIndicators();
 
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.DisposeLastDocument();
     }
 
     private void ReplacePatternsWithTechnicalAndEconomicIndicators()
     {
-        _documentService.ParagraphIndex = _documentService.ParagraphsCountInDocument - 1;
-        var lastParagraphParts = _documentService.ParagraphTextInDocument.Split("мес,");
+        _wordDocumentService.ParagraphIndex = _wordDocumentService.ParagraphsCountInDocument - 1;
+        var lastParagraphParts = _wordDocumentService.ParagraphTextInDocument.Split("мес,");
 
         var totalDurationStr = Regex.Match(lastParagraphParts[0], @"[\d,]+").Value;
         var preparatoryPeriodStr = Regex.Match(lastParagraphParts[1], @"[\d,]+").Value;
@@ -138,13 +138,13 @@ public class ECPProjectWriter : IECPProjectWriter
             acceptanceTimeStr = Regex.Match(lastParagraphParts[2], @"[\d,]+").Value;
         }
 
-        _documentService.TableIndex = 1;
-        _documentService.ParagraphIndex = 1;
-        var totalLaborCostsStr = _documentService.ParagraphTextInRow;
+        _wordDocumentService.TableIndex = 1;
+        _wordDocumentService.ParagraphIndex = 1;
+        var totalLaborCostsStr = _wordDocumentService.ParagraphTextInRow;
 
-        _documentService.ReplaceTextInDocument(TotalDurationPattern, totalDurationStr);
-        _documentService.ReplaceTextInDocument(PreparatoryPeriodPattern, preparatoryPeriodStr);
-        _documentService.ReplaceTextInDocument(AcceptanceTimePattern, acceptanceTimeStr);
-        _documentService.ReplaceTextInDocument(TotalLaborCostsPattern, totalLaborCostsStr);
+        _wordDocumentService.ReplaceTextInDocument(TotalDurationPattern, totalDurationStr);
+        _wordDocumentService.ReplaceTextInDocument(PreparatoryPeriodPattern, preparatoryPeriodStr);
+        _wordDocumentService.ReplaceTextInDocument(AcceptanceTimePattern, acceptanceTimeStr);
+        _wordDocumentService.ReplaceTextInDocument(TotalLaborCostsPattern, totalLaborCostsStr);
     }
 }

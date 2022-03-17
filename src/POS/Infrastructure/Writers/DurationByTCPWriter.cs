@@ -8,7 +8,7 @@ namespace POS.Infrastructure.Writers;
 
 public class DurationByTCPWriter : IDurationByTCPWriter
 {
-    private readonly IDocumentService _documentService;
+    private readonly IWordDocumentService _wordDocumentService;
     private const string PipelineMaterialPattern = "%PM%";
     private const string PipelineDiameterPresentationPattern = "%PDP%";
     private const string PipelineLengthPattern = "%PL%";
@@ -61,34 +61,34 @@ public class DurationByTCPWriter : IDurationByTCPWriter
 
     #endregion
 
-    public DurationByTCPWriter(IDocumentService documentService)
+    public DurationByTCPWriter(IWordDocumentService wordDocumentService)
     {
-        _documentService = documentService;
+        _wordDocumentService = wordDocumentService;
     }
 
     public MemoryStream Write(DurationByTCP durationByTCP, string templatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-        _documentService.Load(templatePath);
+        _wordDocumentService.Load(templatePath);
         ReplacePatternsWithActualValues(durationByTCP);
 
         var memoryStream = new MemoryStream();
-        _documentService.SaveAs(memoryStream);
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.DisposeLastDocument();
         return memoryStream;
     }
 
     private void ReplacePatternsWithActualValues(DurationByTCP durationByTCP)
     {
-        _documentService.ReplaceTextInDocument(PipelineMaterialPattern, durationByTCP.PipelineMaterial);
-        _documentService.ReplaceTextInDocument(PipelineDiameterPresentationPattern, durationByTCP.PipelineDiameterPresentation);
-        _documentService.ReplaceTextInDocument(PipelineLengthPattern, durationByTCP.PipelineLength.ToString(AppConstants.DecimalFormat));
-        _documentService.ReplaceTextInDocument(DurationPattern, durationByTCP.Duration.ToString(AppConstants.DecimalFormat));
-        _documentService.ReplaceTextInDocument(RoundedDurationPattern, durationByTCP.RoundedDuration.ToString(AppConstants.DecimalFormat));
-        _documentService.ReplaceTextInDocument(PreparatoryPeriodPattern, durationByTCP.PreparatoryPeriod.ToString(AppConstants.DecimalFormat));
-        _documentService.ReplaceTextInDocument(AppendixKeyPattern, durationByTCP.AppendixKey.ToString());
-        _documentService.ReplaceTextInDocument(AppendixPagePattern, durationByTCP.AppendixPage.ToString());
+        _wordDocumentService.ReplaceTextInDocument(PipelineMaterialPattern, durationByTCP.PipelineMaterial);
+        _wordDocumentService.ReplaceTextInDocument(PipelineDiameterPresentationPattern, durationByTCP.PipelineDiameterPresentation);
+        _wordDocumentService.ReplaceTextInDocument(PipelineLengthPattern, durationByTCP.PipelineLength.ToString(AppConstants.DecimalFormat));
+        _wordDocumentService.ReplaceTextInDocument(DurationPattern, durationByTCP.Duration.ToString(AppConstants.DecimalFormat));
+        _wordDocumentService.ReplaceTextInDocument(RoundedDurationPattern, durationByTCP.RoundedDuration.ToString(AppConstants.DecimalFormat));
+        _wordDocumentService.ReplaceTextInDocument(PreparatoryPeriodPattern, durationByTCP.PreparatoryPeriod.ToString(AppConstants.DecimalFormat));
+        _wordDocumentService.ReplaceTextInDocument(AppendixKeyPattern, durationByTCP.AppendixKey.ToString());
+        _wordDocumentService.ReplaceTextInDocument(AppendixPagePattern, durationByTCP.AppendixPage.ToString());
 
         ReplaceDurationCalculationTypeAndParagraph(durationByTCP.DurationCalculationType);
 
@@ -102,40 +102,40 @@ public class DurationByTCPWriter : IDurationByTCPWriter
             case InterpolationDurationByTCP interpolationDuration:
                 var calculationPipelineStandards = interpolationDuration.CalculationPipelineStandards.ToArray();
 
-                _documentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardPipelineLengthPattern0,
+                _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardPipelineLengthPattern0,
                     calculationPipelineStandards[0].PipelineLength.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardPipelineLengthPattern1,
+                _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardPipelineLengthPattern1,
                     calculationPipelineStandards[1].PipelineLength.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardDurationPattern0,
+                _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardDurationPattern0,
                     calculationPipelineStandards[0].Duration.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardDurationPattern1,
+                _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardDurationPattern1,
                     calculationPipelineStandards[1].Duration.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(DurationChangePattern,
+                _wordDocumentService.ReplaceTextInDocument(DurationChangePattern,
                     interpolationDuration.DurationChange.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(VolumeChangePattern,
+                _wordDocumentService.ReplaceTextInDocument(VolumeChangePattern,
                     interpolationDuration.VolumeChange.ToString(AppConstants.DecimalFormat));
                 break;
             case ExtrapolationDurationByTCP extrapolationDuration:
                 var calculationPipelineStandard = extrapolationDuration.CalculationPipelineStandards.First();
 
-                _documentService.ReplaceTextInDocument(ExtrapolationCalculationPipelineStandardPipelineLengthPattern,
+                _wordDocumentService.ReplaceTextInDocument(ExtrapolationCalculationPipelineStandardPipelineLengthPattern,
                     calculationPipelineStandard.PipelineLength.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(ExtrapolationCalculationPipelineStandardDurationPattern,
+                _wordDocumentService.ReplaceTextInDocument(ExtrapolationCalculationPipelineStandardDurationPattern,
                     calculationPipelineStandard.Duration.ToString(AppConstants.DecimalFormat));
 
-                _documentService.ReplaceTextInDocument(VolumeChangePercentPattern,
+                _wordDocumentService.ReplaceTextInDocument(VolumeChangePercentPattern,
                     extrapolationDuration.VolumeChangePercent.ToString(AppConstants.DecimalFormat));
-                _documentService.ReplaceTextInDocument(StandardChangePercentPattern,
+                _wordDocumentService.ReplaceTextInDocument(StandardChangePercentPattern,
                     extrapolationDuration.StandardChangePercent.ToString(AppConstants.DecimalFormat));
 
                 if (extrapolationDuration is StepwiseExtrapolationDurationByTCP stepwiseExtrapolationDurationByTCP)
                 {
-                    _documentService.ReplaceTextInDocument(StepwiseDurationPattern,
+                    _wordDocumentService.ReplaceTextInDocument(StepwiseDurationPattern,
                         stepwiseExtrapolationDurationByTCP.StepwiseDuration.ToString(AppConstants.DecimalFormat));
-                    _documentService.ReplaceTextInDocument(StepwisePipelineStandardPipelineLength,
+                    _wordDocumentService.ReplaceTextInDocument(StepwisePipelineStandardPipelineLength,
                         stepwiseExtrapolationDurationByTCP.StepwisePipelineStandard.PipelineLength.ToString(
                             AppConstants.DecimalFormat));
-                    _documentService.ReplaceTextInDocument(StepwisePipelineStandardDuration,
+                    _wordDocumentService.ReplaceTextInDocument(StepwisePipelineStandardDuration,
                         stepwiseExtrapolationDurationByTCP.StepwisePipelineStandard.Duration.ToString(
                             AppConstants.DecimalFormat));
                 }
@@ -149,28 +149,28 @@ public class DurationByTCPWriter : IDurationByTCPWriter
         switch (durationCalculationType)
         {
             case DurationCalculationType.Interpolation:
-                _documentService.ReplaceTextInDocument(DurationCalculationTypePattern, InterpolationDurationCalculationTypeName);
-                _documentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypePattern, InterpolationDurationCalculationTypeName);
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
                     InterpolationDurationCalculationTypeParagraphName);
                 break;
             case DurationCalculationType.ExtrapolationAscending:
-                _documentService.ReplaceTextInDocument(DurationCalculationTypePattern, ExtrapolationDurationCalculationTypeName);
-                _documentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypePattern, ExtrapolationDurationCalculationTypeName);
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
                     ExtrapolationAscendingDurationCalculationTypeParagraphName);
                 break;
             case DurationCalculationType.ExtrapolationDescending:
-                _documentService.ReplaceTextInDocument(DurationCalculationTypePattern, ExtrapolationDurationCalculationTypeName);
-                _documentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypePattern, ExtrapolationDurationCalculationTypeName);
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
                     ExtrapolationDescendingDurationCalculationTypeParagraphName);
                 break;
             case DurationCalculationType.StepwiseExtrapolationAscending:
-                _documentService.ReplaceTextInDocument(DurationCalculationTypePattern, StepwiseExtrapolationDurationCalculationTypeName);
-                _documentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypePattern, StepwiseExtrapolationDurationCalculationTypeName);
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
                     StepwiseExtrapolationAscendingDurationCalculationTypeParagraphName);
                 break;
             case DurationCalculationType.StepwiseExtrapolationDescending:
-                _documentService.ReplaceTextInDocument(DurationCalculationTypePattern, StepwiseExtrapolationDurationCalculationTypeName);
-                _documentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypePattern, StepwiseExtrapolationDurationCalculationTypeName);
+                _wordDocumentService.ReplaceTextInDocument(DurationCalculationTypeParagraphPattern,
                     StepwiseExtrapolationDescendingDurationCalculationTypeParagraphName);
                 break;
             default:

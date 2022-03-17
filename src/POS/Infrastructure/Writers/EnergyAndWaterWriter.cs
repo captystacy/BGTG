@@ -8,7 +8,7 @@ namespace POS.Infrastructure.Writers;
 
 public class EnergyAndWaterWriter : IEnergyAndWaterWriter
 {
-    private readonly IDocumentService _documentService;
+    private readonly IWordDocumentService _wordDocumentService;
 
     private const string ConstructionYearPattern = "%CY%";
     private const string VolumeCaiwPattern = "%CAIWV%";
@@ -18,33 +18,33 @@ public class EnergyAndWaterWriter : IEnergyAndWaterWriter
     private const string OxygenPattern = "%O%";
     private const int TargetRowIndex = 2;
 
-    public EnergyAndWaterWriter(IDocumentService documentService)
+    public EnergyAndWaterWriter(IWordDocumentService wordDocumentService)
     {
-        _documentService = documentService;
+        _wordDocumentService = wordDocumentService;
     }
 
     public MemoryStream Write(EnergyAndWater energyAndWater, string templatePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-        _documentService.Load(templatePath);
+        _wordDocumentService.Load(templatePath);
         ModifyEnergyAndWaterTable(energyAndWater);
 
         var memoryStream = new MemoryStream();
-        _documentService.SaveAs(memoryStream);
-        _documentService.DisposeLastDocument();
+        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.DisposeLastDocument();
 
         return memoryStream;
     }
 
     private void ModifyEnergyAndWaterTable(EnergyAndWater energyAndWater)
     {
-        _documentService.RowIndex = TargetRowIndex;
-        _documentService.ReplaceTextInDocument(ConstructionYearPattern, energyAndWater.ConstructionYear.ToString());
-        _documentService.ReplaceTextInDocument(VolumeCaiwPattern, energyAndWater.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
-        _documentService.ReplaceTextInDocument(EnergyPattern, energyAndWater.Energy.ToString(AppConstants.DecimalThreePlacesFormat));
-        _documentService.ReplaceTextInDocument(WaterPattern, energyAndWater.Water.ToString(AppConstants.DecimalThreePlacesFormat));
-        _documentService.ReplaceTextInDocument(CompressedAirPattern, energyAndWater.CompressedAir.ToString(AppConstants.DecimalThreePlacesFormat));
-        _documentService.ReplaceTextInDocument(OxygenPattern, energyAndWater.Oxygen.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.RowIndex = TargetRowIndex;
+        _wordDocumentService.ReplaceTextInDocument(ConstructionYearPattern, energyAndWater.ConstructionYear.ToString());
+        _wordDocumentService.ReplaceTextInDocument(VolumeCaiwPattern, energyAndWater.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.ReplaceTextInDocument(EnergyPattern, energyAndWater.Energy.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.ReplaceTextInDocument(WaterPattern, energyAndWater.Water.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.ReplaceTextInDocument(CompressedAirPattern, energyAndWater.CompressedAir.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.ReplaceTextInDocument(OxygenPattern, energyAndWater.Oxygen.ToString(AppConstants.DecimalThreePlacesFormat));
     }
 }

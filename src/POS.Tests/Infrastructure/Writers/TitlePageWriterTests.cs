@@ -9,12 +9,12 @@ namespace POS.Tests.Infrastructure.Writers;
 public class TitlePageWriterTests
 {
     private TitlePageWriter _titlePageWriter = null!;
-    private Mock<IDocumentService> _documentServiceMock = null!;
+    private Mock<IWordDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _documentServiceMock = new Mock<IDocumentService>();
+        _documentServiceMock = new Mock<IWordDocumentService>();
         _titlePageWriter = new TitlePageWriter(_documentServiceMock.Object);
     }
 

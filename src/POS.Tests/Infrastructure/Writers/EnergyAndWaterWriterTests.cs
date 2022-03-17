@@ -11,12 +11,12 @@ namespace POS.Tests.Infrastructure.Writers;
 public class EnergyAndWaterWriterTests
 {
     private EnergyAndWaterWriter _energyAndWaterWriter = null!;
-    private Mock<IDocumentService> _documentServiceMock = null!;
+    private Mock<IWordDocumentService> _documentServiceMock = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _documentServiceMock = new Mock<IDocumentService>();
+        _documentServiceMock = new Mock<IWordDocumentService>();
         _energyAndWaterWriter = new EnergyAndWaterWriter(_documentServiceMock.Object);
     }
 
