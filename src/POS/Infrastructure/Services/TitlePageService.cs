@@ -27,6 +27,6 @@ public class TitlePageService : ITitlePageService
 
     private string GetTemplatePath(ChiefProjectEngineer chiefProjectEngineer)
     {
-        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"{chiefProjectEngineer}.docx");
+        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"{chiefProjectEngineer}.doc");
     }
 }

@@ -51,18 +51,9 @@ public class ProjectService : IProjectService
 
     private string GetTemplatePath(ProjectViewModel dto, int numberOfEmployees)
     {
-        var templateFileName = $"HouseholdTown{TemplateHelper.GetPlusOrMinus(dto.HouseholdTownIncluded)}.docx";
-        var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
+        var templateFileName = $"HouseholdTown{TemplateHelper.GetPlusOrMinus(dto.HouseholdTownIncluded)}.doc";
+        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
             dto.ProjectTemplate.ToString(), dto.ChiefProjectEngineer.ToString(),
             dto.ProjectEngineer.ToString(), $"Employees{numberOfEmployees}", templateFileName);
-
-        if (!File.Exists(templatePath))
-        {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
-                dto.ProjectTemplate.ToString(), dto.ChiefProjectEngineer.ToString(),
-                Constants.AppConstants.Unknown, $"Employees{numberOfEmployees}", templateFileName);
-        }
-
-        return templatePath;
     }
 }

@@ -23,19 +23,19 @@ export class POSService {
     formData.append('HouseholdTownIncluded', project.householdTownIncluded.toString());
 
     this._http.post('api/POS/DownloadProject', formData, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, "ЭХЗ");
+      saveAs(data, "ЭХЗ.doc");
     }, error => console.error(error));
   }
 
   downloadTableOfContents(tableOfContents: ITableOfContents): void {
     this._http.post('api/POS/DownloadTableOfContents', tableOfContents, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, "Содержание");
+      saveAs(data, "Содержание.doc");
     }, error => console.error(error));
   }
 
   downloadTitlePage(titlePage: ITitlePage): void {
     this._http.post('api/POS/DownloadTitlePage', titlePage, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, "Титульник");
+      saveAs(data, "Титульник.doc");
     }, error => console.error(error));
   }
 }

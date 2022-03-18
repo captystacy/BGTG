@@ -27,6 +27,6 @@ public class TableOfContentsService : ITableOfContentsService
     private string GetTemplatePath(TableOfContentsViewModel viewModel)
     {
         return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, viewModel.ProjectTemplate.ToString(),
-            viewModel.ChiefProjectEngineer.ToString(), viewModel.ProjectEngineer + ".docx");
+            viewModel.ChiefProjectEngineer.ToString(), viewModel.ProjectEngineer + ".doc");
     }
 }

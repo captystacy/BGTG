@@ -31,7 +31,7 @@ public class EnergyAndWaterWriter : IEnergyAndWaterWriter
         ModifyEnergyAndWaterTable(energyAndWater);
 
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.DocX);
         _wordDocumentService.DisposeLastDocument();
 
         return memoryStream;

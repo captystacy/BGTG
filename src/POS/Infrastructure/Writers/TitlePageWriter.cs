@@ -1,4 +1,5 @@
-﻿using POS.Infrastructure.Services.Base;
+﻿using POS.DomainModels;
+using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers.Base;
 
 namespace POS.Infrastructure.Writers;
@@ -24,7 +25,7 @@ public class TitlePageWriter : ITitlePageWriter
         _wordDocumentService.ReplaceTextInDocument(YearPattern, DateTime.Now.Year.ToString());
 
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.Doc);
         _wordDocumentService.DisposeLastDocument();
 
         return memoryStream;

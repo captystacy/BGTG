@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using POS.DomainModels;
 using POS.DomainModels.DurationByTCPDomainModels;
 using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
@@ -74,7 +75,7 @@ public class DurationByTCPWriter : IDurationByTCPWriter
         ReplacePatternsWithActualValues(durationByTCP);
 
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.DocX);
         _wordDocumentService.DisposeLastDocument();
         return memoryStream;
     }
