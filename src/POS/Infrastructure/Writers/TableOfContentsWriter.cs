@@ -1,4 +1,5 @@
-﻿using POS.Infrastructure.Constants;
+﻿using POS.DomainModels;
+using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers.Base;
 
@@ -24,7 +25,7 @@ public class TableOfContentsWriter : ITableOfContentsWriter
         _wordDocumentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
 
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.Doc);
         _wordDocumentService.DisposeLastDocument();
 
         return memoryStream;

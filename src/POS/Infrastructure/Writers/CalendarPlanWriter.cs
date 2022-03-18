@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using POS.DomainModels;
 using POS.DomainModels.CalendarPlanDomainModels;
 using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
@@ -19,7 +20,22 @@ public class CalendarPlanWriter : ICalendarPlanWriter
     private const int BottomPatternRowIndex = 3;
     private const int AcceptanceTimeRowIndex = 2;
 
+    private const int DateRowIndex = 1;
+    private const int DateCellStartIndex = 3;
+
+    private const int RowIndexWhichHasMaximumCellsCount = 1;
+
+    private const int PercentageCellStartIndex = 2;
+
+    private const int WorkNameCellIndex = 0;
+    private const int TotalCostCellIndex = 1;
+    private const int TotalCostIncludingCAIWCellIndex = 2;
+
+    private const int InvestmentVolumeAndVolumeCAIWStartCellIndex = 3;
+
     private const string AcceptanceTimeCellStr = "Приемка объекта в эксплуатацию";
+
+    private int _lastCellIndex;
 
     public CalendarPlanWriter(IWordDocumentService wordDocumentService)
     {
@@ -36,25 +52,24 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         ModifyCalendarPlanTable(calendarPlan.PreparatoryCalendarWorks, preparatoryConstructionMonths);
 
         _wordDocumentService.Load(mainTemplatePath);
-        _wordDocumentService.CurrentDocumentIndex = 1;
+        _wordDocumentService.DocumentIndex = 1;
 
         var mainConstructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == AppConstants.TotalWorkName).ConstructionMonths.ToArray();
         ModifyCalendarPlanTable(calendarPlan.MainCalendarWorks, mainConstructionMonths);
 
         if (calendarPlan.ConstructionDurationCeiling > 1)
         {
-            var columnIndex = _wordDocumentService.ColumnCountInTable - 1;
             var endRowIndex = _wordDocumentService.RowCount - 2;
-            _wordDocumentService.MergeCellsInColumn(columnIndex, AcceptanceTimeRowIndex, endRowIndex);
+            _wordDocumentService.ApplyVerticalMerge(_lastCellIndex, AcceptanceTimeRowIndex, endRowIndex);
             _wordDocumentService.RowIndex = AcceptanceTimeRowIndex;
-            _wordDocumentService.CellIndex = columnIndex;
-            _wordDocumentService.AppendInRow(AcceptanceTimeCellStr);
+            _wordDocumentService.CellIndex = _lastCellIndex;
+            _wordDocumentService.AddParagraph(AcceptanceTimeCellStr);
         }
 
-        _wordDocumentService.InsertDocument(0, 1);
+        _wordDocumentService.MergeDocuments(0, 1);
 
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.DocX);
 
         _wordDocumentService.DisposeAllDocuments();
         return memoryStream;
@@ -62,6 +77,9 @@ public class CalendarPlanWriter : ICalendarPlanWriter
 
     private void ModifyCalendarPlanTable(IEnumerable<CalendarWork> calendarWorks, ConstructionMonth[] constructionMonths)
     {
+        _wordDocumentService.RowIndex = RowIndexWhichHasMaximumCellsCount;
+        _lastCellIndex = _wordDocumentService.CellsCountInRow - 1;
+
         ReplaceDatePatternWithActualDate(constructionMonths);
 
         foreach (var calendarWork in calendarWorks)
@@ -83,20 +101,21 @@ public class CalendarPlanWriter : ICalendarPlanWriter
     {
         var monthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
 
-        var rowIndex = 1;
         for (int i = 0; i < constructionMonths.Length; i++)
         {
             var monthName = monthNames[constructionMonths[i].Date.Month - 1];
-            _wordDocumentService.RowIndex = rowIndex;
-            _wordDocumentService.ReplaceTextInRow($"%D{i}%", FormatMonth(monthName, constructionMonths[i].Date.Year));
+            _wordDocumentService.RowIndex = DateRowIndex;
+            _wordDocumentService.CellIndex = DateCellStartIndex + i;
+            _wordDocumentService.ReplaceTextInCell($"%D{i}%", FormatMonth(monthName, constructionMonths[i].Date.Year));
         }
 
         if (constructionMonths.Length > 1)
         {
             var acceptanceDate = constructionMonths[^1].Date.AddMonths(1);
             var acceptanceMonthName = monthNames[acceptanceDate.Month - 1];
-            _wordDocumentService.RowIndex = rowIndex;
-            _wordDocumentService.ReplaceTextInRow(DateAcceptancePattern, FormatMonth(acceptanceMonthName, acceptanceDate.Year));
+            _wordDocumentService.RowIndex = DateRowIndex;
+            _wordDocumentService.CellIndex = _lastCellIndex;
+            _wordDocumentService.ReplaceTextInCell(DateAcceptancePattern, FormatMonth(acceptanceMonthName, acceptanceDate.Year));
         }
     }
 
@@ -113,29 +132,36 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         _wordDocumentService.InsertTemplateRow(BottomPatternRowIndex, newBottomRowIndex);
 
         _wordDocumentService.RowIndex = newTopRowIndex;
-        _wordDocumentService.ReplaceTextInRow(WorkNamePattern, calendarWork.WorkName);
-        _wordDocumentService.ReplaceTextInRow(TotalCostPattern, calendarWork.TotalCost.ToString(AppConstants.DecimalThreePlacesFormat));
-        _wordDocumentService.ReplaceTextInRow(TotalCostIncludingCAIWPattern, calendarWork.TotalCostIncludingCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.CellIndex = WorkNameCellIndex;
+        _wordDocumentService.ReplaceTextInCell(WorkNamePattern, calendarWork.WorkName);
+        _wordDocumentService.CellIndex = TotalCostCellIndex;
+        _wordDocumentService.ReplaceTextInCell(TotalCostPattern, calendarWork.TotalCost.ToString(AppConstants.DecimalThreePlacesFormat));
+        _wordDocumentService.CellIndex = TotalCostIncludingCAIWCellIndex;
+        _wordDocumentService.ReplaceTextInCell(TotalCostIncludingCAIWPattern, calendarWork.TotalCostIncludingCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
 
         var constructionMonths = calendarWork.ConstructionMonths.ToArray();
         foreach (var constructionMonth in constructionMonths)
         {
             var creationIndex = constructionMonth.CreationIndex;
+            _wordDocumentService.CellIndex = InvestmentVolumeAndVolumeCAIWStartCellIndex + creationIndex;
             _wordDocumentService.RowIndex = newTopRowIndex;
-            _wordDocumentService.ReplaceTextInRow($"%IV{creationIndex}%", constructionMonth.InvestmentVolume.ToString(AppConstants.DecimalThreePlacesFormat));
+            _wordDocumentService.ReplaceTextInCell($"%IV{creationIndex}%",
+                constructionMonth.InvestmentVolume.ToString(AppConstants.DecimalThreePlacesFormat));
             _wordDocumentService.RowIndex = newBottomRowIndex;
-            _wordDocumentService.ReplaceTextInRow($"%IW{creationIndex}%", constructionMonth.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
+            _wordDocumentService.ReplaceTextInCell($"%IW{creationIndex}%",
+                constructionMonth.VolumeCAIW.ToString(AppConstants.DecimalThreePlacesFormat));
         }
     }
 
     private void ReplacePercentPartsWithActualPercentages(ConstructionMonth[] constructionMonths)
     {
         _wordDocumentService.RowIndex = _wordDocumentService.RowCount - 1;
-        if (_wordDocumentService.ParagraphsCountInRow > 1)
+        if (_wordDocumentService.CellsCountInRow > 1)
         {
             for (int i = 0; i < constructionMonths.Length; i++)
             {
-                _wordDocumentService.ReplaceTextInRow($"%P{i}%", constructionMonths[i].PercentPart.ToString(AppConstants.PercentFormat));
+                _wordDocumentService.CellIndex = PercentageCellStartIndex + i;
+                _wordDocumentService.ReplaceTextInCell($"%P{i}%", constructionMonths[i].PercentPart.ToString(AppConstants.PercentFormat));
             }
         }
     }
@@ -145,20 +171,18 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         for (int rowIndex = 2; rowIndex < _wordDocumentService.RowCount - 1; rowIndex++)
         {
             _wordDocumentService.RowIndex = rowIndex;
-            var paragraphsCountInRow = _wordDocumentService.ParagraphsCountInRow;
-            for (int paragraphIndex = 3; paragraphIndex < paragraphsCountInRow; paragraphIndex++)
+            for (int cellIndex = 3; cellIndex < _wordDocumentService.CellsCountInRow; cellIndex++)
             {
-                _wordDocumentService.ParagraphIndex = paragraphIndex;
+                _wordDocumentService.CellIndex = cellIndex;
                 _wordDocumentService.RowIndex = rowIndex;
-                if (_wordDocumentService.ParagraphTextInRow.StartsWith("%IV"))
+                if (_wordDocumentService.ParagraphsCountInCell != 0 && _wordDocumentService.ParagraphTextInCell.StartsWith("%IV"))
                 {
-                    _wordDocumentService.EmptyParagraphInRow();
-                    _wordDocumentService.AppendInRow("-");
+                    _wordDocumentService.RemoveParagraphInCell();
 
                     _wordDocumentService.RowIndex = rowIndex + 1;
-                    _wordDocumentService.EmptyParagraphInRow();
+                    _wordDocumentService.ParagraphTextInCell = "-";
 
-                    _wordDocumentService.MergeCellsInColumn(paragraphIndex, rowIndex, rowIndex + 1);
+                    _wordDocumentService.ApplyVerticalMerge(cellIndex, rowIndex, rowIndex + 1);
                 }
             }
         }

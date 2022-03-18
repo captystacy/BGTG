@@ -2,6 +2,7 @@
 using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers.Base;
 using System.Text.RegularExpressions;
+using POS.DomainModels;
 
 namespace POS.Infrastructure.Writers;
 
@@ -48,7 +49,7 @@ public class ECPProjectWriter : IECPProjectWriter
         ReplacePatternsWithEnergyAndWater(energyAndWaterStream);
 
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.Doc);
         _wordDocumentService.DisposeLastDocument();
         return memoryStream;
     }
@@ -58,8 +59,8 @@ public class ECPProjectWriter : IECPProjectWriter
         _wordDocumentService.Load(durationByLCStream);
         _wordDocumentService.TableIndex = 1;
         _wordDocumentService.RowIndex = 4;
-        _wordDocumentService.ParagraphIndex = 1;
-        var numberOfEmployees = int.Parse(_wordDocumentService.ParagraphTextInRow);
+        _wordDocumentService.CellIndex = 1;
+        var numberOfEmployees = int.Parse(_wordDocumentService.ParagraphTextInCell);
         _wordDocumentService.DisposeLastDocument();
         return numberOfEmployees;
     }
@@ -67,8 +68,8 @@ public class ECPProjectWriter : IECPProjectWriter
     private void ReplaceConstructionStartDateAndConstructionYear()
     {
         _wordDocumentService.RowIndex = 1;
-        _wordDocumentService.ParagraphIndex = 3;
-        var constructionStartDateStr = _wordDocumentService.ParagraphTextInRow.ToLower();
+        _wordDocumentService.CellIndex = 3;
+        var constructionStartDateStr = _wordDocumentService.ParagraphTextInCell.ToLower();
 
         var constructionYearStr = Regex.Match(constructionStartDateStr, @"\d+").Value;
 
@@ -92,7 +93,7 @@ public class ECPProjectWriter : IECPProjectWriter
         calendarPlanStream.Close();
 
         _wordDocumentService.ReplaceTextWithTable(CalendarPlanPreparatoryTablePattern);
-        _wordDocumentService.TableIndex = 1;
+        _wordDocumentService.SectionIndex = 1;
         _wordDocumentService.ReplaceTextWithTable(CalendarPlanMainTablePattern);
 
         ReplaceConstructionStartDateAndConstructionYear();
@@ -106,7 +107,7 @@ public class ECPProjectWriter : IECPProjectWriter
 
         var durationByLCFirstParagraph = _wordDocumentService.ParagraphTextInDocument;
         _wordDocumentService.ParagraphIndex = _wordDocumentService.ParagraphsCountInDocument - 2;
-        var durationByLCPenultimateParagraph = _wordDocumentService.ParagraphsCountInDocument == 35 
+        var durationByLCPenultimateParagraph = _wordDocumentService.ParagraphsCountInDocument == 5 
             ? _wordDocumentService.ParagraphTextInDocument
             : string.Empty;
         _wordDocumentService.ParagraphIndex = _wordDocumentService.ParagraphsCountInDocument - 1;
@@ -139,8 +140,9 @@ public class ECPProjectWriter : IECPProjectWriter
         }
 
         _wordDocumentService.TableIndex = 1;
-        _wordDocumentService.ParagraphIndex = 1;
-        var totalLaborCostsStr = _wordDocumentService.ParagraphTextInRow;
+        _wordDocumentService.CellIndex = 1;
+        _wordDocumentService.ParagraphIndex = 0;
+        var totalLaborCostsStr = _wordDocumentService.ParagraphTextInCell;
 
         _wordDocumentService.ReplaceTextInDocument(TotalDurationPattern, totalDurationStr);
         _wordDocumentService.ReplaceTextInDocument(PreparatoryPeriodPattern, preparatoryPeriodStr);

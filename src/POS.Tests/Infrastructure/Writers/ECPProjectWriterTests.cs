@@ -31,9 +31,9 @@ public class ECPProjectWriterTests
 
         var paragraphTextInDocument = "Принимаем продолжительность строительства равную 0,6 мес, в том числе подготовительный период – 0,06 мес, приемка объекта в эксплуатацию – 0,5 мес.";
         _documentServiceMock.Setup(x => x.ParagraphTextInDocument).Returns(paragraphTextInDocument);
-        _documentServiceMock.Setup(x => x.ParagraphsCountInDocument).Returns(35);
+        _documentServiceMock.Setup(x => x.ParagraphsCountInDocument).Returns(5);
         var constructionStartDate = "август 2022";
-        _documentServiceMock.Setup(x => x.ParagraphTextInRow).Returns(constructionStartDate);
+        _documentServiceMock.Setup(x => x.ParagraphTextInCell).Returns(constructionStartDate);
 
         var memoryStream = _ecpProjectWriter.Write(durationByLCStream, calendarPlanStream, energyAndWaterStream,
             objectCipher, templatePath);

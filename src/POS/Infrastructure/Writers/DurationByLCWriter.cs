@@ -36,7 +36,7 @@ public class DurationByLCWriter : IDurationByLCWriter
         _wordDocumentService.Load(templatePath);
         ReplacePatternsWithActualValues(durationByLC);
         var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream);
+        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.DocX);
         _wordDocumentService.DisposeLastDocument();
         return memoryStream;
     }

@@ -1,5 +1,7 @@
-﻿using POS.Infrastructure.Services.Base;
-using Xceed.Words.NET;
+﻿using POS.DomainModels;
+using POS.Infrastructure.Services.Base;
+using Spire.Doc;
+using Spire.Doc.Documents;
 
 namespace POS.Infrastructure.Services;
 
@@ -7,110 +9,175 @@ public class WordDocumentService : IWordDocumentService
 {
     public int BaseDocumentIndex { get; set; }
     public bool ReplaceInBaseDocumentMode { get; set; }
-    public int CurrentDocumentIndex { get; set; }
+    public int DocumentIndex { get; set; }
+    public int SectionIndex { get; set; }
     public int TableIndex { get; set; }
     public int RowIndex { get; set; }
     public int CellIndex { get; set; }
     public int ParagraphIndex { get; set; }
-    public int RowCount => _documents[CurrentDocumentIndex].Tables[TableIndex].RowCount;
-    public int ColumnCountInTable => _documents[CurrentDocumentIndex].Tables[TableIndex].ColumnCount;
-    public int ParagraphsCountInRow => _documents[CurrentDocumentIndex].Tables[TableIndex].Rows[RowIndex].Paragraphs.Count;
-    public int ParagraphsCountInTable => _documents[CurrentDocumentIndex].Tables[TableIndex].Paragraphs.Count;
-    public int ParagraphsCountInDocument => _documents[CurrentDocumentIndex].Paragraphs.Count;
-    public string ParagraphTextInRow => _documents[CurrentDocumentIndex].Tables[TableIndex].Rows[RowIndex].Paragraphs[ParagraphIndex].Text;
-    public string ParagraphTextInTable => _documents[CurrentDocumentIndex].Tables[TableIndex].Paragraphs[ParagraphIndex].Text;
-    public string ParagraphTextInDocument => _documents[CurrentDocumentIndex].Paragraphs[ParagraphIndex].Text;
+    public int RowCount => _documents[DocumentIndex].Sections[SectionIndex].Tables[TableIndex].Rows.Count;
+    public int CellsCountInRow => _documents[DocumentIndex].Sections[SectionIndex].Tables[TableIndex].Rows[RowIndex].Cells.Count;
+    public int ParagraphsCountInCell => _documents[DocumentIndex].Sections[SectionIndex].Tables[TableIndex].Rows[RowIndex].Cells[CellIndex].Paragraphs.Count;
+    public int ParagraphsCountInDocument => _documents[DocumentIndex].Sections[SectionIndex].Paragraphs.Count;
+    public string ParagraphTextInDocument => _documents[DocumentIndex].Sections[SectionIndex].Paragraphs[ParagraphIndex].Text;
 
-    private readonly List<DocX> _documents = new();
+    public string ParagraphTextInCell
+    {
+        get =>
+            _documents[DocumentIndex]
+                .Sections[SectionIndex]
+                .Tables[TableIndex]
+                .Rows[RowIndex]
+                .Cells[CellIndex]
+                .Paragraphs[ParagraphIndex]
+                .Text;
+        set =>
+            _documents[DocumentIndex]
+                .Sections[SectionIndex]
+                .Tables[TableIndex]
+                .Rows[RowIndex]
+                .Cells[CellIndex]
+                .Paragraphs[ParagraphIndex]
+                .Text = value;
+    }
+
+    private readonly List<Document> _documents = new();
 
     public void Load(string path)
     {
-        var document = DocX.Load(path);
+        var document = new Document(path);
         SetNewDocument(document);
     }
 
     public void Load(Stream stream)
     {
-        var document = DocX.Load(stream);
+        var document = new Document(stream);
         SetNewDocument(document);
     }
 
-    private void SetNewDocument(DocX document)
+    private void SetNewDocument(Document document)
     {
         _documents.Add(document);
-        CurrentDocumentIndex = _documents.Count - 1;
-        ResetIndexesBesidesDocumentIndex();
-    }
-
-    public void ResetIndexesBesidesDocumentIndex()
-    {
+        DocumentIndex = _documents.Count - 1;
+        SectionIndex = 0;
         TableIndex = 0;
         RowIndex = 0;
         CellIndex = 0;
         ParagraphIndex = 0;
     }
 
-    public void ResetAllIndexes()
+    public void ReplaceTextInCell(string searchValue, string newValue)
     {
-        BaseDocumentIndex = 0;
-        CurrentDocumentIndex = 0;
-        TableIndex = 0;
-        RowIndex = 0;
-        CellIndex = 0;
-        ParagraphIndex = 0;
-    }
-
-    public void ReplaceTextInRow(string searchValue, string newValue)
-    {
-        _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : CurrentDocumentIndex].Tables[TableIndex].Rows[RowIndex].ReplaceText(searchValue, newValue);
+        _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .Rows[RowIndex]
+            .Cells[CellIndex]
+            .Paragraphs[ParagraphIndex]
+            .Replace(searchValue, newValue, true, true);
     }
 
     public void ReplaceTextInDocument(string searchValue, string newValue)
     {
-        _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : CurrentDocumentIndex].ReplaceText(searchValue, newValue);
+        _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : DocumentIndex]
+            .Replace(searchValue, newValue, true, true);
     }
 
     public void ReplaceTextWithTable(string searchValue)
     {
-        var table = _documents[CurrentDocumentIndex].Tables[TableIndex];
-        _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : CurrentDocumentIndex].ReplaceTextWithObject(searchValue, table);
+        var textSelection = _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : DocumentIndex].FindString(searchValue, true, true);
+        var textRange = textSelection.GetAsOneRange();
+        var paragraph = textRange.OwnerParagraph;
+        var body = paragraph.OwnerTextBody;
+        var index = body.ChildObjects.IndexOf(paragraph);
+        var table = _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex].Clone();
+        body.ChildObjects.Remove(paragraph);
+        body.ChildObjects.Insert(index, table);
     }
 
     public void InsertTemplateRow(int templateRowIndex, int insertionIndex)
     {
-        var templateRow = _documents[CurrentDocumentIndex].Tables[TableIndex].Rows[templateRowIndex];
-        _documents[CurrentDocumentIndex].Tables[TableIndex].InsertRow(templateRow, insertionIndex);
+        var templateRow = _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .Rows[templateRowIndex]
+            .Clone();
+
+        _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .Rows
+            .Insert(insertionIndex, templateRow);
     }
 
     public void RemoveRow()
     {
-        _documents[CurrentDocumentIndex].Tables[TableIndex].Rows[RowIndex].Remove();
+        _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .Rows
+            .RemoveAt(RowIndex);
     }
 
-    public void EmptyParagraphInRow()
+    public void RemoveParagraphInCell()
     {
-        var paragraph = _documents[CurrentDocumentIndex].Tables[TableIndex].Rows[RowIndex].Paragraphs[ParagraphIndex];
-        paragraph.RemoveText(0, paragraph.Text.Length);
+        _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .Rows[RowIndex]
+            .Cells[CellIndex]
+            .Paragraphs
+            .RemoveAt(ParagraphIndex);
     }
 
-    public void MergeCellsInColumn(int columnIndex, int startRowIndex, int endRowIndex)
+    public void AddParagraph(string text, int fontSize = 12)
     {
-        _documents[CurrentDocumentIndex].Tables[TableIndex].MergeCellsInColumn(columnIndex, startRowIndex, endRowIndex);
+        var paragraph = new Paragraph(_documents[DocumentIndex]);
+        paragraph.AppendText(text);
+
+        var style = (ParagraphStyle)_documents[DocumentIndex].Styles.FindByName("Normal", StyleType.ParagraphStyle);
+        style.CharacterFormat.FontSize = fontSize;
+
+        paragraph.ApplyStyle(style);
+
+        _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .Rows[RowIndex]
+            .Cells[CellIndex]
+            .Paragraphs
+            .Add(paragraph);
     }
 
-    public void AppendInRow(string text, int fontSize = 12)
+    public void ApplyVerticalMerge(int columnIndex, int startRowIndex, int endRowIndex)
     {
-        _documents[CurrentDocumentIndex].Tables[TableIndex].Rows[RowIndex].Paragraphs[ParagraphIndex].Append(text).FontSize(fontSize);
+        _documents[DocumentIndex]
+            .Sections[SectionIndex]
+            .Tables[TableIndex]
+            .ApplyVerticalMerge(columnIndex, startRowIndex, endRowIndex);
     }
 
-    public void InsertDocument(int toDocumentIndex, int fromDocumentIndex)
+
+    public void MergeDocuments(int toDocumentIndex, int fromDocumentIndex)
     {
-        _documents[toDocumentIndex].InsertDocument(_documents[fromDocumentIndex]);
+        foreach (Section section in _documents[fromDocumentIndex].Sections)
+        {
+            _documents[toDocumentIndex].Sections.Add(section.Clone());
+        }
     }
 
-    public void SaveAs(Stream stream, int documentIndex = 0)
+    public void SaveAs(Stream stream, MyFileFormat myFileFormat, int documentIndex = 0)
     {
-        _documents[documentIndex].SaveAs(stream);
+        var fileFormat = myFileFormat switch
+        {
+            MyFileFormat.DocX => FileFormat.Docx,
+            MyFileFormat.Doc => FileFormat.Doc,
+            _ => throw new ArgumentOutOfRangeException(nameof(myFileFormat), myFileFormat, null)
+        };
+
+        _documents[documentIndex].SaveToStream(stream, fileFormat);
     }
 
     public void DisposeLastDocument()

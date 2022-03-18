@@ -13,11 +13,11 @@
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="11.0.1" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="DocX" Version="2.0.0" />
 		<PackageReference Include="EPPlus" Version="5.8.7" />
+		<PackageReference Include="FreeSpire.Doc" Version="10.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.3" />
 		<PackageReference Include="OperationResultCore" Version="3.0.1" />
-		<PackageReference Include="System.IO.Packaging" Version="6.0.0" />
+		<PackageReference Include="System.Security.Permissions" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,6 +60,12 @@
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Kapitan.doc" />
+	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Unknown.doc" />
+	  <None Remove="Infrastructure\Templates\TitlePageTemplates\Saiko.doc" />
 	</ItemGroup>
 
 </Project>
