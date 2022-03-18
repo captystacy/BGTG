@@ -10,7 +10,6 @@
 * [FreeSpire.Doc](https://www.e-iceblue.com/Introduce/free-doc-component.html)
 ## Клиентская часть:
 * [Angular](https://angular.io/)
-* [Bootstrap](https://getbootstrap.com/)
 ## Тесты:
 * [NUnit](https://github.com/nunit/nunit)
 * [moq](https://github.com/moq/moq)
