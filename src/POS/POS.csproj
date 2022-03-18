@@ -64,6 +64,8 @@
 
 	<ItemGroup>
 	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Kapitan.doc" />
+	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Prishep.doc" />
+	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Selivanova.doc" />
 	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Unknown.doc" />
 	  <None Remove="Infrastructure\Templates\TitlePageTemplates\Saiko.doc" />
 	</ItemGroup>

@@ -55,7 +55,9 @@ export class POSComponent {
   readonly projectEngineers =
     [
       { title: "Неизвестно", value: 0 },
-      { title: "Капитан", value: 1 }
+      { title: "Капитан", value: 1 },
+      { title: "Прищеп", value: 2 },
+      { title: "Селиванова", value: 3 }
     ];
 
   readonly chiefProjectEngineers =
