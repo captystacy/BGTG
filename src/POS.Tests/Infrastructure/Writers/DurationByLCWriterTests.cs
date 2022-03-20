@@ -40,7 +40,7 @@ public class DurationByLCWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%D%", "1000"), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%LC%", "2000"), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }

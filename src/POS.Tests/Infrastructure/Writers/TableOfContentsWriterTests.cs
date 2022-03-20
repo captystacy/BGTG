@@ -4,6 +4,7 @@ using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
 using System;
+using POS.DomainModels;
 
 namespace POS.Tests.Infrastructure.Writers;
 
@@ -31,7 +32,7 @@ public class TableOfContentsWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CIPHER%", objectCipher), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%DATE%", DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat)), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.Doc, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
 
         Assert.NotNull(memoryStream);

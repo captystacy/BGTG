@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
 using POS.DomainModels.DurationByTCPDomainModels;
 using POS.DomainModels.DurationByTCPDomainModels.TCPDomainModels;
 using POS.Infrastructure.Constants;
@@ -74,7 +75,7 @@ public class DurationByTCPWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%DC%", durationChange.ToString()), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%VC%", volumeChange.ToString()), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }
@@ -126,7 +127,7 @@ public class DurationByTCPWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%VCP%", volumeChangePercent.ToString()), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%SCP%", standardChangePercent.ToString()), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }
@@ -178,7 +179,7 @@ public class DurationByTCPWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%VCP%", volumeChangePercent.ToString()), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%SCP%", standardChangePercent.ToString()), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }
@@ -239,7 +240,7 @@ public class DurationByTCPWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%SPSPL%", stepwisePipelineStandard.PipelineLength.ToString()), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%SPSD%", stepwisePipelineStandard.Duration.ToString()), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }
@@ -300,7 +301,7 @@ public class DurationByTCPWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%SPSPL%", stepwisePipelineStandard.PipelineLength.ToString()), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%SPSD%", stepwisePipelineStandard.Duration.ToString()), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(It.IsAny<Stream>(), 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }

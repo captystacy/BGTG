@@ -4,5 +4,5 @@ namespace POS.Infrastructure.Services.Base;
 
 public interface IProjectService
 {
-    MemoryStream? Write(ProjectViewModel dto);
+    MemoryStream? Write(ProjectViewModel viewModel);
 }

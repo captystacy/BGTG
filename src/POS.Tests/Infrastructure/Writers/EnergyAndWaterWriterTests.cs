@@ -34,7 +34,7 @@ public class EnergyAndWaterWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%W%", energyAndWater.Water.ToString(AppConstants.DecimalThreePlacesFormat)));
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CA%", energyAndWater.CompressedAir.ToString(AppConstants.DecimalThreePlacesFormat)));
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%O%", energyAndWater.Oxygen.ToString(AppConstants.DecimalThreePlacesFormat)));
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }

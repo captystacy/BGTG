@@ -6,5 +6,5 @@ public interface IExcelDocumentService
     void Dispose();
     int WorkSheetIndex { get; set; }
     string WorkSheetName { get; }
-    string GetCellText(int row, int column);
+    string? GetCellText(int row, int column);
 }

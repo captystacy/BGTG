@@ -27,11 +27,13 @@ public class ProjectServiceTests
     [Test]
     public void Write()
     {
-        var calculationFiles = new FormFileCollection();
+        var calculationFiles = new FormFileCollection
+        {
+            new FormFile(new MemoryStream(), default, default, default, "Продолжительность по трудозатратам"),
+            new FormFile(new MemoryStream(), default, default, default, "Календарный план"),
+            new FormFile(new MemoryStream(), default, default, default, "Энергия и вода")
+        };
 
-        calculationFiles.Add(new FormFile(new MemoryStream(), default, default, default, "Продолжительность по трудозатратам"));
-        calculationFiles.Add(new FormFile(new MemoryStream(), default, default, default, "Календарный план"));
-        calculationFiles.Add(new FormFile(new MemoryStream(), default, default, default, "Энергия и вода"));
         var viewModel = new ProjectViewModel
         {
             CalculationFiles = calculationFiles,
@@ -41,7 +43,7 @@ public class ProjectServiceTests
             HouseholdTownIncluded = true,
         };
 
-        var templatePath = @"root\Infrastructure\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.docx";
+        var templatePath = @"root\Infrastructure\Templates\ProjectTemplates\ECP\Saiko\Unknown\Employees4\HouseholdTown+.doc";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
         _ecpProjectWriterMock
@@ -56,7 +58,7 @@ public class ProjectServiceTests
         var actualMemoryStream = _projectService.Write(viewModel);
 
         Assert.AreSame(expectedMemoryStream, actualMemoryStream);
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
+        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
         _ecpProjectWriterMock.Verify(
             x => x.Write(It.IsAny<Stream>(), It.IsAny<Stream>(), It.IsAny<Stream>(), viewModel.ObjectCipher, templatePath), Times.Once);
         _ecpProjectWriterMock.Verify(x => x.GetNumberOfEmployees(It.IsAny<Stream>()), Times.Once);

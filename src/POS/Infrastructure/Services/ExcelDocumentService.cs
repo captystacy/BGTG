@@ -21,7 +21,7 @@ public class ExcelDocumentService : IExcelDocumentService
         _excelPackage = new ExcelPackage(stream);
     }
 
-    public string GetCellText(int row, int column)
+    public string? GetCellText(int row, int column)
     {
         return _excelPackage.Workbook.Worksheets[WorkSheetIndex].Cells[row, column].Text;
     }

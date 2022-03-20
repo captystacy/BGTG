@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
 using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
 
@@ -60,10 +60,10 @@ public class CalendarPlanWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInCell("%IW0%", "0,020"), Times.Exactly(2));
         _documentServiceMock.Verify(x => x.ReplaceTextInCell("%IW0%", "0,649"), Times.Once);
 
-        _documentServiceMock.Verify(x => x.ReplaceTextInCell("%P0%", "100,00 %"), Times.Exactly(2));
+        _documentServiceMock.Verify(x => x.ReplaceTextInCell("%P0%", "100,00%"), Times.Exactly(2));
 
         _documentServiceMock.Verify(x => x.MergeDocuments(0, 1), Times.Once);
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeAllDocuments(), Times.Once);
         Assert.NotNull(memoryStream);
     }

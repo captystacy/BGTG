@@ -34,7 +34,7 @@ public class TableOfContentsServiceTests
             ProjectEngineer = ProjectEngineer.Kapitan
         };
 
-        var templatePath = @"root\Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Kapitan.docx";
+        var templatePath = @"root\Infrastructure\Templates\TableOfContentsTemplates\ECP\Saiko\Kapitan.doc";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 

@@ -18,23 +18,23 @@ public class ProjectService : IProjectService
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public MemoryStream? Write(ProjectViewModel dto)
+    public MemoryStream? Write(ProjectViewModel viewModel)
     {
-        var durationByLCFile = dto.CalculationFiles.FirstOrDefault(x => x.FileName.Contains("Продолжительность по трудозатратам"));
+        var durationByLCFile = viewModel.CalculationFiles.FirstOrDefault(x => x.FileName.Contains("Продолжительность по трудозатратам"));
 
         if (durationByLCFile is null)
         {
             return null;
         }
 
-        var calendarPlanFile = dto.CalculationFiles.FirstOrDefault(x => x.FileName.Contains("Календарный план"));
+        var calendarPlanFile = viewModel.CalculationFiles.FirstOrDefault(x => x.FileName.Contains("Календарный план"));
 
         if (calendarPlanFile is null)
         {
             return null;
         }
 
-        var energyAndWaterFile = dto.CalculationFiles.FirstOrDefault(x => x.FileName.Contains("Энергия и вода"));
+        var energyAndWaterFile = viewModel.CalculationFiles.FirstOrDefault(x => x.FileName.Contains("Энергия и вода"));
 
         if (energyAndWaterFile is null)
         {
@@ -44,9 +44,9 @@ public class ProjectService : IProjectService
         var durationByLCStream = durationByLCFile.OpenReadStream();
         var numberOfEmployees = _ecpProjectWriter.GetNumberOfEmployees(durationByLCStream);
 
-        var templatePath = GetTemplatePath(dto, numberOfEmployees);
+        var templatePath = GetTemplatePath(viewModel, numberOfEmployees);
 
-        return _ecpProjectWriter.Write(durationByLCStream, calendarPlanFile.OpenReadStream(), energyAndWaterFile.OpenReadStream(), dto.ObjectCipher, templatePath);
+        return _ecpProjectWriter.Write(durationByLCStream, calendarPlanFile.OpenReadStream(), energyAndWaterFile.OpenReadStream(), viewModel.ObjectCipher, templatePath);
     }
 
     private string GetTemplatePath(ProjectViewModel dto, int numberOfEmployees)

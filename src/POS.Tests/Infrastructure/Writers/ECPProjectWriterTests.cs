@@ -5,6 +5,7 @@ using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
 using System;
 using System.IO;
+using POS.DomainModels;
 
 namespace POS.Tests.Infrastructure.Writers;
 
@@ -71,7 +72,7 @@ public class ECPProjectWriterTests
 
         _documentServiceMock.Verify(x => x.ReplaceTextWithTable("%ENERGY_AND_WATER_TABLE%"), Times.Once);
 
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.Doc, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Exactly(4));
         Assert.NotNull(memoryStream);
     }

@@ -33,7 +33,7 @@ public class TitlePageServiceTests
             ObjectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района"
         };
 
-        var templatePath = @"root\Infrastructure\Templates\TitlePageTemplates\Saiko.docx";
+        var templatePath = @"root\Infrastructure\Templates\TitlePageTemplates\Saiko.doc";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 

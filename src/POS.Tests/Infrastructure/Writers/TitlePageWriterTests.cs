@@ -1,6 +1,7 @@
 ﻿using System;
 using Moq;
 using NUnit.Framework;
+using POS.DomainModels;
 using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
 
@@ -31,7 +32,7 @@ public class TitlePageWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%NAME%", objectName), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CIPHER%", objectCipher), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%YEAR%", DateTime.Now.Year.ToString()), Times.Once);
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, 0), Times.Once);
+        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.Doc, 0), Times.Once);
         _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
         Assert.NotNull(memoryStream);
     }
