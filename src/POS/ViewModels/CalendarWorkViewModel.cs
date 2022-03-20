@@ -13,12 +13,12 @@ public class CalendarWorkViewModel : IValidatableObject, IEquatable<CalendarWork
     {
         if (string.IsNullOrEmpty(WorkName))
         {
-            yield return new ValidationResult(AppConstants.WorkNameValidationMessage);
+            yield return new ValidationResult("Наименование работы не найдено.");
         }
 
         if (Chapter < 0)
         {
-            yield return new ValidationResult(AppConstants.ChapterValidationMessage);
+            yield return new ValidationResult("Глава сметной работы не может быть меньше 0.");
         }
     }
 

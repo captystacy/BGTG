@@ -22,27 +22,27 @@ public class DurationByLCViewModel : IValidatableObject
 
         if (NumberOfWorkingDays <= 0)
         {
-            yield return new ValidationResult(AppConstants.NumberOfWorkingDaysValidationMessage);
+            yield return new ValidationResult("Количество рабочих дней в месяце не может быть отрицательным или равным нулю.");
         }
 
         if (WorkingDayDuration <= 0)
         {
-            yield return new ValidationResult(AppConstants.WorkingDayDurationValidationMessage);
+            yield return new ValidationResult("Продолжительность рабочего дня не может быть отрицательной или равной нулю.");
         }
 
         if (Shift <= 0)
         {
-            yield return new ValidationResult(AppConstants.ShiftValidationMessage);
+            yield return new ValidationResult("Сменность не может быть отрицательной или равной нулю.");
         }
 
         if (NumberOfEmployees <= 0)
         {
-            yield return new ValidationResult(AppConstants.NumberOfEmployeesValidationMessage);
+            yield return new ValidationResult("Количество работающих в бригаде не может быть отрицательным или равным нулю.");
         }
 
         if (TechnologicalLaborCosts < 0)
         {
-            yield return new ValidationResult(AppConstants.TechnologicalLaborCostsValidationMessage);
+            yield return new ValidationResult("Трудозатраты по технологической карте не могут быть отрицательными или равными нулю.");
         }
     }
 }

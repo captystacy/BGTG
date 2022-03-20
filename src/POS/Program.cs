@@ -34,7 +34,6 @@ else
     mapper.CompileMappings();
 }
 
-app.UseStaticFiles();
 app.UseRouting();
 
 app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

@@ -15,13 +15,13 @@ public class DurationByTCPViewModel : IValidatableObject
     {
         if (PipelineDiameter <= 0)
         {
-            yield return new ValidationResult(AppConstants.PipelineDiameterValidationMessage);
+            yield return new ValidationResult("Диаметр трубопровода не может быть отрицательным или равным нулю.");
 
         }
 
         if (PipelineLength <= 0)
         {
-            yield return new ValidationResult(AppConstants.PipelineLengthValidationMessage);
+            yield return new ValidationResult("Длина трубопровода не может быть отрицательна.");
         }
     }
 }

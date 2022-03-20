@@ -49,11 +49,11 @@ public class ProjectService : IProjectService
         return _ecpProjectWriter.Write(durationByLCStream, calendarPlanFile.OpenReadStream(), energyAndWaterFile.OpenReadStream(), viewModel.ObjectCipher, templatePath);
     }
 
-    private string GetTemplatePath(ProjectViewModel dto, int numberOfEmployees)
+    private string GetTemplatePath(ProjectViewModel viewModel, int numberOfEmployees)
     {
-        var templateFileName = $"HouseholdTown{TemplateHelper.GetPlusOrMinus(dto.HouseholdTownIncluded)}.doc";
+        var templateFileName = $"HouseholdTown{TemplateHelper.GetPlusOrMinus(viewModel.HouseholdTownIncluded)}.doc";
         return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath,
-            dto.ProjectTemplate.ToString(), dto.ChiefProjectEngineer.ToString(),
-            dto.ProjectEngineer.ToString(), $"Employees{numberOfEmployees}", templateFileName);
+            viewModel.ProjectTemplate.ToString(), viewModel.ChiefProjectEngineer.ToString(),
+            viewModel.ProjectEngineer.ToString(), $"Employees{numberOfEmployees}", templateFileName);
     }
 }

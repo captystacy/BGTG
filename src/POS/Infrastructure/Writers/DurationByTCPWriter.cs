@@ -84,10 +84,10 @@ public class DurationByTCPWriter : IDurationByTCPWriter
     {
         _wordDocumentService.ReplaceTextInDocument(PipelineMaterialPattern, durationByTCP.PipelineMaterial);
         _wordDocumentService.ReplaceTextInDocument(PipelineDiameterPresentationPattern, durationByTCP.PipelineDiameterPresentation);
-        _wordDocumentService.ReplaceTextInDocument(PipelineLengthPattern, durationByTCP.PipelineLength.ToString(AppConstants.DecimalFormat));
-        _wordDocumentService.ReplaceTextInDocument(DurationPattern, durationByTCP.Duration.ToString(AppConstants.DecimalFormat));
-        _wordDocumentService.ReplaceTextInDocument(RoundedDurationPattern, durationByTCP.RoundedDuration.ToString(AppConstants.DecimalFormat));
-        _wordDocumentService.ReplaceTextInDocument(PreparatoryPeriodPattern, durationByTCP.PreparatoryPeriod.ToString(AppConstants.DecimalFormat));
+        _wordDocumentService.ReplaceTextInDocument(PipelineLengthPattern, durationByTCP.PipelineLength.ToString());
+        _wordDocumentService.ReplaceTextInDocument(DurationPattern, durationByTCP.Duration.ToString());
+        _wordDocumentService.ReplaceTextInDocument(RoundedDurationPattern, durationByTCP.RoundedDuration.ToString());
+        _wordDocumentService.ReplaceTextInDocument(PreparatoryPeriodPattern, durationByTCP.PreparatoryPeriod.ToString());
         _wordDocumentService.ReplaceTextInDocument(AppendixKeyPattern, durationByTCP.AppendixKey.ToString());
         _wordDocumentService.ReplaceTextInDocument(AppendixPagePattern, durationByTCP.AppendixPage.ToString());
 
@@ -104,41 +104,41 @@ public class DurationByTCPWriter : IDurationByTCPWriter
                 var calculationPipelineStandards = interpolationDuration.CalculationPipelineStandards.ToArray();
 
                 _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardPipelineLengthPattern0,
-                    calculationPipelineStandards[0].PipelineLength.ToString(AppConstants.DecimalFormat));
+                    calculationPipelineStandards[0].PipelineLength.ToString());
                 _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardPipelineLengthPattern1,
-                    calculationPipelineStandards[1].PipelineLength.ToString(AppConstants.DecimalFormat));
+                    calculationPipelineStandards[1].PipelineLength.ToString());
                 _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardDurationPattern0,
-                    calculationPipelineStandards[0].Duration.ToString(AppConstants.DecimalFormat));
+                    calculationPipelineStandards[0].Duration.ToString());
                 _wordDocumentService.ReplaceTextInDocument(InterpolationCalculationPipelineStandardDurationPattern1,
-                    calculationPipelineStandards[1].Duration.ToString(AppConstants.DecimalFormat));
+                    calculationPipelineStandards[1].Duration.ToString());
                 _wordDocumentService.ReplaceTextInDocument(DurationChangePattern,
-                    interpolationDuration.DurationChange.ToString(AppConstants.DecimalFormat));
+                    interpolationDuration.DurationChange.ToString());
                 _wordDocumentService.ReplaceTextInDocument(VolumeChangePattern,
-                    interpolationDuration.VolumeChange.ToString(AppConstants.DecimalFormat));
+                    interpolationDuration.VolumeChange.ToString());
                 break;
             case ExtrapolationDurationByTCP extrapolationDuration:
                 var calculationPipelineStandard = extrapolationDuration.CalculationPipelineStandards.First();
 
                 _wordDocumentService.ReplaceTextInDocument(ExtrapolationCalculationPipelineStandardPipelineLengthPattern,
-                    calculationPipelineStandard.PipelineLength.ToString(AppConstants.DecimalFormat));
+                    calculationPipelineStandard.PipelineLength.ToString());
                 _wordDocumentService.ReplaceTextInDocument(ExtrapolationCalculationPipelineStandardDurationPattern,
-                    calculationPipelineStandard.Duration.ToString(AppConstants.DecimalFormat));
+                    calculationPipelineStandard.Duration.ToString());
 
                 _wordDocumentService.ReplaceTextInDocument(VolumeChangePercentPattern,
-                    extrapolationDuration.VolumeChangePercent.ToString(AppConstants.DecimalFormat));
+                    extrapolationDuration.VolumeChangePercent.ToString());
                 _wordDocumentService.ReplaceTextInDocument(StandardChangePercentPattern,
-                    extrapolationDuration.StandardChangePercent.ToString(AppConstants.DecimalFormat));
+                    extrapolationDuration.StandardChangePercent.ToString());
 
                 if (extrapolationDuration is StepwiseExtrapolationDurationByTCP stepwiseExtrapolationDurationByTCP)
                 {
                     _wordDocumentService.ReplaceTextInDocument(StepwiseDurationPattern,
-                        stepwiseExtrapolationDurationByTCP.StepwiseDuration.ToString(AppConstants.DecimalFormat));
+                        stepwiseExtrapolationDurationByTCP.StepwiseDuration.ToString());
                     _wordDocumentService.ReplaceTextInDocument(StepwisePipelineStandardPipelineLength,
                         stepwiseExtrapolationDurationByTCP.StepwisePipelineStandard.PipelineLength.ToString(
-                            AppConstants.DecimalFormat));
+                            ));
                     _wordDocumentService.ReplaceTextInDocument(StepwisePipelineStandardDuration,
                         stepwiseExtrapolationDurationByTCP.StepwisePipelineStandard.Duration.ToString(
-                            AppConstants.DecimalFormat));
+                            ));
                 }
 
                 break;

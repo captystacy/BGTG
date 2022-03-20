@@ -19,7 +19,7 @@ public class TitlePageViewModel : IValidatableObject
 
         if (string.IsNullOrEmpty(ObjectName))
         {
-            yield return new ValidationResult(AppConstants.ObjectNameValidationMessage);
+            yield return new ValidationResult("Имя объекта не может быть пустым.");
         }
     }
 }

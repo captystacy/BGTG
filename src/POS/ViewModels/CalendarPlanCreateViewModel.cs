@@ -19,7 +19,7 @@ public class CalendarPlanCreateViewModel : IValidatableObject
         var totalWorkChapterInt = (int)TotalWorkChapter;
         if (totalWorkChapterInt != 9 && totalWorkChapterInt != 11 && totalWorkChapterInt != 12)
         {
-            yield return new ValidationResult(AppConstants.TotalWorkChapterValidationMessage);
+            yield return new ValidationResult("Итого поддерживается только по 1-9, 1-11, или по последней строчке.");
         }
     }
 }

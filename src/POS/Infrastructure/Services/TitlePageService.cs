@@ -18,11 +18,11 @@ public class TitlePageService : ITitlePageService
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public MemoryStream Write(TitlePageViewModel dto)
+    public MemoryStream Write(TitlePageViewModel viewModel)
     {
-        var templatePath = GetTemplatePath(dto.ChiefProjectEngineer);
+        var templatePath = GetTemplatePath(viewModel.ChiefProjectEngineer);
 
-        return _titlePageWriter.Write(dto.ObjectCipher, dto.ObjectName, templatePath);
+        return _titlePageWriter.Write(viewModel.ObjectCipher, viewModel.ObjectName, templatePath);
     }
 
     private string GetTemplatePath(ChiefProjectEngineer chiefProjectEngineer)

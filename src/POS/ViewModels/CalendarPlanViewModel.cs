@@ -27,7 +27,7 @@ public class CalendarPlanViewModel : IValidatableObject, IEquatable<CalendarPlan
 
         if (ConstructionStartDate.Year <= 1900)
         {
-            yield return new ValidationResult(AppConstants.ConstructionStartDateValidationMessage);
+            yield return new ValidationResult("Год даты начала строительства не может быть ниже 1900.");
         }
     }
 
