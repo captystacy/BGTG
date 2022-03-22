@@ -1,6 +1,8 @@
-﻿namespace POS.Infrastructure.Writers.Base;
+﻿using POS.ViewModels;
+
+namespace POS.Infrastructure.Writers.Base;
 
 public interface ITitlePageWriter
 {
-    MemoryStream Write(string objectCipher, string objectName, string templatePath);
+    MemoryStream Write(TitlePageViewModel viewModel);
 }

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using POS.DomainModels.EstimateDomainModels;
 using POS.Infrastructure.Connectors;
 using POS.Infrastructure.Managers;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using POS.Infrastructure.Readers;
 
 namespace POS.Tests.Infrastructure.Managers;

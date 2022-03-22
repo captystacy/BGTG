@@ -26,16 +26,34 @@
     <mat-form-field appearance="fill" style="width: 710px;">
       <mat-label>Проектировщик</mat-label>
       <mat-select formControlName="projectEngineer">
-        <mat-option *ngFor="let projectEngineer of projectEngineers" [value]="projectEngineer.value">{{projectEngineer.title}}</mat-option>
+        <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
       </mat-select>
       <mat-error *ngIf="projectEngineer.errors?.['required']">
         Нужно выбрать проектировщика.
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Нормоконтролер</mat-label>
+      <mat-select formControlName="normalInspectionEngineer">
+        <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="normalInspectionEngineer.errors?.['required']">
+        Нужно выбрать нормоконтролера.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Начальник</mat-label>
+      <mat-select formControlName="chiefEngineer">
+        <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="chiefEngineer.errors?.['required']">
+        Нужно выбрать начальника.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
       <mat-label>ГИП</mat-label>
       <mat-select formControlName="chiefProjectEngineer">
-        <mat-option *ngFor="let chiefProjectEngineer of chiefProjectEngineers" [value]="chiefProjectEngineer.value">{{chiefProjectEngineer.title}}</mat-option>
+        <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
       </mat-select>
       <mat-error *ngIf="chiefProjectEngineer.errors?.['required']">
         Нужно выбрать ГИПа.

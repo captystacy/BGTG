@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using POS.Infrastructure.Constants;
-using POS.Infrastructure.Services.Base;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
 
 namespace POS.Controllers;
@@ -8,15 +8,15 @@ namespace POS.Controllers;
 [Route("api/[controller]")]
 public class POSController : ControllerBase
 {
-    private readonly IProjectService _projectService;
-    private readonly ITableOfContentsService _tableOfContentsService;
-    private readonly ITitlePageService _titlePageService;
+    private readonly ILCProjectWriter _lcProjectWriter;
+    private readonly ITableOfContentsWriter _tableOfContentsWriter;
+    private readonly ITitlePageWriter _titlePageWriter;
 
-    public POSController(IProjectService projectService, ITableOfContentsService tableOfContentsService, ITitlePageService titlePageService)
+    public POSController(ILCProjectWriter lcProjectWriter, ITableOfContentsWriter tableOfContentsWriter, ITitlePageWriter titlePageWriter)
     {
-        _projectService = projectService;
-        _tableOfContentsService = tableOfContentsService;
-        _titlePageService = titlePageService;
+        _lcProjectWriter = lcProjectWriter;
+        _tableOfContentsWriter = tableOfContentsWriter;
+        _titlePageWriter = titlePageWriter;
     }
 
     [HttpPost("[action]")]
@@ -27,12 +27,7 @@ public class POSController : ControllerBase
             return BadRequest();
         }
 
-        var memoryStream = _projectService.Write(viewModel);
-
-        if (memoryStream is null)
-        {
-            return BadRequest();
-        }
+        var memoryStream = _lcProjectWriter.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
@@ -47,7 +42,7 @@ public class POSController : ControllerBase
             return BadRequest();
         }
 
-        var memoryStream = _tableOfContentsService.Write(viewModel);
+        var memoryStream = _tableOfContentsWriter.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
@@ -62,7 +57,7 @@ public class POSController : ControllerBase
             return BadRequest();
         }
 
-        var memoryStream = _titlePageService.Write(viewModel);
+        var memoryStream = _titlePageWriter.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 

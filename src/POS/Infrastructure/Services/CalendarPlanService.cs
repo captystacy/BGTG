@@ -16,6 +16,7 @@ public class CalendarPlanService : ICalendarPlanService
     private readonly IMapper _mapper;
 
     private const string PreparatoryCalendarPlanTemplateFileName = "Preparatory.docx";
+    private const string CalendarPlanTemplateFileName = "CalendarPlanTemplate.docx";
 
     private const string TemplatesPath = @"Infrastructure\Templates\CalendarPlanTemplates";
 
@@ -57,8 +58,9 @@ public class CalendarPlanService : ICalendarPlanService
         var calendarPlan = CalculateCalendarPlan(viewModel);
         var preparatoryTemplatePath = GetPreparatoryTemplatePath();
         var mainTemplatePath = GetMainTemplatePath(calendarPlan.ConstructionDurationCeiling);
+        var calendarPlanTemplate = GetCalendarPlanTemplatePath();
 
-        return _calendarPlanWriter.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath);
+        return _calendarPlanWriter.Write(calendarPlan, calendarPlanTemplate, preparatoryTemplatePath, mainTemplatePath);
     }
 
     private CalendarPlan CalculateCalendarPlan(CalendarPlanViewModel viewModel)
@@ -96,6 +98,11 @@ public class CalendarPlanService : ICalendarPlanService
         {
             _estimateService.Estimate.MainEstimateWorks.First(estimateWork => estimateWork.WorkName == viewModel.WorkName).Percentages.AddRange(viewModel.Percentages);
         }
+    }
+
+    private string GetCalendarPlanTemplatePath()
+    {
+        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, CalendarPlanTemplateFileName);
     }
 
     private string GetPreparatoryTemplatePath()

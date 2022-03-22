@@ -15,7 +15,7 @@ DependencyContainer.EnergyAndWater(builder.Services);
 DependencyContainer.DurationByTCP(builder.Services);
 DependencyContainer.POS(builder.Services);
 
-builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
+builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5001));
 
 var app = builder.Build();
 

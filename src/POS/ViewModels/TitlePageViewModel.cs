@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using POS.DomainModels;
+﻿using POS.DomainModels;
 using POS.Infrastructure.Constants;
+using System.ComponentModel.DataAnnotations;
 
 namespace POS.ViewModels;
 
@@ -8,7 +8,7 @@ public class TitlePageViewModel : IValidatableObject
 {
     public string ObjectCipher { get; set; } = null!;
     public string ObjectName { get; set; } = null!;
-    public ChiefProjectEngineer ChiefProjectEngineer { get; set; }
+    public Engineer ChiefProjectEngineer { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

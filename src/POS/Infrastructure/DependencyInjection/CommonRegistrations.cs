@@ -7,7 +7,7 @@ public partial class DependencyContainer
 {
     public static void Common(IServiceCollection services)
     {
-        services.AddTransient<IWordDocumentService, WordDocumentService>();
+        services.AddScoped<IWordDocumentService, WordDocumentService>();
         services.AddTransient<IExcelDocumentService, ExcelDocumentService>();
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace POS.Infrastructure.Writers.Base;
+﻿using POS.ViewModels;
+
+namespace POS.Infrastructure.Writers.Base;
 
 public interface ITableOfContentsWriter
 {
-    MemoryStream Write(string objectCipher, string templatePath);
+    MemoryStream Write(TableOfContentsViewModel viewModel);
 }

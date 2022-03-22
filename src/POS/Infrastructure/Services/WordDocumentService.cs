@@ -2,6 +2,7 @@
 using POS.Infrastructure.Services.Base;
 using Spire.Doc;
 using Spire.Doc.Documents;
+using Spire.Doc.Fields;
 
 namespace POS.Infrastructure.Services;
 
@@ -97,6 +98,25 @@ public class WordDocumentService : IWordDocumentService
         body.ChildObjects.Insert(index, table);
     }
 
+    public void ReplaceTextWithImage(string searchValue, string imagePath)
+    {
+        var document = _documents[ReplaceInBaseDocumentMode ? BaseDocumentIndex : DocumentIndex];
+        var selections = document.FindAllString(searchValue, true, true);
+
+        foreach (var selection in selections)
+        {
+            var pic = new DocPicture(document);
+            pic.LoadImage(imagePath);
+            pic.TextWrappingStyle = TextWrappingStyle.Inline;
+            pic.Width = 40;
+            pic.Height = 15;
+            var range = selection.GetAsOneRange();
+            var index = range.OwnerParagraph.ChildObjects.IndexOf(range);
+            range.OwnerParagraph.ChildObjects.Insert(index, pic);
+            range.OwnerParagraph.ChildObjects.Remove(range);
+        }
+    }
+
     public void InsertTemplateRow(int templateRowIndex, int insertionIndex)
     {
         var templateRow = _documents[DocumentIndex]
@@ -137,7 +157,7 @@ public class WordDocumentService : IWordDocumentService
         var paragraph = new Paragraph(_documents[DocumentIndex]);
         paragraph.AppendText(text);
 
-        var style = (ParagraphStyle)_documents[DocumentIndex].Styles.FindByName("Normal", StyleType.ParagraphStyle);
+        var style = (ParagraphStyle)_documents[DocumentIndex].Styles[0];
         style.CharacterFormat.FontSize = fontSize;
 
         paragraph.ApplyStyle(style);
@@ -157,15 +177,6 @@ public class WordDocumentService : IWordDocumentService
             .Sections[SectionIndex]
             .Tables[TableIndex]
             .ApplyVerticalMerge(columnIndex, startRowIndex, endRowIndex);
-    }
-
-
-    public void MergeDocuments(int toDocumentIndex, int fromDocumentIndex)
-    {
-        foreach (Section section in _documents[fromDocumentIndex].Sections)
-        {
-            _documents[toDocumentIndex].Sections.Add(section.Clone());
-        }
     }
 
     public void SaveAs(Stream stream, MyFileFormat myFileFormat, int documentIndex = 0)

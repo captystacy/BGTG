@@ -120,6 +120,7 @@ public class CalendarPlanServiceTests
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 
+        var calendarPlanTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\CalendarPlanTemplate.docx";
         var preparatoryTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Preparatory.docx";
         var mainTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Main1.docx";
 
@@ -136,7 +137,7 @@ public class CalendarPlanServiceTests
             calendarPlanViewModel.TotalWorkChapter)).Returns(calendarPlan);
 
         var expectedMemoryStream = new MemoryStream();
-        _calendarPlanWriterMock.Setup(x => x.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath)).Returns(expectedMemoryStream);
+        _calendarPlanWriterMock.Setup(x => x.Write(calendarPlan, calendarPlanTemplatePath, preparatoryTemplatePath, mainTemplatePath)).Returns(expectedMemoryStream);
 
         var actualMemoryStream = _calendarPlanService.Write(calendarPlanViewModel);
 
@@ -156,7 +157,7 @@ public class CalendarPlanServiceTests
                     && x.ConstructionDuration == calendarPlanViewModel.ConstructionDuration),
                 otherExpensesPercentages, calendarPlanViewModel.TotalWorkChapter), Times.Once);
 
-        _calendarPlanWriterMock.Verify(x => x.Write(calendarPlan, preparatoryTemplatePath, mainTemplatePath));
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(2));
+        _calendarPlanWriterMock.Verify(x => x.Write(calendarPlan, calendarPlanTemplatePath, preparatoryTemplatePath, mainTemplatePath));
+        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(3));
     }
 }

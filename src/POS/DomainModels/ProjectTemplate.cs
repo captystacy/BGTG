@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace POS.DomainModels;
+﻿namespace POS.DomainModels;
 
 public enum ProjectTemplate
 {
-    [Display(Name = "ЭХЗ")]
     ECP = 0,
+    CGCP = 1,
 }

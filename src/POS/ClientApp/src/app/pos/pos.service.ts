@@ -19,11 +19,25 @@ export class POSService {
     formData.append('ObjectCipher', project.objectCipher);
     formData.append('ProjectTemplate', project.projectTemplate.toString());
     formData.append('ProjectEngineer', project.projectEngineer.toString());
+    formData.append('NormalInspectionEngineer', project.normalInspectionEngineer.toString());
+    formData.append('ChiefEngineer', project.chiefEngineer.toString());
     formData.append('ChiefProjectEngineer', project.chiefProjectEngineer.toString());
     formData.append('HouseholdTownIncluded', project.householdTownIncluded.toString());
 
+    let projectName: string;
+    switch (project.projectTemplate) {
+      case 0:
+        projectName = "ЭХЗ";
+        break;
+      case 1:
+        projectName = "ШРП";
+        break;
+      default:
+        projectName = "Проект";
+    }
+
     this._http.post('api/POS/DownloadProject', formData, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, "ЭХЗ.doc");
+      saveAs(data, projectName + ".doc");
     }, error => console.error(error));
   }
 

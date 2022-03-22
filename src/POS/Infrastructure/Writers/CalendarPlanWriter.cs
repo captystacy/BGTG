@@ -16,6 +16,9 @@ public class CalendarPlanWriter : ICalendarPlanWriter
     private const string TotalCostIncludingCAIWPattern = "%TIC%";
     private const string DateAcceptancePattern = "%DA%";
 
+    private const string PreparatoryTablePattern = "%CALENDAR_PLAN_PREPARATORY_TABLE%";
+    private const string MainTablePattern = "%CALENDAR_PLAN_MAIN_TABLE%";
+
     private const int TopPatternRowIndex = 2;
     private const int BottomPatternRowIndex = 3;
     private const int AcceptanceTimeRowIndex = 2;
@@ -42,20 +45,17 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         _wordDocumentService = wordDocumentService;
     }
 
-    public MemoryStream Write(CalendarPlan calendarPlan, string preparatoryTemplatePath, string mainTemplatePath)
+    public MemoryStream Write(CalendarPlan calendarPlan, string calendarPlanTemplate, string preparatoryTablePath, string mainTablePath)
     {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-        _wordDocumentService.Load(preparatoryTemplatePath);
+        _wordDocumentService.Load(calendarPlanTemplate);
 
         var preparatoryConstructionMonths = calendarPlan.PreparatoryCalendarWorks.First(x => x.WorkName == AppConstants.TotalWorkName).ConstructionMonths.ToArray();
-        ModifyCalendarPlanTable(calendarPlan.PreparatoryCalendarWorks, preparatoryConstructionMonths);
-
-        _wordDocumentService.Load(mainTemplatePath);
-        _wordDocumentService.DocumentIndex = 1;
+        ReplacePatternCalendarPlanTable(preparatoryTablePath, PreparatoryTablePattern, calendarPlan.PreparatoryCalendarWorks, preparatoryConstructionMonths);
 
         var mainConstructionMonths = calendarPlan.MainCalendarWorks.First(x => x.WorkName == AppConstants.TotalWorkName).ConstructionMonths.ToArray();
-        ModifyCalendarPlanTable(calendarPlan.MainCalendarWorks, mainConstructionMonths);
+        ReplacePatternCalendarPlanTable(mainTablePath, MainTablePattern, calendarPlan.MainCalendarWorks, mainConstructionMonths);
 
         if (calendarPlan.ConstructionDurationCeiling > 1)
         {
@@ -65,18 +65,18 @@ public class CalendarPlanWriter : ICalendarPlanWriter
             _wordDocumentService.CellIndex = _lastCellIndex;
             _wordDocumentService.AddParagraph(AcceptanceTimeCellStr);
         }
-
-        _wordDocumentService.MergeDocuments(0, 1);
-
+        
         var memoryStream = new MemoryStream();
         _wordDocumentService.SaveAs(memoryStream, MyFileFormat.DocX);
 
-        _wordDocumentService.DisposeAllDocuments();
+        _wordDocumentService.DisposeLastDocument();
         return memoryStream;
     }
 
-    private void ModifyCalendarPlanTable(IEnumerable<CalendarWork> calendarWorks, ConstructionMonth[] constructionMonths)
+    private void ReplacePatternCalendarPlanTable(string tablePath, string pattern, IEnumerable<CalendarWork> calendarWorks, ConstructionMonth[] constructionMonths)
     {
+        _wordDocumentService.Load(tablePath);
+
         _wordDocumentService.RowIndex = RowIndexWhichHasMaximumCellsCount;
         _lastCellIndex = _wordDocumentService.CellsCountInRow - 1;
 
@@ -95,6 +95,12 @@ public class CalendarPlanWriter : ICalendarPlanWriter
         ReplacePercentPartsWithActualPercentages(constructionMonths);
 
         MergeExtraConstructionMonthIntoDash();
+
+        _wordDocumentService.ReplaceInBaseDocumentMode = true;
+        _wordDocumentService.ReplaceTextWithTable(pattern);
+        _wordDocumentService.ReplaceInBaseDocumentMode = false;
+
+        _wordDocumentService.DisposeLastDocument();
     }
 
     private void ReplaceDatePatternWithActualDate(ConstructionMonth[] constructionMonths)

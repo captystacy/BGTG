@@ -15,4 +15,10 @@ public static partial class AppConstants
     public const string ObjectCipherValidationMessage = "Шифр объекта не может быть пустым.";
 
     public const string EstimateFilesValidationMessage = "Сметы не найдены.";
+
+    public const string DurationByLCFileName = "Продолжительность по трудозатратам";
+
+    public const string CalendarPlanFileName = "Календарный план";
+
+    public const string EnergyAndWaterFileName = "Энергия и вода";
 }

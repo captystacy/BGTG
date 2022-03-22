@@ -27,9 +27,9 @@ public interface IWordDocumentService
     void RemoveRow();
     void RemoveParagraphInCell();
     void ApplyVerticalMerge(int columnIndex, int startRowIndex, int endRowIndex);
-    void MergeDocuments(int toDocumentIndex, int fromDocumentIndex);
     void DisposeLastDocument();
     void DisposeAllDocuments();
     void AddParagraph(string text, int fontSize = 12);
     void SaveAs(Stream stream, MyFileFormat myFileFormat, int documentIndex = 0);
+    void ReplaceTextWithImage(string searchValue, string imagePath);
 }

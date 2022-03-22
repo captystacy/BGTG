@@ -62,4 +62,17 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Infrastructure\Templates\CalendarPlanTemplates\CalendarPlanTemplate.docx" />
+	  <None Remove="Infrastructure\Templates\EngineerSignatures\Cherota.png" />
+	  <None Remove="Infrastructure\Templates\ProjectTemplates\CGCPProjectTemplate.doc" />
+	  <None Remove="Infrastructure\Templates\ProjectTemplates\ECPProjectTemplate.doc" />
+	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECPTableOfContentsTemplate.doc" />
+	  <None Remove="Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Infrastructure\Readers\Base\" />
+	</ItemGroup>
+
 </Project>

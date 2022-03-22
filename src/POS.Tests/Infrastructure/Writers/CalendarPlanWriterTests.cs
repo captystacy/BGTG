@@ -21,14 +21,17 @@ public class CalendarPlanWriterTests
     [Test]
     public void Write_CalendarPlan548VAT()
     {
+        var calendarPlanTemplate = "CaldendarPlanTemplate.docx";
         var preparatoryTemplatePath = "Preparatory.docx";
         var mainTemplatePath = "Main1.docx";
 
         _documentServiceMock.SetupGet(x => x.CellsCountInRow).Returns(2); // for checking ReplaceTextInRow("%P0%", "100,00 %")
 
-        var memoryStream = _calendarPlanWriter.Write(CalendarPlanSource.CalendarPlan548, preparatoryTemplatePath, mainTemplatePath);
+        var memoryStream = _calendarPlanWriter.Write(CalendarPlanSource.CalendarPlan548, calendarPlanTemplate, preparatoryTemplatePath, mainTemplatePath);
 
+        _documentServiceMock.Verify(x => x.Load(calendarPlanTemplate), Times.Once);
         _documentServiceMock.Verify(x => x.Load(preparatoryTemplatePath), Times.Once);
+        _documentServiceMock.Verify(x => x.Load(mainTemplatePath), Times.Once);
         _documentServiceMock.Verify(x => x.ReplaceTextInCell("%D0%", "Август 2022"), Times.Exactly(2));
 
         _documentServiceMock.Verify(x => x.ReplaceTextInCell("%WN%", "Временные здания и сооружения"), Times.Once);
@@ -60,11 +63,10 @@ public class CalendarPlanWriterTests
         _documentServiceMock.Verify(x => x.ReplaceTextInCell("%IW0%", "0,020"), Times.Exactly(2));
         _documentServiceMock.Verify(x => x.ReplaceTextInCell("%IW0%", "0,649"), Times.Once);
 
-        _documentServiceMock.Verify(x => x.ReplaceTextInCell("%P0%", "100,00%"), Times.Exactly(2));
+        _documentServiceMock.Verify(x => x.ReplaceTextInCell("%P0%", "100,00 %"), Times.Exactly(2));
 
-        _documentServiceMock.Verify(x => x.MergeDocuments(0, 1), Times.Once);
         _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.DocX, 0), Times.Once);
-        _documentServiceMock.Verify(x => x.DisposeAllDocuments(), Times.Once);
+        _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Exactly(3));
         Assert.NotNull(memoryStream);
     }
 }

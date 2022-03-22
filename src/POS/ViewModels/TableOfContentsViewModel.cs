@@ -8,8 +8,8 @@ public class TableOfContentsViewModel : IValidatableObject
 {
     public string ObjectCipher { get; set; } = null!;
     public ProjectTemplate ProjectTemplate { get; set; }
-    public ProjectEngineer ProjectEngineer { get; set; }
-    public ChiefProjectEngineer ChiefProjectEngineer { get; set; }
+    public Engineer NormalInspectionEngineer { get; set; }
+    public Engineer ChiefProjectEngineer { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

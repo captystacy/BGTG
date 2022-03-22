@@ -19,6 +19,8 @@ export class POSComponent {
     objectName: new FormControl('', [Validators.required]),
     projectTemplate: new FormControl('', [Validators.required]),
     projectEngineer: new FormControl('', [Validators.required]),
+    normalInspectionEngineer: new FormControl('', [Validators.required]),
+    chiefEngineer: new FormControl('', [Validators.required]),
     chiefProjectEngineer: new FormControl('', [Validators.required]),
     householdTownIncluded: new FormControl(true),
   });
@@ -35,12 +37,20 @@ export class POSComponent {
     return this.posForm.get('projectTemplate')!;
   }
 
-  get projectEngineer() {
-    return this.posForm.get('projectEngineer')!;
-  }
-
   get chiefProjectEngineer() {
     return this.posForm.get('chiefProjectEngineer')!;
+  }
+
+  get chiefEngineer() {
+    return this.posForm.get('chiefEngineer')!;
+  }
+
+  get normalInspectionEngineer() {
+    return this.posForm.get('normalInspectionEngineer')!;
+  }
+
+  get projectEngineer() {
+    return this.posForm.get('projectEngineer')!;
   }
 
   get householdTownIncluded() {
@@ -49,20 +59,18 @@ export class POSComponent {
 
   readonly projectTemplates =
     [
-      { title: "ЭХЗ", value: 0 }
+      { title: "ЭХЗ", value: 0 },
+      { title: "ШРП", value: 1 }
     ];
 
-  readonly projectEngineers =
+  readonly engineers =
     [
       { title: "Неизвестно", value: 0 },
-      { title: "Капитан", value: 1 },
-      { title: "Прищеп", value: 2 },
-      { title: "Селиванова", value: 3 }
-    ];
-
-  readonly chiefProjectEngineers =
-    [
-      { title: "Сайко", value: 0 }
+      { title: "Капитан", value: 2 },
+      { title: "Прищеп", value: 3 },
+      { title: "Селиванова", value: 4 },
+      { title: "Сайко", value: 5 },
+      { title: "Близнюк", value: 6 }
     ];
 
   downloadProject(): void {
