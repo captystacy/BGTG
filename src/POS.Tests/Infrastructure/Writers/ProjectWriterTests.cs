@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 using POS.DomainModels;
@@ -6,21 +7,20 @@ using POS.Infrastructure.Constants;
 using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Replacers;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Infrastructure.Writers;
 using POS.ViewModels;
 using System;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
 
 namespace POS.Tests.Infrastructure.Writers;
 
-public class LCProjectWriterTests
+public class ProjectWriterTests
 {
     private Mock<IWordDocumentService> _documentServiceMock = null!;
     private Mock<IEmployeesNeedCreator> _employeesNeedCreatorMock = null!;
     private Mock<IEngineerReplacer> _engineerReplacerMock = null!;
     private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-    private LCProjectWriter _lcProjectWriter = null!;
+    private ProjectWriter _projectWriter = null!;
 
     [SetUp]
     public void SetUp()
@@ -29,7 +29,7 @@ public class LCProjectWriterTests
         _employeesNeedCreatorMock = new Mock<IEmployeesNeedCreator>();
         _engineerReplacerMock = new Mock<IEngineerReplacer>();
         _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _lcProjectWriter = new LCProjectWriter(_documentServiceMock.Object, _employeesNeedCreatorMock.Object, _engineerReplacerMock.Object, _webHostEnvironmentMock.Object);
+        _projectWriter = new ProjectWriter(_documentServiceMock.Object, _employeesNeedCreatorMock.Object, _engineerReplacerMock.Object, _webHostEnvironmentMock.Object);
     }
 
     [Test]
@@ -45,15 +45,15 @@ public class LCProjectWriterTests
                 new FormFile(new MemoryStream(), default, default, default, "Энергия и вода")
             },
             ObjectCipher = "5.5-20.548",
-            ProjectTemplate = ProjectTemplate.ECP,
+            ProjectTemplate = ProjectTemplate.CPS,
             ProjectEngineer = Engineer.Kapitan,
             NormalInspectionEngineer = Engineer.Prishep,
             ChiefEngineer = Engineer.Selivanova,
             ChiefProjectEngineer = Engineer.Saiko,
         };
         var paragraphTextInDocument = "Принимаем продолжительность строительства равную 0,6 мес, в том числе подготовительный период – 0,06 мес, приемка объекта в эксплуатацию – 0,5 мес.";
-        _documentServiceMock.Setup(x => x.ParagraphTextInDocument)
-            .Returns(paragraphTextInDocument);
+        _documentServiceMock.Setup(x => x.LastParagraphTextInDocument).Returns(paragraphTextInDocument);
+        _documentServiceMock.Setup(x => x.ParagraphTextInDocument).Returns(paragraphTextInDocument);
         _documentServiceMock.Setup(x => x.ParagraphsCountInDocument)
             .Returns(5);
         _documentServiceMock.SetupSequence(x => x.ParagraphTextInCell)
@@ -66,11 +66,11 @@ public class LCProjectWriterTests
         _employeesNeedCreatorMock.Setup(x => x.Create(4, 1.5M)).Returns(employeesNeed);
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
-        var templatePath = @"root\Infrastructure\Templates\ProjectTemplates\ECPProjectTemplate.doc";
+        var templatePath = @"root\Infrastructure\Templates\ProjectTemplates\CPSProjectTemplate.doc";
 
         // act
 
-        var memoryStream = _lcProjectWriter.Write(viewModel);
+        var memoryStream = _projectWriter.Write(viewModel);
 
         // assert
 

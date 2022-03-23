@@ -1,15 +1,16 @@
-﻿using POS.DomainModels;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using POS.DomainModels;
 using POS.Infrastructure.Constants;
 using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Replacers;
 using POS.Infrastructure.Services.Base;
+using POS.Infrastructure.Writers.Base;
 using POS.ViewModels;
-using System.Globalization;
-using System.Text.RegularExpressions;
 
-namespace POS.Infrastructure.Writers.Base;
+namespace POS.Infrastructure.Writers;
 
-public class LCProjectWriter : ILCProjectWriter
+public class ProjectWriter : IProjectWriter
 {
     private readonly IWordDocumentService _wordDocumentService;
     private readonly IEmployeesNeedCreator _employeesNeedCreator;
@@ -52,7 +53,7 @@ public class LCProjectWriter : ILCProjectWriter
     private const int NumberOfEmployeesRowIndex = 4;
     private const int ShiftRowIndex = 2;
 
-    public LCProjectWriter(IWordDocumentService wordDocumentService, IEmployeesNeedCreator employeesNeedCreator, IEngineerReplacer engineerReplacer, IWebHostEnvironment webHostEnvironment)
+    public ProjectWriter(IWordDocumentService wordDocumentService, IEmployeesNeedCreator employeesNeedCreator, IEngineerReplacer engineerReplacer, IWebHostEnvironment webHostEnvironment)
     {
         _wordDocumentService = wordDocumentService;
         _employeesNeedCreator = employeesNeedCreator;

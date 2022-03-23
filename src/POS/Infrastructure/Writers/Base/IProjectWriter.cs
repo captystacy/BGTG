@@ -2,7 +2,7 @@
 
 namespace POS.Infrastructure.Writers.Base;
 
-public interface ILCProjectWriter
+public interface IProjectWriter
 {
     MemoryStream Write(ProjectViewModel viewModel);
 }

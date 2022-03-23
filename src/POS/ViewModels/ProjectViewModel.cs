@@ -38,7 +38,7 @@ public class ProjectViewModel : IValidatableObject
 
         if (CalculationFiles.Count == 0)
         {
-            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
+            yield return new ValidationResult("Расчеты не найдены.");
         }
     }
 }

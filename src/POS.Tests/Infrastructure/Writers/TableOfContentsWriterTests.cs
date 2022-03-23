@@ -35,11 +35,11 @@ public class TableOfContentsWriterTests
         var viewModel = new TableOfContentsViewModel
         {
             ObjectCipher = "5.5-20.548",
-            ProjectTemplate = ProjectTemplate.ECP,
+            ProjectTemplate = ProjectTemplate.CPS,
             NormalInspectionEngineer = Engineer.Kapitan,
             ChiefProjectEngineer = Engineer.Saiko,
         };
-        var templatePath = @"root\Infrastructure\Templates\TableOfContentsTemplates\ECPTableOfContentsTemplate.doc";
+        var templatePath = @"root\Infrastructure\Templates\TableOfContentsTemplates\CPSTableOfContentsTemplate.doc";
 
         _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
 

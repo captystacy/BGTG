@@ -10,7 +10,7 @@ public partial class DependencyContainer
 {
     public static void POS(IServiceCollection services)
     {
-        services.AddTransient<ILCProjectWriter, LCProjectWriter>();
+        services.AddTransient<IProjectWriter, ProjectWriter>();
         services.AddTransient<ITitlePageWriter, TitlePageWriter>();
         services.AddTransient<ITableOfContentsWriter, TableOfContentsWriter>();
 

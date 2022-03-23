@@ -8,13 +8,13 @@ namespace POS.Controllers;
 [Route("api/[controller]")]
 public class POSController : ControllerBase
 {
-    private readonly ILCProjectWriter _lcProjectWriter;
+    private readonly IProjectWriter _projectWriter;
     private readonly ITableOfContentsWriter _tableOfContentsWriter;
     private readonly ITitlePageWriter _titlePageWriter;
 
-    public POSController(ILCProjectWriter lcProjectWriter, ITableOfContentsWriter tableOfContentsWriter, ITitlePageWriter titlePageWriter)
+    public POSController(IProjectWriter projectWriter, ITableOfContentsWriter tableOfContentsWriter, ITitlePageWriter titlePageWriter)
     {
-        _lcProjectWriter = lcProjectWriter;
+        _projectWriter = projectWriter;
         _tableOfContentsWriter = tableOfContentsWriter;
         _titlePageWriter = titlePageWriter;
     }
@@ -27,7 +27,7 @@ public class POSController : ControllerBase
             return BadRequest();
         }
 
-        var memoryStream = _lcProjectWriter.Write(viewModel);
+        var memoryStream = _projectWriter.Write(viewModel);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
