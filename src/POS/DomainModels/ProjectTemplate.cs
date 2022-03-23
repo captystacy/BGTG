@@ -2,7 +2,8 @@
 
 public enum ProjectTemplate
 {
-    ECP = 0,
-    CGCP = 1,
-    TLM = 2,
+    CPS = 0,
+    MiniCPS = 1,
+    MiniTLM = 2,
+    CGCP = 3,
 }

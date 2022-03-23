@@ -23,23 +23,8 @@ export class POSService {
     formData.append('ChiefEngineer', project.chiefEngineer.toString());
     formData.append('ChiefProjectEngineer', project.chiefProjectEngineer.toString());
 
-    let projectName: string;
-    switch (project.projectTemplate) {
-      case 0:
-        projectName = "ЭХЗ";
-        break;
-      case 1:
-        projectName = "ШРП";
-        break;
-      case 2:
-        projectName = "ТЛМ";
-        break;
-      default:
-        projectName = "Проект";
-    }
-
     this._http.post('api/POS/DownloadProject', formData, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, projectName + ".doc");
+      saveAs(data, `${project.objectCipher}ПОС.doc`);
     }, error => console.error(error));
   }
 
