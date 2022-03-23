@@ -22,7 +22,6 @@ export class POSService {
     formData.append('NormalInspectionEngineer', project.normalInspectionEngineer.toString());
     formData.append('ChiefEngineer', project.chiefEngineer.toString());
     formData.append('ChiefProjectEngineer', project.chiefProjectEngineer.toString());
-    formData.append('HouseholdTownIncluded', project.householdTownIncluded.toString());
 
     let projectName: string;
     switch (project.projectTemplate) {

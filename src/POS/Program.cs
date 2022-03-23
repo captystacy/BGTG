@@ -15,7 +15,10 @@ DependencyContainer.EnergyAndWater(builder.Services);
 DependencyContainer.DurationByTCP(builder.Services);
 DependencyContainer.POS(builder.Services);
 
-builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5001));
+if (builder.Environment.IsProduction())
+{
+    builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
+}
 
 var app = builder.Build();
 
@@ -34,6 +37,7 @@ else
     mapper.CompileMappings();
 }
 
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

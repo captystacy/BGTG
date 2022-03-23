@@ -13,7 +13,6 @@ public class ProjectViewModel : IValidatableObject
     public Engineer ChiefEngineer { get; set; }
     public Engineer NormalInspectionEngineer { get; set; }
     public Engineer ProjectEngineer { get; set; }
-    public bool HouseholdTownIncluded { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

@@ -5,7 +5,6 @@ export interface IProject {
   normalInspectionEngineer: number;
   chiefEngineer: number;
   chiefProjectEngineer: number;
-  householdTownIncluded: boolean;
 }
 
 export interface ITableOfContents {

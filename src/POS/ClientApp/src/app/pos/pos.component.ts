@@ -22,7 +22,6 @@ export class POSComponent {
     normalInspectionEngineer: new FormControl('', [Validators.required]),
     chiefEngineer: new FormControl('', [Validators.required]),
     chiefProjectEngineer: new FormControl('', [Validators.required]),
-    householdTownIncluded: new FormControl(true),
   });
 
   get objectCipher() {
@@ -53,24 +52,26 @@ export class POSComponent {
     return this.posForm.get('projectEngineer')!;
   }
 
-  get householdTownIncluded() {
-    return this.posForm.get('householdTownIncluded')!;
-  }
-
   readonly projectTemplates =
     [
       { title: "ЭХЗ", value: 0 },
       { title: "ШРП", value: 1 }
     ];
-
   readonly engineers =
     [
       { title: "Неизвестно", value: 0 },
+      { title: "Близнюк", value: 6 },
+      { title: "Вусик", value: 13 },
+      { title: "Гомонов", value: 8 },
+      { title: "Дмитрик", value: 11 },
+      { title: "Игнатенко", value: 10 },
+      { title: "Каленик", value: 9 },
       { title: "Капитан", value: 2 },
+      { title: "Морозюк", value: 12 },
+      { title: "Пигальская", value: 7 },
       { title: "Прищеп", value: 3 },
-      { title: "Селиванова", value: 4 },
       { title: "Сайко", value: 5 },
-      { title: "Близнюк", value: 6 }
+      { title: "Селиванова", value: 4 }
     ];
 
   downloadProject(): void {
