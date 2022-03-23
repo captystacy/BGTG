@@ -126,7 +126,7 @@ public class LCProjectWriter : ILCProjectWriter
         calendarPlanStream.Close();
 
         _wordDocumentService.ReplaceTextWithTable(CalendarPlanPreparatoryTablePattern);
-        _wordDocumentService.SectionIndex = 1;
+        _wordDocumentService.TableIndex = 1;
         _wordDocumentService.ReplaceTextWithTable(CalendarPlanMainTablePattern);
 
         ReplaceConstructionStartDateAndConstructionYear();
@@ -188,8 +188,7 @@ public class LCProjectWriter : ILCProjectWriter
 
     private void ReplacePatternsWithTechnicalAndEconomicIndicators()
     {
-        _wordDocumentService.ParagraphIndex = _wordDocumentService.ParagraphsCountInDocument - 1;
-        var lastParagraphParts = _wordDocumentService.ParagraphTextInDocument.Split("мес,");
+        var lastParagraphParts = _wordDocumentService.LastParagraphTextInDocument.Split("мес,");
 
         var totalDurationStr = Regex.Match(lastParagraphParts[0], @"[\d,]+").Value;
         var preparatoryPeriodStr = Regex.Match(lastParagraphParts[1], @"[\d,]+").Value;

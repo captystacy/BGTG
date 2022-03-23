@@ -20,6 +20,7 @@ public class WordDocumentService : IWordDocumentService
     public int CellsCountInRow => _documents[DocumentIndex].Sections[SectionIndex].Tables[TableIndex].Rows[RowIndex].Cells.Count;
     public int ParagraphsCountInCell => _documents[DocumentIndex].Sections[SectionIndex].Tables[TableIndex].Rows[RowIndex].Cells[CellIndex].Paragraphs.Count;
     public int ParagraphsCountInDocument => _documents[DocumentIndex].Sections[SectionIndex].Paragraphs.Count;
+    public string LastParagraphTextInDocument => _documents[DocumentIndex].LastParagraph.Text;
     public string ParagraphTextInDocument => _documents[DocumentIndex].Sections[SectionIndex].Paragraphs[ParagraphIndex].Text;
 
     public string ParagraphTextInCell

@@ -31,6 +31,9 @@ export class POSService {
       case 1:
         projectName = "ШРП";
         break;
+      case 2:
+        projectName = "ТЛМ";
+        break;
       default:
         projectName = "Проект";
     }

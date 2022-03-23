@@ -74,6 +74,7 @@
 	  <None Remove="Infrastructure\Templates\EngineerSignatures\Vusik.png" />
 	  <None Remove="Infrastructure\Templates\ProjectTemplates\CGCPProjectTemplate.doc" />
 	  <None Remove="Infrastructure\Templates\ProjectTemplates\ECPProjectTemplate.doc" />
+	  <None Remove="Infrastructure\Templates\ProjectTemplates\TLMProjectTemplate.doc" />
 	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECPTableOfContentsTemplate.doc" />
 	  <None Remove="Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc" />
 	</ItemGroup>

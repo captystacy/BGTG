@@ -55,7 +55,8 @@ export class POSComponent {
   readonly projectTemplates =
     [
       { title: "ЭХЗ", value: 0 },
-      { title: "ШРП", value: 1 }
+      { title: "ШРП", value: 1 },
+      { title: "ТЛМ", value: 2 }
     ];
   readonly engineers =
     [

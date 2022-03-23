@@ -18,6 +18,7 @@ public interface IWordDocumentService
     int ParagraphsCountInDocument { get; }
     string ParagraphTextInDocument { get; }
     string ParagraphTextInCell { get; set; }
+    string LastParagraphTextInDocument { get; }
     void Load(string path);
     void Load(Stream stream);
     void ReplaceTextInCell(string searchValue, string newValue);
