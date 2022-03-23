@@ -1,4 +1,5 @@
 export interface IProject {
+  calculationFilesInput: HTMLInputElement,
   objectCipher: string;
   projectTemplate: number;
   projectEngineer: number;

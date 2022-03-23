@@ -59,6 +59,7 @@ public class CalendarPlanWriter : ICalendarPlanWriter
 
         if (calendarPlan.ConstructionDurationCeiling > 1)
         {
+            _wordDocumentService.TableIndex = 1;
             var endRowIndex = _wordDocumentService.RowCount - 2;
             _wordDocumentService.ApplyVerticalMerge(_lastCellIndex, AcceptanceTimeRowIndex, endRowIndex);
             _wordDocumentService.RowIndex = AcceptanceTimeRowIndex;

@@ -60,6 +60,11 @@ public class WordDocumentService : IWordDocumentService
     private void SetNewDocument(Document document)
     {
         _documents.Add(document);
+        ResetIndexes();
+    }
+
+    private void ResetIndexes()
+    {
         DocumentIndex = _documents.Count - 1;
         SectionIndex = 0;
         TableIndex = 0;
@@ -199,6 +204,7 @@ public class WordDocumentService : IWordDocumentService
         lastDocument.Dispose();
 
         _documents.Remove(lastDocument);
+        ResetIndexes();
     }
 
     public void DisposeAllDocuments()
@@ -209,5 +215,6 @@ public class WordDocumentService : IWordDocumentService
         }
 
         _documents.Clear();
+        ResetIndexes();
     }
 }

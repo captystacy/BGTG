@@ -12,17 +12,20 @@ export class POSComponent {
 
   constructor(private _posService: POSService) { }
 
-  calculationFilesInput!: HTMLInputElement;
-
   posForm = new FormGroup({
+    calculationFilesInput: new FormControl('', [Validators.required]),
     objectCipher: new FormControl('', [Validators.required]),
-    objectName: new FormControl('', [Validators.required]),
+    objectName: new FormControl(),
     projectTemplate: new FormControl('', [Validators.required]),
     projectEngineer: new FormControl('', [Validators.required]),
     normalInspectionEngineer: new FormControl('', [Validators.required]),
     chiefEngineer: new FormControl('', [Validators.required]),
     chiefProjectEngineer: new FormControl('', [Validators.required]),
   });
+
+  get calculationFilesInput() {
+    return this.posForm.get('calculationFilesInput')!;
+  }
 
   get objectCipher() {
     return this.posForm.get('objectCipher')!;
@@ -77,7 +80,7 @@ export class POSComponent {
     ];
 
   downloadProject(): void {
-    this._posService.downloadProject(this.posForm.value, this.calculationFilesInput.files!);
+    this._posService.downloadProject(this.posForm.value);
   }
 
   downloadTableOfContents(): void {

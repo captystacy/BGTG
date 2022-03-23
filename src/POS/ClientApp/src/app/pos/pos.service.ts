@@ -10,11 +10,12 @@ import { IProject, ITableOfContents, ITitlePage } from "./pos.model";
 export class POSService {
   constructor(private _http: HttpClient) { }
 
-  downloadProject(project: IProject, calculationFiles: FileList): void {
+  downloadProject(project: IProject): void {
     let formData = new FormData();
 
-    for (let i = 0; i < calculationFiles.length; i++) {
-      formData.append('CalculationFiles', calculationFiles[i]);
+    let files = project.calculationFilesInput.files!;
+    for (let i = 0; i < files.length; i++) {
+      formData.append('CalculationFiles', files[i]);
     }
     formData.append('ObjectCipher', project.objectCipher);
     formData.append('ProjectTemplate', project.projectTemplate.toString());
@@ -30,13 +31,13 @@ export class POSService {
 
   downloadTableOfContents(tableOfContents: ITableOfContents): void {
     this._http.post('api/POS/DownloadTableOfContents', tableOfContents, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, "Содержание.doc");
+      saveAs(data, `${tableOfContents.objectCipher}Содержание.doc`);
     }, error => console.error(error));
   }
 
   downloadTitlePage(titlePage: ITitlePage): void {
     this._http.post('api/POS/DownloadTitlePage', titlePage, { responseType: 'blob' }).subscribe(data => {
-      saveAs(data, "Титульник.doc");
+      saveAs(data, `${titlePage.objectCipher}Титульник.doc`);
     }, error => console.error(error));
   }
 }

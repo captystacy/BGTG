@@ -76,7 +76,7 @@
 	  <None Remove="Infrastructure\Templates\ProjectTemplates\CPSProjectTemplate.doc" />
 	  <None Remove="Infrastructure\Templates\ProjectTemplates\MiniCPSProjectTemplate.doc" />
 	  <None Remove="Infrastructure\Templates\ProjectTemplates\MiniTLMProjectTemplate.doc" />
-	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\ECPTableOfContentsTemplate.doc" />
+	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\CPSTableOfContentsTemplate.doc" />
 	  <None Remove="Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc" />
 	</ItemGroup>
 

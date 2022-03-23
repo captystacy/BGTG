@@ -1,16 +1,17 @@
-<div class="d-flex flex-column align-items-center">
-  <mat-form-field appearance="fill" style="width: 710px;">
-    <mat-label>Расчёты в формате (.docx)</mat-label>
-    <ngx-mat-file-input [(ngModel)]="calculationFilesInput" [accept]="'.docx'" multiple required></ngx-mat-file-input>
-    <mat-icon matSuffix>folder</mat-icon>
-  </mat-form-field>
-</div>
 <form [formGroup]="posForm">
   <div class="d-flex flex-column align-items-center">
     <mat-form-field appearance="fill" style="width: 710px;">
+      <mat-label>Расчёты в формате (.docx)</mat-label>
+      <ngx-mat-file-input formControlName="calculationFilesInput" [accept]="'.docx'" multiple required></ngx-mat-file-input>
+      <mat-icon matSuffix>folder</mat-icon>
+      <mat-error *ngIf="calculationFilesInput.hasError('required')">
+        Нужно выбрать продолжительность, календарный план, энергию и воду.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 710px;">
       <mat-label>Шифр объекта</mat-label>
       <input formControlName="objectCipher" matInput>
-      <mat-error *ngIf="objectCipher.errors?.['required']">
+      <mat-error *ngIf="objectCipher.hasError('required')">
         Шифр объекта не может быть пустым.
       </mat-error>
     </mat-form-field>
@@ -19,7 +20,7 @@
       <mat-select formControlName="projectTemplate">
         <mat-option *ngFor="let projectTemplate of projectTemplates" [value]="projectTemplate.value">{{projectTemplate.title}}</mat-option>
       </mat-select>
-      <mat-error *ngIf="projectTemplate.errors?.['required']">
+      <mat-error *ngIf="projectTemplate.hasError('required')">
         Нужно выбрать шаблон.
       </mat-error>
     </mat-form-field>
@@ -28,7 +29,7 @@
       <mat-select formControlName="projectEngineer">
         <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
       </mat-select>
-      <mat-error *ngIf="projectEngineer.errors?.['required']">
+      <mat-error *ngIf="projectEngineer.hasError('required')">
         Нужно выбрать проектировщика.
       </mat-error>
     </mat-form-field>
@@ -37,7 +38,7 @@
       <mat-select formControlName="normalInspectionEngineer">
         <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
       </mat-select>
-      <mat-error *ngIf="normalInspectionEngineer.errors?.['required']">
+      <mat-error *ngIf="normalInspectionEngineer.hasError('required')">
         Нужно выбрать нормоконтролера.
       </mat-error>
     </mat-form-field>
@@ -46,7 +47,7 @@
       <mat-select formControlName="chiefEngineer">
         <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
       </mat-select>
-      <mat-error *ngIf="chiefEngineer.errors?.['required']">
+      <mat-error *ngIf="chiefEngineer.hasError('required')">
         Нужно выбрать начальника.
       </mat-error>
     </mat-form-field>
@@ -55,30 +56,32 @@
       <mat-select formControlName="chiefProjectEngineer">
         <mat-option *ngFor="let engineer of engineers" [value]="engineer.value">{{engineer.title}}</mat-option>
       </mat-select>
-      <mat-error *ngIf="chiefProjectEngineer.errors?.['required']">
+      <mat-error *ngIf="chiefProjectEngineer.hasError('required')">
         Нужно выбрать ГИПа.
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill" style="width: 710px;">
       <mat-label>Полное наименование объекта</mat-label>
       <textarea formControlName="objectName" matInput placeholder="Электроснабжение станции..."></textarea>
-      <mat-error *ngIf="objectName.errors?.['required']">
+      <mat-error *ngIf="objectName.hasError('required')">
         Наименование объекта не может быть пустым.
       </mat-error>
     </mat-form-field>
-    <div class="d-flex justify-content-between" style="width: 710px;">
-      <button (click)="downloadTitlePage()" mat-raised-button color="primary" [disabled]="posForm.invalid">
-        Скачать титульник
-        <mat-icon>file_download</mat-icon>
-      </button>
-      <button (click)="downloadTableOfContents()" mat-raised-button color="primary" [disabled]="posForm.invalid">
-        Скачать содержание
-        <mat-icon>file_download</mat-icon>
-      </button>
-      <button (click)="downloadProject()" mat-raised-button color="primary" [disabled]="posForm.invalid">
-        Скачать проект
-        <mat-icon>file_download</mat-icon>
-      </button>
-    </div>
   </div>
 </form>
+<div class="d-flex flex-column align-items-center">
+  <div class="d-flex justify-content-between" style="width: 710px;">
+    <button (click)="downloadTitlePage()" mat-raised-button color="primary" [disabled]="objectCipher.invalid || chiefProjectEngineer.invalid || !objectName.value">
+      Скачать титульник
+      <mat-icon>file_download</mat-icon>
+    </button>
+    <button (click)="downloadTableOfContents()" mat-raised-button color="primary" [disabled]="objectCipher.invalid || chiefProjectEngineer.invalid || projectTemplate.value !== 0 || !normalInspectionEngineer.value">
+      Скачать содержание
+      <mat-icon>file_download</mat-icon>
+    </button>
+    <button (click)="downloadProject()" mat-raised-button color="primary" [disabled]="posForm.invalid">
+      Скачать проект
+      <mat-icon>file_download</mat-icon>
+    </button>
+  </div>
+</div>
