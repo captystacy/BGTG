@@ -14,7 +14,7 @@ public enum Engineer
     Prishep = 3,
     [Display(Name = "А.Е. Селиванова", ShortName = "Селиванова")]
     Selivanova = 4,
-    [Display(Name = "С.М. Сайко", ShortName = "Сайко")]
+    [Display(Name = "А.М. Сайко", ShortName = "Сайко")]
     Saiko = 5,
     [Display(Name = "Я.В. Близнюк", ShortName = "Близнюк")]
     Bliznuk = 6,

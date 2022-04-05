@@ -63,25 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Infrastructure\Templates\CalendarPlanTemplates\CalendarPlanTemplate.docx" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Cherota.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Dmitrik.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Gomonov.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Ignatenko.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Kalenik.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Morozuk.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Pigalskaya.png" />
-	  <None Remove="Infrastructure\Templates\EngineerSignatures\Vusik.png" />
-	  <None Remove="Infrastructure\Templates\ProjectTemplates\CGCPProjectTemplate.doc" />
-	  <None Remove="Infrastructure\Templates\ProjectTemplates\CPSProjectTemplate.doc" />
-	  <None Remove="Infrastructure\Templates\ProjectTemplates\MiniCPSProjectTemplate.doc" />
-	  <None Remove="Infrastructure\Templates\ProjectTemplates\MiniTLMProjectTemplate.doc" />
-	  <None Remove="Infrastructure\Templates\TableOfContentsTemplates\CPSTableOfContentsTemplate.doc" />
-	  <None Remove="Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Infrastructure\Readers\Base\" />
+	  <Folder Include="NewFolder\" />
 	</ItemGroup>
 
 </Project>
