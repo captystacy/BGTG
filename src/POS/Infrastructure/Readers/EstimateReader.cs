@@ -38,6 +38,7 @@ public class EstimateReader : IEstimateReader
     private const string EstimatePattern = "смета";
     private const string ReportPattern = "отчет";
     private const string DecreePattern = "указ";
+    private const string SentencePattern = "предложение";
     #endregion
 
     #region Estimate works that will not be included
@@ -113,7 +114,8 @@ public class EstimateReader : IEstimateReader
                 && !estimateCalculationCellStr.StartsWith(SubItemShortPattern)
                 && !estimateCalculationCellStr.StartsWith(EstimatePattern)
                 && !estimateCalculationCellStr.StartsWith(ReportPattern)
-                && !estimateCalculationCellStr.StartsWith(DecreePattern))
+                && !estimateCalculationCellStr.StartsWith(DecreePattern)
+                && !estimateCalculationCellStr.StartsWith(SentencePattern))
             {
                 if (estimateCalculationCellStr == CompensatoryLandingsWorkName)
                 {
