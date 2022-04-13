@@ -1,54 +1,89 @@
-﻿using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Creators.Base;
+﻿using Calabonga.OperationResults;
+using POS.Infrastructure.Appenders.Base;
+using POS.Infrastructure.Calculators.Base;
+using POS.Infrastructure.Factories.Base;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Infrastructure.Services.DocumentServices;
 using POS.ViewModels;
 
-namespace POS.Infrastructure.Services;
-
-public class EnergyAndWaterService : IEnergyAndWaterService
+namespace POS.Infrastructure.Services
 {
-    private readonly IEstimateService _estimateService;
-    private readonly IEnergyAndWaterCreator _energyAndWaterCreator;
-    private readonly IEnergyAndWaterWriter _energyAndWaterWriter;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ICalendarWorkCreator _calendarWorkCreator;
-
-    private const string EnergyAndWaterTemplateFileName = "EnergyAndWater.docx";
-    private const string TemplatesPath = @"Infrastructure\Templates\EnergyAndWaterTemplates";
-
-    public EnergyAndWaterService(IEstimateService estimateService, IEnergyAndWaterCreator energyAndWaterCreator,
-        IEnergyAndWaterWriter energyAndWaterWriter, IWebHostEnvironment webHostEnvironment, ICalendarWorkCreator calendarWorkCreator)
+    public class EnergyAndWaterService : IEnergyAndWaterService
     {
-        _estimateService = estimateService;
-        _energyAndWaterCreator = energyAndWaterCreator;
-        _energyAndWaterWriter = energyAndWaterWriter;
-        _webHostEnvironment = webHostEnvironment;
-        _calendarWorkCreator = calendarWorkCreator;
-    }
+        private readonly IMyWordDocumentFactory _documentFactory;
+        private readonly IEnergyAndWaterCalculator _energyAndWaterCalculator;
+        private readonly IEnergyAndWaterAppender _energyAndWaterAppender;
+        private readonly IEstimateService _estimateService;
+        private readonly ICalendarWorkCalculator _calendarWorkCalculator;
 
-    public MemoryStream Write(EnergyAndWaterViewModel viewModel)
-    {
-        _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+        public EnergyAndWaterService(IMyWordDocumentFactory documentFactory, 
+            IEnergyAndWaterCalculator energyAndWaterCalculator,
+            IEnergyAndWaterAppender energyAndWaterAppender,
+            IEstimateService estimateService,
+            ICalendarWorkCalculator calendarWorkCalculator)
+        {
+            _documentFactory = documentFactory;
+            _energyAndWaterCalculator = energyAndWaterCalculator;
+            _energyAndWaterAppender = energyAndWaterAppender;
+            _estimateService = estimateService;
+            _calendarWorkCalculator = calendarWorkCalculator;
+        }
 
-        var mainTotalCostIncludingCAIW = GetMainTotalCostIncludingCAIW();
+        public async Task<OperationResult<MemoryStream>> GetEnergyAndWaterStream(EnergyAndWaterViewModel viewModel)
+        {
+            var operation = OperationResult.CreateResult<MemoryStream>();
 
-        var energyAndWater = _energyAndWaterCreator.Create(mainTotalCostIncludingCAIW, _estimateService.Estimate.ConstructionStartDate.Year);
+            var getTotalEstimateWorkOperation = await _estimateService.GetTotalEstimateWork(viewModel.EstimateFiles, viewModel.TotalWorkChapter);
 
-        var templatePath = GetTemplatePath();
+            if (!getTotalEstimateWorkOperation.Ok)
+            {
+                operation.AddError(getTotalEstimateWorkOperation.GetMetadataMessages());
+                return operation;
+            }
 
-        return _energyAndWaterWriter.Write(energyAndWater, templatePath);
-    }
+            var totalEstimateWork = getTotalEstimateWorkOperation.Result;
 
-    private decimal GetMainTotalCostIncludingCAIW()
-    {
-        var totalEstimateWork = _estimateService.Estimate.MainEstimateWorks.First(x => x.Chapter == 12);
-        var totalCalendarWork = _calendarWorkCreator.Create(totalEstimateWork, _estimateService.Estimate.ConstructionStartDate);
-        return totalCalendarWork.TotalCostIncludingCAIW;
-    }
+            var getConstructionStartDateOperation = await _estimateService.GetConstructionStartDate(viewModel.EstimateFiles[0]);
 
-    private string GetTemplatePath()
-    {
-        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, EnergyAndWaterTemplateFileName);
+            if (!getConstructionStartDateOperation.Ok)
+            {
+                operation.AddError(getConstructionStartDateOperation.GetMetadataMessages());
+                return operation;
+            }
+
+            var constructionStartDate = getConstructionStartDateOperation.Result;
+
+            var calculateCalendarWorkOperation = await _calendarWorkCalculator.Calculate(totalEstimateWork, constructionStartDate);
+
+            if (!calculateCalendarWorkOperation.Ok)
+            {
+                operation.AddError(calculateCalendarWorkOperation.GetMetadataMessages());
+                return operation;
+            }
+
+            var totalCalendarWork = calculateCalendarWorkOperation.Result;
+
+            var calculateEnergyAndWaterOperation = await _energyAndWaterCalculator.Calculate(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year);
+
+            if (!calculateEnergyAndWaterOperation.Ok)
+            {
+                operation.AddError(calculateEnergyAndWaterOperation.GetMetadataMessages());
+                return operation;
+            }
+
+            var document = await _documentFactory.CreateAsync();
+
+            var section = document.AddSection();
+
+            await _energyAndWaterAppender.AppendAsync(section, calculateEnergyAndWaterOperation.Result);
+
+            var memoryStream = new MemoryStream();
+            document.SaveAs(memoryStream, MyFileFormat.DocX);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            operation.Result = memoryStream;
+
+            return operation;
+        }
     }
 }

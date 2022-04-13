@@ -1,8 +1,10 @@
-﻿using POS.ViewModels;
+﻿using Calabonga.OperationResults;
+using POS.ViewModels;
 
-namespace POS.Infrastructure.Services.Base;
-
-public interface IEnergyAndWaterService
+namespace POS.Infrastructure.Services.Base
 {
-    MemoryStream Write(EnergyAndWaterViewModel viewModel);
+    public interface IEnergyAndWaterService
+    {
+        Task<OperationResult<MemoryStream>> GetEnergyAndWaterStream(EnergyAndWaterViewModel viewModel);
+    }
 }

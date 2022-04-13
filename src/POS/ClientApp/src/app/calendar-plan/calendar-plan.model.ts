@@ -1,7 +1,8 @@
 export interface ICalendarPlan {
   constructionStartDate: string;
   constructionDuration: number;
-  calendarWorks: ICalendarWork[];
+  preparatoryCalendarWorks: ICalendarWork[];
+  mainCalendarWorks: ICalendarWork[];
   totalWorkChapter: number;
 }
 

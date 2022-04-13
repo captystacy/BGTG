@@ -1,8 +1,9 @@
 ﻿using POS.ViewModels;
 
-namespace POS.Infrastructure.Writers.Base;
-
-public interface ITitlePageWriter
+namespace POS.Infrastructure.Writers.Base
 {
-    MemoryStream Write(TitlePageViewModel viewModel);
+    public interface ITitlePageWriter
+    {
+        Task<MemoryStream> GetTitlePageStream(TitlePageViewModel viewModel);
+    }
 }

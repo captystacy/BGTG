@@ -1,56 +1,48 @@
 ﻿using Calabonga.OperationResults;
 using Microsoft.AspNetCore.Mvc;
+using POS.Infrastructure.AppConstants;
 using POS.Infrastructure.Attributes;
-using POS.Infrastructure.Constants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
-namespace POS.Controllers;
-
-[Route("api/[controller]")]
-public class CalendarPlanController : ControllerBase
+namespace POS.Controllers
 {
-    private readonly ICalendarPlanService _calendarPlanService;
-
-    public CalendarPlanController(ICalendarPlanService calendarPlanService)
+    [Route("api/[controller]")]
+    public class CalendarPlanController : ControllerBase
     {
-        _calendarPlanService = calendarPlanService;
-    }
+        private readonly ICalendarPlanService _calendarPlanService;
 
-    [HttpPost("[action]")]
-    [ValidateModelState]
-    public OperationResult<CalendarPlanViewModel> GetViewModelForCreation(CalendarPlanCreateViewModel viewModel)
-    {
-        var operation = OperationResult.CreateResult<CalendarPlanViewModel>();
-
-        operation.Result = _calendarPlanService.GetCalendarPlanViewModel(viewModel);
-
-        return operation;
-    }
-
-    [HttpPost("[action]")]
-    [ValidateModelState]
-    public OperationResult<IEnumerable<decimal>> GetTotalPercentages(CalendarPlanViewModel viewModel)
-    {
-        var operation = OperationResult.CreateResult<IEnumerable<decimal>>();
-
-        operation.Result = _calendarPlanService.GetTotalPercentages(viewModel);
-
-        return operation;
-    }
-
-    [HttpPost("[action]")]
-    public IActionResult Download(CalendarPlanViewModel viewModel)
-    {
-        if (!ModelState.IsValid)
+        public CalendarPlanController(ICalendarPlanService calendarPlanService)
         {
-            return BadRequest();
+            _calendarPlanService = calendarPlanService;
         }
 
-        var memoryStream = _calendarPlanService.Write(viewModel);
+        [HttpPost("[action]")]
+        [ValidateModelState]
+        public async Task<OperationResult<CalendarPlanViewModel>> GetViewModelForCreation(CalendarPlanCreateViewModel viewModel) => 
+            await _calendarPlanService.GetCalendarPlanViewModel(viewModel);
 
-        memoryStream.Seek(0, SeekOrigin.Begin);
+        [HttpPost("[action]")]
+        [ValidateModelState]
+        public async Task<OperationResult<IEnumerable<decimal>>> GetTotalPercentages(CalendarPlanViewModel viewModel) => 
+            await _calendarPlanService.GetTotalPercentages(viewModel);
 
-        return File(memoryStream, AppConstants.DocxMimeType);
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Download(CalendarPlanViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var getCalendarPlanStreamOperation = await _calendarPlanService.GetCalendarPlanStream(viewModel);
+
+            if (!getCalendarPlanStreamOperation.Ok)
+            {
+                return BadRequest();
+            }
+
+            return File(getCalendarPlanStreamOperation.Result, Constants.DocxMimeType);
+        }
     }
 }

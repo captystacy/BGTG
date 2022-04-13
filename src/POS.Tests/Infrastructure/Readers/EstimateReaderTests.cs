@@ -1,88 +1,228 @@
-﻿using Moq;
-using NUnit.Framework;
-using POS.DomainModels.EstimateDomainModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
+using Calabonga.OperationResults;
+using Moq;
 using POS.Infrastructure.Readers;
-using POS.Infrastructure.Services.Base;
-using System.IO;
+using POS.Models.CalendarPlanModels;
+using POS.Models.EstimateModels;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Parsers;
+using POS.Tests.Helpers.Services.DocumentServices.ExcelService;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Readers;
-
-public class EstimateReaderTests
+namespace POS.Tests.Infrastructure.Readers
 {
-    private EstimateReader _estimateReader = null!;
-    private Mock<IExcelDocumentService> _excelDocumentServiceMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class EstimateReaderTests
     {
-        _excelDocumentServiceMock = new Mock<IExcelDocumentService>();
-        _estimateReader = new EstimateReader(_excelDocumentServiceMock.Object);
-    }
+        [Fact]
+        public async Task ItShould_get_estimate()
+        {
+            // arrange
 
-    [Test]
-    public void Read()
-    {
-        _excelDocumentServiceMock.Setup(x => x.WorkSheetName).Returns("4237-C1");
+            var stream = StreamHelper.GetMock();
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(20, 3)).Returns("август 2022");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(21, 3)).Returns("0,7 мес.");
+            var cells = MyExcelRangeHelper.GetMock();
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(27, 1)).Returns("АКТ ОТ 14.05.2021Г.");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(28, 1)).Returns("АКТ ОТ 14.05.2021Г.");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(29, 1)).Returns("НИИ БЕЛГИПРОТОПГАЗ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(32, 1)).Returns("ОБЪЕКТНАЯ СМЕТА 1");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(35, 1)).Returns("ОБЪЕКТНАЯ СМЕТА 2");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(39, 1)).Returns("ОБЪЕКТНАЯ СМЕТА 3");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(41, 1)).Returns("НРР 8.01.102-2017");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(49, 1)).Returns("НРР 8.01.103-2017");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(70, 1)).Returns("НАЛОГ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(76, 1)).Returns("ПОДПУНКТ 33.3.2  ИНСТРУКЦИИ");
+            var workSheet = MyWorkSheetHelper.GetMock(cells, "4238-С1");
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(46, 2)).Returns("ИТОГО ПО ГЛАВЕ 1-8");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(46, 9)).Returns("0,713\n16");
+            var workBook = MyWorkBookHelper.GetMock(workSheet);
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(79, 2)).Returns("ВСЕГО ПО СВОДНОМУ СМЕТНОМУ РАСЧЕТУ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(79, 7)).Returns("0,041\n0,001");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(79, 8)).Returns("2,536");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(79, 9)).Returns("3,226\n17");
+            var excelDocument = MyExcelDocumentHelper.GetMock(workBook);
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(29, 2)).Returns("ВЫНОС ТРАССЫ В НАТУРУ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(29, 7)).Returns("-");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(29, 8)).Returns("0,013");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(29, 9)).Returns("0,013\n-");
+            var documentFactory = MyExcelDocumentFactoryHelper.GetMock(stream, excelDocument);
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(32, 2)).Returns("ЭЛЕКТРОХИМИЧЕСКАЯ ЗАЩИТА");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(32, 7)).Returns("0,04\n0,001");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(32, 8)).Returns("-");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(32, 9)).Returns("0,632\n15");
+            var estimateParser = EstimateParserHelper.GetMock();
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(35, 2)).Returns("БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(35, 7)).Returns("-\n-");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(35, 8)).Returns("-\n");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(35, 9)).Returns("0,02\n-");
+            var fixture = new Fixture();
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(39, 2)).Returns("ОДД НА ПЕРИОД ПРОИЗВОДСТВА РАБОТ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(39, 7)).Returns("-\n-");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(39, 8)).Returns("-\n");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(39, 9)).Returns("0,005\n-");
+            // setup preparatory estimate work
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(41, 2)).Returns("ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ 8,56Х0,93 - 7,961%");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(41, 7)).Returns("-\n-");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(41, 8)).Returns("-\n");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(41, 9)).Returns("0,012\n0,745");
+            cells.Setup(x => x[27, 1]).Returns(MyExcelRangeHelper.GetMock("ОБЪЕКТНАЯ СМЕТА").Object);
 
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(26, 2)).Returns("ГЛАВА 1 ПОДГОТОВКА ТЕРРИТОРИИ СТРОИТЕЛЬСТВА");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(31, 2)).Returns("ГЛАВА 2 ОСНОВНЫЕ ЗДАНИЯ,СООРУЖЕНИЯ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(34, 2)).Returns("ГЛАВА 7 БЛАГОУСТРОЙСТВО ТЕРРИТОРИИ");
-        _excelDocumentServiceMock.Setup(x => x.GetCellText(38, 2)).Returns("ГЛАВА 8 ВРЕМЕННЫЕ ЗДАНИЯ И СООРУЖЕНИЯ");
+            var preparatoryEstimateWork = fixture
+                .Build<EstimateWork>()
+                .With(x => x.Chapter, 1)
+                .Create();
 
-        var expectedEstimate = EstimateSource.Estimate548VAT;
+            estimateParser
+                .Setup(x => x.GetEstimateWork(cells.Object, 27, 0))
+                .ReturnsAsync(new OperationResult<EstimateWork> { Result = preparatoryEstimateWork });
 
-        var memoryStream = new MemoryStream();
-        var actualEstimate = _estimateReader.Read(memoryStream, TotalWorkChapter.TotalWork1To12Chapter);
+            // setup total estimate work
 
-        _excelDocumentServiceMock.Verify(x => x.Load(memoryStream), Times.Once());
-        _excelDocumentServiceMock.Verify(x => x.Dispose(), Times.Once());
-        Assert.AreEqual(expectedEstimate, actualEstimate);
+            cells.Setup(x => x[28, 1]).Returns(MyExcelRangeHelper.GetMock("подпункт 33.3.2  инструкции").Object);
+
+            var totalEstimateWork = fixture
+                .Build<EstimateWork>()
+                .With(x => x.Chapter, 12)
+                .Create();
+
+            var totalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter;
+
+            estimateParser
+                .Setup(x => x.GetTotalEstimateWork(cells.Object, 28, totalWorkChapter))
+                .ReturnsAsync(new OperationResult<EstimateWork> { Result = totalEstimateWork });
+
+            // setup construction start date
+
+            var constructionStartDateCellStr = "август 2022";
+            var constructionStartDate = new DateTime(2022, 8, 1);
+
+            cells.Setup(x => x[20, 3]).Returns(MyExcelRangeHelper.GetMock(constructionStartDateCellStr).Object);
+
+            var constructionParser = ConstructionParserHelper.GetMock();
+
+            constructionParser
+                .Setup(x => x.GetConstructionStartDate(constructionStartDateCellStr))
+                .ReturnsAsync(new OperationResult<DateTime> { Result = constructionStartDate });
+
+            // setup construction duration
+
+            var constructionDurationCellStr = "0,7 мес";
+            var constructionDuration = 0.7M;
+
+            cells.Setup(x => x[21, 3]).Returns(MyExcelRangeHelper.GetMock(constructionDurationCellStr).Object);
+
+            constructionParser
+                .Setup(x => x.GetConstructionDuration(constructionDurationCellStr))
+                .ReturnsAsync(new OperationResult<decimal> { Result = constructionDuration });
+
+            var expectedEstimate = new Estimate
+            {
+                PreparatoryEstimateWorks = new List<EstimateWork> { preparatoryEstimateWork },
+                MainEstimateWorks = new List<EstimateWork> { totalEstimateWork },
+                TotalWorkChapter = totalWorkChapter,
+                ConstructionStartDate = constructionStartDate,
+                ConstructionDuration = constructionDuration,
+                ConstructionDurationCeiling = 1,
+            };
+
+            var sut = new EstimateReader(documentFactory.Object, estimateParser.Object, constructionParser.Object);
+
+            // act
+
+            var getEstimateOperation = await sut.GetEstimate(stream.Object, totalWorkChapter);
+
+            var actualEstimate = getEstimateOperation.Result;
+
+            // assert
+
+            Assert.True(getEstimateOperation.Ok);
+
+            Assert.Equal(expectedEstimate.PreparatoryEstimateWorks.First(), actualEstimate.PreparatoryEstimateWorks.First());
+
+            Assert.Equal(expectedEstimate.MainEstimateWorks.First(), actualEstimate.MainEstimateWorks.First());
+
+            Assert.Equal(expectedEstimate, actualEstimate);
+        }
+
+        [Fact]
+        public async Task ItShould_get_labor_costs()
+        {
+            // arrange
+
+            var stream = StreamHelper.GetMock();
+            var cells = MyExcelRangeHelper.GetMock();
+
+            cells.Setup(x => x[27, 1]).Returns(MyExcelRangeHelper.GetMock("НРР 8.01.103-2017").Object);
+
+            var workSheet = MyWorkSheetHelper.GetMock(cells, "4238-С1");
+            var workBook = MyWorkBookHelper.GetMock(workSheet);
+            var document = MyExcelDocumentHelper.GetMock(workBook);
+            var excelDocumentFactory = MyExcelDocumentFactoryHelper.GetMock(stream, document);
+            var estimateParser = EstimateParserHelper.GetMock();
+
+            var expected = 16;
+            estimateParser.Setup(x => x.GetLaborCosts(cells.Object, 27)).ReturnsAsync(new OperationResult<int> { Result = 16 });
+
+            var constructionParser = ConstructionParserHelper.GetMock();
+            var sut = new EstimateReader(excelDocumentFactory.Object, estimateParser.Object, constructionParser.Object);
+
+            // act
+
+            var getLaborCostsOperation = await sut.GetLaborCosts(stream.Object);
+
+            // assert
+
+            Assert.True(getLaborCostsOperation.Ok);
+
+            Assert.Equal(expected, getLaborCostsOperation.Result);
+        }
+
+        [Fact]
+        public async Task ItShould_get_total_estimate_work()
+        {
+            // arrange
+
+            var stream = StreamHelper.GetMock();
+            var cells = MyExcelRangeHelper.GetMock();
+
+            cells.Setup(x => x[27, 1]).Returns(MyExcelRangeHelper.GetMock("ПОДПУНКТ 33.3.2  ИНСТРУКЦИИ").Object);
+
+            var workSheet = MyWorkSheetHelper.GetMock(cells, "4238-С1");
+            var workBook = MyWorkBookHelper.GetMock(workSheet);
+            var document = MyExcelDocumentHelper.GetMock(workBook);
+            var excelDocumentFactory = MyExcelDocumentFactoryHelper.GetMock(stream, document);
+            var estimateParser = EstimateParserHelper.GetMock();
+
+            var totalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter;
+
+            var expected = new Fixture().Create<EstimateWork>();
+            estimateParser.Setup(x => x.GetTotalEstimateWork(cells.Object, 27, totalWorkChapter)).ReturnsAsync(new OperationResult<EstimateWork> { Result = expected });
+
+            var constructionParser = ConstructionParserHelper.GetMock();
+
+            var sut = new EstimateReader(excelDocumentFactory.Object, estimateParser.Object, constructionParser.Object);
+
+            // act
+
+            var getTotalEstimateWorkOperation = await sut.GetTotalEstimateWork(stream.Object, totalWorkChapter);
+
+            // assert
+
+            Assert.True(getTotalEstimateWorkOperation.Ok);
+
+            Assert.Same(expected, getTotalEstimateWorkOperation.Result);
+        }
+
+        [Fact]
+        public async Task ItShould_get_constructionStartDate()
+        {
+            // arrange
+
+            var stream = StreamHelper.GetMock();
+            var cells = MyExcelRangeHelper.GetMock();
+
+            var constructionStartDateCellStr = "август 2022";
+            cells.Setup(x => x[20, 3]).Returns(MyExcelRangeHelper.GetMock(constructionStartDateCellStr).Object);
+
+            var workSheet = MyWorkSheetHelper.GetMock(cells, "4238-С1");
+            var workBook = MyWorkBookHelper.GetMock(workSheet);
+            var document = MyExcelDocumentHelper.GetMock(workBook);
+            var excelDocumentFactory = MyExcelDocumentFactoryHelper.GetMock(stream, document);
+            var estimateParser = EstimateParserHelper.GetMock();
+            var constructionParser = ConstructionParserHelper.GetMock();
+
+            var expected = new DateTime(2022, 9, 1);
+            constructionParser.Setup(x => x.GetConstructionStartDate(constructionStartDateCellStr))
+                .ReturnsAsync(new OperationResult<DateTime> { Result = expected });
+
+            var sut = new EstimateReader(excelDocumentFactory.Object, estimateParser.Object, constructionParser.Object);
+
+            // act
+
+            var getConstructionStartDateOperation = await sut.GetConstructionStartDate(stream.Object);
+
+            // assert
+
+            Assert.True(getConstructionStartDateOperation.Ok);
+
+            Assert.Equal(expected, getConstructionStartDateOperation.Result);
+        }
     }
 }

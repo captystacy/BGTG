@@ -1,27 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.Infrastructure.Constants;
 
-namespace POS.ViewModels;
-
-public class DurationByTCPViewModel : IValidatableObject
+namespace POS.ViewModels
 {
-    public char AppendixKey { get; set; }
-    public string PipelineCategoryName { get; set; } = null!;
-    public string PipelineMaterial { get; set; } = null!;
-    public int PipelineDiameter { get; set; }
-    public decimal PipelineLength { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class DurationByTCPViewModel : IValidatableObject
     {
-        if (PipelineDiameter <= 0)
-        {
-            yield return new ValidationResult("Диаметр трубопровода не может быть отрицательным или равным нулю.");
+        public char AppendixKey { get; set; }
+        public string PipelineCategoryName { get; set; } = null!;
+        public string PipelineMaterial { get; set; } = null!;
+        public int PipelineDiameter { get; set; }
+        public decimal PipelineLength { get; set; }
 
-        }
-
-        if (PipelineLength <= 0)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult("Длина трубопровода не может быть отрицательна.");
+            if (PipelineDiameter <= 0)
+            {
+                yield return new ValidationResult("Pipeline diameter could not be less or equal zero");
+
+            }
+
+            if (PipelineLength <= 0)
+            {
+                yield return new ValidationResult("Pipeline length could not be less or equal zero");
+            }
         }
     }
 }

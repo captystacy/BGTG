@@ -125,7 +125,8 @@ export class CalendarPlanService {
       this._initialPercentageValue = 0;
     }
 
-    this.setCalendarWorksPercentagesInitialValues();
+    this.setCalendarWorksPercentagesInitialValues(this._calendarPlan.preparatoryCalendarWorks);
+    this.setCalendarWorksPercentagesInitialValues(this._calendarPlan.mainCalendarWorks);
     this.setColumnPercentages();
     this.setMonths();
 
@@ -163,15 +164,21 @@ export class CalendarPlanService {
     let milliseconds = Date.parse(this._calendarPlan.constructionStartDate);
     let currentDate = new Date(milliseconds);
     let formatter = new Intl.DateTimeFormat('ru', { month: 'long', year: 'numeric' });
-    for (let i = 0; i < this._calendarPlan.constructionDuration + 1; i++) {
+
+    // if duration is more than one month, add cell for acceptance month
+    var countOfMonths = this._calendarPlan.constructionDuration > 1
+      ? this._calendarPlan.constructionDuration + 1
+      : this._calendarPlan.constructionDuration;
+
+    for (let i = 0; i < countOfMonths; i++) {
       var monthYearStr = formatter.format(currentDate);
       currentDate.setMonth(currentDate.getMonth() + 1);
       this._months.push(monthYearStr[0].charAt(0).toUpperCase() + monthYearStr.slice(1));
     }
   }
 
-  private setCalendarWorksPercentagesInitialValues(): void {
-    this._calendarPlan.calendarWorks.forEach((x: ICalendarWork) => {
+  private setCalendarWorksPercentagesInitialValues(calendarWorks: ICalendarWork[]): void {
+    calendarWorks.forEach((x: ICalendarWork) => {
       x.percentages = [];
       for (let i = 0; i < this._calendarPlan.constructionDuration; i++) {
         x.percentages.push({ value: this._initialPercentageValue });
@@ -198,11 +205,19 @@ export class CalendarPlanService {
   }
 
   private appendCalendarWorks(formData: FormData): void {
-    for (let i = 0; i < this._calendarPlan.calendarWorks.length; i++) {
-      formData.append(`CalendarWorks[${i}].WorkName`, this._calendarPlan.calendarWorks[i].workName);
-      for (var j = 0; j < this._calendarPlan.calendarWorks[i].percentages.length; j++) {
-        formData.append(`CalendarWorks[${i}].Percentages[${j}]`,
-          (this._calendarPlan.calendarWorks[i].percentages[j].value / 100).toString());
+    for (let i = 0; i < this._calendarPlan.preparatoryCalendarWorks.length; i++) {
+      formData.append(`PreparatoryCalendarWorks[${i}].WorkName`, this._calendarPlan.preparatoryCalendarWorks[i].workName);
+      for (var j = 0; j < this._calendarPlan.preparatoryCalendarWorks[i].percentages.length; j++) {
+        formData.append(`PreparatoryCalendarWorks[${i}].Percentages[${j}]`,
+          (this._calendarPlan.preparatoryCalendarWorks[i].percentages[j].value / 100).toString());
+      }
+    }
+
+    for (let i = 0; i < this._calendarPlan.mainCalendarWorks.length; i++) {
+      formData.append(`MainCalendarWorks[${i}].WorkName`, this._calendarPlan.mainCalendarWorks[i].workName);
+      for (var j = 0; j < this._calendarPlan.mainCalendarWorks[i].percentages.length; j++) {
+        formData.append(`MainCalendarWorks[${i}].Percentages[${j}]`,
+          (this._calendarPlan.mainCalendarWorks[i].percentages[j].value / 100).toString());
       }
     }
   }

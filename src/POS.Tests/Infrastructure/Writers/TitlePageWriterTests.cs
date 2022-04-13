@@ -1,57 +1,50 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
 using Moq;
-using NUnit.Framework;
-using POS.DomainModels;
-using POS.Infrastructure.Replacers;
-using POS.Infrastructure.Services.Base;
 using POS.Infrastructure.Writers;
+using POS.Models;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Replacers;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
 using POS.ViewModels;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Writers;
-
-public class TitlePageWriterTests
+namespace POS.Tests.Infrastructure.Writers
 {
-    private TitlePageWriter _titlePageWriter = null!;
-    private Mock<IWordDocumentService> _documentServiceMock = null!;
-    private Mock<IEngineerReplacer> _engineerReplacerMock = null!;
-    private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class TitlePageWriterTests
     {
-        _documentServiceMock = new Mock<IWordDocumentService>();
-        _engineerReplacerMock = new Mock<IEngineerReplacer>();
-        _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _titlePageWriter = new TitlePageWriter(_documentServiceMock.Object, _engineerReplacerMock.Object, _webHostEnvironmentMock.Object);
-    }
-
-    [Test]
-    public void Write_ConstructionObject548()
-    {
-        var viewModel = new TitlePageViewModel
+        [Fact]
+        public async Task ItShould_replace_title_page_values()
         {
-            ObjectCipher = "5.5-20.548",
-            ObjectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района",
-            ChiefProjectEngineer = Engineer.Saiko,
-        };
+            // arrange
 
-        var templatePath = @"root\Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc";
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
+            var viewModel = new TitlePageViewModel
+            {
+                ObjectCipher = "5.5-21.548",
+                ObjectName = "Object name",
+                ChiefProjectEngineer = Engineer.Selivanova,
+            };
 
-        var objectName = "Электроснабжение станции катодной защиты (СКЗ)№36 аг.Снов Несвижского района";
-        var objectCipher = "5.5-20.548";
+            var document = MyWordDocumentHelper.GetMock();
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock(@"root\Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc", document);
+            var engineerReplacer = EngineerReplacerHelper.GetMock();
+            var projectReplacer = ProjectReplacerHelper.GetMock();
+            var webHostEnvironment = WebHostEnvironmentHelper.GetMock("root");
 
-        var memoryStream = _titlePageWriter.Write(viewModel);
+            var sut = new TitlePageWriter(documentFactory.Object, engineerReplacer.Object, projectReplacer.Object, webHostEnvironment.Object);
 
-        _engineerReplacerMock.Verify(x => x.ReplaceEngineerSecondNameAndSignature(Engineer.Saiko, TypeOfEngineer.ChiefProjectEngineer), Times.Once);
-        _engineerReplacerMock.Verify(x => x.ReplaceEngineerSecondNameAndSignature(Engineer.Cherota, TypeOfEngineer.ChiefOrganizationEngineer), Times.Once);
-        _documentServiceMock.Verify(x => x.Load(templatePath), Times.Once);
-        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%NAME%", objectName), Times.Once);
-        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CIPHER%", objectCipher), Times.Once);
-        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%YEAR%", DateTime.Now.Year.ToString()), Times.Once);
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.Doc, 0), Times.Once);
-        _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
-        Assert.NotNull(memoryStream);
+            // act
+
+            await sut.GetTitlePageStream(viewModel);
+
+            // assert
+
+            engineerReplacer.Verify(x => x.ReplaceSecondNameAndSignature(document.Object, viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer), Times.Once);
+            engineerReplacer.Verify(x => x.ReplaceSecondNameAndSignature(document.Object, Engineer.Cherota, TypeOfEngineer.ChiefOrganizationEngineer), Times.Once);
+
+            projectReplacer.Verify(x => x.ReplaceObjectName(document.Object, viewModel.ObjectName), Times.Once);
+            projectReplacer.Verify(x => x.ReplaceObjectCipher(document.Object, viewModel.ObjectCipher), Times.Once);
+            projectReplacer.Verify(x => x.ReplaceCurrentYear(document.Object), Times.Once);
+        }
     }
 }

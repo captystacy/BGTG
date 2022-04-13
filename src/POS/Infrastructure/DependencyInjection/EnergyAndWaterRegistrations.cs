@@ -1,19 +1,25 @@
-﻿using POS.Infrastructure.Creators;
-using POS.Infrastructure.Creators.Base;
+﻿using POS.Infrastructure.Calculators;
+using POS.Infrastructure.Calculators.Base;
 using POS.Infrastructure.Services;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers;
-using POS.Infrastructure.Writers.Base;
+using POS.Infrastructure.Appenders;
+using POS.Infrastructure.Appenders.Base;
+using POS.Infrastructure.Replacers;
+using POS.Infrastructure.Replacers.Base;
 
-namespace POS.Infrastructure.DependencyInjection;
-
-public partial class DependencyContainer
+namespace POS.Infrastructure.DependencyInjection
 {
-    public static void EnergyAndWater(IServiceCollection services)
+    public partial class DependencyContainer
     {
-        services.AddTransient<IEnergyAndWaterCreator, EnergyAndWaterCreator>();
-        services.AddTransient<IEnergyAndWaterWriter, EnergyAndWaterWriter>();
+        public static void EnergyAndWater(IServiceCollection services)
+        {
+            services.AddTransient<IEnergyAndWaterCalculator, EnergyAndWaterCalculator>();
 
-        services.AddTransient<IEnergyAndWaterService, EnergyAndWaterService>();
+            services.AddTransient<IEnergyAndWaterAppender, EnergyAndWaterAppender>();
+
+            services.AddTransient<IEnergyAndWaterReplacer, EnergyAndWaterReplacer>();
+
+            services.AddTransient<IEnergyAndWaterService, EnergyAndWaterService>();
+        }
     }
 }

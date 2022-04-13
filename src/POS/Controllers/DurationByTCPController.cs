@@ -1,37 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS.Infrastructure.Constants;
+using POS.Infrastructure.AppConstants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
-namespace POS.Controllers;
-
-[Route("api/[controller]")]
-public class DurationByTCPController : ControllerBase
+namespace POS.Controllers
 {
-    private readonly IDurationByTCPService _durationByTCPService;
-
-    public DurationByTCPController(IDurationByTCPService durationByTCPService)
+    [Route("api/[controller]")]
+    public class DurationByTCPController : ControllerBase
     {
-        _durationByTCPService = durationByTCPService;
-    }
+        private readonly IDurationByTCPService _durationByTCPService;
 
-    [HttpPost("[action]")]
-    public IActionResult Download([FromBody] DurationByTCPViewModel viewModel)
-    {
-        if (!ModelState.IsValid)
+        public DurationByTCPController(IDurationByTCPService durationByTCPService)
         {
-            return BadRequest();
+            _durationByTCPService = durationByTCPService;
         }
 
-        var memoryStream = _durationByTCPService.Write(viewModel);
-
-        if (memoryStream is null)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Download([FromBody] DurationByTCPViewModel viewModel)
         {
-            return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var getDurationByTCPStreamOperation = await _durationByTCPService.GetDurationByTCPStream(viewModel);
+
+            if (!getDurationByTCPStreamOperation.Ok)
+            {
+                return BadRequest();
+            }
+
+            return File(getDurationByTCPStreamOperation.Result, Constants.DocxMimeType);
         }
-
-        memoryStream.Seek(0, SeekOrigin.Begin);
-
-        return File(memoryStream, AppConstants.DocxMimeType);
     }
 }

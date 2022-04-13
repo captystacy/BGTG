@@ -1,32 +1,37 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using POS.Infrastructure.Constants;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
+using POS.Infrastructure.AppConstants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
-namespace POS.Controllers;
-
-[Route("api/[controller]")]
-public class DurationByLCController : ControllerBase
+namespace POS.Controllers
 {
-    private readonly IDurationByLCService _durationByLCService;
-
-    public DurationByLCController(IDurationByLCService durationByLCService)
+    [Route("api/[controller]")]
+    public class DurationByLCController : ControllerBase
     {
-        _durationByLCService = durationByLCService;
-    }
+        private readonly IDurationByLCService _durationByLCService;
 
-    [HttpPost("[action]")]
-    public IActionResult Download(DurationByLCViewModel viewModel)
-    {
-        if (!ModelState.IsValid)
+        public DurationByLCController(IDurationByLCService durationByLCService)
         {
-            return BadRequest();
+            _durationByLCService = durationByLCService;
         }
 
-        var memoryStream = _durationByLCService.Write(viewModel);
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Download(DurationByLCViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
-        memoryStream.Seek(0, SeekOrigin.Begin);
+            var getDurationByLCStreamOperation = await _durationByLCService.GetDurationByLCStream(viewModel);
 
-        return File(memoryStream, AppConstants.DocxMimeType);
+            if (!getDurationByLCStreamOperation.Ok)
+            {
+                return BadRequest();
+            }
+
+            return File(getDurationByLCStreamOperation.Result, Constants.DocxMimeType);
+        }
     }
 }

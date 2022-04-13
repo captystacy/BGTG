@@ -1,21 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.DomainModels;
-using POS.Infrastructure.Constants;
+using POS.Models;
 
-namespace POS.ViewModels;
-
-public class TableOfContentsViewModel : IValidatableObject
+namespace POS.ViewModels
 {
-    public string ObjectCipher { get; set; } = null!;
-    public ProjectTemplate ProjectTemplate { get; set; }
-    public Engineer NormalInspectionEngineer { get; set; }
-    public Engineer ChiefProjectEngineer { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class TableOfContentsViewModel : IValidatableObject
     {
-        if (string.IsNullOrEmpty(ObjectCipher))
+        public string ObjectCipher { get; set; } = null!;
+        public ProjectTemplate ProjectTemplate { get; set; }
+        public Engineer NormalInspectionEngineer { get; set; }
+        public Engineer ChiefProjectEngineer { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult(AppConstants.ObjectCipherValidationMessage);
+            if (string.IsNullOrEmpty(ObjectCipher))
+            {
+                yield return new ValidationResult("Object cipher could not be empty");
+            }
         }
     }
 }

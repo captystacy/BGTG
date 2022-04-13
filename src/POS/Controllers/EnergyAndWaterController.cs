@@ -1,32 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS.Infrastructure.Constants;
+using POS.Infrastructure.AppConstants;
 using POS.Infrastructure.Services.Base;
 using POS.ViewModels;
 
-namespace POS.Controllers;
-
-[Route("api/[controller]")]
-public class EnergyAndWaterController : ControllerBase
+namespace POS.Controllers
 {
-    private readonly IEnergyAndWaterService _energyAndWaterService;
-
-    public EnergyAndWaterController(IEnergyAndWaterService energyAndWaterService)
+    [Route("api/[controller]")]
+    public class EnergyAndWaterController : ControllerBase
     {
-        _energyAndWaterService = energyAndWaterService;
-    }
+        private readonly IEnergyAndWaterService _energyAndWaterService;
 
-    [HttpPost("[action]")]
-    public IActionResult Download(EnergyAndWaterViewModel viewModel)
-    {
-        if (!ModelState.IsValid)
+        public EnergyAndWaterController(IEnergyAndWaterService energyAndWaterService)
         {
-            return BadRequest();
+            _energyAndWaterService = energyAndWaterService;
         }
 
-        var memoryStream = _energyAndWaterService.Write(viewModel);
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Download(EnergyAndWaterViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
-        memoryStream.Seek(0, SeekOrigin.Begin);
+            var getEnergyAndWaterStreamOperation = await _energyAndWaterService.GetEnergyAndWaterStream(viewModel);
 
-        return File(memoryStream, AppConstants.DocxMimeType);
+            if (!getEnergyAndWaterStreamOperation.Ok)
+            {
+                return BadRequest();
+            }
+
+            return File(getEnergyAndWaterStreamOperation.Result, Constants.DocxMimeType);
+        }
     }
 }

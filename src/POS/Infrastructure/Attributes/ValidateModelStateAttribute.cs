@@ -2,21 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace POS.Infrastructure.Attributes;
-
-public class ValidateModelStateAttribute : ActionFilterAttribute
+namespace POS.Infrastructure.Attributes
 {
-    public override void OnActionExecuting(ActionExecutingContext context)
+    public class ValidateModelStateAttribute : ActionFilterAttribute
     {
-        if (context.ModelState.IsValid)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            return;
-        }
+            if (context.ModelState.IsValid)
+            {
+                return;
+            }
 
-        var operation = OperationResult.CreateResult<object>();
-        var messages = context.ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage));
-        var message = string.Join(" ", messages);
-        operation.AddError(message);
-        context.Result = new OkObjectResult(operation);
+            var operation = OperationResult.CreateResult<object>();
+            var messages = context.ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage));
+            var message = string.Join(" ", messages);
+            operation.AddError(message);
+            context.Result = new OkObjectResult(operation);
+        }
     }
 }

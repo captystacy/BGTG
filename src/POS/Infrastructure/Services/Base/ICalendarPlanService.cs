@@ -1,10 +1,12 @@
-﻿using POS.ViewModels;
+﻿using Calabonga.OperationResults;
+using POS.ViewModels;
 
-namespace POS.Infrastructure.Services.Base;
-
-public interface ICalendarPlanService
+namespace POS.Infrastructure.Services.Base
 {
-    CalendarPlanViewModel GetCalendarPlanViewModel(CalendarPlanCreateViewModel viewModel);
-    MemoryStream Write(CalendarPlanViewModel viewModel);
-    IEnumerable<decimal> GetTotalPercentages(CalendarPlanViewModel viewModel);
+    public interface ICalendarPlanService
+    {
+        Task<OperationResult<CalendarPlanViewModel>> GetCalendarPlanViewModel(CalendarPlanCreateViewModel viewModel);
+        Task<OperationResult<IEnumerable<decimal>>> GetTotalPercentages(CalendarPlanViewModel viewModel);
+        Task<OperationResult<MemoryStream>> GetCalendarPlanStream(CalendarPlanViewModel viewModel);
+    }
 }

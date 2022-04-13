@@ -1,17 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.Infrastructure.Constants;
+using POS.Models.EstimateModels;
 
-namespace POS.ViewModels;
-
-public class EnergyAndWaterViewModel : IValidatableObject
+namespace POS.ViewModels
 {
-    public IFormFileCollection EstimateFiles { get; set; } = null!;
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class EnergyAndWaterViewModel : IValidatableObject
     {
-        if (EstimateFiles.Count == 0)
+        public IFormFileCollection EstimateFiles { get; set; } = null!;
+        public TotalWorkChapter TotalWorkChapter { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
+            if (EstimateFiles.Count == 0)
+            {
+                yield return new ValidationResult("Estimate files was not found");
+            }
+
+            if (TotalWorkChapter is TotalWorkChapter.None)
+            {
+                yield return new ValidationResult("Total wok chapter was not set");
+            }
         }
     }
 }

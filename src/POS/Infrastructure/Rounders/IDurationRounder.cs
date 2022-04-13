@@ -1,7 +1,8 @@
-﻿namespace POS.Infrastructure.Rounders;
-
-public interface IDurationRounder
+﻿namespace POS.Infrastructure.Rounders
 {
-    decimal GetRoundedDuration(decimal duration);
-    decimal GetRoundedPreparatoryPeriod(decimal totalDuration);
+    public interface IDurationRounder
+    {
+        Task<decimal> GetRoundedDuration(decimal duration);
+        Task<decimal> GetRoundedPreparatoryPeriod(decimal totalDuration);
+    }
 }

@@ -1,59 +1,51 @@
-﻿using POS.DomainModels.DurationByTCPDomainModels;
-using POS.Infrastructure.Creators.Base;
+﻿using Calabonga.OperationResults;
+using POS.Infrastructure.Appenders.Base;
+using POS.Infrastructure.Calculators.Base;
+using POS.Infrastructure.Factories.Base;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Infrastructure.Services.DocumentServices;
 using POS.ViewModels;
 
-namespace POS.Infrastructure.Services;
-
-public class DurationByTCPService : IDurationByTCPService
+namespace POS.Infrastructure.Services
 {
-    private readonly IDurationByTCPCreator _durationByTCPCreator;
-    private readonly IDurationByTCPWriter _durationByTCPWriter;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-
-    private const string TemplatesPath = @"Infrastructure\Templates\DurationByTCPTemplates";
-
-    private const string InterpolationTemplateFileName = "Interpolation.docx";
-    private const string ExtrapolationAscendingTemplateFileName = "ExtrapolationAscending.docx";
-    private const string ExtrapolationDescendingTemplateFileName = "ExtrapolationDescending.docx";
-    private const string StepwiseExtrapolationAscendingTemplateFileName = "StepwiseExtrapolationAscending.docx";
-    private const string StepwiseExtrapolationDescendingTemplateFileName = "StepwiseExtrapolationDescending.docx";
-
-    public DurationByTCPService(IDurationByTCPCreator durationByTCPCreator, IDurationByTCPWriter durationByTCPWriter, IWebHostEnvironment webHostEnvironment)
+    public class DurationByTCPService : IDurationByTCPService
     {
-        _durationByTCPCreator = durationByTCPCreator;
-        _durationByTCPWriter = durationByTCPWriter;
-        _webHostEnvironment = webHostEnvironment;
-    }
+        private readonly IMyWordDocumentFactory _documentFactory;
+        private readonly IDurationByTCPCalculator _durationByTCPCalculator;
+        private readonly IDurationByTCPAppender _durationByTCPAppender;
 
-    public MemoryStream? Write(DurationByTCPViewModel viewModel)
-    {
-        var durationByTCP = _durationByTCPCreator.Create(viewModel.PipelineMaterial, viewModel.PipelineDiameter,
-            viewModel.PipelineLength, viewModel.AppendixKey, viewModel.PipelineCategoryName);
-
-        if (durationByTCP is null)
+        public DurationByTCPService(IMyWordDocumentFactory documentFactory, IDurationByTCPCalculator durationByTCPCalculator, IDurationByTCPAppender durationByTCPAppender)
         {
-            return null;
+            _documentFactory = documentFactory;
+            _durationByTCPCalculator = durationByTCPCalculator;
+            _durationByTCPAppender = durationByTCPAppender;
         }
 
-        var templatePath = GetTemplatePath(durationByTCP.DurationCalculationType);
-
-        return _durationByTCPWriter.Write(durationByTCP, templatePath);
-    }
-
-    private string GetTemplatePath(DurationCalculationType durationCalculationType)
-    {
-        var templateFileName = durationCalculationType switch
+        public async Task<OperationResult<MemoryStream>> GetDurationByTCPStream(DurationByTCPViewModel viewModel)
         {
-            DurationCalculationType.Interpolation => InterpolationTemplateFileName,
-            DurationCalculationType.ExtrapolationAscending => ExtrapolationAscendingTemplateFileName,
-            DurationCalculationType.ExtrapolationDescending => ExtrapolationDescendingTemplateFileName,
-            DurationCalculationType.StepwiseExtrapolationAscending => StepwiseExtrapolationAscendingTemplateFileName,
-            DurationCalculationType.StepwiseExtrapolationDescending => StepwiseExtrapolationDescendingTemplateFileName,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+            var operation = OperationResult.CreateResult<MemoryStream>();
 
-        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, templateFileName);
+            var calculateOperation = await _durationByTCPCalculator.Calculate(viewModel);
+
+            if (!calculateOperation.Ok)
+            {
+                operation.AddError(calculateOperation.GetMetadataMessages());
+                return operation;
+            }
+
+            var document = await _documentFactory.CreateAsync();
+
+            var section = document.AddSection();
+
+            await _durationByTCPAppender.AppendAsync(section, calculateOperation.Result);
+
+            var memoryStream = new MemoryStream();
+            document.SaveAs(memoryStream, MyFileFormat.DocX);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            operation.Result = memoryStream;
+
+            return operation;
+        }
     }
 }

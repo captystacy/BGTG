@@ -1,82 +1,55 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
+using Calabonga.OperationResults;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using NUnit.Framework;
-using POS.DomainModels;
-using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Models;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Appenders;
+using POS.Tests.Helpers.Calculators;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
 using POS.ViewModels;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Services;
-
-public class DurationByLCServiceTests
+namespace POS.Tests.Infrastructure.Services
 {
-    private DurationByLCService _durationByLCService = null!;
-    private Mock<IEstimateService> _estimateServiceMock = null!;
-    private Mock<IDurationByLCCreator> _durationByLCCreatorMock = null!;
-    private Mock<IDurationByLCWriter> _durationByLCWriterMock = null!;
-    private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class DurationByLCServiceTests
     {
-        _estimateServiceMock = new Mock<IEstimateService>();
-        _durationByLCCreatorMock = new Mock<IDurationByLCCreator>();
-        _durationByLCWriterMock = new Mock<IDurationByLCWriter>();
-        _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _durationByLCService = new DurationByLCService(_estimateServiceMock.Object, _durationByLCCreatorMock.Object,
-            _durationByLCWriterMock.Object, _webHostEnvironmentMock.Object);
-
-    }
-
-    [Test]
-    public void Write()
-    {
-        var estimateFiles = new FormFileCollection();
-        var durationByLCCreateViewModel = new DurationByLCViewModel
+        [Fact]
+        public async Task ItShould_be_able_to_give_correct_duration_by_labor_costs_stream()
         {
-            EstimateFiles = estimateFiles,
-            AcceptanceTimeIncluded = true,
-            NumberOfEmployees = 4,
-            NumberOfWorkingDays = 21.5M,
-            Shift = 1.5M,
-            WorkingDayDuration = 8,
-            TechnologicalLaborCosts = 110,
-        };
-        var estimate = new Estimate(default!, default!, default, default, default, default);
-        _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
-        var durationByLC = new DurationByLC(default, default, default,
-            durationByLCCreateViewModel.TechnologicalLaborCosts, default, default, default, default, default, default,
-            default, default, true, true);
+            // arrange
 
-        var templatePath = @"root\Infrastructure\Templates\DurationByLCTemplates\Rounding+Acceptance+.docx";
+            var viewModel = new DurationByLCViewModel
+            {
+                EstimateFiles = new FormFileCollection
+                {
+                    FormFileHelper.GetMock().Object,
+                    FormFileHelper.GetMock().Object,
+                }
+            };
 
-        _durationByLCCreatorMock.Setup(x => x.Create(estimate.LaborCosts,
-                durationByLCCreateViewModel.TechnologicalLaborCosts,
-                durationByLCCreateViewModel.WorkingDayDuration, durationByLCCreateViewModel.Shift,
-                durationByLCCreateViewModel.NumberOfWorkingDays,
-                durationByLCCreateViewModel.NumberOfEmployees, durationByLCCreateViewModel.AcceptanceTimeIncluded))
-            .Returns(durationByLC);
+            var section = MySectionHelper.GetMock();
+            var document = MyWordDocumentHelper.GetMock(section);
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock(document);
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
+            var durationByLC = new DurationByLC();
+            var durationByLCCalculator = DurationByLCCalculatorHelper.GetMock(viewModel, durationByLC);
+            var durationByLCAppender = DurationByLCAppenderHelper.GetMock();
+            var sut = new DurationByLCService(documentFactory.Object, durationByLCCalculator.Object, durationByLCAppender.Object);
 
-        var expectedMemoryStream = new MemoryStream();
-        _durationByLCWriterMock.Setup(x => x.Write(durationByLC, templatePath)).Returns(expectedMemoryStream);
-        var actualMemoryStream = _durationByLCService.Write(durationByLCCreateViewModel);
+            // act
 
-        Assert.AreSame(expectedMemoryStream, actualMemoryStream);
-        _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
-        _durationByLCCreatorMock.Verify(x => x.Create(estimate.LaborCosts,
-            durationByLCCreateViewModel.TechnologicalLaborCosts,
-            durationByLCCreateViewModel.WorkingDayDuration, durationByLCCreateViewModel.Shift,
-            durationByLCCreateViewModel.NumberOfWorkingDays,
-            durationByLCCreateViewModel.NumberOfEmployees, durationByLCCreateViewModel.AcceptanceTimeIncluded), Times.Once);
-        _durationByLCWriterMock.Verify(x => x.Write(durationByLC, templatePath), Times.Once);
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);
+            var getDurationByLCStreamOperation = await sut.GetDurationByLCStream(viewModel);
+
+            // assert
+
+            Assert.True(getDurationByLCStreamOperation.Ok);
+
+            Assert.NotNull(getDurationByLCStreamOperation.Result);
+
+            durationByLCAppender.Verify(x => x.AppendAsync(section.Object, durationByLC), Times.Once);
+        }
     }
 }

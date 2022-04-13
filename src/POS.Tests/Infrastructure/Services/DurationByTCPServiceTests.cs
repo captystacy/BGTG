@@ -1,78 +1,49 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Moq;
-using NUnit.Framework;
-using POS.DomainModels.DurationByTCPDomainModels;
-using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.Appenders;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Writers.Base;
+using POS.Models;
+using POS.Models.DurationByTCPModels;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Appenders;
+using POS.Tests.Helpers.Calculators;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
 using POS.ViewModels;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Services;
-
-public class DurationByTCPServiceTests
+namespace POS.Tests.Infrastructure.Services
 {
-    private DurationByTCPService _durationByTCPService = null!;
-    private Mock<IDurationByTCPCreator> _durationByTCPCreatorMock = null!;
-    private Mock<IDurationByTCPWriter> _durationByTCPWriterMock = null!;
-    private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class DurationByTCPServiceTests
     {
-        _durationByTCPCreatorMock = new Mock<IDurationByTCPCreator>();
-        _durationByTCPWriterMock = new Mock<IDurationByTCPWriter>();
-        _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _durationByTCPService = new DurationByTCPService(_durationByTCPCreatorMock.Object, _durationByTCPWriterMock.Object, _webHostEnvironmentMock.Object);
-    }
+        [Fact]
+        public async Task ItShould_be_able_to_give_correct_duration_by_tcp()
+        {
+            // arrange
 
-    [Test]
-    public void Write()
-    {
-        var expectedDurationByTCP = new InterpolationDurationByTCP(default!, default, default!, default, default!,
-            DurationCalculationType.Interpolation, default, default, default, default, default, default, default);
+            var viewModel = new DurationByTCPViewModel();
 
-        var durationByTCPCreateViewModel = new DurationByTCPViewModel();
+            var section = MySectionHelper.GetMock();
+            var document = MyWordDocumentHelper.GetMock(section);
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock(document);
 
-        var templatePath = @"root\Infrastructure\Templates\DurationByTCPTemplates\Interpolation.docx";
+            var durationByTCP = new InterpolationDurationByTCP();
+            var durationByTCPCalculator = DurationByTCPCalculatorHelper.GetMock(viewModel, durationByTCP);
+            var durationByTCPAppender = DurationByTCPAppenderHelper.GetMock();
+            var sut = new DurationByTCPService(documentFactory.Object, durationByTCPCalculator.Object, durationByTCPAppender.Object);
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
+            // act
 
-        _durationByTCPCreatorMock.Setup(x => x.Create(durationByTCPCreateViewModel.PipelineMaterial,
-            durationByTCPCreateViewModel.PipelineDiameter, durationByTCPCreateViewModel.PipelineLength, durationByTCPCreateViewModel.AppendixKey,
-            durationByTCPCreateViewModel.PipelineCategoryName)).Returns(expectedDurationByTCP);
+            var getDurationByLCStreamOperation = await sut.GetDurationByTCPStream(viewModel);
 
-        var expectedMemoryStream = new MemoryStream();
-        _durationByTCPWriterMock.Setup(x => x.Write(expectedDurationByTCP, templatePath)).Returns(expectedMemoryStream);
-        var actualMemoryStream = _durationByTCPService.Write(durationByTCPCreateViewModel);
-        
-        Assert.AreSame(expectedMemoryStream, actualMemoryStream);
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Once);
-        _durationByTCPCreatorMock.Verify(x => x.Create(durationByTCPCreateViewModel.PipelineMaterial,
-            durationByTCPCreateViewModel.PipelineDiameter, durationByTCPCreateViewModel.PipelineLength, durationByTCPCreateViewModel.AppendixKey,
-            durationByTCPCreateViewModel.PipelineCategoryName), Times.Once);
-        _durationByTCPWriterMock.Verify(x => x.Write(expectedDurationByTCP, templatePath), Times.Once);
-    }
+            // assert
 
-    [Test]
-    public void Write_CreatorReturnNull()
-    {
-        var expectedDurationByTCP = new InterpolationDurationByTCP(default!, default, default!, default, default!,
-            DurationCalculationType.Interpolation, default, default, default, default, default, default, default);
+            Assert.True(getDurationByLCStreamOperation.Ok);
 
-        var durationByTCPCreateViewModel = new DurationByTCPViewModel();
+            Assert.NotNull(getDurationByLCStreamOperation.Result);
 
-        var templatePath = @"root\AppData\Templates\POSTemplates\DurationByTCPTemplates\Interpolation.docx";
-
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
-
-        var memoryStream = _durationByTCPService.Write(durationByTCPCreateViewModel);
-
-        Assert.Null(memoryStream);
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Never);
-        _durationByTCPCreatorMock.Verify(x => x.Create(durationByTCPCreateViewModel.PipelineMaterial,
-            durationByTCPCreateViewModel.PipelineDiameter, durationByTCPCreateViewModel.PipelineLength, durationByTCPCreateViewModel.AppendixKey,
-            durationByTCPCreateViewModel.PipelineCategoryName), Times.Once);
-        _durationByTCPWriterMock.Verify(x => x.Write(expectedDurationByTCP, templatePath), Times.Never);
+            durationByTCPAppender.Verify(x => x.AppendAsync(section.Object, durationByTCP), Times.Once);
+        }
     }
 }

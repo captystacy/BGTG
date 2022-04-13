@@ -1,8 +1,10 @@
-﻿using POS.ViewModels;
+﻿using Calabonga.OperationResults;
+using POS.ViewModels;
 
-namespace POS.Infrastructure.Services.Base;
-
-public interface IDurationByLCService
+namespace POS.Infrastructure.Services.Base
 {
-    MemoryStream Write(DurationByLCViewModel viewModel);
+    public interface IDurationByLCService
+    {
+        Task<OperationResult<MemoryStream>> GetDurationByLCStream(DurationByLCViewModel viewModel);
+    }
 }

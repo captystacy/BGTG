@@ -1,8 +1,9 @@
 ﻿using POS.ViewModels;
 
-namespace POS.Infrastructure.Writers.Base;
-
-public interface ITableOfContentsWriter
+namespace POS.Infrastructure.Writers.Base
 {
-    MemoryStream Write(TableOfContentsViewModel viewModel);
+    public interface ITableOfContentsWriter
+    {
+        Task<MemoryStream> GetTableOfContentsStream(TableOfContentsViewModel viewModel);
+    }
 }

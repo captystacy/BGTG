@@ -1,74 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
+﻿using AutoFixture;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using NUnit.Framework;
-using POS.DomainModels;
-using POS.DomainModels.CalendarPlanDomainModels;
-using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Creators.Base;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Models;
+using POS.Models.CalendarPlanModels;
+using POS.Models.EstimateModels;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Appenders;
+using POS.Tests.Helpers.Calculators;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Services;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
 using POS.ViewModels;
+using System;
+using System.Threading.Tasks;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Services;
-
-public class EnergyAndWaterServiceTests
+namespace POS.Tests.Infrastructure.Services
 {
-    private EnergyAndWaterService _energyAndWaterService = null!;
-    private Mock<IEstimateService> _estimateServiceMock = null!;
-    private Mock<IEnergyAndWaterCreator> _energyAndWaterCreatorMock = null!;
-    private Mock<IEnergyAndWaterWriter> _energyAndWaterWriterMock = null!;
-    private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-    private Mock<ICalendarWorkCreator> _calendarWorkCreatorMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class EnergyAndWaterServiceTests
     {
-        _estimateServiceMock = new Mock<IEstimateService>();
-        _energyAndWaterCreatorMock = new Mock<IEnergyAndWaterCreator>();
-        _energyAndWaterWriterMock = new Mock<IEnergyAndWaterWriter>();
-        _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _calendarWorkCreatorMock = new Mock<ICalendarWorkCreator>();
-        _energyAndWaterService = new EnergyAndWaterService(_estimateServiceMock.Object, _energyAndWaterCreatorMock.Object, _energyAndWaterWriterMock.Object,
-            _webHostEnvironmentMock.Object, _calendarWorkCreatorMock.Object);
-
-    }
-
-    [Test]
-    public void Write()
-    {
-        var estimateFiles = new FormFileCollection();
-        var constructionStartDate = new DateTime(1999, 9, 21);
-        var totalEstimateWork = new EstimateWork(default!, default, default, default, 12);
-        var estimate = new Estimate(new List<EstimateWork>(), new List<EstimateWork> { totalEstimateWork }, constructionStartDate, default, default, default);
-
-        var templatePath = @"root\Infrastructure\Templates\EnergyAndWaterTemplates\EnergyAndWater.docx";
-
-        var energyAndWaterCreateViewModel = new EnergyAndWaterViewModel
+        [Fact]
+        public async Task ItShould_be_able_to_give_correct_energy_and_water_stream()
         {
-            EstimateFiles = estimateFiles,
-        };
-        var totalCalendarWork = new CalendarWork(default!, default, default, default!, default);
-        _estimateServiceMock.Setup(x => x.Estimate).Returns(estimate);
-        _calendarWorkCreatorMock.Setup(x => x.Create(totalEstimateWork, constructionStartDate)).Returns(totalCalendarWork);
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
-        var actualEnergyAndWater = new EnergyAndWater(default, default, default, default, default, default);
-        _energyAndWaterCreatorMock.Setup(x => x.Create(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year)).Returns(actualEnergyAndWater);
+            // arrange
 
-        var expectedMemoryStream = new MemoryStream();
-        _energyAndWaterWriterMock.Setup(x => x.Write(actualEnergyAndWater, templatePath)).Returns(expectedMemoryStream);
-        var actualMemoryStream = _energyAndWaterService.Write(energyAndWaterCreateViewModel);
+            var fixture = new Fixture();
 
-        Assert.AreSame(expectedMemoryStream, actualMemoryStream);
-        _webHostEnvironmentMock.Verify(x => x.ContentRootPath, Times.Once);
-        _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
-        _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Exactly(3));
-        _calendarWorkCreatorMock.Verify(x => x.Create(totalEstimateWork, constructionStartDate), Times.Once);
-        _energyAndWaterCreatorMock.Verify(x => x.Create(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year), Times.Once);
-        _energyAndWaterWriterMock.Verify(x => x.Write(actualEnergyAndWater, templatePath), Times.Once);
+            var viewModel = new EnergyAndWaterViewModel
+            {
+                EstimateFiles = new FormFileCollection
+                {
+                    FormFileHelper.GetMock().Object,
+                },
+                TotalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter
+            };
+
+            var section = MySectionHelper.GetMock();
+            var document = MyWordDocumentHelper.GetMock(section);
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock(document);
+
+            var energyAndWaterAppender = EnergyAndWaterAppenderHelper.GetMock();
+
+            var totalEstimateWork = fixture.Create<EstimateWork>();
+
+            var constructionStartDate = new DateTime(2022, 9, 1);
+            var estimateService = EstimateServiceHelper.GetMock(viewModel, totalEstimateWork, constructionStartDate);
+
+            var totalCalendarWork = fixture.Create<CalendarWork>();
+            var calendarWorkCalculator = CalendarWorkCalculatorHelper.GetMock(totalEstimateWork, constructionStartDate, totalCalendarWork);
+
+            var energyAndWater = new EnergyAndWater();
+            var energyAndWaterCalculator = EnergyAndWaterCalculatorHelper.GetMock(totalCalendarWork.TotalCostIncludingCAIW, constructionStartDate.Year, energyAndWater);
+
+            var sut = new EnergyAndWaterService(documentFactory.Object, energyAndWaterCalculator.Object, energyAndWaterAppender.Object, estimateService.Object, calendarWorkCalculator.Object);
+
+            // act
+
+            var getEnergyAndWaterStreamOperation = await sut.GetEnergyAndWaterStream(viewModel);
+
+            // assert
+
+            Assert.True(getEnergyAndWaterStreamOperation.Ok);
+
+            Assert.NotNull(getEnergyAndWaterStreamOperation.Result);
+
+            energyAndWaterAppender.Verify(x => x.AppendAsync(section.Object, energyAndWater), Times.Once);
+        }
     }
 }

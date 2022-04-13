@@ -8,10 +8,11 @@ import { EnergyAndWaterService } from "./energy-and-water.service";
 })
 export class EnergyAndWaterComponent {
   @Input() estimateFiles?: FileList;
+  totalWorkChapter!: number;
 
   constructor(private _energyAndWaterService: EnergyAndWaterService) { }
 
   downloadEnergyAndWater(): void {
-    this._energyAndWaterService.downloadEnergyAndWater(this.estimateFiles!);
+    this._energyAndWaterService.downloadEnergyAndWater(this.estimateFiles!, this.totalWorkChapter);
   }
 }

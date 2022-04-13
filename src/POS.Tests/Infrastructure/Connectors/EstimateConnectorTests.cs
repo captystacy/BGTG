@@ -1,69 +1,146 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
-using POS.DomainModels.EstimateDomainModels;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using POS.Infrastructure.Connectors;
+using POS.Models.EstimateModels;
+using POS.Tests.Helpers.Connectors;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Connectors;
-
-public class EstimateConnectorTests
+namespace POS.Tests.Infrastructure.Connectors
 {
-    private EstimateConnector _estimateConnector = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class EstimateConnectorTests
     {
-        _estimateConnector = new EstimateConnector();
-    }
+        [Fact]
+        public async Task ItShould_return_estimate_if_was_single()
+        {
+            // arrange
 
-    [Test]
-    public void Connect_OneEstimate548_SameEstimate()
-    {
-        var estimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate548VAT });
+            var expectedEstimate = new Estimate();
 
-        Assert.AreEqual(EstimateSource.Estimate548VAT, estimate);
-    }
+            var sut = new EstimateConnector();
 
-    [Test]
-    public void Connect_TwoEstimates158_CorrectOneEstimate()
-    {
-        var expectedEstimate = new Estimate(new List<EstimateWork>
+            // act
+
+            var connectOperation = await sut.Connect(new List<Estimate> { expectedEstimate });
+
+            // assert
+
+            Assert.Same(expectedEstimate, connectOperation.Result);
+        }
+
+        [Fact]
+        public async Task ItShould_sum_estimate_works_with_same_name()
+        {
+            // arrange
+
+            var sameWorkName = "Электрохимическая защита";
+
+            var firstEstimateWork = new EstimateWork()
             {
-                new("Демонтажные работы", 0, 11.659M, 109.474M, 1),
-                new("Подготовительные работы", 0, 0, 4.094M, 1),
-                new("Обследование строительных конструкций с ндс", 0, 18.131M, 18.131M, 1),
-                new("Организация дорожного движения на период строительства", 0, 0, 0.063M, 8),
-                new("Временные здания и сооружения 3,76х0,86 - 3,234%", 0, 0, 23.598M, 8),
-            },
-            new List<EstimateWork>
+                Percentages = new List<decimal>(),
+                Chapter = 2,
+                EquipmentCost = 1.2M,
+                OtherProductsCost = 1.3M,
+                TotalCost = 1.4M,
+                WorkName = sameWorkName
+            };
+
+            var secondEstimateWork = new EstimateWork()
             {
-                new("Здание гаражей с блоком бытовых помещений и складами", 112.869M, 2.924M, 1098.187M, 2),
-                new("Абк", 277.031M, 3.051M, 1440.621M, 2),
-                new("Склад материалов", 0, 0.544M, 100.598M, 2),
-                new("Склад баллонов", 68.38M, 0.827M, 277.016M, 2),
-                new("Навес для машин на 8 м/мест", 0, 0, 88.493M, 4),
-                new("Эстакада", 0, 0, 26.782M, 4),
-                new("Внутриплощадочные сети электроснабжения", 26.139M, 0, 52.076M, 4),
-                new("Внутриплощадочные сети автоматизации", 0, 0, 7.274M, 4),
-                new("Внутриплощадочные сети телемеханизации", 0, 0, 3.928M, 4),
-                new("Электроснабжение. подстанции", 3.206M, 0, 3.572M, 4),
-                new("Внутриплощадочные сети системы контроля и управления доступом", 6.458M, 0, 16.049M, 5),
-                new("Внутриплощадочные сети пожарной сигнализации", 0.254M, 0, 16.021M, 5),
-                new("Внутриплощадочные сети видеонаблюдения", 3.8M, 0, 12.013M, 5),
-                new("Организация дорожного движения на период эксплуатации", 0, 0, 1.204M, 5),
-                new("Внутриплощадочные сети связи", 0, 0, 2.196M, 5),
-                new("Системы радиосвязи", 0, 0, 2.319M, 5),
-                new("Газоснабжение. наружные газопроводы", 0, 0, 8.803M, 6),
-                new("Узел редуцирования", 0.088M, 0, 4.09M, 6),
-                new("Наружные сети водоснабжения и канализации", 2.202M, 0.018M, 74.368M, 6),
-                new("Тепловые сети", 0.048M, 0, 20.679M, 6),
-                new("Благоустройство", 0, 18.42M, 1064.607M, 7),
-                new("Всего по сводному сметному расчету", 512.514M, 1900.851M, 6442.849M, 12),
+                Percentages = new List<decimal>(),
+                Chapter = 2,
+                EquipmentCost = 1.5M,
+                OtherProductsCost = 1.6M,
+                TotalCost = 1.7M,
+                WorkName = sameWorkName
+            };
 
-            }, new DateTime(2019, 7, 1), 6, 6, 80110);
+            var expectedEstimateWork = new EstimateWork
+            {
+                Percentages = new List<decimal>(),
+                Chapter = 2,
+                EquipmentCost = 2.7M,
+                OtherProductsCost = 2.9M,
+                TotalCost = 3.1M,
+                WorkName = sameWorkName
+            };
 
-        var actualEstimate = _estimateConnector.Connect(new List<Estimate> { EstimateSource.Estimate158VAT, EstimateSource.Estimate158VATFree });
+            var fixture = new Fixture();
 
-        Assert.AreEqual(expectedEstimate, actualEstimate);
+            var firstEstimate = fixture
+                .Build<Estimate>()
+                .With(x => x.PreparatoryEstimateWorks, new List<EstimateWork> { firstEstimateWork })
+                .Create();
+
+            var secondEstimate = fixture
+                .Build<Estimate>()
+                .With(x => x.PreparatoryEstimateWorks, new List<EstimateWork> { secondEstimateWork })
+                .Create();
+
+            var sut = new EstimateConnector();
+
+            // act
+
+            var connectOperation = await sut.Connect(new List<Estimate> { firstEstimate, secondEstimate });
+
+            var actualEstimateWork = connectOperation.Result.PreparatoryEstimateWorks.First();
+
+            // assert
+
+            Assert.True(connectOperation.Ok);
+
+            Assert.Equal(expectedEstimateWork, actualEstimateWork);
+        }
+
+        [Fact]
+        public async Task ItShould_connect_estimate_work()
+        {
+            // arrange
+
+            var sameWorkName = "Электрохимическая защита";
+
+            var firstEstimateWork = new EstimateWork()
+            {
+                Percentages = new List<decimal>(),
+                Chapter = 2,
+                EquipmentCost = 1.2M,
+                OtherProductsCost = 1.3M,
+                TotalCost = 1.4M,
+                WorkName = sameWorkName
+            };
+
+            var secondEstimateWork = new EstimateWork()
+            {
+                Percentages = new List<decimal>(),
+                Chapter = 2,
+                EquipmentCost = 1.5M,
+                OtherProductsCost = 1.6M,
+                TotalCost = 1.7M,
+                WorkName = sameWorkName
+            };
+
+            var expected = new EstimateWork
+            {
+                Percentages = new List<decimal>(),
+                Chapter = 2,
+                EquipmentCost = 2.7M,
+                OtherProductsCost = 2.9M,
+                TotalCost = 3.1M,
+                WorkName = sameWorkName
+            };
+
+            var sut = new EstimateConnector();
+
+            // act
+
+            var connectOperation = await sut.ConnectEstimateWork(new List<EstimateWork> { firstEstimateWork, secondEstimateWork });
+
+            // assert
+
+            Assert.True(connectOperation.Ok);
+
+            Assert.Equal(expected, connectOperation.Result);
+        }
     }
 }

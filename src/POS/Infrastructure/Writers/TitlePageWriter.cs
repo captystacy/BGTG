@@ -1,45 +1,51 @@
-﻿using POS.DomainModels;
-using POS.Infrastructure.Replacers;
-using POS.Infrastructure.Services.Base;
+﻿using POS.Infrastructure.Factories.Base;
+using POS.Infrastructure.Replacers.Base;
+using POS.Infrastructure.Services.DocumentServices;
 using POS.Infrastructure.Writers.Base;
+using POS.Models;
 using POS.ViewModels;
 
-namespace POS.Infrastructure.Writers;
-
-public class TitlePageWriter : ITitlePageWriter
+namespace POS.Infrastructure.Writers
 {
-    private readonly IWordDocumentService _wordDocumentService;
-    private readonly IEngineerReplacer _engineerReplacer;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-
-    private const string TemplatesPath = @"Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc";
-
-    private const string NamePattern = "%NAME%";
-    private const string CipherPattern = "%CIPHER%";
-    private const string YearPattern = "%YEAR%";
-
-    public TitlePageWriter(IWordDocumentService wordDocumentService, IEngineerReplacer engineerReplacer, IWebHostEnvironment webHostEnvironment)
+    public class TitlePageWriter : ITitlePageWriter
     {
-        _wordDocumentService = wordDocumentService;
-        _engineerReplacer = engineerReplacer;
-        _webHostEnvironment = webHostEnvironment;
-    }
+        private readonly IMyWordDocumentFactory _documentFactory;
+        private readonly IEngineerReplacer _engineerReplacer;
+        private readonly IProjectReplacer _projectReplacer;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public MemoryStream Write(TitlePageViewModel viewModel)
-    {
-        var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath);
+        private const string TemplatesPath = @"Infrastructure\Templates\TitlePageTemplates\TitlePageTemplate.doc";
 
-        _wordDocumentService.Load(templatePath);
-        _engineerReplacer.ReplaceEngineerSecondNameAndSignature(viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer);
-        _engineerReplacer.ReplaceEngineerSecondNameAndSignature(Engineer.Cherota, TypeOfEngineer.ChiefOrganizationEngineer);
-        _wordDocumentService.ReplaceTextInDocument(NamePattern, viewModel.ObjectName);
-        _wordDocumentService.ReplaceTextInDocument(CipherPattern, viewModel.ObjectCipher);
-        _wordDocumentService.ReplaceTextInDocument(YearPattern, DateTime.Now.Year.ToString());
+        public TitlePageWriter(IMyWordDocumentFactory documentFactory, IEngineerReplacer engineerReplacer, IProjectReplacer projectReplacer, IWebHostEnvironment webHostEnvironment)
+        {
+            _documentFactory = documentFactory;
+            _engineerReplacer = engineerReplacer;
+            _projectReplacer = projectReplacer;
+            _webHostEnvironment = webHostEnvironment;
+        }
 
-        var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.Doc);
-        _wordDocumentService.DisposeLastDocument();
+        public async Task<MemoryStream> GetTitlePageStream(TitlePageViewModel viewModel)
+        {
+            var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath);
 
-        return memoryStream;
+            using var document = await _documentFactory.CreateAsync(templatePath);
+
+            var tasks = new List<Task>
+            {
+                _engineerReplacer.ReplaceSecondNameAndSignature(document, viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer),
+                _engineerReplacer.ReplaceSecondNameAndSignature(document, Engineer.Cherota, TypeOfEngineer.ChiefOrganizationEngineer),
+                _projectReplacer.ReplaceObjectName(document, viewModel.ObjectName),
+                _projectReplacer.ReplaceObjectCipher(document, viewModel.ObjectCipher),
+                _projectReplacer.ReplaceCurrentYear(document),
+            };
+
+            await Task.WhenAll(tasks);
+
+            var memoryStream = new MemoryStream();
+            document.SaveAs(memoryStream, MyFileFormat.Doc);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            return memoryStream;
+        }
     }
 }

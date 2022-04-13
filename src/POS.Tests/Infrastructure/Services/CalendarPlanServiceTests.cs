@@ -1,163 +1,460 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
+﻿using Calabonga.OperationResults;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using NUnit.Framework;
-using POS.DomainModels.CalendarPlanDomainModels;
-using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Constants;
-using POS.Infrastructure.Creators.Base;
+using POS.Infrastructure.AppConstants;
 using POS.Infrastructure.Services;
-using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Models.EstimateModels;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Appenders;
+using POS.Tests.Helpers.Calculators;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Services;
 using POS.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using POS.Models.CalendarPlanModels;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Services;
-
-public class CalendarPlanServiceTests
+namespace POS.Tests.Infrastructure.Services
 {
-    private CalendarPlanService _calendarPlanService = null!;
-    private Mock<IMapper> _mapperMock = null!;
-    private Mock<IEstimateService> _estimateServiceMock = null!;
-    private Mock<ICalendarPlanCreator> _calendarPlanCreatorMock = null!;
-    private Mock<ICalendarPlanWriter> _calendarPlanWriterMock = null!;
-    private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class CalendarPlanServiceTests
     {
-        _mapperMock = new Mock<IMapper>();
-        _estimateServiceMock = new Mock<IEstimateService>();
-        _calendarPlanCreatorMock = new Mock<ICalendarPlanCreator>();
-        _calendarPlanWriterMock = new Mock<ICalendarPlanWriter>();
-        _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _calendarPlanService = new CalendarPlanService(_estimateServiceMock.Object, _calendarPlanCreatorMock.Object,
-            _calendarPlanWriterMock.Object,
-            _webHostEnvironmentMock.Object, _mapperMock.Object);
-
-    }
-
-    [Test]
-    public void GetCalendarPlanCreateViewModel()
-    {
-        var estimateFiles = new FormFileCollection();
-
-        var calendarPlanCreateViewModel = new CalendarPlanCreateViewModel()
+        [Fact]
+        public async Task ItShould_be_able_to_give_correct_calendar_plan_view_model()
         {
-            EstimateFiles = estimateFiles,
-            TotalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter
-        };
-        var estimate = new Estimate(default!, default!, default, default, default, default);
-        var calendarPlanViewModel = new CalendarPlanViewModel
-        {
-            CalendarWorks = new List<CalendarWorkViewModel>
+            // arrange
+
+            var estimateStream1 = StreamHelper.GetMock();
+            var estimateStream2 = StreamHelper.GetMock();
+
+            var calendarPlanCreateViewModel = new CalendarPlanCreateViewModel
             {
-                new()
+                EstimateFiles = new FormFileCollection
                 {
-                    WorkName = AppConstants.TotalWorkName,
-                    Chapter = (int)TotalWorkChapter.TotalWork1To12Chapter
+                    FormFileHelper.GetMock(estimateStream1).Object,
+                    FormFileHelper.GetMock(estimateStream2).Object,
                 },
-            }
-        };
-        _estimateServiceMock.SetupGet(x => x.Estimate).Returns(estimate);
-        _mapperMock.Setup(x => x.Map<CalendarPlanViewModel>(estimate)).Returns(calendarPlanViewModel);
+                TotalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter
+            };
 
-        var expectedCalendarPlanViewModel = new CalendarPlanViewModel
-        {
-            CalendarWorks = new List<CalendarWorkViewModel>
+            var calendarPlanAppender = CalendarPlanAppenderHelper.GetMock();
+            var calendarPlanCalculator = CalendarPlanCalculatorHelper.GetMock();
+            var estimateService = EstimateServiceHelper.GetMock();
+
+            var estimate = new Estimate();
+            estimateService
+                .Setup(x => x.GetEstimate(calendarPlanCreateViewModel.EstimateFiles,
+                    calendarPlanCreateViewModel.TotalWorkChapter))
+                .ReturnsAsync(new OperationResult<Estimate> { Result = estimate });
+
+            var mapper = MapperHelper.GetMock();
+            var calendarPlanViewModel = new CalendarPlanViewModel
             {
-                new()
+                PreparatoryCalendarWorks = new List<CalendarWorkViewModel>
                 {
-                    WorkName = AppConstants.MainOtherExpensesWorkName,
-                    Chapter = AppConstants.MainOtherExpensesWorkChapter,
-                    Percentages = new List<decimal>()
+                    new()
+                    {
+                        Chapter = 1,
+                    }
+                },
+                MainCalendarWorks = new List<CalendarWorkViewModel>
+                {
+                    new()
+                    {
+                        Chapter = (int)calendarPlanCreateViewModel.TotalWorkChapter
+                    }
                 }
-            }
-        };
+            };
+            mapper.Setup(x => x.Map<CalendarPlanViewModel>(estimate)).Returns(calendarPlanViewModel);
 
-        var actualCalendarPlanCreateViewModel =
-            _calendarPlanService.GetCalendarPlanViewModel(calendarPlanCreateViewModel);
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock();
+            var sut = new CalendarPlanService(documentFactory.Object, estimateService.Object,
+                calendarPlanCalculator.Object, calendarPlanAppender.Object, mapper.Object);
 
-        _estimateServiceMock.Verify(x => x.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
-        _estimateServiceMock.VerifyGet(x => x.Estimate, Times.Once);
-        _mapperMock.Verify(x => x.Map<CalendarPlanViewModel>(estimate), Times.Once);
-        Assert.AreEqual(expectedCalendarPlanViewModel, actualCalendarPlanCreateViewModel);
-    }
+            // act
 
-    [Test]
-    public void Write()
-    {
-        var otherExpensesPercentages = new List<decimal> { 0.2M, 0.3M, 0.5M };
-        var calendarPlanViewModel = new CalendarPlanViewModel
+            var getCalendarPlanViewModelOperation = await sut.GetCalendarPlanViewModel(calendarPlanCreateViewModel);
+
+            // assert
+
+            Assert.True(getCalendarPlanViewModelOperation.Ok);
+
+            Assert.Contains(getCalendarPlanViewModelOperation.Result.PreparatoryCalendarWorks,
+                x => x.Equals(Constants.PreparatoryCalendarWork));
+
+            Assert.Contains(getCalendarPlanViewModelOperation.Result.PreparatoryCalendarWorks,
+                x => x.Equals(Constants.TemporaryBuildingsCalendarWork));
+
+            Assert.DoesNotContain(getCalendarPlanViewModelOperation.Result.MainCalendarWorks,
+                x => x.Chapter == (int)calendarPlanViewModel.TotalWorkChapter);
+
+            Assert.Contains(getCalendarPlanViewModelOperation.Result.MainCalendarWorks,
+                x => x.Equals(Constants.OtherExpensesCalendarWork));
+        }
+
+        [Fact]
+        public async Task ItShould_be_able_to_give_correct_total_percentages()
         {
-            EstimateFiles = new FormFileCollection(),
-            TotalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter,
-            ConstructionStartDate = new DateTime(DateTime.Now.Ticks),
-            ConstructionDuration = 0.7M,
-            CalendarWorks = new List<CalendarWorkViewModel>
+            // arrange
+
+            var estimateStream1 = StreamHelper.GetMock();
+            var estimateStream2 = StreamHelper.GetMock();
+
+            var viewModel = new CalendarPlanViewModel
             {
-                new()
+                EstimateFiles = new FormFileCollection
                 {
-                    WorkName = "Test work 1",
-                    Percentages = new List<decimal> { 0.2M, 0.3M}
+                    FormFileHelper.GetMock(estimateStream1).Object,
+                    FormFileHelper.GetMock(estimateStream2).Object,
                 },
-                new()
+                PreparatoryCalendarWorks = new List<CalendarWorkViewModel>
                 {
-                    WorkName = "Test work 2",
-                    Percentages = new List<decimal> { 0.3M, 0.4M}
+                    new()
+                    {
+                        WorkName = Constants.PreparatoryWorkName,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = Constants.PreparatoryTemporaryBuildingsWorkName,
+                        Percentages = new List<decimal> { 0.4M, 0.6M }
+                    },
                 },
-                new()
+                MainCalendarWorks = new List<CalendarWorkViewModel>
                 {
-                    WorkName = AppConstants.MainOtherExpensesWorkName,
-                    Percentages = otherExpensesPercentages
+                    new()
+                    {
+                        WorkName = "Main work 1",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = "Main work 2",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = Constants.MainOtherExpensesWorkName,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
                 },
-            }
-        };
+                TotalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter,
+            };
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
+            var calendarPlanAppender = CalendarPlanAppenderHelper.GetMock();
+            var estimateService = EstimateServiceHelper.GetMock();
 
-        var calendarPlanTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\CalendarPlanTemplate.docx";
-        var preparatoryTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Preparatory.docx";
-        var mainTemplatePath = @"root\Infrastructure\Templates\CalendarPlanTemplates\Main1.docx";
+            var estimate = new Estimate
+            {
+                PreparatoryEstimateWorks = new List<EstimateWork>
+                {
+                    new() { Chapter = Constants.PreparatoryWorkChapter },
+                    new() { Chapter = Constants.PreparatoryWorkChapter },
+                    new() { Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter },
+                    new() { Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter },
+                },
+                MainEstimateWorks = new List<EstimateWork>
+                {
+                    new()
+                    {
+                        WorkName = "Main work 1",
+                        Percentages = new List<decimal>()
+                    },
+                    new()
+                    {
+                        WorkName = "Main work 2",
+                        Percentages = new List<decimal>()
+                    },
+                }
+            };
+            estimateService.Setup(x => x.GetEstimate(viewModel.EstimateFiles, viewModel.TotalWorkChapter))
+                .ReturnsAsync(new OperationResult<Estimate> { Result = estimate });
 
-        var mainEstimateWorks = new List<EstimateWork>
+            var mapper = MapperHelper.GetMock();
+            mapper.Setup(x => x.Map<CalendarPlanViewModel>(estimate)).Returns(viewModel);
+
+            var estimateAfterPreparing = new Estimate
+            {
+                PreparatoryEstimateWorks = new List<EstimateWork>
+                {
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryWorkChapter,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryWorkChapter,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter,
+                        Percentages = new List<decimal> { 0.4M, 0.6M }
+                    },
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter,
+                        Percentages = new List<decimal> { 0.4M, 0.6M }
+                    },
+                },
+                MainEstimateWorks = new List<EstimateWork>
+                {
+                    new()
+                    {
+                        WorkName = "Main work 1",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = "Main work 2",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                }
+            };
+            var calendarPlanCalculator = CalendarPlanCalculatorHelper.GetMock();
+
+            var totalWork = new CalendarWork()
+            {
+                WorkName = Constants.TotalWorkName
+            };
+            var preparatoryCalendarPlan = new CalendarPlan
+            {
+                CalendarWorks = new List<CalendarWork>
+                {
+                    totalWork
+                }
+            };
+            calendarPlanCalculator
+                .Setup(
+                    x => x.CalculatePreparatory(estimateAfterPreparing, new List<decimal> { 0.6M, 0.4M }, new List<decimal> { 0.4M, 0.6M }))
+                .ReturnsAsync(new OperationResult<CalendarPlan> { Result = preparatoryCalendarPlan });
+
+            var expectedTotalPercentages = new List<decimal> { 0.56M, 0.44M };
+            var mainCalendarPlan = new CalendarPlan
+            {
+                CalendarWorks = new List<CalendarWork>
+                {
+                    new()
+                    {
+                        EstimateChapter = (int)viewModel.TotalWorkChapter,
+                        ConstructionMonths = new List<ConstructionMonth>
+                        {
+                            new()
+                            {
+                                PercentPart = 0.56M,
+                            },
+                            new()
+                            {
+                                PercentPart = 0.44M,
+                            },
+                        }
+                    }
+                }
+            };
+            calendarPlanCalculator
+                .Setup(x => x.CalculateMain(estimate, totalWork, new List<decimal> { 0.6M, 0.4M }))
+                .ReturnsAsync(new OperationResult<CalendarPlan> { Result = mainCalendarPlan });
+
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock();
+            var sut = new CalendarPlanService(documentFactory.Object, estimateService.Object,
+                calendarPlanCalculator.Object, calendarPlanAppender.Object, mapper.Object);
+
+            // act
+
+            var getTotalPercentagesOperation = await sut.GetTotalPercentages(viewModel);
+
+            // assert
+
+            Assert.True(getTotalPercentagesOperation.Ok);
+
+            Assert.True(expectedTotalPercentages.SequenceEqual(getTotalPercentagesOperation.Result));
+        }
+
+        [Fact]
+        public async Task ItShould_be_able_to_give_correct_calendar_plan_stream()
         {
-            new("Test work 1", default, default, default, default),
-            new("Test work 2", default, default, default, default),
-        };
-        var estimate = new Estimate(default!, mainEstimateWorks, default, default, default, default);
-        _estimateServiceMock.SetupGet(x => x.Estimate).Returns(estimate);
+            // arrange
 
-        var calendarPlan = new CalendarPlan(default!, default!, default, default, 1);
-        _calendarPlanCreatorMock.Setup(x => x.Create(_estimateServiceMock.Object.Estimate, otherExpensesPercentages,
-            calendarPlanViewModel.TotalWorkChapter)).Returns(calendarPlan);
+            var estimateStream1 = StreamHelper.GetMock();
+            var estimateStream2 = StreamHelper.GetMock();
 
-        var expectedMemoryStream = new MemoryStream();
-        _calendarPlanWriterMock.Setup(x => x.Write(calendarPlan, calendarPlanTemplatePath, preparatoryTemplatePath, mainTemplatePath)).Returns(expectedMemoryStream);
+            var viewModel = new CalendarPlanViewModel
+            {
+                EstimateFiles = new FormFileCollection
+                {
+                    FormFileHelper.GetMock(estimateStream1).Object,
+                    FormFileHelper.GetMock(estimateStream2).Object,
+                },
+                PreparatoryCalendarWorks = new List<CalendarWorkViewModel>
+                {
+                    new()
+                    {
+                        WorkName = Constants.PreparatoryWorkName,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = Constants.PreparatoryTemporaryBuildingsWorkName,
+                        Percentages = new List<decimal> { 0.4M, 0.6M }
+                    },
+                },
+                MainCalendarWorks = new List<CalendarWorkViewModel>
+                {
+                    new()
+                    {
+                        WorkName = "Main work 1",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = "Main work 2",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = Constants.MainOtherExpensesWorkName,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                },
+                TotalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter,
+            };
 
-        var actualMemoryStream = _calendarPlanService.Write(calendarPlanViewModel);
+            var calendarPlanAppender = CalendarPlanAppenderHelper.GetMock();
+            var estimateService = EstimateServiceHelper.GetMock();
 
-        Assert.AreSame(expectedMemoryStream, actualMemoryStream);
-        _estimateServiceMock.Verify(x => x.Read(calendarPlanViewModel.EstimateFiles, calendarPlanViewModel.TotalWorkChapter), Times.Once);
+            var estimate = new Estimate
+            {
+                PreparatoryEstimateWorks = new List<EstimateWork>
+                {
+                    new() { Chapter = Constants.PreparatoryWorkChapter },
+                    new() { Chapter = Constants.PreparatoryWorkChapter },
+                    new() { Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter },
+                    new() { Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter },
+                },
+                MainEstimateWorks = new List<EstimateWork>
+                {
+                    new()
+                    {
+                        WorkName = "Main work 1",
+                        Percentages = new List<decimal>()
+                    },
+                    new()
+                    {
+                        WorkName = "Main work 2",
+                        Percentages = new List<decimal>()
+                    },
+                }
+            };
+            estimateService.Setup(x => x.GetEstimate(viewModel.EstimateFiles, viewModel.TotalWorkChapter))
+                .ReturnsAsync(new OperationResult<Estimate> { Result = estimate });
 
-        _calendarPlanCreatorMock.Verify(x =>
-            x.Create(
-                It.Is<Estimate>(x =>
-                    x.MainEstimateWorks.First(x => x.WorkName == "Test work 1").Percentages
-                        .SequenceEqual(calendarPlanViewModel.CalendarWorks
-                            .First(x => x.WorkName == "Test work 1").Percentages)
-                    && x.MainEstimateWorks.First(x => x.WorkName == "Test work 2").Percentages
-                        .SequenceEqual(calendarPlanViewModel.CalendarWorks
-                            .First(x => x.WorkName == "Test work 2").Percentages)
-                    && x.ConstructionStartDate == calendarPlanViewModel.ConstructionStartDate
-                    && x.ConstructionDuration == calendarPlanViewModel.ConstructionDuration),
-                otherExpensesPercentages, calendarPlanViewModel.TotalWorkChapter), Times.Once);
+            var mapper = MapperHelper.GetMock();
+            mapper.Setup(x => x.Map<CalendarPlanViewModel>(estimate)).Returns(viewModel);
 
-        _calendarPlanWriterMock.Verify(x => x.Write(calendarPlan, calendarPlanTemplatePath, preparatoryTemplatePath, mainTemplatePath));
-        _webHostEnvironmentMock.VerifyGet(x => x.ContentRootPath, Times.Exactly(3));
+            var estimateAfterPreparing = new Estimate
+            {
+                PreparatoryEstimateWorks = new List<EstimateWork>
+                {
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryWorkChapter,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryWorkChapter,
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter,
+                        Percentages = new List<decimal> { 0.4M, 0.6M }
+                    },
+                    new()
+                    {
+                        Chapter = Constants.PreparatoryTemporaryBuildingsWorkChapter,
+                        Percentages = new List<decimal> { 0.4M, 0.6M }
+                    },
+                },
+                MainEstimateWorks = new List<EstimateWork>
+                {
+                    new()
+                    {
+                        WorkName = "Main work 1",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                    new()
+                    {
+                        WorkName = "Main work 2",
+                        Percentages = new List<decimal> { 0.6M, 0.4M }
+                    },
+                }
+            };
+            var calendarPlanCalculator = CalendarPlanCalculatorHelper.GetMock();
+
+            var totalWork = new CalendarWork()
+            {
+                WorkName = Constants.TotalWorkName
+            };
+            var preparatoryCalendarPlan = new CalendarPlan
+            {
+                CalendarWorks = new List<CalendarWork>
+                {
+                    totalWork
+                }
+            };
+            calendarPlanCalculator
+                .Setup(
+                    x => x.CalculatePreparatory(estimateAfterPreparing, new List<decimal> { 0.6M, 0.4M }, new List<decimal> { 0.4M, 0.6M }))
+                .ReturnsAsync(new OperationResult<CalendarPlan> { Result = preparatoryCalendarPlan });
+
+            var mainCalendarPlan = new CalendarPlan
+            {
+                CalendarWorks = new List<CalendarWork>
+                {
+                    new()
+                    {
+                        EstimateChapter = (int)viewModel.TotalWorkChapter,
+                        ConstructionMonths = new List<ConstructionMonth>
+                        {
+                            new()
+                            {
+                                PercentPart = 0.56M,
+                            },
+                            new()
+                            {
+                                PercentPart = 0.44M,
+                            },
+                        }
+                    }
+                }
+            };
+            calendarPlanCalculator
+                .Setup(x => x.CalculateMain(estimate, totalWork, new List<decimal> { 0.6M, 0.4M }))
+                .ReturnsAsync(new OperationResult<CalendarPlan> { Result = mainCalendarPlan });
+
+            var section = MySectionHelper.GetMock();
+            var document = MyWordDocumentHelper.GetMock(section);
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock(document);
+            var sut = new CalendarPlanService(documentFactory.Object, estimateService.Object,
+                calendarPlanCalculator.Object, calendarPlanAppender.Object, mapper.Object);
+
+            // act
+
+            var getCalendarPlanStreamOperation = await sut.GetCalendarPlanStream(viewModel);
+
+            // assert
+
+            Assert.True(getCalendarPlanStreamOperation.Ok);
+
+            Assert.NotNull(getCalendarPlanStreamOperation.Result);
+
+            calendarPlanAppender.Verify(x => x.AppendAsync(section.Object, preparatoryCalendarPlan, CalendarPlanType.Preparatory), Times.Once);
+
+            calendarPlanAppender.Verify(x => x.AppendAsync(section.Object, mainCalendarPlan, CalendarPlanType.Main), Times.Once);
+        }
     }
 }

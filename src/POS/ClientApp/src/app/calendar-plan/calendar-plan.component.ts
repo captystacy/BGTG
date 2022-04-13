@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { CalendarPlanService } from './calendar-plan.service';
+import { ICalendarWork } from "./calendar-plan.model";
 
 @Component({
   selector: 'app-calendar-plan',
@@ -34,12 +35,14 @@ export class CalendarPlanComponent {
     return thisPercent;
   }
 
-  public setPercentForColumn(event: any): void {
+
+
+  public setPercentForColumn(event: any, calendarWorks: ICalendarWork[]): void {
     let newColumnValue = this.setPercentIfRowMoreThanOneHundred(event);
     let tdPosition = event.target.closest('td').cellIndex;
 
-    for (let i = 0; i < this.calendarPlanService.calendarPlan!.calendarWorks.length; i++) {
-      this.calendarPlanService.calendarPlan.calendarWorks[i].percentages[tdPosition].value = newColumnValue;
+    for (let i = 0; i < this.calendarPlanService.calendarPlan!.mainCalendarWorks.length; i++) {
+      calendarWorks[i].percentages[tdPosition].value = newColumnValue;
     }
   }
 }

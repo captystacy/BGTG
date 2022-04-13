@@ -1,49 +1,69 @@
-﻿using NUnit.Framework;
-using POS.Infrastructure.Rounders;
+﻿using POS.Infrastructure.Rounders;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Rounders;
-
-public class DurationRounderTests
+namespace POS.Tests.Infrastructure.Rounders
 {
-    private DurationRounder _durationRounder = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class DurationRounderTests
     {
-        _durationRounder = new DurationRounder();
-    }
+        [Theory]
+        [InlineData(0.04, 0.1)]
+        [InlineData(0.14, 0.2)]
+        [InlineData(0.24, 0.3)]
+        public void ItShould_get_correct_rounded_duration_when_duration_is_less_than_quarter(decimal duration, decimal expectedRoundedDuration)
+        {
+            // arrange
 
-    [TestCase(0.04, 0.1)]
-    [TestCase(0.14, 0.2)]
-    [TestCase(0.24, 0.3)]
-    public void GetRoundedDuration_DurationsLessThanQuarter_CorrectDurations(decimal duration, decimal expectedRoundedDuration)
-    {
-        var actualRoundedDuration = _durationRounder.GetRoundedDuration(duration);
+            var sut = new DurationRounder();
 
-        Assert.AreEqual(expectedRoundedDuration, actualRoundedDuration);
-    }
+            // act
 
-    [TestCase(0.25, 0.5)]
-    [TestCase(0.74, 0.5)]
-    [TestCase(0.75, 1)]
-    [TestCase(1.24, 1)]
-    [TestCase(1.25, 1.5)]
-    public void GetRoundedDuration_DurationsMoreThanQuarter_CorrectDurations(decimal duration, decimal expectedRoundedDuration)
-    {
-        var actualRoundedDuration = _durationRounder.GetRoundedDuration(duration);
+            var getRoundedDurationOperation = sut.GetRoundedDuration(duration);
 
-        Assert.AreEqual(expectedRoundedDuration, actualRoundedDuration);
-    }
+            // assert
 
-    [TestCase(0.1, 0.01)]
-    [TestCase(1, 0.1)]
-    [TestCase(1.1, 0.1)]
-    [TestCase(1.5, 0.1)]
-    [TestCase(1.9, 0.1)]
-    public void GetRoundedPreparatoryPeriod_VariousTotalDurations_CorrectDurations(decimal totalDuration, decimal expectedRoundedPreparatoryPeriod)
-    {
-        var actualRoundedPreparatoryPeriod = _durationRounder.GetRoundedPreparatoryPeriod(totalDuration);
+            Assert.Equal(expectedRoundedDuration, getRoundedDurationOperation.Result);
+        }
 
-        Assert.AreEqual(expectedRoundedPreparatoryPeriod, actualRoundedPreparatoryPeriod);
+        [Theory]
+        [InlineData(0.25, 0.5)]
+        [InlineData(0.74, 0.5)]
+        [InlineData(0.75, 1)]
+        [InlineData(1.24, 1)]
+        [InlineData(1.25, 1.5)]
+        public void ItShould_get_correct_rounded_duration_when_duration_is_more_than_quarter(decimal duration, decimal expectedRoundedDuration)
+        {
+            // arrange
+
+            var sut = new DurationRounder();
+
+            // act
+
+            var getRoundedDurationOperation = sut.GetRoundedDuration(duration);
+
+            // assert
+
+            Assert.Equal(expectedRoundedDuration, getRoundedDurationOperation.Result);
+        }
+
+        [Theory]
+        [InlineData(0.1, 0.01)]
+        [InlineData(1, 0.1)]
+        [InlineData(1.1, 0.1)]
+        [InlineData(1.5, 0.1)]
+        [InlineData(1.9, 0.1)]
+        public void ItShould_get_correct_rounded_preparatory_period(decimal totalDuration, decimal expectedRoundedPreparatoryPeriod)
+        {
+            // arrange
+
+            var sut = new DurationRounder();
+
+            // act
+
+            var actualRoundedPreparatoryPeriod = sut.GetRoundedPreparatoryPeriod(totalDuration);
+
+            // assert
+
+            Assert.Equal(expectedRoundedPreparatoryPeriod, actualRoundedPreparatoryPeriod.Result);
+        }
     }
 }

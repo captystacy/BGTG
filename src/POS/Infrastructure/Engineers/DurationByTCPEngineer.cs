@@ -1,43 +1,66 @@
-﻿using POS.DomainModels.DurationByTCPDomainModels;
-using POS.DomainModels.DurationByTCPDomainModels.TCPDomainModels;
+﻿using POS.Infrastructure.AppConstants;
+using POS.Models.DurationByTCPModels;
+using POS.Models.DurationByTCPModels.TCPModels;
 
-namespace POS.Infrastructure.Engineers;
-
-public class DurationByTCPEngineer : IDurationByTCPEngineer
+namespace POS.Infrastructure.Engineers
 {
-    public DurationCalculationType DurationCalculationType { get; private set; }
-    public IEnumerable<PipelineStandard> CalculationPipelineStandards { get; set; } = null!;
-
-    public void DefineCalculationType(IEnumerable<PipelineStandard> pipelineStandards, decimal pipelineLength)
+    public class DurationByTCPEngineer : IDurationByTCPEngineer
     {
-        var temp = new PipelineStandard(pipelineLength, 0, 0);
+        public DurationCalculationType DurationCalculationType { get; private set; }
+        public IEnumerable<PipelineStandard> CalculationPipelineStandards { get; set; } = null!;
 
-        var ordered =
-            pipelineStandards
-                .Append(temp)
-                .OrderBy(x => x.PipelineLength)
-                .ToList();
-
-        var tempIndex = ordered.IndexOf(temp);
-
-        if (tempIndex == 0)
+        public void DefineCalculationType(IEnumerable<PipelineStandard> pipelineStandards, decimal pipelineLength)
         {
-            DurationCalculationType = pipelineLength < ordered[1].PipelineLength / 2
-                ? DurationCalculationType.StepwiseExtrapolationAscending
-                : DurationCalculationType.ExtrapolationAscending;
-            CalculationPipelineStandards = new[] { ordered[1] };
+            var temp = new PipelineStandard(pipelineLength, 0, 0);
+
+            var ordered =
+                pipelineStandards
+                    .Append(temp)
+                    .OrderBy(x => x.PipelineLength)
+                    .ToList();
+
+            var tempIndex = ordered.IndexOf(temp);
+
+            if (tempIndex == 0)
+            {
+                DurationCalculationType = pipelineLength < ordered[1].PipelineLength / 2
+                    ? DurationCalculationType.StepwiseExtrapolationAscending
+                    : DurationCalculationType.ExtrapolationAscending;
+                CalculationPipelineStandards = new[] { ordered[1] };
+            }
+            else if (tempIndex == ordered.Count - 1)
+            {
+                DurationCalculationType = pipelineLength > ordered[^2].PipelineLength * 2
+                    ? DurationCalculationType.StepwiseExtrapolationDescending
+                    : DurationCalculationType.ExtrapolationDescending;
+                CalculationPipelineStandards = new[] { ordered[^2] };
+            }
+            else
+            {
+                DurationCalculationType = DurationCalculationType.Interpolation;
+                CalculationPipelineStandards = new[] { ordered[tempIndex - 1], ordered[tempIndex + 1] };
+            }
         }
-        else if (tempIndex == ordered.Count - 1)
+
+        public Appendix GetAppendix(char appendixKey)
         {
-            DurationCalculationType = pipelineLength > ordered[^2].PipelineLength * 2
-                ? DurationCalculationType.StepwiseExtrapolationDescending
-                : DurationCalculationType.ExtrapolationDescending;
-            CalculationPipelineStandards = new[] { ordered[^2] };
+            return appendixKey switch
+            {
+                'A' => Constants.AppendixA,
+                'B' => Constants.AppendixB,
+                _ => throw new ArgumentOutOfRangeException(nameof(appendixKey), appendixKey, null)
+            };
         }
-        else
+
+        public PipelineCharacteristic? GetPipelineCharacteristic(Appendix appendix, string pipelineMaterial, int pipelineDiameter, string pipelineCategoryName)
         {
-            DurationCalculationType = DurationCalculationType.Interpolation;
-            CalculationPipelineStandards = new[] { ordered[tempIndex - 1], ordered[tempIndex + 1] };
+            return appendix
+                .PipelineCategories
+                .First(x => x.Name == pipelineCategoryName)
+                .PipelineComponents
+                .First(x => x.PipelineMaterials.Contains(pipelineMaterial))
+                .PipelineCharacteristics
+                .FirstOrDefault(x => x.DiameterRange.IsInRange(pipelineDiameter));
         }
     }
 }

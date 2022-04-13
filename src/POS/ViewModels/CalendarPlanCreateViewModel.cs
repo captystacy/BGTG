@@ -1,25 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Constants;
+using POS.Models.EstimateModels;
 
-namespace POS.ViewModels;
-
-public class CalendarPlanCreateViewModel : IValidatableObject
+namespace POS.ViewModels
 {
-    public IFormFileCollection EstimateFiles { get; set; } = null!;
-    public TotalWorkChapter TotalWorkChapter { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class CalendarPlanCreateViewModel : IValidatableObject
     {
-        if (EstimateFiles.Count == 0)
-        {
-            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
-        }
+        public IFormFileCollection EstimateFiles { get; set; } = null!;
+        public TotalWorkChapter TotalWorkChapter { get; set; }
 
-        var totalWorkChapterInt = (int)TotalWorkChapter;
-        if (totalWorkChapterInt != 9 && totalWorkChapterInt != 11 && totalWorkChapterInt != 12)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult("Итого поддерживается только по 1-9, 1-11, или по последней строчке.");
+            if (EstimateFiles.Count == 0)
+            {
+                yield return new ValidationResult("Estimate files was not found");
+            }
+
+            if (TotalWorkChapter is TotalWorkChapter.None)
+            {
+                yield return new ValidationResult("Total work chapter was not set");
+            }
         }
     }
 }

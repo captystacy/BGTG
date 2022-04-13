@@ -1,46 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using NUnit.Framework;
-using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Managers;
 using POS.Infrastructure.Services;
+using POS.Models.EstimateModels;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Connectors;
+using POS.Tests.Helpers.Readers;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Services;
-
-public class EstimateServiceTests
+namespace POS.Tests.Infrastructure.Services
 {
-    private EstimateService _estimateService = null!;
-    private Mock<IEstimateManager> _estimateManagerMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class EstimateServiceTests
     {
-        _estimateManagerMock = new Mock<IEstimateManager>();
-        _estimateService = new EstimateService(_estimateManagerMock.Object);
-    }
+        [Fact]
+        public async Task ItShould_get_estimate()
+        {
+            // arrange
 
-    [Test]
-    public void Read()
-    {
-        var estimateFile1Mock = new Mock<IFormFile>();
-        var estimateFile2Mock = new Mock<IFormFile>();
-        var estimateFiles = new FormFileCollection { estimateFile1Mock.Object, estimateFile2Mock.Object, };
-        var stream1Mock = new Mock<Stream>();
-        var stream2Mock = new Mock<Stream>();
-        var estimateStreams = new List<Stream> { stream1Mock.Object, stream2Mock.Object };
-        estimateFile1Mock.Setup(x => x.OpenReadStream()).Returns(stream1Mock.Object);
-        estimateFile2Mock.Setup(x => x.OpenReadStream()).Returns(stream2Mock.Object);
-        var estimate = new Estimate(default!, default!, DateTime.Today, default, default, default);
-        _estimateManagerMock.Setup(x => x.GetEstimate(estimateStreams, TotalWorkChapter.TotalWork1To12Chapter)).Returns(estimate);
+            var totalWorkChapter = TotalWorkChapter.TotalWork1To12Chapter;
 
-        _estimateService.Read(estimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+            var stream1 = StreamHelper.GetMock();
+            var stream2 = StreamHelper.GetMock();
 
-        estimateFile1Mock.Verify(x => x.OpenReadStream(), Times.Once);
-        estimateFile2Mock.Verify(x => x.OpenReadStream(), Times.Once);
-        _estimateManagerMock.Verify(x => x.GetEstimate(estimateStreams, TotalWorkChapter.TotalWork1To12Chapter), Times.Once);
-        Assert.AreSame(estimate, _estimateService.Estimate);
+            var estimate1 = new Estimate();
+            var estimate2 = new Estimate();
+            var expected = new Estimate();
+
+            var streamAndEstimate = new Dictionary<Mock<Stream>, Estimate>()
+            {
+                {stream1, estimate1},
+                {stream2, estimate2},
+            };
+
+            var estimateFiles = new FormFileCollection
+            {
+                FormFileHelper.GetMock(stream1).Object,
+                FormFileHelper.GetMock(stream2).Object,
+            };
+
+            var estimateReader = EstimateReaderHelper.GetMock(streamAndEstimate, totalWorkChapter);
+            var estimateConnector = EstimateConnectorHelper.GetMock(new List<Estimate> { estimate1, estimate2 }, expected);
+            var sut = new EstimateService(estimateConnector.Object, estimateReader.Object);
+
+            // act
+
+            var getEstimateOperation = await sut.GetEstimate(estimateFiles, totalWorkChapter);
+
+            // assert
+
+            Assert.True(getEstimateOperation.Ok);
+
+            Assert.Same(expected, getEstimateOperation.Result);
+        }
+
+        [Fact]
+        public async Task ItShould_get_labor_cost()
+        {
+            // arrange
+
+            var stream1 = StreamHelper.GetMock();
+            var stream2 = StreamHelper.GetMock();
+
+            var estimate1 = new Estimate();
+            var estimate2 = new Estimate();
+            var expected = new Estimate();
+
+            var streamAndLaborCosts = new Dictionary<Mock<Stream>, int>()
+            {
+                {stream1, 11},
+                {stream2, 10},
+            };
+
+            var estimateFiles = new FormFileCollection
+            {
+                FormFileHelper.GetMock(stream1).Object,
+                FormFileHelper.GetMock(stream2).Object,
+            };
+
+            var estimateReader = EstimateReaderHelper.GetMock(streamAndLaborCosts);
+            var estimateConnector = EstimateConnectorHelper.GetMock(new List<Estimate> { estimate1, estimate2 }, expected);
+            var sut = new EstimateService(estimateConnector.Object, estimateReader.Object);
+
+            // act
+
+            var getLaborCostsOperation = await sut.GetLaborCosts(estimateFiles);
+
+            // assert
+
+            Assert.True(getLaborCostsOperation.Ok);
+
+            Assert.Equal(21, getLaborCostsOperation.Result);
+        }
     }
 }

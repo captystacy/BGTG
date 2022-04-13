@@ -1,54 +1,59 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.Infrastructure.Constants;
 
-namespace POS.ViewModels;
-
-public class CalendarWorkViewModel : IValidatableObject, IEquatable<CalendarWorkViewModel>
+namespace POS.ViewModels
 {
-    public virtual string WorkName { get; set; } = null!;
-    public int Chapter { get; set; }
-    public virtual List<decimal> Percentages { get; set; } = null!;
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class CalendarWorkViewModel : IValidatableObject, IEquatable<CalendarWorkViewModel>
     {
-        if (string.IsNullOrEmpty(WorkName))
+        public string WorkName { get; set; } = null!;
+        public int Chapter { get; set; }
+        public List<decimal> Percentages { get; set; } = null!;
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult("Наименование работы не найдено.");
+            if (string.IsNullOrEmpty(WorkName))
+            {
+                yield return new ValidationResult("Work name could not be empty");
+            }
+
+            if (Percentages.Count == 0)
+            {
+                yield return new ValidationResult("Calendar work percentages were empty");
+            }
+
+            if (Percentages.Exists(x => x < 0))
+            {
+                yield return new ValidationResult("Calendar work percentage could not be less than zero");
+            }
         }
 
-        if (Chapter < 0)
+        public bool Equals(CalendarWorkViewModel? other)
         {
-            yield return new ValidationResult("Глава сметной работы не может быть меньше 0.");
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return WorkName == other.WorkName && Chapter == other.Chapter && Percentages.SequenceEqual(other.Percentages);
         }
-    }
 
-    public bool Equals(CalendarWorkViewModel? other)
-    {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return WorkName == other.WorkName && Chapter == other.Chapter && Percentages.SequenceEqual(other.Percentages);
-    }
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((CalendarWorkViewModel)obj);
+        }
 
-    public override bool Equals(object? obj)
-    {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != GetType()) return false;
-        return Equals((CalendarWorkViewModel)obj);
-    }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(WorkName, Chapter, Percentages);
+        }
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(WorkName, Chapter, Percentages);
-    }
+        public static bool operator ==(CalendarWorkViewModel left, CalendarWorkViewModel right)
+        {
+            return Equals(left, right);
+        }
 
-    public static bool operator ==(CalendarWorkViewModel left, CalendarWorkViewModel right)
-    {
-        return Equals(left, right);
-    }
-
-    public static bool operator !=(CalendarWorkViewModel left, CalendarWorkViewModel right)
-    {
-        return !Equals(left, right);
+        public static bool operator !=(CalendarWorkViewModel left, CalendarWorkViewModel right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

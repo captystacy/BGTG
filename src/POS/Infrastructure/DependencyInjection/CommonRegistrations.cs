@@ -1,13 +1,14 @@
-﻿using POS.Infrastructure.Services;
-using POS.Infrastructure.Services.Base;
+﻿using POS.Infrastructure.Factories;
+using POS.Infrastructure.Factories.Base;
 
-namespace POS.Infrastructure.DependencyInjection;
-
-public partial class DependencyContainer
+namespace POS.Infrastructure.DependencyInjection
 {
-    public static void Common(IServiceCollection services)
+    public partial class DependencyContainer
     {
-        services.AddScoped<IWordDocumentService, WordDocumentService>();
-        services.AddTransient<IExcelDocumentService, ExcelDocumentService>();
+        public static void Common(IServiceCollection services)
+        {
+            services.AddScoped<IMyWordDocumentFactory, MyWordDocumentFactory>();
+            services.AddTransient<IMyExcelDocumentFactory, MyExcelDocumentFactory>();
+        }
     }
 }

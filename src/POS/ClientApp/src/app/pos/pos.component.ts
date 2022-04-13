@@ -72,6 +72,7 @@ export class POSComponent {
       { title: "Игнатенко", value: 10 },
       { title: "Каленик", value: 9 },
       { title: "Капитан", value: 2 },
+      { title: "Карпович", value: 14 },
       { title: "Морозюк", value: 12 },
       { title: "Пигальская", value: 7 },
       { title: "Прищеп", value: 3 },

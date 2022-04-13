@@ -1,63 +1,55 @@
-﻿using Moq;
-using NUnit.Framework;
-using POS.Infrastructure.Constants;
-using POS.Infrastructure.Services.Base;
+﻿using System.Threading.Tasks;
+using Moq;
 using POS.Infrastructure.Writers;
-using System;
-using Microsoft.AspNetCore.Hosting;
-using POS.DomainModels;
-using POS.Infrastructure.Replacers;
+using POS.Models;
+using POS.Tests.Helpers;
+using POS.Tests.Helpers.Factories;
+using POS.Tests.Helpers.Replacers;
+using POS.Tests.Helpers.Services.DocumentServices.WordService;
 using POS.ViewModels;
+using Xunit;
 
-namespace POS.Tests.Infrastructure.Writers;
-
-public class TableOfContentsWriterTests
+namespace POS.Tests.Infrastructure.Writers
 {
-    private TableOfContentsWriter _tableOfContentsWriter = null!;
-    private Mock<IWordDocumentService> _documentServiceMock = null!;
-    private Mock<IWebHostEnvironment> _webHostEnvironmentMock = null!;
-    private Mock<IEngineerReplacer> _engineerReplacerMock = null!;
-
-    [SetUp]
-    public void SetUp()
+    public class TableOfContentsWriterTests
     {
-        _documentServiceMock = new Mock<IWordDocumentService>();
-        _webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
-        _engineerReplacerMock = new Mock<IEngineerReplacer>();
-        _tableOfContentsWriter = new TableOfContentsWriter(_documentServiceMock.Object, _webHostEnvironmentMock.Object, _engineerReplacerMock.Object);
-    }
-
-    [Test]
-    public void Write_ConstructionObject548()
-    {
-        // arrange
-
-        var viewModel = new TableOfContentsViewModel
+        [Fact]
+        public async Task ItShould_replace_table_of_contents_values()
         {
-            ObjectCipher = "5.5-20.548",
-            ProjectTemplate = ProjectTemplate.CPS,
-            NormalInspectionEngineer = Engineer.Kapitan,
-            ChiefProjectEngineer = Engineer.Saiko,
-        };
-        var templatePath = @"root\Infrastructure\Templates\TableOfContentsTemplates\CPSTableOfContentsTemplate.doc";
+            // arrange
 
-        _webHostEnvironmentMock.Setup(x => x.ContentRootPath).Returns("root");
+            var viewModel = new TableOfContentsViewModel
+            {
+                ObjectCipher = "5.5-20.548",
+                ProjectTemplate = ProjectTemplate.CPS,
+                NormalInspectionEngineer = Engineer.Kapitan,
+                ChiefProjectEngineer = Engineer.Saiko,
+            };
 
-        // act
+            var document = MyWordDocumentHelper.GetMock();
+            var documentFactory = MyWordDocumentFactoryHelper.GetMock(@"root\Infrastructure\Templates\TableOfContentsTemplates\CPSTableOfContentsTemplate.doc", document);
+            var webHostEnvironment = WebHostEnvironmentHelper.GetMock("root");
+            var engineerReplacer = EngineerReplacerHelper.GetMock();
+            var projectReplacer = ProjectReplacerHelper.GetMock();
+            var sut = new TableOfContentsWriter(documentFactory.Object, webHostEnvironment.Object, engineerReplacer.Object, projectReplacer.Object);
 
-        var memoryStream = _tableOfContentsWriter.Write(viewModel);
+            // act
 
-        // assert
+            await sut.GetTableOfContentsStream(viewModel);
 
-        _engineerReplacerMock.Verify(x => x.ReplaceEngineerSecondNameAndSignature(viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer));
-        _engineerReplacerMock.Verify(x => x.ReplaceEngineerSecondNameAndSignature(viewModel.NormalInspectionEngineer, TypeOfEngineer.NormalInspectionProjectEngineer));
-        _documentServiceMock.Verify(x => x.Load(templatePath), Times.Once);
-        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%CIPHER%", viewModel.ObjectCipher), Times.Once);
-        _documentServiceMock.Verify(x => x.ReplaceTextInDocument("%DATE%", DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat)), Times.Once);
+            // assert
 
-        _documentServiceMock.Verify(x => x.SaveAs(memoryStream, MyFileFormat.Doc, 0), Times.Once);
-        _documentServiceMock.Verify(x => x.DisposeLastDocument(), Times.Once);
+            engineerReplacer.Verify(x =>
+                x.ReplaceSecondNameAndSignature(document.Object, viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer),
+                Times.Once);
 
-        Assert.NotNull(memoryStream);
+            engineerReplacer.Verify(x =>
+                    x.ReplaceSecondNameAndSignature(document.Object, viewModel.NormalInspectionEngineer, TypeOfEngineer.NormalInspectionProjectEngineer),
+                Times.Once);
+
+            projectReplacer.Verify(x => x.ReplaceObjectCipher(document.Object, viewModel.ObjectCipher), Times.Once);
+
+            projectReplacer.Verify(x => x.ReplaceCurrentDate(document.Object), Times.Once);
+        }
     }
 }

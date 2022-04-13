@@ -1,6 +1,6 @@
 <div class="d-flex flex-column align-items-center mt-3">
   <mat-radio-group class="mb-3" [(ngModel)]="calendarPlanService.totalWorkChapter">
-    <mat-radio-button class="me-3" value="9">Итого по главам 1-9</mat-radio-button>
+    <mat-radio-button class="me-3" value="10">Итого по главам 1-9</mat-radio-button>
     <mat-radio-button class="me-3" value="11">Итого по главам 1-11</mat-radio-button>
     <mat-radio-button value="12">Итого по последней строчке</mat-radio-button>
   </mat-radio-group>
@@ -13,12 +13,66 @@
     <input matInput [(ngModel)]="calendarPlanService.calendarPlan.constructionDuration" type="number" min="1" max="21" step="0.1" required>
     <span matSuffix>мес.</span>
   </mat-form-field>
+  <div class="overflow-auto w-100" *ngIf="calendarPlanService.calendarPlan && !calendarPlanService.constructionStartDateIsCorrupted && !calendarPlanService.constructionDurationIsCorrupted">
+    <h2 class="text-center">
+      Календарный план подготовительного периода
+    </h2>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th rowspan="3" scope="col" class="align-middle text-center">Наименование отдельных зданий, сооружений и видов работ</th>
+        <th colspan="999" scope="col" class="align-middle text-center">
+          Распределение капитальных вложений и обьемов СМР по месяцам строительства, тыс.руб.
+        </th>
+      </tr>
+      <tr>
+        <th class="align-middle text-center" *ngFor="let month of calendarPlanService.months">
+          {{ month }}
+          </th>
+      </tr>
+      <tr>
+        <td *ngFor="let percentage of calendarPlanService.columnPercentages">
+          <div class="d-flex justify-content-center">
+            <mat-form-field appearance="outline">
+              <input matInput (keyup)="setPercentForColumn($event, calendarPlanService.calendarPlan.preparatoryCalendarWorks)" [value]="percentage" type="number" placeholder="0" min="0" max="100" maxlength="3" step="1">
+              <span matSuffix>%</span>
+            </mat-form-field>
+          </div>
+        </td>
+        <th *ngIf="calendarPlanService.calendarPlan.constructionDuration > 1" class="align-middle text-center">
+          Проценты для колонок
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let calendarWork of calendarPlanService.calendarPlan.preparatoryCalendarWorks; first as isFirst;">
+        <th scope="row">
+          {{ calendarWork.workName }}
+          </th>
+        <td *ngFor="let percentage of calendarWork.percentages;">
+          <div class="d-flex justify-content-center">
+            <mat-form-field appearance="outline">
+              <input matInput [(ngModel)]="percentage.value" (keyup)="setPercentIfRowMoreThanOneHundred($event)" type="number" placeholder="0" min="0" max="100" maxlength="3" step="1">
+              <span matSuffix>%</span>
+            </mat-form-field>
+          </div>
+        </td>
+        <td *ngIf="isFirst && calendarPlanService.calendarPlan.constructionDuration > 1" class="align-middle text-center" [attr.rowspan]="calendarPlanService.calendarPlan.preparatoryCalendarWorks.length + 1" style="writing-mode: vertical-rl; transform: rotate(-180deg);">
+          Приемка объекта в эксплуатацию
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
   <div class="overflow-auto w-100 mb-3" *ngIf="calendarPlanService.calendarPlan && !calendarPlanService.constructionStartDateIsCorrupted && !calendarPlanService.constructionDurationIsCorrupted">
+    <h2 class="text-center">
+    Календарный план основного периода
+    </h2>
     <table class="table table-bordered">
       <thead>
         <tr>
           <th rowspan="3" scope="col" class="align-middle text-center">Наименование отдельных зданий, сооружений и видов работ</th>
-          <th colspan="22" scope="col" class="align-middle text-center">
+          <th colspan="999" scope="col" class="align-middle text-center">
             Распределение капитальных вложений и обьемов СМР по месяцам строительства, тыс.руб.
           </th>
         </tr>
@@ -31,18 +85,18 @@
           <td *ngFor="let percentage of calendarPlanService.columnPercentages">
             <div class="d-flex justify-content-center">
               <mat-form-field appearance="outline">
-                <input matInput (keyup)="setPercentForColumn($event)" [value]="percentage" type="number" placeholder="0" min="0" max="100" maxlength="3" step="1">
+                <input matInput (keyup)="setPercentForColumn($event, calendarPlanService.calendarPlan.mainCalendarWorks)" [value]="percentage" type="number" placeholder="0" min="0" max="100" maxlength="3" step="1">
                 <span matSuffix>%</span>
               </mat-form-field>
             </div>
           </td>
-          <th class="align-middle text-center">
+          <th *ngIf="calendarPlanService.calendarPlan.constructionDuration > 1" class="align-middle text-center">
             Проценты для колонок
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let calendarWork of calendarPlanService.calendarPlan.calendarWorks; first as isFirst;">
+        <tr *ngFor="let calendarWork of calendarPlanService.calendarPlan.mainCalendarWorks; first as isFirst;">
           <th scope="row">
             {{ calendarWork.workName }}
           </th>
@@ -54,7 +108,7 @@
               </mat-form-field>
             </div>
           </td>
-          <td *ngIf="isFirst" class="align-middle text-center" [attr.rowspan]="calendarPlanService.calendarPlan.calendarWorks.length + 1" style="writing-mode: vertical-rl; transform: rotate(-180deg);">
+          <td *ngIf="isFirst && calendarPlanService.calendarPlan.constructionDuration > 1" class="align-middle text-center" [attr.rowspan]="calendarPlanService.calendarPlan.mainCalendarWorks.length + 1" style="writing-mode: vertical-rl; transform: rotate(-180deg);">
             Приемка объекта в эксплуатацию
           </td>
         </tr>

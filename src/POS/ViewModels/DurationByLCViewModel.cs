@@ -1,48 +1,48 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using POS.Infrastructure.Constants;
 
-namespace POS.ViewModels;
-
-public class DurationByLCViewModel : IValidatableObject
+namespace POS.ViewModels
 {
-    public IFormFileCollection EstimateFiles { get; set; } = null!;
-    public decimal NumberOfWorkingDays { get; set; }
-    public decimal WorkingDayDuration { get; set; }
-    public decimal Shift { get; set; }
-    public int NumberOfEmployees { get; set; }
-    public decimal TechnologicalLaborCosts { get; set; }
-    public bool AcceptanceTimeIncluded { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class DurationByLCViewModel : IValidatableObject
     {
-        if (EstimateFiles.Count == 0)
-        {
-            yield return new ValidationResult(AppConstants.EstimateFilesValidationMessage);
-        }
+        public IFormFileCollection EstimateFiles { get; set; } = null!;
+        public decimal NumberOfWorkingDays { get; set; }
+        public decimal WorkingDayDuration { get; set; }
+        public decimal Shift { get; set; }
+        public int NumberOfEmployees { get; set; }
+        public decimal TechnologicalLaborCosts { get; set; }
+        public bool AcceptanceTimeIncluded { get; set; }
 
-        if (NumberOfWorkingDays <= 0)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult("Количество рабочих дней в месяце не может быть отрицательным или равным нулю.");
-        }
+            if (EstimateFiles.Count == 0)
+            {
+                yield return new ValidationResult("Estimate files are not found");
+            }
 
-        if (WorkingDayDuration <= 0)
-        {
-            yield return new ValidationResult("Продолжительность рабочего дня не может быть отрицательной или равной нулю.");
-        }
+            if (NumberOfWorkingDays <= 0)
+            {
+                yield return new ValidationResult("Number of working days can't be less or equal zero");
+            }
 
-        if (Shift <= 0)
-        {
-            yield return new ValidationResult("Сменность не может быть отрицательной или равной нулю.");
-        }
+            if (WorkingDayDuration <= 0)
+            {
+                yield return new ValidationResult("Working day duration can't be less or equal zero");
+            }
 
-        if (NumberOfEmployees <= 0)
-        {
-            yield return new ValidationResult("Количество работающих в бригаде не может быть отрицательным или равным нулю.");
-        }
+            if (Shift <= 0)
+            {
+                yield return new ValidationResult("Shift can't be less or equal zero");
+            }
 
-        if (TechnologicalLaborCosts < 0)
-        {
-            yield return new ValidationResult("Трудозатраты по технологической карте не могут быть отрицательными или равными нулю.");
+            if (NumberOfEmployees <= 0)
+            {
+                yield return new ValidationResult("Number of employees can't be less or equal zero");
+            }
+
+            if (TechnologicalLaborCosts < 0)
+            {
+                yield return new ValidationResult("Technological labor costs can't be less than zero");
+            }
         }
     }
 }

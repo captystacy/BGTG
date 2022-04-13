@@ -13,6 +13,7 @@ DependencyContainer.DurationByLC(builder.Services);
 DependencyContainer.CalendarPlan(builder.Services);
 DependencyContainer.EnergyAndWater(builder.Services);
 DependencyContainer.DurationByTCP(builder.Services);
+DependencyContainer.EmployeesNeed(builder.Services);
 DependencyContainer.POS(builder.Services);
 
 if (builder.Environment.IsProduction())

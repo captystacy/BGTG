@@ -1,46 +1,106 @@
-﻿using POS.DomainModels.EstimateDomainModels;
+﻿using Calabonga.OperationResults;
+using POS.Models.EstimateModels;
 
-namespace POS.Infrastructure.Connectors;
-
-public class EstimateConnector : IEstimateConnector
+namespace POS.Infrastructure.Connectors
 {
-    public Estimate Connect(List<Estimate> estimates)
+    public class EstimateConnector : IEstimateConnector
     {
-        if (estimates.Count == 1)
+        public async Task<OperationResult<Estimate>> Connect(IReadOnlyList<Estimate> estimates)
         {
-            return estimates[0];
+            var operation = OperationResult.CreateResult<Estimate>();
+
+            if (estimates.Count < 0)
+            {
+                operation.AddError("Estimates were empty");
+                return operation;
+            }
+
+            if (estimates.Count == 1)
+            {
+                operation.Result = estimates[0];
+                return operation;
+            }
+
+            var preparatoryEstimateWorks = estimates.SelectMany(x => x.PreparatoryEstimateWorks).ToList();
+
+            var connectPreparatoryEstimateWorksOperations = await ConnectEstimateWorks(preparatoryEstimateWorks);
+
+            if (connectPreparatoryEstimateWorksOperations.Any(x => !x.Ok))
+            {
+                var errors = string.Join('\n', connectPreparatoryEstimateWorksOperations.Select(x => x.GetMetadataMessages()));
+                operation.AddError(errors);
+                return operation;
+            }
+
+            var preparatoryEstimateWorksConnected = connectPreparatoryEstimateWorksOperations.Select(x => x.Result).ToList();
+
+            var mainEstimateWorks = estimates.SelectMany(x => x.MainEstimateWorks).ToList();
+
+            var connectMainEstimateWorksOperations = await ConnectEstimateWorks(mainEstimateWorks);
+
+            if (connectMainEstimateWorksOperations.Any(x => !x.Ok))
+            {
+                var errors = string.Join('\n', connectMainEstimateWorksOperations.Select(x => x.GetMetadataMessages()));
+                operation.AddError(errors);
+                return operation;
+            }
+
+            var mainEstimateWorksConnected = connectMainEstimateWorksOperations.Select(x => x.Result).ToList();
+
+            operation.Result = new Estimate
+            {
+                ConstructionStartDate = estimates[0].ConstructionStartDate,
+                MainEstimateWorks = mainEstimateWorksConnected,
+                ConstructionDuration = estimates[0].ConstructionDuration,
+                ConstructionDurationCeiling = estimates[0].ConstructionDurationCeiling,
+                PreparatoryEstimateWorks = preparatoryEstimateWorksConnected,
+                TotalWorkChapter = estimates[0].TotalWorkChapter
+            };
+
+            return operation;
         }
 
-        var preparatoryEstimateWorks = estimates.SelectMany(x => x.PreparatoryEstimateWorks);
-        var mainEstimateWorks = estimates.SelectMany(x => x.MainEstimateWorks);
+        private Task<OperationResult<EstimateWork>[]> ConnectEstimateWorks(IEnumerable<EstimateWork> estimateWorks)
+        {
+            var sumTasks = estimateWorks
+                .GroupBy(x => x.WorkName)
+                .Select(x => ConnectEstimateWork(x.ToList()))
+                .ToList();
 
-        var preparatoryEstimateWorksConnected = ConnectEstimateWorks(preparatoryEstimateWorks);
-        var mainEstimateWorksConnected = ConnectEstimateWorks(mainEstimateWorks);
+            return Task.WhenAll(sumTasks);
+        }
 
-        var laborCosts = estimates.Sum(e => e.LaborCosts);
+        public Task<OperationResult<EstimateWork>> ConnectEstimateWork(IReadOnlyList<EstimateWork> estimateWorks)
+        {
+            var operation = OperationResult.CreateResult<EstimateWork>();
 
-        return new Estimate(preparatoryEstimateWorksConnected, 
-            mainEstimateWorksConnected, 
-            estimates[0].ConstructionStartDate, 
-            estimates[0].ConstructionDuration, 
-            estimates[0].ConstructionDurationCeiling, 
-            laborCosts);
-    }
+            if (estimateWorks.Count == 0)
+            {
+                operation.AddError("Estimate works were empty");
+                return Task.FromResult(operation);
+            }
 
-    private List<EstimateWork> ConnectEstimateWorks(IEnumerable<EstimateWork> estimateWorks)
-    {
-        return estimateWorks
-            .GroupBy(x => x.WorkName)
-            .Select(x=> SumEstimateWork(x.ToList()))
-            .ToList();
-    }
+            if (estimateWorks.Count == 1)
+            {
+                operation.Result = estimateWorks[0];
+                return Task.FromResult(operation);
+            }
 
-    private EstimateWork SumEstimateWork(List<EstimateWork> estimateWorks)
-    {
-        return new EstimateWork(estimateWorks[0].WorkName,
-            estimateWorks.Sum(x => x.EquipmentCost),
-            estimateWorks.Sum(x => x.OtherProductsCost),
-            estimateWorks.Sum(x => x.TotalCost),
-            estimateWorks[0].Chapter);
+            var firstEstimateWork = estimateWorks[0];
+
+            var estimateWork = new EstimateWork
+            {
+                TotalCost = estimateWorks.Sum(x => x.TotalCost),
+                Chapter = firstEstimateWork.Chapter,
+                EquipmentCost = estimateWorks.Sum(x => x.EquipmentCost),
+                OtherProductsCost = estimateWorks.Sum(x => x.OtherProductsCost),
+                WorkName = firstEstimateWork.WorkName,
+                Percentages = firstEstimateWork.Percentages,
+            };
+
+            operation.Result = estimateWork;
+
+            return Task.FromResult(operation);
+        }
     }
 }

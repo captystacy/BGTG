@@ -1,5 +1,12 @@
-<div class="d-flex justify-content-center mt-3">
-  <button (click)="downloadEnergyAndWater()" mat-raised-button color="primary" [disabled]="!estimateFiles">
+<div class="d-flex flex-column align-items-center mt-3">
+  <div class="mb-3">
+    <mat-radio-group class="mb-3" [(ngModel)]="totalWorkChapter">
+      <mat-radio-button class="me-3" value="10">Итого по главам 1-9</mat-radio-button>
+      <mat-radio-button class="me-3" value="11">Итого по главам 1-11</mat-radio-button>
+      <mat-radio-button value="12">Итого по последней строчке</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <button (click)="downloadEnergyAndWater()" mat-raised-button color="primary" [disabled]="!estimateFiles || !totalWorkChapter">
     Скачать
     <mat-icon>file_download</mat-icon>
   </button>

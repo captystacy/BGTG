@@ -1,45 +1,50 @@
-﻿using POS.DomainModels;
-using POS.Infrastructure.Constants;
-using POS.Infrastructure.Replacers;
-using POS.Infrastructure.Services.Base;
+﻿using POS.Infrastructure.Factories.Base;
+using POS.Infrastructure.Replacers.Base;
+using POS.Infrastructure.Services.DocumentServices;
 using POS.Infrastructure.Writers.Base;
+using POS.Models;
 using POS.ViewModels;
 
-namespace POS.Infrastructure.Writers;
-
-public class TableOfContentsWriter : ITableOfContentsWriter
+namespace POS.Infrastructure.Writers
 {
-    private readonly IWordDocumentService _wordDocumentService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IEngineerReplacer _engineerReplacer;
-
-    private const string CipherPattern = "%CIPHER%";
-    private const string DatePattern = "%DATE%";
-
-    private const string TemplatesPath = @"Infrastructure\Templates\TableOfContentsTemplates";
-
-    public TableOfContentsWriter(IWordDocumentService wordDocumentService, IWebHostEnvironment webHostEnvironment, IEngineerReplacer engineerReplacer)
+    public class TableOfContentsWriter : ITableOfContentsWriter
     {
-        _wordDocumentService = wordDocumentService;
-        _webHostEnvironment = webHostEnvironment;
-        _engineerReplacer = engineerReplacer;
-    }
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEngineerReplacer _engineerReplacer;
+        private readonly IProjectReplacer _projectReplacer;
+        private readonly IMyWordDocumentFactory _documentFactory;
 
-    public MemoryStream Write(TableOfContentsViewModel viewModel)
-    {
-        var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"{viewModel.ProjectTemplate}TableOfContentsTemplate.doc");
+        private const string TemplatesPath = @"Infrastructure\Templates\TableOfContentsTemplates";
 
-        _wordDocumentService.Load(templatePath);
+        public TableOfContentsWriter(IMyWordDocumentFactory documentFactory, IWebHostEnvironment webHostEnvironment, IEngineerReplacer engineerReplacer, IProjectReplacer projectReplacer)
+        {
+            _webHostEnvironment = webHostEnvironment;
+            _engineerReplacer = engineerReplacer;
+            _projectReplacer = projectReplacer;
+            _documentFactory = documentFactory;
+        }
+        
+        public async Task<MemoryStream> GetTableOfContentsStream(TableOfContentsViewModel viewModel)
+        {
+            var templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"{viewModel.ProjectTemplate}TableOfContentsTemplate.doc");
 
-        _engineerReplacer.ReplaceEngineerSecondNameAndSignature(viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer);
-        _engineerReplacer.ReplaceEngineerSecondNameAndSignature(viewModel.NormalInspectionEngineer, TypeOfEngineer.NormalInspectionProjectEngineer);
-        _wordDocumentService.ReplaceTextInDocument(CipherPattern, viewModel.ObjectCipher);
-        _wordDocumentService.ReplaceTextInDocument(DatePattern, DateTime.Now.ToString(AppConstants.DateTimeMonthAndYearShortFormat));
+            using var document = await _documentFactory.CreateAsync(templatePath);
 
-        var memoryStream = new MemoryStream();
-        _wordDocumentService.SaveAs(memoryStream, MyFileFormat.Doc);
-        _wordDocumentService.DisposeLastDocument();
+            var tasks = new List<Task>
+            {
+                _engineerReplacer.ReplaceSecondNameAndSignature(document, viewModel.ChiefProjectEngineer, TypeOfEngineer.ChiefProjectEngineer),
+                _engineerReplacer.ReplaceSecondNameAndSignature(document, viewModel.NormalInspectionEngineer, TypeOfEngineer.NormalInspectionProjectEngineer),
+                _projectReplacer.ReplaceObjectCipher(document, viewModel.ObjectCipher),
+                _projectReplacer.ReplaceCurrentDate(document)
+            };
 
-        return memoryStream;
+            await Task.WhenAll(tasks);
+
+            var memoryStream = new MemoryStream();
+            document.SaveAs(memoryStream, MyFileFormat.Doc);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            return memoryStream;
+        }
     }
 }

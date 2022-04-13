@@ -1,25 +1,25 @@
-﻿using POS.DomainModels;
-using POS.Infrastructure.Constants;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using POS.Models;
 
-namespace POS.ViewModels;
-
-public class TitlePageViewModel : IValidatableObject
+namespace POS.ViewModels
 {
-    public string ObjectCipher { get; set; } = null!;
-    public string ObjectName { get; set; } = null!;
-    public Engineer ChiefProjectEngineer { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class TitlePageViewModel : IValidatableObject
     {
-        if (string.IsNullOrEmpty(ObjectCipher))
-        {
-            yield return new ValidationResult(AppConstants.ObjectCipherValidationMessage);
-        }
+        public string ObjectCipher { get; set; } = null!;
+        public string ObjectName { get; set; } = null!;
+        public Engineer ChiefProjectEngineer { get; set; }
 
-        if (string.IsNullOrEmpty(ObjectName))
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return new ValidationResult("Имя объекта не может быть пустым.");
+            if (string.IsNullOrEmpty(ObjectCipher))
+            {
+                yield return new ValidationResult("Object cipher could not be empty");
+            }
+
+            if (string.IsNullOrEmpty(ObjectName))
+            {
+                yield return new ValidationResult("Object name could not be empty");
+            }
         }
     }
 }

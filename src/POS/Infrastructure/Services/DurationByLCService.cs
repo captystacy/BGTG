@@ -1,43 +1,51 @@
-﻿using POS.DomainModels.EstimateDomainModels;
-using POS.Infrastructure.Creators.Base;
-using POS.Infrastructure.Helpers;
+﻿using Calabonga.OperationResults;
+using POS.Infrastructure.Appenders.Base;
+using POS.Infrastructure.Calculators.Base;
+using POS.Infrastructure.Factories.Base;
 using POS.Infrastructure.Services.Base;
-using POS.Infrastructure.Writers.Base;
+using POS.Infrastructure.Services.DocumentServices;
 using POS.ViewModels;
 
-namespace POS.Infrastructure.Services;
-
-public class DurationByLCService : IDurationByLCService
+namespace POS.Infrastructure.Services
 {
-    private readonly IEstimateService _estimateService;
-    private readonly IDurationByLCCreator _durationByLCCreator;
-    private readonly IDurationByLCWriter _durationByLCWriter;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-
-    private const string TemplatesPath = @"Infrastructure\Templates\DurationByLCTemplates";
-
-    public DurationByLCService(IEstimateService estimateService, IDurationByLCCreator durationByLCCreator, IDurationByLCWriter durationByLCWriter, IWebHostEnvironment webHostEnvironment)
+    public class DurationByLCService : IDurationByLCService
     {
-        _estimateService = estimateService;
-        _durationByLCCreator = durationByLCCreator;
-        _durationByLCWriter = durationByLCWriter;
-        _webHostEnvironment = webHostEnvironment;
-    }
+        private readonly IMyWordDocumentFactory _documentFactory;
+        private readonly IDurationByLCCalculator _durationByLCCalculator;
+        private readonly IDurationByLCAppender _durationByLCAppender;
 
-    public MemoryStream Write(DurationByLCViewModel viewModel)
-    {
-        _estimateService.Read(viewModel.EstimateFiles, TotalWorkChapter.TotalWork1To12Chapter);
+        public DurationByLCService(IMyWordDocumentFactory documentFactory, IDurationByLCCalculator durationByLCCalculator, IDurationByLCAppender durationByLCAppender)
+        {
+            _documentFactory = documentFactory;
+            _durationByLCCalculator = durationByLCCalculator;
+            _durationByLCAppender = durationByLCAppender;
+        }
 
-        var durationByLC = _durationByLCCreator.Create(_estimateService.Estimate.LaborCosts, viewModel.TechnologicalLaborCosts, viewModel.WorkingDayDuration, viewModel.Shift,
-            viewModel.NumberOfWorkingDays, viewModel.NumberOfEmployees, viewModel.AcceptanceTimeIncluded);
+        public async Task<OperationResult<MemoryStream>> GetDurationByLCStream(DurationByLCViewModel viewModel)
+        {
+            var operation = OperationResult.CreateResult<MemoryStream>();
 
-        var templatePath = GetTemplatePath(durationByLC.RoundingIncluded, durationByLC.AcceptanceTimeIncluded);
+            var calculateOperation = await _durationByLCCalculator.Calculate(viewModel);
 
-        return _durationByLCWriter.Write(durationByLC, templatePath);
-    }
+            if (!calculateOperation.Ok)
+            {
+                operation.AddError(calculateOperation.GetMetadataMessages());
+                return operation;
+            }
 
-    private string GetTemplatePath(bool roundingIncluded, bool acceptanceTimeIncluded)
-    {
-        return Path.Combine(_webHostEnvironment.ContentRootPath, TemplatesPath, $"Rounding{TemplateHelper.GetPlusOrMinus(roundingIncluded)}Acceptance{TemplateHelper.GetPlusOrMinus(acceptanceTimeIncluded)}.docx");
+            var document = await _documentFactory.CreateAsync();
+
+            var section = document.AddSection();
+
+            await _durationByLCAppender.AppendAsync(section, calculateOperation.Result);
+
+            var memoryStream = new MemoryStream();
+            document.SaveAs(memoryStream, MyFileFormat.DocX);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            operation.Result = memoryStream;
+
+            return operation;
+        }
     }
 }
