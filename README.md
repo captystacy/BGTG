@@ -11,5 +11,6 @@
 ## Клиентская часть:
 * [Angular](https://angular.io/)
 ## Тесты:
-* [NUnit](https://github.com/nunit/nunit)
+* [XUnit](https://github.com/xunit/xunit)
 * [moq](https://github.com/moq/moq)
+* [AutoFixture](https://github.com/AutoFixture/AutoFixture)
