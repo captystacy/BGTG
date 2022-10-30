@@ -147,7 +147,7 @@ namespace POS.Infrastructure.Readers
                 var estimateCalculationCellStr = cells[row, PatternsColumn].Text?.Trim().ToLower();
 
                 if (!string.IsNullOrEmpty(estimateCalculationCellStr)
-                    && estimateCalculationCellStr == Nrr103Pattern)
+                    && estimateCalculationCellStr.StartsWith(Nrr103Pattern))
                 {
                     var parseLaborCostsOperation = await _estimateParser.GetLaborCosts(cells, row);
 

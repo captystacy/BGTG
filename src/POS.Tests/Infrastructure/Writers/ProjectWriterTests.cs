@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -20,6 +21,12 @@ namespace POS.Tests.Infrastructure.Writers
 {
     public class ProjectWriterTests
     {
+
+        public ProjectWriterTests()
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
+        }
+
         [Fact]
         public async Task ItShould_replace_project_values()
         {
