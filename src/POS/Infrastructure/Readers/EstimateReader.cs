@@ -6,6 +6,7 @@ using POS.Infrastructure.Readers.Base;
 using POS.Infrastructure.Services.DocumentServices.ExcelService.Base;
 using POS.Models.EstimateModels;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace POS.Infrastructure.Readers
 {
@@ -24,11 +25,6 @@ namespace POS.Infrastructure.Readers
         private const int ConstructionDurationColumn = 3;
 
         private const int PatternsColumn = 1;
-
-        private static readonly IEnumerable<string> SkipPatterns = new List<string>
-        {
-            "таблица", "акт", "справка", "налог", "подпункт", "п.", "смета", "отчет", "указ", "предложение", "нрр"
-        };
 
         private const string SubUnit1To9Pattern = "подпункт 30.10 инструкции";
         private const string SubUnit1To11Pattern = "подпункт 31.6 инструкции";
@@ -213,7 +209,8 @@ namespace POS.Infrastructure.Readers
 
                 if (estimateCalculationCellStr == totalWorkChapterPattern
                     || estimateCalculationCellStr == Nrr102Pattern
-                    || !SkipPatterns.Any(x => estimateCalculationCellStr.StartsWith(x)))
+                    || !Regex.IsMatch(estimateCalculationCellStr,
+                        @"^(таблица|акт|справка|налог|подпункт|п\.|смета|отчет|указ|предложение|нрр|письмо)|белтим$"))
                 {
                     OperationResult<EstimateWork> getTotalEstimateWorkOperation;
                     if (estimateCalculationCellStr == totalWorkChapterPattern)
@@ -233,6 +230,11 @@ namespace POS.Infrastructure.Readers
                     }
 
                     var estimateWork = getTotalEstimateWorkOperation.Result;
+
+                    if (Regex.IsMatch(estimateWork.WorkName, @"китсо$"))
+                    {
+                        continue;
+                    }
 
                     if (estimateWork.Chapter is 1 or 8)
                     {
