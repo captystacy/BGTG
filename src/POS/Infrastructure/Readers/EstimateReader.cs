@@ -30,8 +30,8 @@ namespace POS.Infrastructure.Readers
         private const string SubUnit1To11Pattern = "подпункт 31.6 инструкции";
         private const string SubUnit1To12Pattern = "подпункт 33.3.2  инструкции";
 
-        private const string Nrr102Pattern = "нрр 8.01.102-2017";
-        private const string Nrr103Pattern = "нрр 8.01.103-2017";
+        private const string Nrr102Pattern = "нрр 8.01.102";
+        private const string Nrr103Pattern = "нрр 8.01.103";
 
         public EstimateReader(IMyExcelDocumentFactory excelDocumentFactory, IEstimateParser estimateParser, IConstructionParser constructionParser)
         {
@@ -208,7 +208,7 @@ namespace POS.Infrastructure.Readers
                 }
 
                 if (estimateCalculationCellStr == totalWorkChapterPattern
-                    || estimateCalculationCellStr == Nrr102Pattern
+                    || estimateCalculationCellStr.StartsWith(Nrr102Pattern)
                     || !Regex.IsMatch(estimateCalculationCellStr,
                         @"^(таблица|акт|справка|налог|подпункт|п\.|смета|отчет|указ|предложение|нрр|письмо)|белтим$"))
                 {
