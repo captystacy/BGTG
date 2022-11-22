@@ -18,7 +18,12 @@ DependencyContainer.POS(builder.Services);
 
 if (builder.Environment.IsProduction())
 {
-    builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(5000));
+    if (!int.TryParse(builder.Configuration.GetSection("Port").Value, out var port))
+    {
+        throw new FormatException("Port from configuration file is not valid.");
+    }
+
+    builder.WebHost.ConfigureKestrel(x => x.ListenAnyIP(port));
 }
 
 var app = builder.Build();
