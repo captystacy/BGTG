@@ -20,7 +20,8 @@ namespace POS.Infrastructure.Parsers
 
         private const string TotalWork1To9SearchPattern = "итого по главам 1-9";
         private const string TotalWork1To11SearchPattern = "итого по главам 1-11";
-        private const string TotalWork1To12SearchPattern = "всего по сводному сметному расчету";
+        private const string TotalWork1To12SearchPattern1 = "всего по сводному сметному расчету";
+        private const string TotalWork1To12SearchPattern2 = "итого на дату окончания строительства в пределах нормативной продолжительности строительства";
 
         private const string LaborCostsPattern = "итого по главе 1-8";
 
@@ -87,18 +88,10 @@ namespace POS.Infrastructure.Parsers
                 return operation;
             }
 
-            var totalWorkChapterSearchPattern = totalWorkChapter switch
-            {
-                TotalWorkChapter.TotalWork1To9Chapter => TotalWork1To9SearchPattern,
-                TotalWorkChapter.TotalWork1To11Chapter => TotalWork1To11SearchPattern,
-                TotalWorkChapter.TotalWork1To12Chapter => TotalWork1To12SearchPattern,
-                _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
-            };
-
             var totalWorkRow = 0;
             for (int row = totalWorkPatternRow + 1; row < Constants.EstimateEndRow; row++)
             {
-                if (cells[row, WorkNamesColumn].Text?.ToLower() == totalWorkChapterSearchPattern)
+                if (IsTotalWorkChapterSearch(totalWorkChapter, cells[row, WorkNamesColumn].Text?.ToLower()))
                 {
                     totalWorkRow = row;
                     break;
@@ -123,6 +116,18 @@ namespace POS.Infrastructure.Parsers
 
             return operation;
         }
+
+        private bool IsTotalWorkChapterSearch(TotalWorkChapter totalWorkChapter, string? cellText)
+        {
+            return totalWorkChapter switch
+            {
+                TotalWorkChapter.TotalWork1To9Chapter => TotalWork1To9SearchPattern == cellText,
+                TotalWorkChapter.TotalWork1To11Chapter => TotalWork1To11SearchPattern == cellText,
+                TotalWorkChapter.TotalWork1To12Chapter => cellText is TotalWork1To12SearchPattern1 or TotalWork1To12SearchPattern2,
+                _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
+            };
+        }
+
 
         public async Task<OperationResult<EstimateWork>> GetEstimateWork(IMyExcelRange cells, int workRow, int chapter = 0)
         {

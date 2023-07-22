@@ -28,7 +28,7 @@ namespace POS.Infrastructure.Readers
 
         private const string SubUnit1To9Pattern = "подпункт 30.10 инструкции";
         private const string SubUnit1To11Pattern = "подпункт 31.6 инструкции";
-        private const string SubUnit1To12Pattern = "подпункт 33.3.2  инструкции";
+        private static Regex SubUnit1To12PatternRegex = new Regex(@"подпункт 3[34]\.?[132]?\.?[21]?\s+инструкции");
 
         private const string Nrr102Pattern = "нрр 8.01.102";
         private const string Nrr103Pattern = "нрр 8.01.103";
@@ -65,19 +65,21 @@ namespace POS.Infrastructure.Readers
                 ? document.WorkBook.WorkSheets[1].Cells
                 : document.WorkBook.WorkSheets[0].Cells;
 
-            var totalWorkChapterPattern = totalWorkChapter switch
-            {
-                TotalWorkChapter.TotalWork1To9Chapter => SubUnit1To9Pattern,
-                TotalWorkChapter.TotalWork1To11Chapter => SubUnit1To11Pattern,
-                TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12Pattern,
-                _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
-            };
-
             for (int row = Constants.EstimateStartRow; row <= Constants.EstimateEndRow; row++)
             {
                 var estimateCalculationCellStr = cells[row, PatternsColumn].Text?.Trim().ToLower();
+                if (string.IsNullOrWhiteSpace(estimateCalculationCellStr))
+                {
+                    continue;
+                }
 
-                if (estimateCalculationCellStr == totalWorkChapterPattern)
+                if (totalWorkChapter switch
+                {
+                    TotalWorkChapter.TotalWork1To9Chapter => estimateCalculationCellStr == SubUnit1To9Pattern,
+                    TotalWorkChapter.TotalWork1To11Chapter => estimateCalculationCellStr == SubUnit1To11Pattern,
+                    TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12PatternRegex.Match(estimateCalculationCellStr).Success,
+                    _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
+                })
                 {
                     var getTotalEstimateWorkOperation = await _estimateParser.GetTotalEstimateWork(cells, row, totalWorkChapter);
 
@@ -187,14 +189,6 @@ namespace POS.Infrastructure.Readers
                 ? document.WorkBook.WorkSheets[1].Cells
                 : document.WorkBook.WorkSheets[0].Cells;
 
-            var totalWorkChapterPattern = totalWorkChapter switch
-            {
-                TotalWorkChapter.TotalWork1To9Chapter => SubUnit1To9Pattern,
-                TotalWorkChapter.TotalWork1To11Chapter => SubUnit1To11Pattern,
-                TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12Pattern,
-                _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
-            };
-
             var totalEstimateWorkWasReached = false;
             var preparatoryEstimateWorks = new List<EstimateWork>();
             var mainEstimateWorks = new List<EstimateWork>();
@@ -202,18 +196,26 @@ namespace POS.Infrastructure.Readers
             {
                 var estimateCalculationCellStr = cells[row, PatternsColumn].Text?.Trim().ToLower();
 
-                if (string.IsNullOrEmpty(estimateCalculationCellStr))
+                if (string.IsNullOrWhiteSpace(estimateCalculationCellStr))
                 {
                     continue;
                 }
 
-                if (estimateCalculationCellStr == totalWorkChapterPattern
+                var isTotalWorkChapter = totalWorkChapter switch
+                {
+                    TotalWorkChapter.TotalWork1To9Chapter => estimateCalculationCellStr == SubUnit1To9Pattern,
+                    TotalWorkChapter.TotalWork1To11Chapter => estimateCalculationCellStr == SubUnit1To11Pattern,
+                    TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12PatternRegex.Match(estimateCalculationCellStr).Success,
+                    _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
+                };
+
+                if (isTotalWorkChapter
                     || estimateCalculationCellStr.StartsWith(Nrr102Pattern)
                     || !Regex.IsMatch(estimateCalculationCellStr,
-                        @"^(таблица|акт|справка|налог|подпункт|п\.|смета|отчет|указ|предложение|нрр|письмо)|белтим$"))
+                        @"^(таблица|акт|справка|налог|подпункт|п\.|смета|отчет|указ|предложение|нрр|письмо|пункт)|белтим$"))
                 {
                     OperationResult<EstimateWork> getTotalEstimateWorkOperation;
-                    if (estimateCalculationCellStr == totalWorkChapterPattern)
+                    if (isTotalWorkChapter)
                     {
                         getTotalEstimateWorkOperation = await _estimateParser.GetTotalEstimateWork(cells, row, totalWorkChapter);
                         totalEstimateWorkWasReached = true;
