@@ -27,20 +27,33 @@ namespace POS.Infrastructure.Readers
         private const int PatternsColumn = 1;
 
         private const string SubUnit1To9Pattern = "подпункт 30.10 инструкции";
-        private const string SubUnit1To11Pattern = "подпункт 31.6 инструкции";
-        private static Regex SubUnit1To12PatternRegex = new Regex(@"подпункт 3[34]\.?[132]?\.?[21]?\s+инструкции");
+
+        private static readonly Regex SubUnit1To11PatternRegex = new(@"подпункт 31.[67] инструкции");
+
+        private static readonly Regex SubUnit1To12PatternRegex = new(@"подпункт 3[34]\.?[132]?\.?[21]?\s+инструкции");
 
         private const string Nrr102Pattern = "нрр 8.01.102";
         private const string Nrr103Pattern = "нрр 8.01.103";
 
-        public EstimateReader(IMyExcelDocumentFactory excelDocumentFactory, IEstimateParser estimateParser, IConstructionParser constructionParser)
+        private static IReadOnlyList<string> SkipPatterns = new List<string>
+        {
+            "составлена в ценах",
+            "дата начала строительства",
+            "продолжительность строительства",
+            "обоснование средств",
+            "1"
+        };
+
+        public EstimateReader(IMyExcelDocumentFactory excelDocumentFactory, IEstimateParser estimateParser,
+            IConstructionParser constructionParser)
         {
             _excelDocumentFactory = excelDocumentFactory;
             _estimateParser = estimateParser;
             _constructionParser = constructionParser;
         }
 
-        public async Task<OperationResult<EstimateWork>> GetTotalEstimateWork(Stream stream, TotalWorkChapter totalWorkChapter)
+        public async Task<OperationResult<EstimateWork>> GetTotalEstimateWork(Stream stream,
+            TotalWorkChapter totalWorkChapter)
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
             var operation = OperationResult.CreateResult<EstimateWork>();
@@ -61,7 +74,8 @@ namespace POS.Infrastructure.Readers
 
             stream.Close();
 
-            var cells = document.WorkBook.WorkSheets[0].Name.Trim().ToLower().StartsWith(PossibleFirstInappropriateWorkSheet)
+            var cells = document.WorkBook.WorkSheets[0].Name.Trim().ToLower()
+                .StartsWith(PossibleFirstInappropriateWorkSheet)
                 ? document.WorkBook.WorkSheets[1].Cells
                 : document.WorkBook.WorkSheets[0].Cells;
 
@@ -74,14 +88,17 @@ namespace POS.Infrastructure.Readers
                 }
 
                 if (totalWorkChapter switch
+                    {
+                        TotalWorkChapter.TotalWork1To9Chapter => estimateCalculationCellStr == SubUnit1To9Pattern,
+                        TotalWorkChapter.TotalWork1To11Chapter => SubUnit1To11PatternRegex
+                            .Match(estimateCalculationCellStr).Success,
+                        TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12PatternRegex
+                            .Match(estimateCalculationCellStr).Success,
+                        _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
+                    })
                 {
-                    TotalWorkChapter.TotalWork1To9Chapter => estimateCalculationCellStr == SubUnit1To9Pattern,
-                    TotalWorkChapter.TotalWork1To11Chapter => estimateCalculationCellStr == SubUnit1To11Pattern,
-                    TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12PatternRegex.Match(estimateCalculationCellStr).Success,
-                    _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
-                })
-                {
-                    var getTotalEstimateWorkOperation = await _estimateParser.GetTotalEstimateWork(cells, row, totalWorkChapter);
+                    var getTotalEstimateWorkOperation =
+                        await _estimateParser.GetTotalEstimateWork(cells, row, totalWorkChapter);
 
                     if (!getTotalEstimateWorkOperation.Ok)
                     {
@@ -112,7 +129,8 @@ namespace POS.Infrastructure.Readers
 
             stream.Close();
 
-            var cells = document.WorkBook.WorkSheets[0].Name.Trim().ToLower().StartsWith(PossibleFirstInappropriateWorkSheet)
+            var cells = document.WorkBook.WorkSheets[0].Name.Trim().ToLower()
+                .StartsWith(PossibleFirstInappropriateWorkSheet)
                 ? document.WorkBook.WorkSheets[1].Cells
                 : document.WorkBook.WorkSheets[0].Cells;
 
@@ -136,7 +154,8 @@ namespace POS.Infrastructure.Readers
 
             stream.Close();
 
-            var cells = document.WorkBook.WorkSheets[0].Name.Trim().ToLower().StartsWith(PossibleFirstInappropriateWorkSheet)
+            var cells = document.WorkBook.WorkSheets[0].Name.Trim().ToLower()
+                .StartsWith(PossibleFirstInappropriateWorkSheet)
                 ? document.WorkBook.WorkSheets[1].Cells
                 : document.WorkBook.WorkSheets[0].Cells;
 
@@ -196,7 +215,8 @@ namespace POS.Infrastructure.Readers
             {
                 var estimateCalculationCellStr = cells[row, PatternsColumn].Text?.Trim().ToLower();
 
-                if (string.IsNullOrWhiteSpace(estimateCalculationCellStr))
+                if (string.IsNullOrWhiteSpace(estimateCalculationCellStr) ||
+                    SkipPatterns.Any(pattern => estimateCalculationCellStr.StartsWith(pattern)))
                 {
                     continue;
                 }
@@ -204,8 +224,10 @@ namespace POS.Infrastructure.Readers
                 var isTotalWorkChapter = totalWorkChapter switch
                 {
                     TotalWorkChapter.TotalWork1To9Chapter => estimateCalculationCellStr == SubUnit1To9Pattern,
-                    TotalWorkChapter.TotalWork1To11Chapter => estimateCalculationCellStr == SubUnit1To11Pattern,
-                    TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12PatternRegex.Match(estimateCalculationCellStr).Success,
+                    TotalWorkChapter.TotalWork1To11Chapter => SubUnit1To11PatternRegex.Match(estimateCalculationCellStr)
+                        .Success,
+                    TotalWorkChapter.TotalWork1To12Chapter => SubUnit1To12PatternRegex.Match(estimateCalculationCellStr)
+                        .Success,
                     _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
                 };
 
@@ -217,7 +239,8 @@ namespace POS.Infrastructure.Readers
                     OperationResult<EstimateWork> getTotalEstimateWorkOperation;
                     if (isTotalWorkChapter)
                     {
-                        getTotalEstimateWorkOperation = await _estimateParser.GetTotalEstimateWork(cells, row, totalWorkChapter);
+                        getTotalEstimateWorkOperation =
+                            await _estimateParser.GetTotalEstimateWork(cells, row, totalWorkChapter);
                         totalEstimateWorkWasReached = true;
                     }
                     else

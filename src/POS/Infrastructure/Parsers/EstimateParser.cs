@@ -119,11 +119,16 @@ namespace POS.Infrastructure.Parsers
 
         private bool IsTotalWorkChapterSearch(TotalWorkChapter totalWorkChapter, string? cellText)
         {
+            if (string.IsNullOrWhiteSpace(cellText))
+            {
+                return false;
+            }
+            
             return totalWorkChapter switch
             {
                 TotalWorkChapter.TotalWork1To9Chapter => TotalWork1To9SearchPattern == cellText,
                 TotalWorkChapter.TotalWork1To11Chapter => TotalWork1To11SearchPattern == cellText,
-                TotalWorkChapter.TotalWork1To12Chapter => cellText is TotalWork1To12SearchPattern1 or TotalWork1To12SearchPattern2,
+                TotalWorkChapter.TotalWork1To12Chapter => cellText.StartsWith(TotalWork1To12SearchPattern1) || cellText.StartsWith(TotalWork1To12SearchPattern2),
                 _ => throw new ArgumentOutOfRangeException(nameof(totalWorkChapter), totalWorkChapter, null)
             };
         }
